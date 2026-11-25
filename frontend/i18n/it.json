@@ -1,5 +1,15 @@
 {
-  "home": { "titolo": "Gioca con gli amici", "creaStanza": "Crea stanza" },
+  "home": {
+    "titolo": "Gioca con gli amici",
+    "creaStanza": "Crea stanza",
+    "sottotitolo": "Compra all'asta i personaggi anime, forma la squadra e vinci il torneo.",
+    "tuoNome": "Il tuo nome",
+    "stanzaStreamer": "Stanza streamer (la chat di Twitch gioca come squadra)",
+    "canale": "Canale Twitch",
+    "codice": "Codice stanza",
+    "entraCodice": "Entra con un codice",
+    "partitaVeloce": "Partita veloce: draft da solo contro la CPU"
+  },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
     "titolo": "Scontro animato",
@@ -17,5 +27,41 @@
     "nuovaSfida": "Nuova sfida",
     "linkPartita": "Apri il link condivisibile"
   },
-  "errori": { "partitaNonTrovata": "Partita non trovata." }
+  "errori": {
+    "partitaNonTrovata": "Partita non trovata.",
+    "stanzaNonTrovata": "Stanza non trovata o scaduta.",
+    "stanzaScaduta": "La stanza non esiste più o è scaduta."
+  },
+  "stanza": {
+    "lobby": "Lobby",
+    "condividi": "Condividi il codice con gli amici per farli entrare.",
+    "giocatori": "Giocatori",
+    "host": "host",
+    "assente": "assente",
+    "budget": "Budget",
+    "timer": "Timer (s)",
+    "timerRuolo": "Scelta ruolo (s)",
+    "avvia": "Avvia l'asta",
+    "attendiHost": "In attesa che l'host avvii l'asta…",
+    "entra": "Entra nella stanza",
+    "connessione": "Connessione in corso…",
+    "riconnessione": "Connessione persa: provo a riconnettermi…",
+    "inAttesa": "In attesa…",
+    "lotto": "Lotto",
+    "tempo": "Tempo rimasto",
+    "nessunaOfferta": "Nessuna offerta",
+    "tutto": "Tutto",
+    "passa": "Passa",
+    "scegliRuolo": "sta scegliendo il ruolo…",
+    "scegliTuRuolo": "Hai vinto! Scegli il ruolo:",
+    "scorciatoie": "Tasti: 1 2 5 0 rilanciano di 1/2/5/10, M offre tutto, P passa.",
+    "laTuaSquadra": "La tua squadra",
+    "passato": "ha passato",
+    "classifica": "Classifica",
+    "giocatore": "Giocatore",
+    "totale": "Totale",
+    "giornata": "Giornata",
+    "vince": "vince",
+    "pareggio": "pareggio"
+  }
 }

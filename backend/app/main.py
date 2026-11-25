@@ -3,20 +3,23 @@ import random
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, TypeAdapter
 
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
 from app.db.session import init_db
 from app.engine.models import MatchResult, Team
 from app.engine.simulate import simulate
+from app.rooms.manager import RoomError, manager, serve_socket
+from app.rooms.protocol import ClientMessage, ErrorMsg, Join, Spectate
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     init_db()
+    manager.start_sweeper()
     yield
 
 
@@ -81,3 +84,54 @@ def get_match(match_id: str) -> MatchResult:
     if result is None:
         raise HTTPException(404, "partita non trovata")
     return result
+
+
+class CreateRoomRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=24)
+    streamer_channel: str | None = Field(None, max_length=40)
+    chat_threshold: int | None = Field(None, ge=1, le=100)
+
+
+class CreatedRoom(BaseModel):
+    code: str
+    player_id: str
+    token: str
+
+
+@app.post("/api/rooms")
+def create_room(req: CreateRoomRequest) -> CreatedRoom:
+    try:
+        room, host = manager.create_room(req.name, req.streamer_channel, req.chat_threshold)
+    except RoomError as e:
+        raise HTTPException(409, e.message) from e
+    manager.ensure_loop_later(room)
+    return CreatedRoom(code=room.code, player_id=host.id, token=host.token)
+
+
+@app.get("/api/rooms/{code}")
+def room_exists(code: str) -> dict[str, str]:
+    room = manager.get(code)
+    if room is None:
+        raise HTTPException(404, "stanza non trovata o scaduta")
+    return {"code": room.code, "phase": room.phase}
+
+
+@app.websocket("/ws/rooms/{code}")
+async def ws_room(ws: WebSocket, code: str) -> None:
+    await ws.accept()
+    room = manager.get(code)
+    if room is None:
+        await ws.send_text(
+            ErrorMsg(code="room_not_found", message="Stanza non trovata").model_dump_json()
+        )
+        await ws.close()
+        return
+    try:
+        first = TypeAdapter(ClientMessage).validate_json(await ws.receive_text())
+    except Exception:
+        await ws.close()
+        return
+    if not isinstance(first, Join | Spectate):
+        await ws.close()
+        return
+    await serve_socket(room, ws, first)

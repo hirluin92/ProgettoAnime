@@ -10,7 +10,7 @@
     "test": "vitest run",
     "format": "prettier --check .",
     "test:e2e": "playwright test",
-    "gen:types": "json2ts -i lib/schema/match.json -o lib/types/match.ts --no-additionalProperties"
+    "gen:types": "json2ts -i lib/schema/match.json -o lib/types/match.ts --no-additionalProperties && json2ts -i lib/schema/server.json -o lib/types/server.ts --no-additionalProperties && json2ts -i lib/schema/client.json -o lib/types/client.ts --no-additionalProperties"
   },
   "dependencies": {
     "framer-motion": "^14.14.0",

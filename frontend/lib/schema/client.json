@@ -1,0 +1,202 @@
+{
+  "$defs": {
+    "AssignRole": {
+      "properties": {
+        "type": {
+          "const": "assign_role",
+          "default": "assign_role",
+          "title": "Type",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": ["type", "role"],
+      "title": "AssignRole",
+      "type": "object"
+    },
+    "Bid": {
+      "properties": {
+        "type": {
+          "const": "bid",
+          "default": "bid",
+          "title": "Type",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "integer"
+        }
+      },
+      "required": ["type", "amount"],
+      "title": "Bid",
+      "type": "object"
+    },
+    "Join": {
+      "properties": {
+        "type": {
+          "const": "join",
+          "default": "join",
+          "title": "Type",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "maxLength": 24,
+          "title": "Name",
+          "type": "string"
+        },
+        "token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Token"
+        }
+      },
+      "required": ["type", "name", "token"],
+      "title": "Join",
+      "type": "object"
+    },
+    "Pass": {
+      "properties": {
+        "type": {
+          "const": "pass",
+          "default": "pass",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": ["type"],
+      "title": "Pass",
+      "type": "object"
+    },
+    "RoomSettings": {
+      "properties": {
+        "budget": {
+          "default": 50,
+          "maximum": 500,
+          "minimum": 10,
+          "title": "Budget",
+          "type": "integer"
+        },
+        "timer": {
+          "default": 10,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Timer",
+          "type": "integer"
+        },
+        "role_timeout": {
+          "default": 8,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Role Timeout",
+          "type": "integer"
+        },
+        "anime": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Anime",
+          "type": "array"
+        },
+        "chat_threshold": {
+          "default": 3,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Chat Threshold",
+          "type": "integer"
+        }
+      },
+      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold"],
+      "title": "RoomSettings",
+      "type": "object"
+    },
+    "Spectate": {
+      "properties": {
+        "type": {
+          "const": "spectate",
+          "default": "spectate",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": ["type"],
+      "title": "Spectate",
+      "type": "object"
+    },
+    "Start": {
+      "properties": {
+        "type": {
+          "const": "start",
+          "default": "start",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": ["type"],
+      "title": "Start",
+      "type": "object"
+    },
+    "UpdateSettings": {
+      "properties": {
+        "type": {
+          "const": "update_settings",
+          "default": "update_settings",
+          "title": "Type",
+          "type": "string"
+        },
+        "settings": {
+          "$ref": "#/$defs/RoomSettings"
+        }
+      },
+      "required": ["type", "settings"],
+      "title": "UpdateSettings",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "assign_role": "#/$defs/AssignRole",
+      "bid": "#/$defs/Bid",
+      "join": "#/$defs/Join",
+      "pass": "#/$defs/Pass",
+      "spectate": "#/$defs/Spectate",
+      "start": "#/$defs/Start",
+      "update_settings": "#/$defs/UpdateSettings"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Join"
+    },
+    {
+      "$ref": "#/$defs/Spectate"
+    },
+    {
+      "$ref": "#/$defs/Start"
+    },
+    {
+      "$ref": "#/$defs/Bid"
+    },
+    {
+      "$ref": "#/$defs/Pass"
+    },
+    {
+      "$ref": "#/$defs/AssignRole"
+    },
+    {
+      "$ref": "#/$defs/UpdateSettings"
+    }
+  ]
+}

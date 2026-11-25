@@ -1,0 +1,701 @@
+{
+  "$defs": {
+    "AuctionFinished": {
+      "properties": {
+        "type": {
+          "const": "auction_finished",
+          "default": "auction_finished",
+          "title": "Type",
+          "type": "string"
+        },
+        "teams": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Character"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "title": "Teams",
+          "type": "object"
+        }
+      },
+      "required": ["type", "teams"],
+      "title": "AuctionFinished",
+      "type": "object"
+    },
+    "AwaitRole": {
+      "properties": {
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "integer"
+        },
+        "deadline": {
+          "title": "Deadline",
+          "type": "number"
+        }
+      },
+      "required": ["player_id", "amount", "deadline"],
+      "title": "AwaitRole",
+      "type": "object"
+    },
+    "BidPlaced": {
+      "properties": {
+        "type": {
+          "const": "bid_placed",
+          "default": "bid_placed",
+          "title": "Type",
+          "type": "string"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "integer"
+        },
+        "deadline": {
+          "title": "Deadline",
+          "type": "number"
+        },
+        "now": {
+          "title": "Now",
+          "type": "number"
+        }
+      },
+      "required": ["type", "player_id", "amount", "deadline", "now"],
+      "title": "BidPlaced",
+      "type": "object"
+    },
+    "Character": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "anime": {
+          "title": "Anime",
+          "type": "string"
+        },
+        "ruolo_firma": {
+          "title": "Ruolo Firma",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "title": "Tags",
+          "type": "array"
+        },
+        "rating": {
+          "maximum": 99,
+          "minimum": 55,
+          "title": "Rating",
+          "type": "integer"
+        },
+        "immagine_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Immagine Url"
+        }
+      },
+      "required": ["id", "nome", "anime", "ruolo_firma", "tags", "rating", "immagine_url"],
+      "title": "Character",
+      "type": "object"
+    },
+    "ErrorMsg": {
+      "properties": {
+        "type": {
+          "const": "error",
+          "default": "error",
+          "title": "Type",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": ["type", "code", "message"],
+      "title": "ErrorMsg",
+      "type": "object"
+    },
+    "Joined": {
+      "properties": {
+        "type": {
+          "const": "joined",
+          "default": "joined",
+          "title": "Type",
+          "type": "string"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "token": {
+          "title": "Token",
+          "type": "string"
+        }
+      },
+      "required": ["type", "player_id", "token"],
+      "title": "Joined",
+      "type": "object"
+    },
+    "LotAssigned": {
+      "properties": {
+        "type": {
+          "const": "lot_assigned",
+          "default": "lot_assigned",
+          "title": "Type",
+          "type": "string"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "character": {
+          "$ref": "#/$defs/Character"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "integer"
+        }
+      },
+      "required": ["type", "player_id", "character", "role", "amount"],
+      "title": "LotAssigned",
+      "type": "object"
+    },
+    "LotSkipped": {
+      "properties": {
+        "type": {
+          "const": "lot_skipped",
+          "default": "lot_skipped",
+          "title": "Type",
+          "type": "string"
+        },
+        "character": {
+          "$ref": "#/$defs/Character"
+        }
+      },
+      "required": ["type", "character"],
+      "title": "LotSkipped",
+      "type": "object"
+    },
+    "LotStarted": {
+      "properties": {
+        "type": {
+          "const": "lot_started",
+          "default": "lot_started",
+          "title": "Type",
+          "type": "string"
+        },
+        "number": {
+          "title": "Number",
+          "type": "integer"
+        },
+        "character": {
+          "$ref": "#/$defs/Character"
+        },
+        "deadline": {
+          "title": "Deadline",
+          "type": "number"
+        },
+        "now": {
+          "title": "Now",
+          "type": "number"
+        }
+      },
+      "required": ["type", "number", "character", "deadline", "now"],
+      "title": "LotStarted",
+      "type": "object"
+    },
+    "LotView": {
+      "properties": {
+        "number": {
+          "title": "Number",
+          "type": "integer"
+        },
+        "character": {
+          "$ref": "#/$defs/Character"
+        },
+        "current_bid": {
+          "title": "Current Bid",
+          "type": "integer"
+        },
+        "bidder_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Bidder Id"
+        },
+        "deadline": {
+          "title": "Deadline",
+          "type": "number"
+        },
+        "passed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Passed",
+          "type": "array"
+        },
+        "await_role": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AwaitRole"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "number",
+        "character",
+        "current_bid",
+        "bidder_id",
+        "deadline",
+        "passed",
+        "await_role"
+      ],
+      "title": "LotView",
+      "type": "object"
+    },
+    "LotWon": {
+      "properties": {
+        "type": {
+          "const": "lot_won",
+          "default": "lot_won",
+          "title": "Type",
+          "type": "string"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "integer"
+        },
+        "role_deadline": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Role Deadline"
+        }
+      },
+      "required": ["type", "player_id", "amount", "role_deadline"],
+      "title": "LotWon",
+      "type": "object"
+    },
+    "MatchRef": {
+      "properties": {
+        "match_id": {
+          "title": "Match Id",
+          "type": "string"
+        },
+        "a": {
+          "title": "A",
+          "type": "string"
+        },
+        "b": {
+          "title": "B",
+          "type": "string"
+        },
+        "winner": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Winner"
+        },
+        "total_a": {
+          "title": "Total A",
+          "type": "integer"
+        },
+        "total_b": {
+          "title": "Total B",
+          "type": "integer"
+        }
+      },
+      "required": ["match_id", "a", "b", "winner", "total_a", "total_b"],
+      "title": "MatchRef",
+      "type": "object"
+    },
+    "PlayerPassed": {
+      "properties": {
+        "type": {
+          "const": "player_passed",
+          "default": "player_passed",
+          "title": "Type",
+          "type": "string"
+        },
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "player_id"],
+      "title": "PlayerPassed",
+      "type": "object"
+    },
+    "PlayerView": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "color": {
+          "title": "Color",
+          "type": "string"
+        },
+        "budget": {
+          "title": "Budget",
+          "type": "integer"
+        },
+        "slots": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Character"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Slots",
+          "type": "object"
+        },
+        "is_chat": {
+          "title": "Is Chat",
+          "type": "boolean"
+        },
+        "connected": {
+          "title": "Connected",
+          "type": "boolean"
+        },
+        "complete": {
+          "title": "Complete",
+          "type": "boolean"
+        }
+      },
+      "required": ["id", "name", "color", "budget", "slots", "is_chat", "connected", "complete"],
+      "title": "PlayerView",
+      "type": "object"
+    },
+    "RoomSettings": {
+      "properties": {
+        "budget": {
+          "default": 50,
+          "maximum": 500,
+          "minimum": 10,
+          "title": "Budget",
+          "type": "integer"
+        },
+        "timer": {
+          "default": 10,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Timer",
+          "type": "integer"
+        },
+        "role_timeout": {
+          "default": 8,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Role Timeout",
+          "type": "integer"
+        },
+        "anime": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Anime",
+          "type": "array"
+        },
+        "chat_threshold": {
+          "default": 3,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Chat Threshold",
+          "type": "integer"
+        }
+      },
+      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold"],
+      "title": "RoomSettings",
+      "type": "object"
+    },
+    "RoomState": {
+      "properties": {
+        "type": {
+          "const": "room_state",
+          "default": "room_state",
+          "title": "Type",
+          "type": "string"
+        },
+        "room": {
+          "$ref": "#/$defs/RoomView"
+        }
+      },
+      "required": ["type", "room"],
+      "title": "RoomState",
+      "type": "object"
+    },
+    "RoomView": {
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "phase": {
+          "enum": ["lobby", "auction", "tournament"],
+          "title": "Phase",
+          "type": "string"
+        },
+        "host_id": {
+          "title": "Host Id",
+          "type": "string"
+        },
+        "settings": {
+          "$ref": "#/$defs/RoomSettings"
+        },
+        "players": {
+          "items": {
+            "$ref": "#/$defs/PlayerView"
+          },
+          "title": "Players",
+          "type": "array"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LotView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lots_left": {
+          "title": "Lots Left",
+          "type": "integer"
+        },
+        "tournament": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TournamentView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "streamer_channel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Streamer Channel"
+        },
+        "server_time": {
+          "title": "Server Time",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "phase",
+        "host_id",
+        "settings",
+        "players",
+        "lot",
+        "lots_left",
+        "tournament",
+        "streamer_channel",
+        "server_time"
+      ],
+      "title": "RoomView",
+      "type": "object"
+    },
+    "StandingRow": {
+      "properties": {
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "punti": {
+          "title": "Punti",
+          "type": "integer"
+        },
+        "vittorie": {
+          "title": "Vittorie",
+          "type": "integer"
+        },
+        "pareggi": {
+          "title": "Pareggi",
+          "type": "integer"
+        },
+        "sconfitte": {
+          "title": "Sconfitte",
+          "type": "integer"
+        },
+        "totale": {
+          "title": "Totale",
+          "type": "integer"
+        }
+      },
+      "required": ["player_id", "punti", "vittorie", "pareggi", "sconfitte", "totale"],
+      "title": "StandingRow",
+      "type": "object"
+    },
+    "TournamentResult": {
+      "properties": {
+        "type": {
+          "const": "tournament_result",
+          "default": "tournament_result",
+          "title": "Type",
+          "type": "string"
+        },
+        "tournament": {
+          "$ref": "#/$defs/TournamentView"
+        }
+      },
+      "required": ["type", "tournament"],
+      "title": "TournamentResult",
+      "type": "object"
+    },
+    "TournamentView": {
+      "properties": {
+        "giornate": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/MatchRef"
+            },
+            "type": "array"
+          },
+          "title": "Giornate",
+          "type": "array"
+        },
+        "classifica": {
+          "items": {
+            "$ref": "#/$defs/StandingRow"
+          },
+          "title": "Classifica",
+          "type": "array"
+        }
+      },
+      "required": ["giornate", "classifica"],
+      "title": "TournamentView",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "auction_finished": "#/$defs/AuctionFinished",
+      "bid_placed": "#/$defs/BidPlaced",
+      "error": "#/$defs/ErrorMsg",
+      "joined": "#/$defs/Joined",
+      "lot_assigned": "#/$defs/LotAssigned",
+      "lot_skipped": "#/$defs/LotSkipped",
+      "lot_started": "#/$defs/LotStarted",
+      "lot_won": "#/$defs/LotWon",
+      "player_passed": "#/$defs/PlayerPassed",
+      "room_state": "#/$defs/RoomState",
+      "tournament_result": "#/$defs/TournamentResult"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Joined"
+    },
+    {
+      "$ref": "#/$defs/RoomState"
+    },
+    {
+      "$ref": "#/$defs/LotStarted"
+    },
+    {
+      "$ref": "#/$defs/BidPlaced"
+    },
+    {
+      "$ref": "#/$defs/PlayerPassed"
+    },
+    {
+      "$ref": "#/$defs/LotWon"
+    },
+    {
+      "$ref": "#/$defs/LotAssigned"
+    },
+    {
+      "$ref": "#/$defs/LotSkipped"
+    },
+    {
+      "$ref": "#/$defs/AuctionFinished"
+    },
+    {
+      "$ref": "#/$defs/TournamentResult"
+    },
+    {
+      "$ref": "#/$defs/ErrorMsg"
+    }
+  ]
+}
