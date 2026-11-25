@@ -17,6 +17,23 @@
       "title": "AssignRole",
       "type": "object"
     },
+    "Ban": {
+      "properties": {
+        "type": {
+          "const": "ban",
+          "default": "ban",
+          "title": "Type",
+          "type": "string"
+        },
+        "character_id": {
+          "title": "Character Id",
+          "type": "string"
+        }
+      },
+      "required": ["type", "character_id"],
+      "title": "Ban",
+      "type": "object"
+    },
     "Bid": {
       "properties": {
         "type": {
@@ -115,9 +132,16 @@
           "minimum": 1,
           "title": "Chat Threshold",
           "type": "integer"
+        },
+        "bans_per_player": {
+          "default": 0,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Bans Per Player",
+          "type": "integer"
         }
       },
-      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold"],
+      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold", "bans_per_player"],
       "title": "RoomSettings",
       "type": "object"
     },
@@ -167,6 +191,7 @@
   "discriminator": {
     "mapping": {
       "assign_role": "#/$defs/AssignRole",
+      "ban": "#/$defs/Ban",
       "bid": "#/$defs/Bid",
       "join": "#/$defs/Join",
       "pass": "#/$defs/Pass",
@@ -185,6 +210,9 @@
     },
     {
       "$ref": "#/$defs/Start"
+    },
+    {
+      "$ref": "#/$defs/Ban"
     },
     {
       "$ref": "#/$defs/Bid"

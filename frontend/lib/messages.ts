@@ -31,6 +31,7 @@ export type ClientMsg =
   | { type: "join"; name?: string; token?: string | null }
   | { type: "spectate" }
   | { type: "start" }
+  | { type: "ban"; character_id: string }
   | { type: "bid"; amount: number }
   | { type: "pass" }
   | { type: "assign_role"; role: string }

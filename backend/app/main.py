@@ -11,7 +11,7 @@ from app.daily import router as daily_router
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
 from app.db.session import init_db
-from app.engine.models import MatchResult, Team
+from app.engine.models import Character, MatchResult, Team
 from app.engine.simulate import simulate
 from app.quick import router as quick_router
 from app.rooms.manager import RoomError, manager, serve_socket
@@ -166,3 +166,8 @@ async def fake_chat(code: str, req: FakeChatRequest) -> dict[str, int]:
     async with room.lock:
         used = sum(feed_message(room, m.user, m.text) for m in req.messages)
     return {"accepted": used}
+
+
+@app.get("/api/characters")
+def list_characters() -> list[Character]:
+    return list(load_characters().values())

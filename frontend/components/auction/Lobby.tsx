@@ -80,6 +80,20 @@ export default function Lobby({
               onChange={(e) => upd({ role_timeout: num(e.target.value, 8) })}
             />
           </label>
+          <label className="grid gap-1 text-sm font-bold">
+            {it.stanza.ban}
+            <input
+              aria-label={it.stanza.ban}
+              className="min-h-11 rounded border px-2"
+              type="number"
+              min={0}
+              max={3}
+              value={s.bans_per_player}
+              onChange={(e) =>
+                upd({ bans_per_player: Math.min(3, Math.max(0, num(e.target.value, 0))) })
+              }
+            />
+          </label>
           <button
             className="min-h-11 rounded-xl bg-stone-900 px-5 font-bold text-amber-50 sm:col-span-3"
             onClick={() => socket.send({ type: "start" })}

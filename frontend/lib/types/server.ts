@@ -22,13 +22,14 @@ export type PlayerId = string;
 export type Token = string;
 export type Type1 = "room_state";
 export type Code = string;
-export type Phase = "lobby" | "auction" | "tournament";
+export type Phase = "lobby" | "ban" | "auction" | "tournament";
 export type HostId = string;
 export type Budget = number;
 export type Timer = number;
 export type RoleTimeout = number;
 export type Anime = string[];
 export type ChatThreshold = number;
+export type BansPerPlayer = number;
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -57,6 +58,7 @@ export type PlayerId1 = string;
 export type Amount = number;
 export type Deadline1 = number;
 export type LotsLeft = number;
+export type BanDeadline = number | null;
 export type MatchId = string;
 export type A = string;
 export type B = string;
@@ -116,6 +118,8 @@ export interface RoomView {
   players: Players;
   lot: LotView | null;
   lots_left: LotsLeft;
+  bans: Bans;
+  ban_deadline: BanDeadline;
   tournament: TournamentView | null;
   streamer_channel: StreamerChannel;
   server_time: ServerTime;
@@ -126,6 +130,7 @@ export interface RoomSettings {
   role_timeout: RoleTimeout;
   anime: Anime;
   chat_threshold: ChatThreshold;
+  bans_per_player: BansPerPlayer;
 }
 export interface PlayerView {
   id: Id;
@@ -162,6 +167,9 @@ export interface AwaitRole {
   player_id: PlayerId1;
   amount: Amount;
   deadline: Deadline1;
+}
+export interface Bans {
+  [k: string]: Character[];
 }
 export interface TournamentView {
   giornate: Giornate;

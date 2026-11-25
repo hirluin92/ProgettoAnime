@@ -65,7 +65,14 @@
     "totale": "Totale",
     "giornata": "Giornata",
     "vince": "vince",
-    "pareggio": "pareggio"
+    "pareggio": "pareggio",
+    "ban": "Ban a testa",
+    "fasBan": "Fase dei ban",
+    "banDescrizione": "Elimina dal mazzo i personaggi che non vuoi vedere in asta.",
+    "banRimasti": "Ban rimasti",
+    "bannati": "Bannati",
+    "cerca": "Cerca un personaggio",
+    "bannaBtn": "Banna"
   },
   "veloce": {
     "titolo": "Partita veloce",

@@ -28,6 +28,7 @@ from app.rooms.models import (
 )  # fmt: skip
 from app.rooms.protocol import (
     AssignRole,
+    Ban,
     Bid,
     ClientMessage,
     ErrorMsg,
@@ -46,6 +47,7 @@ from app.rooms.store import InMemoryRoomStore, RoomStore
 ROOM_TTL = 30 * 60
 REJOIN_WINDOW = 60
 TICK = 0.1
+BAN_SECONDS = 30
 
 
 class Socket(Protocol):
@@ -69,6 +71,8 @@ class Room:
     phase: str = "lobby"
     auction: Auction | None = None
     tournament: TournamentView | None = None
+    bans: dict[str, list[str]] = field(default_factory=dict)  # id giocatore -> id personaggi
+    ban_deadline: float | None = None
     streamer_channel: str | None = None
     last_activity: float = field(default_factory=now)
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
@@ -79,10 +83,13 @@ class Room:
 
     def view(self) -> RoomView:
         a = self.auction
+        chars = load_characters()
         return RoomView(
             code=self.code, phase=self.phase, host_id=self.host_id,  # type: ignore[arg-type]
             settings=self.settings, players=[p.view() for p in self.players.values()],
             lot=a.view() if a else None, lots_left=a.lots_left if a else 0,
+            bans={pid: [chars[c] for c in ids if c in chars] for pid, ids in self.bans.items()},
+            ban_deadline=self.ban_deadline,
             tournament=self.tournament, streamer_channel=self.streamer_channel,
             server_time=now(),
         )  # fmt: skip
@@ -197,6 +204,8 @@ class RoomManager:
                 for p in room.players.values():
                     p.budget = msg.settings.budget
                 return [RoomState(room=room.view())]
+            case Ban():
+                return self._ban(room, pid, msg.character_id)
             case Bid():
                 return self._auction(room).place_bid(pid, msg.amount, now())
             case Pass():
@@ -223,7 +232,8 @@ class RoomManager:
         chars = list(load_characters().values())
         if room.settings.anime:
             chars = [c for c in chars if c.anime in room.settings.anime]
-        return chars
+        banned = {c for ids in room.bans.values() for c in ids}
+        return [c for c in chars if c.id not in banned]
 
     def _start(self, room: Room) -> list[ServerMessage]:
         if room.phase != "lobby":
@@ -231,13 +241,38 @@ class RoomManager:
         if len(room.players) < MIN_PLAYERS:
             raise RoomError("few_players", "Servono almeno 2 giocatori")
         pool = self.pool(room)
-        if len(room.players) * len(ROLES) > len(pool):
+        humans = [p for p in room.players.values() if not p.is_chat]
+        max_bans = room.settings.bans_per_player * len(humans)
+        if len(room.players) * len(ROLES) > len(pool) - max_bans:
             raise RoomError("few_characters", "Troppi giocatori per i personaggi disponibili")
         for p in room.players.values():
             p.budget = room.settings.budget
+        if room.settings.bans_per_player > 0:
+            room.phase = "ban"
+            room.bans = {p.id: [] for p in humans}
+            room.ban_deadline = now() + BAN_SECONDS
+            return [RoomState(room=room.view())]
+        return self._begin_auction(room)
+
+    def _begin_auction(self, room: Room) -> list[ServerMessage]:
         room.phase = "auction"
-        room.auction = Auction(room.players, room.settings, pool, room.seed)
+        room.ban_deadline = None
+        room.auction = Auction(room.players, room.settings, self.pool(room), room.seed)
         return [RoomState(room=room.view()), *room.auction.start(now())]
+
+    def _ban(self, room: Room, pid: str, character_id: str) -> list[ServerMessage]:
+        if room.phase != "ban" or pid not in room.bans:
+            raise RoomError("not_ban_phase", "Non è il momento dei ban")
+        if len(room.bans[pid]) >= room.settings.bans_per_player:
+            raise RoomError("no_bans_left", "Hai finito i tuoi ban")
+        if character_id not in load_characters():
+            raise RoomError("bad_character", "Personaggio sconosciuto")
+        if any(character_id in ids for ids in room.bans.values()):
+            raise RoomError("already_banned", "Già bannato")
+        room.bans[pid].append(character_id)
+        if all(len(ids) >= room.settings.bans_per_player for ids in room.bans.values()):
+            return self._begin_auction(room)
+        return [RoomState(room=room.view())]
 
     # ---- fine asta e torneo ----
     async def _finish_auction(self, room: Room) -> None:
@@ -316,6 +351,12 @@ class RoomManager:
                 if room.phase == "auction" and room.auction:
                     out += await self._chat_tick(room)
                     out += room.auction.tick(now())
+                elif (
+                    room.phase == "ban"
+                    and room.ban_deadline is not None
+                    and now() >= room.ban_deadline
+                ):
+                    out += self._begin_auction(room)
                 elif room.phase == "lobby":
                     out += self._prune_lobby(room)
                 if out:

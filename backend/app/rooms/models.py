@@ -24,6 +24,7 @@ class RoomSettings(Model):
     role_timeout: int = Field(default=8, ge=1, le=60)
     anime: list[str] = []  # vuoto = tutti
     chat_threshold: int = Field(default=3, ge=1, le=100)
+    bans_per_player: int = Field(default=0, ge=0, le=3)  # 0 = nessuna fase di ban
 
 
 class PlayerView(Model):
@@ -78,12 +79,14 @@ class TournamentView(Model):
 
 class RoomView(Model):
     code: str
-    phase: Literal["lobby", "auction", "tournament"]
+    phase: Literal["lobby", "ban", "auction", "tournament"]
     host_id: str
     settings: RoomSettings
     players: list[PlayerView]
     lot: LotView | None
     lots_left: int
+    bans: dict[str, list[Character]]
+    ban_deadline: float | None
     tournament: TournamentView | None
     streamer_channel: str | None
     server_time: float

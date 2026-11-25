@@ -5,23 +5,26 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type Client = Join | Spectate | Start | Bid | Pass | AssignRole | UpdateSettings;
+export type Client = Join | Spectate | Start | Ban | Bid | Pass | AssignRole | UpdateSettings;
 export type Type = "join";
 export type Name = string;
 export type Token = string | null;
 export type Type1 = "spectate";
 export type Type2 = "start";
-export type Type3 = "bid";
+export type Type3 = "ban";
+export type CharacterId = string;
+export type Type4 = "bid";
 export type Amount = number;
-export type Type4 = "pass";
-export type Type5 = "assign_role";
+export type Type5 = "pass";
+export type Type6 = "assign_role";
 export type Role = string;
-export type Type6 = "update_settings";
+export type Type7 = "update_settings";
 export type Budget = number;
 export type Timer = number;
 export type RoleTimeout = number;
 export type Anime = string[];
 export type ChatThreshold = number;
+export type BansPerPlayer = number;
 
 export interface Join {
   type: Type;
@@ -34,19 +37,23 @@ export interface Spectate {
 export interface Start {
   type: Type2;
 }
-export interface Bid {
+export interface Ban {
   type: Type3;
+  character_id: CharacterId;
+}
+export interface Bid {
+  type: Type4;
   amount: Amount;
 }
 export interface Pass {
-  type: Type4;
+  type: Type5;
 }
 export interface AssignRole {
-  type: Type5;
+  type: Type6;
   role: Role;
 }
 export interface UpdateSettings {
-  type: Type6;
+  type: Type7;
   settings: RoomSettings;
 }
 export interface RoomSettings {
@@ -55,4 +62,5 @@ export interface RoomSettings {
   role_timeout: RoleTimeout;
   anime: Anime;
   chat_threshold: ChatThreshold;
+  bans_per_player: BansPerPlayer;
 }

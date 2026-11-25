@@ -22,6 +22,11 @@ class Start(Model):
     type: Literal["start"] = "start"
 
 
+class Ban(Model):
+    type: Literal["ban"] = "ban"
+    character_id: str
+
+
 class Bid(Model):
     type: Literal["bid"] = "bid"
     amount: int
@@ -42,7 +47,8 @@ class UpdateSettings(Model):
 
 
 ClientMessage = Annotated[
-    Join | Spectate | Start | Bid | Pass | AssignRole | UpdateSettings, Field(discriminator="type")
+    Join | Spectate | Start | Ban | Bid | Pass | AssignRole | UpdateSettings,
+    Field(discriminator="type"),
 ]
 
 # ---- Server -> client ----

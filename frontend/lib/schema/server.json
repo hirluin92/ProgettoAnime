@@ -473,9 +473,16 @@
           "minimum": 1,
           "title": "Chat Threshold",
           "type": "integer"
+        },
+        "bans_per_player": {
+          "default": 0,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Bans Per Player",
+          "type": "integer"
         }
       },
-      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold"],
+      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold", "bans_per_player"],
       "title": "RoomSettings",
       "type": "object"
     },
@@ -502,7 +509,7 @@
           "type": "string"
         },
         "phase": {
-          "enum": ["lobby", "auction", "tournament"],
+          "enum": ["lobby", "ban", "auction", "tournament"],
           "title": "Phase",
           "type": "string"
         },
@@ -533,6 +540,27 @@
         "lots_left": {
           "title": "Lots Left",
           "type": "integer"
+        },
+        "bans": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/Character"
+            },
+            "type": "array"
+          },
+          "title": "Bans",
+          "type": "object"
+        },
+        "ban_deadline": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ban Deadline"
         },
         "tournament": {
           "anyOf": [
@@ -568,6 +596,8 @@
         "players",
         "lot",
         "lots_left",
+        "bans",
+        "ban_deadline",
         "tournament",
         "streamer_channel",
         "server_time"
