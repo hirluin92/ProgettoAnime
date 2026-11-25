@@ -46,9 +46,13 @@ function HpBar({ side, name, value }: { side: "A" | "B"; name: string; value: nu
 export default function BattleScene({
   result,
   autoplay = false,
+  onDone,
+  hideChrome = false,
 }: {
   result: MatchResult;
   autoplay?: boolean;
+  onDone?: () => void;
+  hideChrome?: boolean;
 }) {
   const reduced = useReducedMotion();
   const [speed, setSpeed] = useState(1);
@@ -59,6 +63,11 @@ export default function BattleScene({
   useEffect(() => {
     if (autoplay) void play();
   }, [autoplay, play]);
+
+  useEffect(() => {
+    if (s.phase === "done") onDone?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.phase]);
 
   const bonusText = (e: MatchResult["eventi"][number]) => {
     switch (e.tipo) {
@@ -158,66 +167,70 @@ export default function BattleScene({
         </AnimatePresence>
       </motion.div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button
-          className="min-h-11 rounded-xl bg-stone-900 px-5 font-bold text-amber-50"
-          onClick={() => void play()}
-        >
-          {s.phase === "idle" ? it.battle.combatti : it.battle.rigioca}
-        </button>
-        <button className="min-h-11 rounded-xl border-2 px-5 font-bold" onClick={skip}>
-          {it.battle.salta}
-        </button>
-        <button
-          className="min-h-11 rounded-xl border-2 px-5 font-bold"
-          aria-pressed={speed === 2}
-          onClick={() => setSpeed(speed === 1 ? 2 : 1)}
-        >
-          {it.battle.velocita}
-        </button>
-        <button
-          className="min-h-11 rounded-xl border-2 px-5 font-bold"
-          aria-pressed={sound}
-          onClick={() => setSound(!sound)}
-        >
-          {it.battle.suono}
-        </button>
-        <span className="text-sm opacity-70">Seed #{result.seed}</span>
-      </div>
+      {!hideChrome && (
+        <>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              className="min-h-11 rounded-xl bg-stone-900 px-5 font-bold text-amber-50"
+              onClick={() => void play()}
+            >
+              {s.phase === "idle" ? it.battle.combatti : it.battle.rigioca}
+            </button>
+            <button className="min-h-11 rounded-xl border-2 px-5 font-bold" onClick={skip}>
+              {it.battle.salta}
+            </button>
+            <button
+              className="min-h-11 rounded-xl border-2 px-5 font-bold"
+              aria-pressed={speed === 2}
+              onClick={() => setSpeed(speed === 1 ? 2 : 1)}
+            >
+              {it.battle.velocita}
+            </button>
+            <button
+              className="min-h-11 rounded-xl border-2 px-5 font-bold"
+              aria-pressed={sound}
+              onClick={() => setSound(!sound)}
+            >
+              {it.battle.suono}
+            </button>
+            <span className="text-sm opacity-70">Seed #{result.seed}</span>
+          </div>
 
-      {s.phase === "done" && (
-        <div data-testid="result" className="mt-4 rounded-2xl border-2 p-4">
-          <h2 className="text-xl font-black">
-            {it.battle.vince} {result.squadre[result.vincitore].nome} · {result.totali.A} a{" "}
-            {result.totali.B}
-          </h2>
-          <table className="mt-2 w-full text-sm">
-            <thead>
-              <tr>
-                <th className="text-left">{it.battle.voce}</th>
-                <th>{A.nome}</th>
-                <th>{B.nome}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(["base", "ruolo", "firma", "forma", "counter", "duo"] as const).map((k) => (
-                <tr key={k} className="text-center">
-                  <td className="text-left capitalize">{k}</td>
-                  <td>{result.dettaglio.A[k]}</td>
-                  <td>{result.dettaglio.B[k]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          {s.phase === "done" && (
+            <div data-testid="result" className="mt-4 rounded-2xl border-2 p-4">
+              <h2 className="text-xl font-black">
+                {it.battle.vince} {result.squadre[result.vincitore].nome} · {result.totali.A} a{" "}
+                {result.totali.B}
+              </h2>
+              <table className="mt-2 w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="text-left">{it.battle.voce}</th>
+                    <th>{A.nome}</th>
+                    <th>{B.nome}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(["base", "ruolo", "firma", "forma", "counter", "duo"] as const).map((k) => (
+                    <tr key={k} className="text-center">
+                      <td className="text-left capitalize">{k}</td>
+                      <td>{result.dettaglio.A[k]}</td>
+                      <td>{result.dettaglio.B[k]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <ol className="mt-4 max-h-72 overflow-auto text-sm" aria-label={it.battle.cronaca}>
+            {s.log.map((e, i) => (
+              <li key={i} className="border-b border-dashed py-1">
+                {bonusText(e)}
+              </li>
+            ))}
+          </ol>
+        </>
       )}
-      <ol className="mt-4 max-h-72 overflow-auto text-sm" aria-label={it.battle.cronaca}>
-        {s.log.map((e, i) => (
-          <li key={i} className="border-b border-dashed py-1">
-            {bonusText(e)}
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }

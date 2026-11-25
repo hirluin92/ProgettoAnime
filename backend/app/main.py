@@ -102,12 +102,12 @@ class CreatedRoom(BaseModel):
 
 
 @app.post("/api/rooms")
-def create_room(req: CreateRoomRequest) -> CreatedRoom:
+async def create_room(req: CreateRoomRequest) -> CreatedRoom:
     try:
         room, host = manager.create_room(req.name, req.streamer_channel, req.chat_threshold)
     except RoomError as e:
         raise HTTPException(409, e.message) from e
-    manager.ensure_loop_later(room)
+    manager.start_chat(room)
     return CreatedRoom(code=room.code, player_id=host.id, token=host.token)
 
 
@@ -138,3 +138,27 @@ async def ws_room(ws: WebSocket, code: str) -> None:
         await ws.close()
         return
     await serve_socket(room, ws, first)
+
+
+class FakeChatMessage(BaseModel):
+    user: str = Field(max_length=40)
+    text: str = Field(max_length=500)
+
+
+class FakeChatRequest(BaseModel):
+    messages: list[FakeChatMessage] = Field(max_length=500)
+
+
+@app.post("/api/dev/fake-chat/{code}")
+async def fake_chat(code: str, req: FakeChatRequest) -> dict[str, int]:
+    """Simulatore di chat per provare la modalità streamer senza un canale vero."""
+    if os.environ.get("DEV_TOOLS") != "1":
+        raise HTTPException(404, "non disponibile")
+    room = manager.get(code)
+    if room is None:
+        raise HTTPException(404, "stanza non trovata")
+    from app.twitch.votes import feed_message
+
+    async with room.lock:
+        used = sum(feed_message(room, m.user, m.text) for m in req.messages)
+    return {"accepted": used}

@@ -71,5 +71,9 @@
     "costo": "Costo",
     "rigioca": "Gioca ancora",
     "calcolo": "Si prepara lo scontro…"
+  },
+  "overlay": {
+    "votaInChat": "Scrivi in chat: !offro N",
+    "inAttesa": "In attesa dell'asta · stanza"
   }
 }

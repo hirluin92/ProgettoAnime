@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import os
 import secrets
 from dataclasses import dataclass, field
 from typing import Any, Protocol
@@ -286,8 +287,21 @@ class RoomManager:
             room.spectators.append(ws)
             await room.send(ws, RoomState(room=room.view()))
 
-    def ensure_loop_later(self, room: Room) -> None:
-        """Il ciclo parte al primo collegamento (serve un event loop attivo)."""
+    def start_chat(self, room: Room) -> None:
+        """Stanza streamer: aggrega i voti della chat e (se abilitato) legge Twitch."""
+        if not room.streamer_channel or "chat_votes" in room.extras:
+            return
+        from app.twitch.chat import TwitchChatReader
+        from app.twitch.votes import ChatVotes, feed_message, make_chat_tick
+
+        votes = ChatVotes(room.settings.chat_threshold)
+        room.extras["chat_votes"] = votes
+        room.extras["chat_tick"] = make_chat_tick(votes)
+        if os.environ.get("TWITCH_READER", "1") == "1":
+            reader = TwitchChatReader(room.streamer_channel, lambda u, t: feed_message(room, u, t))
+            room.extras["chat_reader"] = reader
+            reader.start()
+        self.ensure_loop(room)
 
     # ---- ciclo della stanza ----
     def ensure_loop(self, room: Room) -> None:
@@ -353,6 +367,9 @@ class RoomManager:
             self.store.remove(r.code)
             if r.task:
                 r.task.cancel()
+            reader = r.extras.get("chat_reader")
+            if reader:
+                reader.stop()
         return len(expired)
 
 
