@@ -19,11 +19,14 @@ if config.config_file_name is not None:
 import os
 
 from app.db.models import Base
+from app.db.session import normalize_url
 
 target_metadata = Base.metadata
 config.set_main_option(
     "sqlalchemy.url",
-    os.environ.get("DATABASE_URL", "postgresql+psycopg://anime:anime@localhost:5432/anime"),
+    normalize_url(
+        os.environ.get("DATABASE_URL") or "postgresql+psycopg://anime:anime@localhost:5432/anime"
+    ),
 )
 
 # other values from the config, defined by the needs of env.py,
