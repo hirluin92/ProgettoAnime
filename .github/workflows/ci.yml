@@ -23,5 +23,7 @@ jobs:
       - run: npm run format
       - run: npx tsc --noEmit
       - run: npm test
+      - uses: astral-sh/setup-uv@v5
+      - run: cd ../backend && uv sync
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
