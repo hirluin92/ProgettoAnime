@@ -12,6 +12,7 @@ from app.db import repo
 from app.db.session import init_db
 from app.engine.models import MatchResult, Team
 from app.engine.simulate import simulate
+from app.quick import router as quick_router
 from app.rooms.manager import RoomError, manager, serve_socket
 from app.rooms.protocol import ClientMessage, ErrorMsg, Join, Spectate
 
@@ -30,6 +31,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(quick_router)
 
 
 @app.get("/health")

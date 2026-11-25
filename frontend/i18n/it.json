@@ -63,5 +63,13 @@
     "giornata": "Giornata",
     "vince": "vince",
     "pareggio": "pareggio"
+  },
+  "veloce": {
+    "titolo": "Partita veloce",
+    "scegli": "Scegli il",
+    "speso": "Speso",
+    "costo": "Costo",
+    "rigioca": "Gioca ancora",
+    "calcolo": "Si prepara lo scontro…"
   }
 }
