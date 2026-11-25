@@ -1,0 +1,17 @@
+# Backend su Render (piano free: si addormenta dopo ~15 min senza traffico).
+# Un'istanza sola: lo stato delle stanze è in memoria.
+services:
+  - type: web
+    name: arena-anime-backend
+    runtime: docker
+    dockerContext: backend
+    dockerfilePath: backend/Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://progetto-anime.vercel.app
+      - key: TWITCH_READER
+        value: "1"
