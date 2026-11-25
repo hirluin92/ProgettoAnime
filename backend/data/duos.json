@@ -28,5 +28,65 @@
     "a": "son-goku",
     "b": "son-gohan",
     "nome": "Padre e figlio"
+  },
+  {
+    "a": "itachi-uchiha",
+    "b": "sasuke-uchiha",
+    "nome": "Fratelli Uchiha"
+  },
+  {
+    "a": "minato-namikaze",
+    "b": "naruto-uzumaki",
+    "nome": "Padre e figlio"
+  },
+  {
+    "a": "monkey-d-luffy",
+    "b": "portgas-d-ace",
+    "nome": "Fratelli di mare"
+  },
+  {
+    "a": "roronoa-zoro",
+    "b": "sanji",
+    "nome": "Rivali della ciurma"
+  },
+  {
+    "a": "vegeta",
+    "b": "trunks",
+    "nome": "Padre e figlio saiyan"
+  },
+  {
+    "a": "kyojuro-rengoku",
+    "b": "tanjiro-kamado",
+    "nome": "Maestro e allievo"
+  },
+  {
+    "a": "nezuko-kamado",
+    "b": "tanjiro-kamado",
+    "nome": "Fratello e sorella"
+  },
+  {
+    "a": "satoru-gojo",
+    "b": "yuji-itadori",
+    "nome": "Maestro e allievo"
+  },
+  {
+    "a": "kento-nanami",
+    "b": "yuji-itadori",
+    "nome": "Compagni di missione"
+  },
+  {
+    "a": "hinata-hyuga",
+    "b": "naruto-uzumaki",
+    "nome": "Sguardo e promessa"
+  },
+  {
+    "a": "monkey-d-luffy",
+    "b": "sabo",
+    "nome": "Fratelli di mare"
+  },
+  {
+    "a": "toji-fushiguro",
+    "b": "megumi-fushiguro",
+    "nome": "Padre e figlio"
   }
 ]

@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, TypeAdapter
 
+from app.daily import router as daily_router
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
 from app.db.session import init_db
@@ -33,6 +34,7 @@ app.add_middleware(
 )
 
 app.include_router(quick_router)
+app.include_router(daily_router)
 
 
 @app.get("/health")

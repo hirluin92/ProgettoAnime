@@ -89,9 +89,14 @@ def get_options(seed: int | None = None) -> QuickOptions:
 
 @router.post("/play")
 def play(req: PlayRequest) -> PlayResponse:
-    opts = build_options(req.seed)
+    return run_quick(req.seed, req.picks)
+
+
+def run_quick(seed: int, pick_ids: list[str]) -> PlayResponse:
+    """Valida le scelte, fa il draft della CPU e simula lo scontro (salvato nel database)."""
+    opts = build_options(seed)
     picks: list[Character] = []
-    for role, cid in zip(ROLES, req.picks, strict=True):
+    for role, cid in zip(ROLES, pick_ids, strict=True):
         match = [c for c in opts[role] if c.id == cid]
         if not match:
             raise HTTPException(422, f"{cid} non è tra le opzioni del ruolo {role}")
@@ -101,11 +106,11 @@ def play(req: PlayRequest) -> PlayResponse:
     spent = sum(cost_of(c.rating) for c in picks)
     if spent > BUDGET:
         raise HTTPException(422, f"budget superato: {spent} su {BUDGET}")
-    cpu, cpu_spent = cpu_draft(req.seed)
+    cpu, cpu_spent = cpu_draft(seed)
     result = simulate(
         Team(nome="Tu", members=picks),
         Team(nome="CPU", members=cpu),
-        req.seed * 7 + 1,
+        seed * 7 + 1,
         load_ruleset(),
     )
     return PlayResponse(id=repo.save_match(result), result=result, spent=spent, cpu_spent=cpu_spent)

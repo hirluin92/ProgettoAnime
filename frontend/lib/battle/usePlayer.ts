@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MatchResult } from "../types/match";
+import { commentary } from "./commentary";
 import { BASE_MS, timeScale } from "./schedule";
 import { beep } from "./sound";
 
@@ -32,6 +33,7 @@ export interface PlayerState {
   loser: Side | null;
   log: Ev[];
   round: string;
+  caption: string;
 }
 
 const INITIAL: PlayerState = {
@@ -47,6 +49,7 @@ const INITIAL: PlayerState = {
   loser: null,
   log: [],
   round: "",
+  caption: "",
 };
 
 interface Options {
@@ -99,10 +102,10 @@ export function useBattlePlayer(result: MatchResult, opts: Options) {
     const win = result.vincitore;
 
     patch({ ...INITIAL, phase: "playing" });
-    for (const e of result.eventi) {
+    for (const [n, e] of result.eventi.entries()) {
       if (!alive()) return;
       const base = BASE_MS[e.tipo];
-      patch((s) => ({ log: [...s.log, e] }));
+      patch((s) => ({ log: [...s.log, e], caption: commentary(result, e, n) }));
       switch (e.tipo) {
         case "ingresso":
           snd(330, 0.15);
@@ -182,6 +185,11 @@ export function useBattlePlayer(result: MatchResult, opts: Options) {
       loser: other(result.vincitore),
       log: result.eventi,
       round: "finale",
+      caption: commentary(
+        result,
+        result.eventi[result.eventi.length - 1],
+        result.eventi.length - 1,
+      ),
     });
   }, [result]);
 

@@ -8,7 +8,8 @@
     "canale": "Canale Twitch",
     "codice": "Codice stanza",
     "entraCodice": "Entra con un codice",
-    "partitaVeloce": "Partita veloce: draft da solo contro la CPU"
+    "partitaVeloce": "Partita veloce: draft da solo contro la CPU",
+    "sfidaGiorno": "Sfida del giorno con classifica"
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -100,5 +101,14 @@
     "rimozioneTesto": "Se sei un titolare dei diritti e vuoi la rimozione di un contenuto, scrivi a",
     "cookie": "Cookie",
     "cookieTesto": "Il gioco salva nel tuo browser solo il necessario (ad esempio il token per rientrare in una stanza). Nessuno script di analisi o pubblicità viene caricato senza il tuo consenso."
+  },
+  "sfida": {
+    "titolo": "Sfida del giorno",
+    "descrizione": "Stesse opzioni per tutti, un solo tentativo al giorno per nome. Il punteggio è il totale della squadra, più 100 se batti la CPU.",
+    "gioca": "Inizia la sfida",
+    "classifica": "Classifica di oggi",
+    "vuota": "Nessuno ha ancora giocato oggi.",
+    "punteggio": "Punteggio",
+    "posizione": "Posizione"
   }
 }

@@ -167,6 +167,16 @@ export default function BattleScene({
         </AnimatePresence>
       </motion.div>
 
+      {s.caption && (
+        <p
+          data-testid="commentary"
+          aria-live="polite"
+          className="mt-3 rounded-xl bg-black/70 px-4 py-2 text-center text-base font-bold text-amber-50"
+        >
+          {s.caption}
+        </p>
+      )}
+
       {!hideChrome && (
         <>
           <div className="mt-3 flex flex-wrap items-center gap-2">

@@ -105,6 +105,9 @@ export default function Home() {
       <Link href="/veloce" className="flex min-h-11 items-center rounded-2xl border p-4 font-bold">
         {it.home.partitaVeloce}
       </Link>
+      <Link href="/sfida" className="flex min-h-11 items-center rounded-2xl border p-4 font-bold">
+        {it.home.sfidaGiorno}
+      </Link>
     </main>
   );
 }
