@@ -98,3 +98,16 @@ def test_api_simulate() -> None:
     r = client.post("/api/simulate", json=body)
     assert r.status_code == 200 and r.json() == client.post("/api/simulate", json=body).json()
     assert client.post("/api/simulate", json={**body, "team_a": ["x"] * 7}).status_code == 422
+
+
+def test_match_persistence(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from app.db import repo
+    from app.db.session import configure
+
+    configure(f"sqlite:///{tmp_path / 't.db'}")
+    client = TestClient(app)
+    stored = client.post("/api/dev/random-match").json()
+    got = client.get(f"/api/matches/{stored['id']}")
+    assert got.status_code == 200 and got.json() == stored["result"]
+    assert client.get("/api/matches/nope").status_code == 404
+    assert repo.get_match("nope") is None

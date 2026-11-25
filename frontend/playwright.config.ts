@@ -2,6 +2,17 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  webServer: { command: "npm run dev", url: "http://localhost:3000", reuseExistingServer: true },
+  timeout: 240_000,
+  workers: 1,
+  webServer: [
+    {
+      command: "uv run uvicorn app.main:app --port 8000",
+      cwd: "../backend",
+      url: "http://localhost:8000/health",
+      reuseExistingServer: true,
+      env: { DATABASE_URL: "sqlite:///./e2e.db", DEV_TOOLS: "1" },
+    },
+    { command: "npm run dev", url: "http://localhost:3000", reuseExistingServer: true },
+  ],
   use: { baseURL: "http://localhost:3000" },
 });

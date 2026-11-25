@@ -1,0 +1,369 @@
+{
+  "$defs": {
+    "Attacco": {
+      "properties": {
+        "tipo": {
+          "const": "attacco",
+          "default": "attacco",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "da": {
+          "enum": ["A", "B"],
+          "title": "Da",
+          "type": "string"
+        },
+        "idx": {
+          "title": "Idx",
+          "type": "integer"
+        },
+        "danno": {
+          "title": "Danno",
+          "type": "integer"
+        }
+      },
+      "required": ["tipo", "da", "idx", "danno"],
+      "title": "Attacco",
+      "type": "object"
+    },
+    "Breakdown": {
+      "properties": {
+        "base": {
+          "default": 0,
+          "title": "Base",
+          "type": "integer"
+        },
+        "ruolo": {
+          "default": 0,
+          "title": "Ruolo",
+          "type": "integer"
+        },
+        "firma": {
+          "default": 0,
+          "title": "Firma",
+          "type": "integer"
+        },
+        "forma": {
+          "default": 0,
+          "title": "Forma",
+          "type": "integer"
+        },
+        "counter": {
+          "default": 0,
+          "title": "Counter",
+          "type": "integer"
+        },
+        "duo": {
+          "default": 0,
+          "title": "Duo",
+          "type": "integer"
+        }
+      },
+      "required": ["base", "ruolo", "firma", "forma", "counter", "duo"],
+      "title": "Breakdown",
+      "type": "object"
+    },
+    "Character": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "anime": {
+          "title": "Anime",
+          "type": "string"
+        },
+        "ruolo_firma": {
+          "title": "Ruolo Firma",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "title": "Tags",
+          "type": "array"
+        },
+        "rating": {
+          "maximum": 99,
+          "minimum": 55,
+          "title": "Rating",
+          "type": "integer"
+        },
+        "immagine_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Immagine Url"
+        }
+      },
+      "required": ["id", "nome", "anime", "ruolo_firma", "tags", "rating", "immagine_url"],
+      "title": "Character",
+      "type": "object"
+    },
+    "Combo": {
+      "properties": {
+        "tipo": {
+          "const": "combo",
+          "default": "combo",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "da": {
+          "enum": ["A", "B"],
+          "title": "Da",
+          "type": "string"
+        },
+        "duo": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Duo",
+          "type": "array"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "bonus": {
+          "title": "Bonus",
+          "type": "integer"
+        },
+        "danno": {
+          "title": "Danno",
+          "type": "integer"
+        }
+      },
+      "required": ["tipo", "da", "duo", "nome", "bonus", "danno"],
+      "title": "Combo",
+      "type": "object"
+    },
+    "Counter": {
+      "properties": {
+        "tipo": {
+          "const": "counter",
+          "default": "counter",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "da": {
+          "enum": ["A", "B"],
+          "title": "Da",
+          "type": "string"
+        },
+        "rel": {
+          "title": "Rel",
+          "type": "string"
+        },
+        "bonus": {
+          "title": "Bonus",
+          "type": "integer"
+        },
+        "danno": {
+          "title": "Danno",
+          "type": "integer"
+        }
+      },
+      "required": ["tipo", "da", "rel", "bonus", "danno"],
+      "title": "Counter",
+      "type": "object"
+    },
+    "Duello": {
+      "properties": {
+        "tipo": {
+          "const": "duello",
+          "default": "duello",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "ruolo": {
+          "title": "Ruolo",
+          "type": "string"
+        },
+        "idx": {
+          "title": "Idx",
+          "type": "integer"
+        }
+      },
+      "required": ["tipo", "ruolo", "idx"],
+      "title": "Duello",
+      "type": "object"
+    },
+    "Ingresso": {
+      "properties": {
+        "tipo": {
+          "const": "ingresso",
+          "default": "ingresso",
+          "title": "Tipo",
+          "type": "string"
+        }
+      },
+      "required": ["tipo"],
+      "title": "Ingresso",
+      "type": "object"
+    },
+    "Ko": {
+      "properties": {
+        "tipo": {
+          "const": "ko",
+          "default": "ko",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "da": {
+          "enum": ["A", "B"],
+          "title": "Da",
+          "type": "string"
+        },
+        "danno": {
+          "title": "Danno",
+          "type": "integer"
+        }
+      },
+      "required": ["tipo", "da", "danno"],
+      "title": "Ko",
+      "type": "object"
+    },
+    "Team": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/Character"
+          },
+          "maxItems": 7,
+          "minItems": 7,
+          "title": "Members",
+          "type": "array"
+        }
+      },
+      "required": ["nome", "members"],
+      "title": "Team",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "squadre": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Team"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Squadre",
+      "type": "object"
+    },
+    "potenze": {
+      "additionalProperties": {
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Potenze",
+      "type": "object"
+    },
+    "totali": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Totali",
+      "type": "object"
+    },
+    "dettaglio": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Breakdown"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Dettaglio",
+      "type": "object"
+    },
+    "vincitore": {
+      "enum": ["A", "B"],
+      "title": "Vincitore",
+      "type": "string"
+    },
+    "pareggio": {
+      "title": "Pareggio",
+      "type": "boolean"
+    },
+    "eventi": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "attacco": "#/$defs/Attacco",
+            "combo": "#/$defs/Combo",
+            "counter": "#/$defs/Counter",
+            "duello": "#/$defs/Duello",
+            "ingresso": "#/$defs/Ingresso",
+            "ko": "#/$defs/Ko"
+          },
+          "propertyName": "tipo"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/Ingresso"
+          },
+          {
+            "$ref": "#/$defs/Duello"
+          },
+          {
+            "$ref": "#/$defs/Attacco"
+          },
+          {
+            "$ref": "#/$defs/Counter"
+          },
+          {
+            "$ref": "#/$defs/Combo"
+          },
+          {
+            "$ref": "#/$defs/Ko"
+          }
+        ]
+      },
+      "title": "Eventi",
+      "type": "array"
+    }
+  },
+  "required": [
+    "seed",
+    "squadre",
+    "potenze",
+    "totali",
+    "dettaglio",
+    "vincitore",
+    "pareggio",
+    "eventi"
+  ],
+  "title": "MatchResult",
+  "type": "object"
+}

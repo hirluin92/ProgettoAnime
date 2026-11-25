@@ -81,7 +81,7 @@ def simulate(team_a: Team, team_b: Team, seed: int, rules: Ruleset) -> MatchResu
                         {
                             "tipo": "combo",
                             "da": s,
-                            "duo": (ia, ib),
+                            "duo": [ia, ib],
                             "nome": nome,
                             "bonus": DUO_BONUS,
                             "peso": DUO_BONUS,
@@ -115,5 +115,12 @@ def simulate(team_a: Team, team_b: Team, seed: int, rules: Ruleset) -> MatchResu
         e.pop("peso", None)
         events.append(kinds[e.pop("tipo")](**e))
     return MatchResult(
-        seed=seed, totali=tot, dettaglio=brk, vincitore=win, pareggio=pareggio, eventi=events
+        seed=seed,
+        squadre=teams,
+        potenze=powers,
+        totali=tot,
+        dettaglio=brk,
+        vincitore=win,
+        pareggio=pareggio,
+        eventi=events,
     )
