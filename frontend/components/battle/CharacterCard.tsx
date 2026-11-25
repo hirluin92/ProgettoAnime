@@ -16,6 +16,7 @@ interface Props {
   lungeKey?: number;
   hitKey?: number;
   compact?: boolean;
+  fluid?: boolean;
 }
 
 const SHAPES: Record<string, string> = {
@@ -73,6 +74,7 @@ export default function CharacterCard({
   lungeKey,
   hitKey,
   compact,
+  fluid,
 }: Props) {
   const pal = paletteFor(character.anime);
   const rar = rarity(character.rating);
@@ -83,7 +85,11 @@ export default function CharacterCard({
       key={`${lungeKey ?? 0}-${hitKey ?? 0}`}
       data-testid={side ? `card-${side}` : undefined}
       className={`tcg ${rar.foil ? "tcg-foil" : ""} aspect-[3/4.2] text-white ${
-        compact ? "w-28 text-[11px]" : "w-[min(42vw,230px)] text-sm"
+        compact
+          ? "w-28 text-[11px]"
+          : fluid
+            ? "w-full max-w-[230px] text-sm"
+            : "w-[min(42vw,230px)] text-sm"
       }`}
       style={
         {

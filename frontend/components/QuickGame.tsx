@@ -115,7 +115,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
                 className="grid min-h-11 w-full justify-items-center gap-2 rounded-2xl p-1 transition hover:-translate-y-1 disabled:opacity-40"
                 aria-label={`${o.character.nome}, costo ${o.cost}`}
               >
-                <CharacterCard character={o.character} role={role} />
+                <CharacterCard character={o.character} role={role} fluid />
                 <span className="chip text-gold">
                   {it.veloce.costo} {o.cost}
                 </span>
