@@ -1,0 +1,28 @@
+# Backend su Fly.io. Un'istanza sola: lo stato delle stanze è in memoria.
+# Prima del deploy: fly launch --no-deploy --copy-config, poi fly secrets set DATABASE_URL=... CORS_ORIGINS=...
+app = "arena-anime-backend"
+primary_region = "ams"
+
+[build]
+  dockerfile = "backend/Dockerfile"
+
+[env]
+  PORT = "8080"
+  TWITCH_READER = "1"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = false
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/health"
+    interval = "15s"
+    timeout = "3s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

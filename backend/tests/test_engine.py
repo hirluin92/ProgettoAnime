@@ -111,3 +111,10 @@ def test_match_persistence(tmp_path) -> None:  # type: ignore[no-untyped-def]
     assert got.status_code == 200 and got.json() == stored["result"]
     assert client.get("/api/matches/nope").status_code == 404
     assert repo.get_match("nope") is None
+
+
+def test_dev_endpoints_disabled_without_dev_tools(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    monkeypatch.setenv("DEV_TOOLS", "0")
+    client = TestClient(app)
+    assert client.post("/api/dev/random-match").status_code == 404
+    assert client.post("/api/dev/fake-chat/ABCDE", json={"messages": []}).status_code == 404

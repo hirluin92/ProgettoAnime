@@ -70,6 +70,8 @@ def api_simulate(req: SimulateRequest) -> MatchResult:
 @app.post("/api/dev/random-match")
 def random_match() -> StoredMatch:
     """Scontro tra due squadre casuali, salvato: serve alla pagina /dev/scontro."""
+    if os.environ.get("DEV_TOOLS") != "1":
+        raise HTTPException(404, "non disponibile")
     chars = list(load_characters().values())
     picks = random.sample(chars, 14)
     result = simulate(

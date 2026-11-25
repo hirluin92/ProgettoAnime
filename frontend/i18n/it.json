@@ -30,7 +30,9 @@
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
     "stanzaNonTrovata": "Stanza non trovata o scaduta.",
-    "stanzaScaduta": "La stanza non esiste più o è scaduta."
+    "stanzaScaduta": "La stanza non esiste più o è scaduta.",
+    "paginaNonTrovata": "Pagina non trovata",
+    "tornaHome": "Torna alla home"
   },
   "stanza": {
     "lobby": "Lobby",
@@ -75,5 +77,28 @@
   "overlay": {
     "votaInChat": "Scrivi in chat: !offro N",
     "inAttesa": "In attesa dell'asta · stanza"
+  },
+  "cookie": {
+    "titolo": "Cookie",
+    "testo": "Usiamo solo ciò che serve a far funzionare il gioco. Analisi e pubblicità partono solo se accetti.",
+    "rifiuta": "Rifiuta",
+    "accetta": "Accetta"
+  },
+  "info": {
+    "link": "Info, regole e rimozioni",
+    "titolo": "Info su",
+    "regole": "Regole in breve",
+    "regoleElenco": [
+      "Da 2 a 20 giocatori comprano all'asta i personaggi per 7 ruoli.",
+      "Ogni offerta valida riporta il timer ad almeno 5 secondi e devi tenere almeno 1 per ogni altro slot libero.",
+      "Finita l'asta parte un torneo all'italiana: 3 punti per vittoria, 1 per pareggio.",
+      "Nella stanza streamer la chat di Twitch gioca come squadra scrivendo !offro N."
+    ],
+    "disclaimer": "Disclaimer",
+    "noImmagini": "I nomi dei personaggi sono usati solo a scopo di gioco; il sito non ospita immagini, loghi o artwork ufficiali.",
+    "rimozione": "Richieste di rimozione",
+    "rimozioneTesto": "Se sei un titolare dei diritti e vuoi la rimozione di un contenuto, scrivi a",
+    "cookie": "Cookie",
+    "cookieTesto": "Il gioco salva nel tuo browser solo il necessario (ad esempio il token per rientrare in una stanza). Nessuno script di analisi o pubblicità viene caricato senza il tuo consenso."
   }
 }
