@@ -59,7 +59,7 @@ export default function AuctionView({
         {lot ? (
           <>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold" data-testid="lot-number">
+              <span className="chip text-sm" data-testid="lot-number">
                 {it.stanza.lotto} {lot.number}
               </span>
               {!awaiting && <Countdown deadline={lot.deadline} label={it.stanza.tempo} />}
@@ -67,7 +67,10 @@ export default function AuctionView({
             <div className="flex justify-center" data-testid="lot-card">
               <CharacterCard character={lot.character} />
             </div>
-            <p className="text-center text-lg font-black" data-testid="current-bid">
+            <p
+              className="panel display py-2 text-center text-3xl font-bold text-gold"
+              data-testid="current-bid"
+            >
               {lot.current_bid > 0
                 ? `${lot.current_bid} · ${bidder?.name ?? ""}`
                 : it.stanza.nessunaOfferta}
@@ -84,7 +87,7 @@ export default function AuctionView({
                     key={n}
                     disabled={!canBid || lot.current_bid + n > limit}
                     data-testid={`bid-${n}`}
-                    className="min-h-12 rounded-xl bg-rose-600 font-bold text-white disabled:opacity-40"
+                    className="btn btn-primary min-h-12 px-0"
                     onClick={() => raise(n)}
                   >
                     +{n}
@@ -93,7 +96,7 @@ export default function AuctionView({
                 <button
                   disabled={!canBid || limit <= lot.current_bid}
                   data-testid="bid-max"
-                  className="col-span-2 min-h-12 rounded-xl border-2 font-bold disabled:opacity-40"
+                  className="btn col-span-2 min-h-12"
                   onClick={() => bid(limit)}
                 >
                   {it.stanza.tutto} ({limit})
@@ -101,7 +104,7 @@ export default function AuctionView({
                 <button
                   disabled={!canBid}
                   data-testid="pass"
-                  className="col-span-2 min-h-12 rounded-xl border-2 font-bold disabled:opacity-40"
+                  className="btn col-span-2 min-h-12"
                   onClick={() => socket.send({ type: "pass" })}
                 >
                   {it.stanza.passa}
@@ -109,13 +112,13 @@ export default function AuctionView({
               </div>
             )}
             {myRoleTurn && (
-              <div data-testid="role-picker" className="rounded-xl border-2 border-rose-600 p-3">
+              <div data-testid="role-picker" className="panel pulse-ring border-pink-500 p-3">
                 <p className="mb-2 font-bold">{it.stanza.scegliTuRuolo}</p>
                 <div className="grid grid-cols-2 gap-2">
                   {free.map((r) => (
                     <button
                       key={r}
-                      className="min-h-11 rounded-lg border font-bold"
+                      className="btn"
                       onClick={() => socket.send({ type: "assign_role", role: r })}
                     >
                       {r}
@@ -130,11 +133,11 @@ export default function AuctionView({
               </div>
             )}
             {error && (
-              <p role="alert" className="text-sm text-rose-600">
+              <p role="alert" className="text-sm text-rose-400">
                 {error}
               </p>
             )}
-            <p className="text-xs opacity-60">{it.stanza.scorciatoie}</p>
+            <p className="text-xs muted">{it.stanza.scorciatoie}</p>
           </>
         ) : (
           <p>{it.stanza.inAttesa}</p>
@@ -142,12 +145,12 @@ export default function AuctionView({
       </div>
       <div className="space-y-4">
         <div>
-          <h3 className="mb-2 font-black">{it.stanza.laTuaSquadra}</h3>
+          <h3 className="mb-2 text-xl font-bold">{it.stanza.laTuaSquadra}</h3>
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-7" data-testid="my-team">
             {ROLES.map((r) => (
-              <div key={r} className="rounded-lg border p-2 text-center text-xs">
-                <div className="font-bold">{r}</div>
-                <div className="min-h-8" data-testid={`slot-${r}`}>
+              <div key={r} className="panel p-2 text-center text-xs">
+                <div className="display font-bold tracking-wider muted">{r}</div>
+                <div className="min-h-8 font-bold" data-testid={`slot-${r}`}>
                   {mine?.slots[r]?.nome ?? "+"}
                 </div>
               </div>
@@ -160,7 +163,10 @@ export default function AuctionView({
         <ul className="grid gap-1 text-sm">
           {room.players.map((p) => (
             <li key={p.id} className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full" style={{ background: p.color }} />
+              <span
+                className="h-3.5 w-3.5 rounded-full ring-2 ring-white/40"
+                style={{ background: p.color }}
+              />
               <span className="font-bold">{p.name}</span>
               <span>
                 {it.stanza.budget} {p.budget}
@@ -172,7 +178,7 @@ export default function AuctionView({
             </li>
           ))}
         </ul>
-        <ol className="max-h-40 overflow-auto text-xs opacity-80">
+        <ol className="panel max-h-40 overflow-auto p-3 text-xs muted">
           {feed.map((f, i) => (
             <li key={i}>{f}</li>
           ))}

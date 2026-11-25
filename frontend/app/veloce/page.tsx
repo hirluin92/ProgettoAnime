@@ -18,10 +18,7 @@ export default function Veloce() {
       load={load}
       play={play}
       after={
-        <button
-          className="min-h-11 rounded-xl bg-rose-600 px-5 font-bold text-white"
-          onClick={() => window.location.reload()}
-        >
+        <button className="btn btn-primary" onClick={() => window.location.reload()}>
           {it.veloce.rigioca}
         </button>
       }

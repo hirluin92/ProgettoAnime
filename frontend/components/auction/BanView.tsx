@@ -42,10 +42,10 @@ export default function BanView({
   return (
     <section className="space-y-4" data-testid="ban-phase">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black">{it.stanza.fasBan}</h2>
+        <h2 className="text-3xl font-bold">{it.stanza.fasBan}</h2>
         {room.ban_deadline && <Countdown deadline={room.ban_deadline} />}
       </div>
-      <p className="text-sm opacity-80">{it.stanza.banDescrizione}</p>
+      <p className="text-sm muted">{it.stanza.banDescrizione}</p>
       <p>
         {it.stanza.banRimasti}: <b data-testid="bans-left">{left}</b>
       </p>
@@ -54,7 +54,7 @@ export default function BanView({
           <input
             aria-label={it.stanza.cerca}
             placeholder={it.stanza.cerca}
-            className="min-h-11 w-full rounded border px-3"
+            className="field w-full"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -64,7 +64,7 @@ export default function BanView({
                 <button
                   data-testid="ban-option"
                   disabled={left <= 0 || taken.has(c.id)}
-                  className="min-h-11 w-full rounded-xl border p-2 text-left text-sm font-bold disabled:opacity-40"
+                  className="btn w-full justify-start px-3 text-left text-sm"
                   onClick={() => socket.send({ type: "ban", character_id: c.id })}
                 >
                   {c.nome} <span className="opacity-60">· {c.rating}</span>
@@ -75,12 +75,12 @@ export default function BanView({
         </>
       )}
       {error && (
-        <p role="alert" className="text-rose-600">
+        <p role="alert" className="text-rose-400">
           {error}
         </p>
       )}
       <div>
-        <h3 className="font-black">{it.stanza.bannati}</h3>
+        <h3 className="text-xl font-bold">{it.stanza.bannati}</h3>
         <ul className="text-sm" data-testid="ban-list">
           {Object.entries(room.bans).flatMap(([pid, list]) =>
             list.map((c) => (

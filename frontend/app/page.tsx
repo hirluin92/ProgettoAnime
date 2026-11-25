@@ -3,10 +3,27 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CharacterCard from "@/components/battle/CharacterCard";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { APP_NAME } from "@/lib/constants";
 import { saveToken } from "@/lib/ws";
+
+const HERO: Parameters<typeof CharacterCard>[0]["character"][] = [
+  {
+    nome: "Monkey D. Luffy",
+    anime: "one-piece",
+    tags: ["MELEE", "TRANSFORM", "GIANT"],
+    rating: 93,
+  },
+  { nome: "Satoru Gojo", anime: "jujutsu-kaisen", tags: ["BARRIER", "ENERGY", "AURA"], rating: 97 },
+  {
+    nome: "Tanjiro Kamado",
+    anime: "demon-slayer",
+    tags: ["MELEE", "ELEMENT", "SPEED"],
+    rating: 84,
+  },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -41,73 +58,105 @@ export default function Home() {
   };
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-6">
-      <header>
-        <h1 className="text-4xl font-black">{APP_NAME}</h1>
-        <p className="mt-1 opacity-80">{it.home.sottotitolo}</p>
-      </header>
-      <section className="space-y-3 rounded-2xl border p-4">
-        <h2 className="text-xl font-black">{it.home.titolo}</h2>
-        <input
-          aria-label={it.home.tuoNome}
-          placeholder={it.home.tuoNome}
-          className="min-h-11 w-full rounded border px-3"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={streamer}
-            onChange={(e) => setStreamer(e.target.checked)}
-          />
-          {it.home.stanzaStreamer}
-        </label>
-        {streamer && (
-          <input
-            aria-label={it.home.canale}
-            placeholder={it.home.canale}
-            className="min-h-11 w-full rounded border px-3"
-            value={channel}
-            onChange={(e) => setChannel(e.target.value)}
-          />
-        )}
-        <button
-          className="min-h-11 w-full rounded-xl bg-rose-600 font-bold text-white disabled:opacity-40"
-          disabled={!name.trim() || (streamer && !channel.trim())}
-          onClick={create}
-        >
-          {it.home.creaStanza}
-        </button>
-        <div className="flex gap-2">
-          <input
-            aria-label={it.home.codice}
-            placeholder={it.home.codice}
-            maxLength={5}
-            className="min-h-11 flex-1 rounded border px-3 uppercase"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-          <button
-            className="min-h-11 rounded-xl border-2 px-4 font-bold disabled:opacity-40"
-            disabled={code.trim().length < 5}
-            onClick={join}
-          >
-            {it.home.entraCodice}
-          </button>
+    <main className="mx-auto max-w-6xl px-5 py-10 sm:py-16">
+      <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
+        <div className="space-y-8">
+          <header className="space-y-4">
+            <span className="chip text-cyan-200">⚔ Aste live · Draft · Tornei</span>
+            <h1 className="text-6xl font-bold leading-[0.95] sm:text-7xl">
+              <span className="text-grad">{APP_NAME}</span>
+            </h1>
+            <p className="max-w-md text-lg muted">{it.home.sottotitolo}</p>
+          </header>
+
+          <section className="panel space-y-3 p-5">
+            <h2 className="text-xl font-bold">{it.home.titolo}</h2>
+            <input
+              aria-label={it.home.tuoNome}
+              placeholder={it.home.tuoNome}
+              className="field w-full"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <label className="flex items-center gap-2 text-sm muted">
+              <input
+                type="checkbox"
+                className="h-4 w-4 accent-pink-500"
+                checked={streamer}
+                onChange={(e) => setStreamer(e.target.checked)}
+              />
+              {it.home.stanzaStreamer}
+            </label>
+            {streamer && (
+              <input
+                aria-label={it.home.canale}
+                placeholder={it.home.canale}
+                className="field w-full"
+                value={channel}
+                onChange={(e) => setChannel(e.target.value)}
+              />
+            )}
+            <button
+              className="btn btn-primary w-full text-lg"
+              disabled={!name.trim() || (streamer && !channel.trim())}
+              onClick={create}
+            >
+              {it.home.creaStanza}
+            </button>
+            <div className="flex gap-2 pt-1">
+              <input
+                aria-label={it.home.codice}
+                placeholder={it.home.codice}
+                maxLength={5}
+                className="field min-w-0 flex-1 text-center uppercase tracking-[0.3em]"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <button className="btn" disabled={code.trim().length < 5} onClick={join}>
+                {it.home.entraCodice}
+              </button>
+            </div>
+            {error && (
+              <p role="alert" className="text-rose-400">
+                {error}
+              </p>
+            )}
+          </section>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link
+              href="/veloce"
+              className="panel group flex items-center gap-3 p-4 transition hover:-translate-y-0.5 hover:border-white/30"
+            >
+              <span className="text-3xl">⚡</span>
+              <span className="font-bold leading-snug">{it.home.partitaVeloce}</span>
+            </Link>
+            <Link
+              href="/sfida"
+              className="panel group flex items-center gap-3 p-4 transition hover:-translate-y-0.5 hover:border-white/30"
+            >
+              <span className="text-3xl">🏆</span>
+              <span className="font-bold leading-snug">{it.home.sfidaGiorno}</span>
+            </Link>
+          </div>
         </div>
-        {error && (
-          <p role="alert" className="text-rose-600">
-            {error}
-          </p>
-        )}
-      </section>
-      <Link href="/veloce" className="flex min-h-11 items-center rounded-2xl border p-4 font-bold">
-        {it.home.partitaVeloce}
-      </Link>
-      <Link href="/sfida" className="flex min-h-11 items-center rounded-2xl border p-4 font-bold">
-        {it.home.sfidaGiorno}
-      </Link>
+
+        <div
+          className="relative mx-auto hidden h-[430px] w-full max-w-[460px] lg:block"
+          aria-hidden="true"
+        >
+          <div className="absolute inset-x-6 top-10 h-72 rounded-full bg-fuchsia-600/30 blur-3xl" />
+          <div className="absolute left-0 top-16 -rotate-[10deg]">
+            <CharacterCard character={HERO[2]} role="Danno" />
+          </div>
+          <div className="absolute right-0 top-14 rotate-[9deg]">
+            <CharacterCard character={HERO[0]} role="Capitano" />
+          </div>
+          <div className="absolute left-1/2 top-0 -translate-x-1/2">
+            <CharacterCard character={HERO[1]} role="Supporto" />
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

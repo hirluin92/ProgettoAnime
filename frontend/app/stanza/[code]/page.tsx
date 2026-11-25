@@ -53,24 +53,24 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
 
   if (!started || (!room && errorCode && errorCode !== "room_not_found"))
     return (
-      <main className="mx-auto max-w-md space-y-3 p-6">
-        <h1 className="text-2xl font-black">
+      <main className="mx-auto max-w-md space-y-4 p-6 pt-16">
+        <h1 className="text-4xl font-bold">
           {it.stanza.entra} {code}
         </h1>
         <input
           aria-label={it.home.tuoNome}
           placeholder={it.home.tuoNome}
-          className="min-h-11 w-full rounded border px-3"
+          className="field w-full"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         {error && (
-          <p role="alert" className="text-rose-600">
+          <p role="alert" className="text-rose-400">
             {error}
           </p>
         )}
         <button
-          className="min-h-11 w-full rounded-xl bg-stone-900 font-bold text-amber-50"
+          className="btn btn-primary w-full"
           disabled={!name.trim()}
           onClick={() => {
             useRoom.getState().clearError();
@@ -87,7 +87,10 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
   return (
     <main className="mx-auto max-w-6xl p-4">
       {status === "closed" && (
-        <p role="status" className="mb-2 rounded bg-amber-200 p-2 text-sm text-stone-900">
+        <p
+          role="status"
+          className="mb-3 rounded-xl bg-amber-300 p-2 text-center text-sm font-bold text-stone-900"
+        >
           {it.stanza.riconnessione}
         </p>
       )}

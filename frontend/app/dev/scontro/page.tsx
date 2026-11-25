@@ -11,11 +11,8 @@ export default function DevScontro() {
   const load = async () => setMatch(await api("/api/dev/random-match", { method: "POST" }));
   return (
     <main className="mx-auto max-w-5xl p-4">
-      <h1 className="mb-3 text-3xl font-black">{it.battle.provaTitolo}</h1>
-      <button
-        className="mb-4 min-h-11 rounded-xl bg-stone-900 px-5 font-bold text-amber-50"
-        onClick={load}
-      >
+      <h1 className="mb-3 text-4xl font-bold">{it.battle.provaTitolo}</h1>
+      <button className="btn btn-primary mb-4" onClick={load}>
         {it.battle.nuovaSfida}
       </button>
       {match && (

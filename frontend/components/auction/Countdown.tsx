@@ -19,7 +19,11 @@ export function useSecondsLeft(deadline: number | null): number {
 export default function Countdown({ deadline, label }: { deadline: number; label?: string }) {
   const left = useSecondsLeft(deadline);
   return (
-    <span data-testid="timer" aria-label={label} className="tabular-nums text-3xl font-black">
+    <span
+      data-testid="timer"
+      aria-label={label}
+      className="display tabular-nums text-4xl font-bold text-cyan-200"
+    >
       {left.toFixed(1)}s
     </span>
   );

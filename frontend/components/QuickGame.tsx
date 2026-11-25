@@ -79,10 +79,10 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   if (played)
     return (
       <main className="mx-auto max-w-5xl space-y-3 p-4">
-        <h1 className="text-3xl font-black">{title}</h1>
-        <p className="text-sm">
+        <h1 className="text-4xl font-bold">{title}</h1>
+        <p className="text-sm muted">
           {it.veloce.speso}: {played.spent}/{opts.budget} · CPU: {played.cpu_spent}/{opts.budget} ·{" "}
-          <a className="underline" href={`/partita/${played.id}`}>
+          <a className="underline hover:text-white" href={`/partita/${played.id}`}>
             {it.battle.linkPartita}
           </a>
         </p>
@@ -97,13 +97,13 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const maxCost = opts.budget - spent - (rolesLeft - 1);
   return (
     <main className="mx-auto max-w-5xl space-y-4 p-4">
-      <h1 className="text-3xl font-black">{title}</h1>
+      <h1 className="text-4xl font-bold">{title}</h1>
       {header}
       <p data-testid="step">
         {it.veloce.scegli} <b>{role}</b> ({step + 1}/{opts.roles.length}) · {it.stanza.budget}:{" "}
         <b data-testid="left">{opts.budget - spent}</b>
       </p>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <ul className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {opts.options[role].map((o) => {
           const taken = picks.some((p) => p.character.id === o.character.id);
           return (
@@ -112,11 +112,11 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
                 data-testid="option"
                 disabled={o.cost > maxCost || taken}
                 onClick={() => void choose(o)}
-                className="grid min-h-11 w-full justify-items-center gap-1 rounded-xl p-1 disabled:opacity-40"
+                className="grid min-h-11 w-full justify-items-center gap-2 rounded-2xl p-1 transition hover:-translate-y-1 disabled:opacity-40"
                 aria-label={`${o.character.nome}, costo ${o.cost}`}
               >
                 <CharacterCard character={o.character} role={role} />
-                <span className="font-black">
+                <span className="chip text-gold">
                   {it.veloce.costo} {o.cost}
                 </span>
               </button>

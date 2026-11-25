@@ -32,20 +32,14 @@ export default function CookieBanner() {
       role="dialog"
       aria-label={it.cookie.titolo}
       data-testid="cookie-banner"
-      className="fixed inset-x-2 bottom-2 z-50 mx-auto max-w-xl rounded-2xl border bg-white p-4 text-sm text-stone-900 shadow-xl"
+      className="panel fixed inset-x-2 bottom-2 z-50 mx-auto max-w-xl bg-[#14112a] p-4 text-sm"
     >
       <p>{it.cookie.testo}</p>
       <div className="mt-3 flex gap-2">
-        <button
-          className="min-h-11 flex-1 rounded-xl border-2 font-bold"
-          onClick={() => choose("rejected")}
-        >
+        <button className="btn flex-1" onClick={() => choose("rejected")}>
           {it.cookie.rifiuta}
         </button>
-        <button
-          className="min-h-11 flex-1 rounded-xl bg-stone-900 font-bold text-white"
-          onClick={() => choose("accepted")}
-        >
+        <button className="btn btn-primary flex-1" onClick={() => choose("accepted")}>
           {it.cookie.accetta}
         </button>
       </div>

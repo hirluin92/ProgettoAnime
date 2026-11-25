@@ -21,6 +21,7 @@ export default function Overlay({ params }: { params: Promise<{ code: string }> 
   const socket = useMemo(() => new RoomSocket(code, () => ({ type: "spectate" })), [code]);
 
   useEffect(() => {
+    document.body.classList.add("overlay-mode");
     document.body.style.background = "transparent";
     document.documentElement.style.background = "transparent";
     useRoom.getState().reset();

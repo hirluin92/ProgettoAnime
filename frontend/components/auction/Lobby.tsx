@@ -24,24 +24,23 @@ export default function Lobby({
   const num = (v: string, d: number) => (Number.isFinite(parseInt(v, 10)) ? parseInt(v, 10) : d);
   return (
     <section className="space-y-4">
-      <h2 className="text-2xl font-black">
+      <h2 className="text-3xl font-bold">
         {it.stanza.lobby}{" "}
         <span
           data-testid="room-code"
-          className="rounded bg-stone-200 px-2 font-mono dark:bg-stone-800"
+          className="chip display text-2xl tracking-[0.3em] text-cyan-200"
         >
           {room.code}
         </span>
       </h2>
-      <p className="text-sm opacity-70">{it.stanza.condividi}</p>
+      <p className="text-sm muted">{it.stanza.condividi}</p>
       <ul className="grid gap-2 sm:grid-cols-2" aria-label={it.stanza.giocatori}>
         {room.players.map((p) => (
-          <li
-            key={p.id}
-            data-testid="player"
-            className="flex items-center gap-2 rounded-xl border p-3"
-          >
-            <span className="h-4 w-4 rounded-full" style={{ background: p.color }} />
+          <li key={p.id} data-testid="player" className="panel flex items-center gap-3 p-3">
+            <span
+              className="h-5 w-5 rounded-full ring-2 ring-white/40"
+              style={{ background: p.color }}
+            />
             <span className="font-bold">{p.name}</span>
             {p.id === room.host_id && <span className="text-xs">👑 {it.stanza.host}</span>}
             {!p.connected && <span className="text-xs opacity-60">({it.stanza.assente})</span>}
@@ -49,12 +48,12 @@ export default function Lobby({
         ))}
       </ul>
       {isHost ? (
-        <div className="grid gap-3 rounded-xl border p-4 sm:grid-cols-3">
+        <div className="panel grid gap-3 p-5 sm:grid-cols-3">
           <label className="grid gap-1 text-sm font-bold">
             {it.stanza.budget}
             <input
               aria-label={it.stanza.budget}
-              className="min-h-11 rounded border px-2"
+              className="field"
               type="number"
               value={s.budget}
               onChange={(e) => upd({ budget: num(e.target.value, 50) })}
@@ -64,7 +63,7 @@ export default function Lobby({
             {it.stanza.timer}
             <input
               aria-label={it.stanza.timer}
-              className="min-h-11 rounded border px-2"
+              className="field"
               type="number"
               value={s.timer}
               onChange={(e) => upd({ timer: num(e.target.value, 10) })}
@@ -74,7 +73,7 @@ export default function Lobby({
             {it.stanza.timerRuolo}
             <input
               aria-label={it.stanza.timerRuolo}
-              className="min-h-11 rounded border px-2"
+              className="field"
               type="number"
               value={s.role_timeout}
               onChange={(e) => upd({ role_timeout: num(e.target.value, 8) })}
@@ -84,7 +83,7 @@ export default function Lobby({
             {it.stanza.ban}
             <input
               aria-label={it.stanza.ban}
-              className="min-h-11 rounded border px-2"
+              className="field"
               type="number"
               min={0}
               max={3}
@@ -95,7 +94,7 @@ export default function Lobby({
             />
           </label>
           <button
-            className="min-h-11 rounded-xl bg-stone-900 px-5 font-bold text-amber-50 sm:col-span-3"
+            className="btn btn-primary text-lg sm:col-span-3"
             onClick={() => socket.send({ type: "start" })}
           >
             {it.stanza.avvia}

@@ -22,12 +22,15 @@ export function useReducedMotion(): boolean {
 }
 
 function HpBar({ side, name, value }: { side: "A" | "B"; name: string; value: number }) {
-  const color = side === "A" ? "#2448d8" : "#e2401f";
+  const color =
+    side === "A"
+      ? "linear-gradient(90deg,#35e0ff,#2f6bff)"
+      : "linear-gradient(90deg,#ff8a3d,#ff3d81)";
   return (
     <div className={`grid gap-1 ${side === "B" ? "text-right" : ""}`}>
-      <div className="truncate text-sm font-extrabold">{name}</div>
+      <div className="display truncate text-base font-bold">{name}</div>
       <div
-        className="relative h-5 overflow-hidden rounded-full border-2 border-current bg-black/20"
+        className="relative h-5 overflow-hidden rounded-full border border-white/30 bg-black/50"
         role="progressbar"
         aria-valuenow={value}
         aria-label={name}
@@ -92,12 +95,12 @@ export default function BattleScene({
         key={s.shake}
         animate={s.shake ? { x: [0, -6, 6, -4, 3, 0], y: [0, 3, -3, 2, -1, 0] } : {}}
         transition={{ duration: 0.45 }}
-        className="relative isolate min-h-[380px] overflow-hidden rounded-3xl border-2 border-amber-900/40 bg-amber-100 text-stone-900 dark:bg-stone-900 dark:text-amber-50"
+        className="relative isolate min-h-[380px] overflow-hidden rounded-3xl border border-white/20 bg-[radial-gradient(ellipse_at_50%_0%,rgba(139,92,255,.45),transparent_60%),radial-gradient(ellipse_at_50%_110%,rgba(255,61,129,.35),transparent_55%),linear-gradient(180deg,#120e26,#0a0814)] shadow-[0_20px_60px_rgba(0,0,0,.6)]"
         data-testid="arena"
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-4">
           <HpBar side="A" name={A.nome} value={s.hp.A} />
-          <div className="text-center text-xl font-black">
+          <div className="display text-center text-3xl font-bold text-gold">
             VS
             <small className="block text-xs font-bold opacity-70" data-testid="round">
               {s.round || it.battle.pronto}
@@ -134,7 +137,7 @@ export default function BattleScene({
           {s.floats.map((f) => (
             <motion.div
               key={f.id}
-              className="absolute top-1/3 text-4xl font-black text-yellow-300 [-webkit-text-stroke:2px_#2a1b10]"
+              className="absolute top-1/3 text-5xl font-black text-yellow-300 [-webkit-text-stroke:2px_#2a1b10] drop-shadow-[0_0_12px_rgba(255,200,60,.8)]"
               style={{ left: f.side === "A" ? "25%" : "70%" }}
               initial={{ y: 10, scale: 0.6, opacity: 0 }}
               animate={{ y: -60, scale: 1.15, opacity: [0, 1, 0] }}
@@ -171,7 +174,7 @@ export default function BattleScene({
         <p
           data-testid="commentary"
           aria-live="polite"
-          className="mt-3 rounded-xl bg-black/70 px-4 py-2 text-center text-base font-bold text-amber-50"
+          className="panel mt-3 px-4 py-3 text-center text-base font-bold text-amber-50"
         >
           {s.caption}
         </p>
@@ -180,35 +183,28 @@ export default function BattleScene({
       {!hideChrome && (
         <>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <button
-              className="min-h-11 rounded-xl bg-stone-900 px-5 font-bold text-amber-50"
-              onClick={() => void play()}
-            >
+            <button className="btn btn-primary" onClick={() => void play()}>
               {s.phase === "idle" ? it.battle.combatti : it.battle.rigioca}
             </button>
-            <button className="min-h-11 rounded-xl border-2 px-5 font-bold" onClick={skip}>
+            <button className="btn" onClick={skip}>
               {it.battle.salta}
             </button>
             <button
-              className="min-h-11 rounded-xl border-2 px-5 font-bold"
+              className="btn"
               aria-pressed={speed === 2}
               onClick={() => setSpeed(speed === 1 ? 2 : 1)}
             >
               {it.battle.velocita}
             </button>
-            <button
-              className="min-h-11 rounded-xl border-2 px-5 font-bold"
-              aria-pressed={sound}
-              onClick={() => setSound(!sound)}
-            >
+            <button className="btn" aria-pressed={sound} onClick={() => setSound(!sound)}>
               {it.battle.suono}
             </button>
-            <span className="text-sm opacity-70">Seed #{result.seed}</span>
+            <span className="text-sm muted">Seed #{result.seed}</span>
           </div>
 
           {s.phase === "done" && (
-            <div data-testid="result" className="mt-4 rounded-2xl border-2 p-4">
-              <h2 className="text-xl font-black">
+            <div data-testid="result" className="panel mt-4 p-5">
+              <h2 className="text-3xl font-bold text-gold">
                 {it.battle.vince} {result.squadre[result.vincitore].nome} · {result.totali.A} a{" "}
                 {result.totali.B}
               </h2>
@@ -232,9 +228,12 @@ export default function BattleScene({
               </table>
             </div>
           )}
-          <ol className="mt-4 max-h-72 overflow-auto text-sm" aria-label={it.battle.cronaca}>
+          <ol
+            className="panel mt-4 max-h-72 overflow-auto p-4 text-sm"
+            aria-label={it.battle.cronaca}
+          >
             {s.log.map((e, i) => (
-              <li key={i} className="border-b border-dashed py-1">
+              <li key={i} className="border-b border-dashed border-white/10 py-1.5">
                 {bonusText(e)}
               </li>
             ))}

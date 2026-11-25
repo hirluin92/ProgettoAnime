@@ -53,12 +53,8 @@ export default function Sfida() {
   );
 
   const leaderboard = (
-    <section
-      aria-label={it.sfida.classifica}
-      data-testid="daily-board"
-      className="rounded-xl border p-3"
-    >
-      <h2 className="font-black">
+    <section aria-label={it.sfida.classifica} data-testid="daily-board" className="panel p-4">
+      <h2 className="text-xl font-bold">
         {it.sfida.classifica} · {day}
       </h2>
       <ol className="mt-1 text-sm">
@@ -77,19 +73,19 @@ export default function Sfida() {
 
   if (!started)
     return (
-      <main className="mx-auto max-w-md space-y-3 p-6">
-        <h1 className="text-3xl font-black">{it.sfida.titolo}</h1>
-        <p className="text-sm opacity-80">{it.sfida.descrizione}</p>
+      <main className="mx-auto max-w-md space-y-4 p-6">
+        <h1 className="text-4xl font-bold">{it.sfida.titolo}</h1>
+        <p className="text-sm muted">{it.sfida.descrizione}</p>
         <input
           aria-label={it.home.tuoNome}
           placeholder={it.home.tuoNome}
           maxLength={24}
-          className="min-h-11 w-full rounded border px-3"
+          className="field w-full"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <button
-          className="min-h-11 w-full rounded-xl bg-rose-600 font-bold text-white disabled:opacity-40"
+          className="btn btn-primary w-full"
           disabled={!name.trim()}
           onClick={() => setStarted(true)}
         >
@@ -107,7 +103,7 @@ export default function Sfida() {
       header={leaderboard}
       after={
         result && (
-          <p data-testid="daily-result" className="font-black">
+          <p data-testid="daily-result" className="chip text-lg text-gold">
             {it.sfida.punteggio}: {result.score} · {it.sfida.posizione} {result.rank}
           </p>
         )
