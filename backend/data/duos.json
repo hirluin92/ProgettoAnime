@@ -1,0 +1,32 @@
+[
+  {
+    "a": "naruto-uzumaki",
+    "b": "sasuke-uchiha",
+    "nome": "Rivali eterni"
+  },
+  {
+    "a": "monkey-d-luffy",
+    "b": "roronoa-zoro",
+    "nome": "Capitano e vice"
+  },
+  {
+    "a": "son-goku",
+    "b": "vegeta",
+    "nome": "Rivali saiyan"
+  },
+  {
+    "a": "tanjiro-kamado",
+    "b": "zenitsu-agatsuma",
+    "nome": "Compagni di lama"
+  },
+  {
+    "a": "satoru-gojo",
+    "b": "megumi-fushiguro",
+    "nome": "Maestro e allievo"
+  },
+  {
+    "a": "son-goku",
+    "b": "son-gohan",
+    "nome": "Padre e figlio"
+  }
+]

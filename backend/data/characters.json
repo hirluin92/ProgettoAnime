@@ -1,0 +1,362 @@
+[
+  {
+    "id": "naruto-uzumaki",
+    "nome": "Naruto Uzumaki",
+    "anime": "naruto",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "AURA",
+      "SUMMON"
+    ],
+    "rating": 92
+  },
+  {
+    "id": "sasuke-uchiha",
+    "nome": "Sasuke Uchiha",
+    "anime": "naruto",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "ELEMENT",
+      "SPEED"
+    ],
+    "rating": 91
+  },
+  {
+    "id": "kakashi-hatake",
+    "nome": "Kakashi Hatake",
+    "anime": "naruto",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "ELEMENT",
+      "MELEE",
+      "MOBILITY"
+    ],
+    "rating": 88
+  },
+  {
+    "id": "sakura-haruno",
+    "nome": "Sakura Haruno",
+    "anime": "naruto",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL",
+      "MELEE",
+      "REGEN"
+    ],
+    "rating": 80
+  },
+  {
+    "id": "gaara",
+    "nome": "Gaara",
+    "anime": "naruto",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER",
+      "ELEMENT",
+      "GIANT"
+    ],
+    "rating": 85
+  },
+  {
+    "id": "jiraiya",
+    "nome": "Jiraiya",
+    "anime": "naruto",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "SUMMON",
+      "ELEMENT",
+      "MOBILITY"
+    ],
+    "rating": 87
+  },
+  {
+    "id": "monkey-d-luffy",
+    "nome": "Monkey D. Luffy",
+    "anime": "one-piece",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "TRANSFORM",
+      "GIANT"
+    ],
+    "rating": 93
+  },
+  {
+    "id": "roronoa-zoro",
+    "nome": "Roronoa Zoro",
+    "anime": "one-piece",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "SPEED",
+      "AURA"
+    ],
+    "rating": 90
+  },
+  {
+    "id": "sanji",
+    "nome": "Sanji",
+    "anime": "one-piece",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "ELEMENT",
+      "SPEED"
+    ],
+    "rating": 87
+  },
+  {
+    "id": "nami",
+    "nome": "Nami",
+    "anime": "one-piece",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "ELEMENT",
+      "RANGE",
+      "MOBILITY"
+    ],
+    "rating": 70
+  },
+  {
+    "id": "tony-tony-chopper",
+    "nome": "Tony Tony Chopper",
+    "anime": "one-piece",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL",
+      "TRANSFORM",
+      "MELEE"
+    ],
+    "rating": 72
+  },
+  {
+    "id": "jinbe",
+    "nome": "Jinbe",
+    "anime": "one-piece",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "MELEE",
+      "ELEMENT",
+      "BARRIER"
+    ],
+    "rating": 84
+  },
+  {
+    "id": "son-goku",
+    "nome": "Son Goku",
+    "anime": "dragon-ball",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "ENERGY",
+      "TRANSFORM"
+    ],
+    "rating": 98
+  },
+  {
+    "id": "vegeta",
+    "nome": "Vegeta",
+    "anime": "dragon-ball",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "ENERGY",
+      "MELEE",
+      "AURA"
+    ],
+    "rating": 94
+  },
+  {
+    "id": "piccolo",
+    "nome": "Piccolo",
+    "anime": "dragon-ball",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "ENERGY",
+      "REGEN",
+      "TRANSFORM"
+    ],
+    "rating": 86
+  },
+  {
+    "id": "son-gohan",
+    "nome": "Son Gohan",
+    "anime": "dragon-ball",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "ENERGY",
+      "MELEE",
+      "TRANSFORM"
+    ],
+    "rating": 90
+  },
+  {
+    "id": "crilin",
+    "nome": "Crilin",
+    "anime": "dragon-ball",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "ENERGY",
+      "SPEED",
+      "MELEE"
+    ],
+    "rating": 72
+  },
+  {
+    "id": "majin-bu",
+    "nome": "Majin Bu",
+    "anime": "dragon-ball",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "REGEN",
+      "GIANT",
+      "ENERGY"
+    ],
+    "rating": 91
+  },
+  {
+    "id": "tanjiro-kamado",
+    "nome": "Tanjiro Kamado",
+    "anime": "demon-slayer",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "ELEMENT",
+      "SPEED"
+    ],
+    "rating": 84
+  },
+  {
+    "id": "zenitsu-agatsuma",
+    "nome": "Zenitsu Agatsuma",
+    "anime": "demon-slayer",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "SPEED",
+      "MELEE",
+      "ELEMENT"
+    ],
+    "rating": 80
+  },
+  {
+    "id": "inosuke-hashibira",
+    "nome": "Inosuke Hashibira",
+    "anime": "demon-slayer",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "SPEED",
+      "STEALTH"
+    ],
+    "rating": 78
+  },
+  {
+    "id": "shinobu-kocho",
+    "nome": "Shinobu Kocho",
+    "anime": "demon-slayer",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL",
+      "SPEED",
+      "MELEE"
+    ],
+    "rating": 82
+  },
+  {
+    "id": "gyomei-himejima",
+    "nome": "Gyomei Himejima",
+    "anime": "demon-slayer",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "GIANT",
+      "MELEE",
+      "AURA"
+    ],
+    "rating": 89
+  },
+  {
+    "id": "tengen-uzui",
+    "nome": "Tengen Uzui",
+    "anime": "demon-slayer",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "SPEED",
+      "MELEE",
+      "MOBILITY"
+    ],
+    "rating": 83
+  },
+  {
+    "id": "yuji-itadori",
+    "nome": "Yuji Itadori",
+    "anime": "jujutsu-kaisen",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "SPEED",
+      "REGEN"
+    ],
+    "rating": 82
+  },
+  {
+    "id": "satoru-gojo",
+    "nome": "Satoru Gojo",
+    "anime": "jujutsu-kaisen",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "BARRIER",
+      "ENERGY",
+      "AURA"
+    ],
+    "rating": 97
+  },
+  {
+    "id": "megumi-fushiguro",
+    "nome": "Megumi Fushiguro",
+    "anime": "jujutsu-kaisen",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "SUMMON",
+      "BARRIER",
+      "STEALTH"
+    ],
+    "rating": 83
+  },
+  {
+    "id": "nobara-kugisaki",
+    "nome": "Nobara Kugisaki",
+    "anime": "jujutsu-kaisen",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "RANGE",
+      "ENERGY",
+      "MELEE"
+    ],
+    "rating": 76
+  },
+  {
+    "id": "ryomen-sukuna",
+    "nome": "Ryomen Sukuna",
+    "anime": "jujutsu-kaisen",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "ENERGY",
+      "MELEE",
+      "AURA"
+    ],
+    "rating": 96
+  },
+  {
+    "id": "maki-zenin",
+    "nome": "Maki Zenin",
+    "anime": "jujutsu-kaisen",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "MELEE",
+      "SPEED",
+      "MOBILITY"
+    ],
+    "rating": 79
+  }
+]
