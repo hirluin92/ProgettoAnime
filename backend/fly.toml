@@ -4,7 +4,7 @@ app = "arena-anime-backend"
 primary_region = "ams"
 
 [build]
-  dockerfile = "backend/Dockerfile"
+  dockerfile = "Dockerfile"
 
 [env]
   PORT = "8080"
