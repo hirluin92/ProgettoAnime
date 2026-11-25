@@ -20,7 +20,7 @@ def database_url() -> str:
     return normalize_url(os.environ.get("DATABASE_URL", "sqlite:///./local.db"))
 
 
-_engine = create_engine(database_url())
+_engine = create_engine(database_url(), pool_pre_ping=True, pool_recycle=240)
 _factory = sessionmaker(_engine, expire_on_commit=False)
 
 
@@ -29,7 +29,10 @@ def configure(url: str) -> None:
     global _engine, _factory
     url = normalize_url(url)
     _engine = create_engine(
-        url, connect_args={"check_same_thread": False} if url.startswith("sqlite") else {}
+        url,
+        connect_args={"check_same_thread": False} if url.startswith("sqlite") else {},
+        pool_pre_ping=True,
+        pool_recycle=240,
     )
     _factory = sessionmaker(_engine, expire_on_commit=False)
     init_db()

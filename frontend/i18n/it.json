@@ -33,7 +33,8 @@
     "stanzaNonTrovata": "Stanza non trovata o scaduta.",
     "stanzaScaduta": "La stanza non esiste più o è scaduta.",
     "paginaNonTrovata": "Pagina non trovata",
-    "tornaHome": "Torna alla home"
+    "tornaHome": "Torna alla home",
+    "riprova": "Riprova"
   },
   "stanza": {
     "lobby": "Lobby",
@@ -80,7 +81,11 @@
     "speso": "Speso",
     "costo": "Costo",
     "rigioca": "Gioca ancora",
-    "calcolo": "Si prepara lo scontro…"
+    "calcolo": "Si prepara lo scontro…",
+    "squadra": "La tua squadra",
+    "vuoto": "Libero",
+    "ora": "Ora",
+    "passaSopra": "Passa sopra una carta per ingrandirla"
   },
   "overlay": {
     "votaInChat": "Scrivi in chat: !offro N",

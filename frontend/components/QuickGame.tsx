@@ -70,8 +70,13 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
 
   if (error)
     return (
-      <main className="p-6" role="alert">
-        {error}
+      <main className="mx-auto max-w-md p-6 pt-16">
+        <div role="alert" className="panel space-y-4 p-6 text-center">
+          <p className="text-lg font-bold">{error}</p>
+          <button className="btn btn-primary" onClick={() => window.location.reload()}>
+            {it.errori.riprova}
+          </button>
+        </div>
       </main>
     );
   if (!opts) return <main className="p-6">{it.stanza.connessione}</main>;
@@ -99,11 +104,12 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     <main className="mx-auto max-w-5xl space-y-4 p-4">
       <h1 className="text-4xl font-bold">{title}</h1>
       {header}
+      <p className="text-xs muted">{it.veloce.passaSopra}</p>
       <p data-testid="step">
         {it.veloce.scegli} <b>{role}</b> ({step + 1}/{opts.roles.length}) · {it.stanza.budget}:{" "}
         <b data-testid="left">{opts.budget - spent}</b>
       </p>
-      <ul className="grid grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
         {opts.options[role].map((o) => {
           const taken = picks.some((p) => p.character.id === o.character.id);
           return (
@@ -112,7 +118,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
                 data-testid="option"
                 disabled={o.cost > maxCost || taken}
                 onClick={() => void choose(o)}
-                className="grid min-h-11 w-full justify-items-center gap-2 rounded-2xl p-1 transition hover:-translate-y-1 disabled:opacity-40"
+                className="relative grid min-h-11 w-full justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 hover:scale-110 focus-visible:z-20 focus-visible:scale-110 disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:scale-100"
                 aria-label={`${o.character.nome}, costo ${o.cost}`}
               >
                 <CharacterCard character={o.character} role={role} fluid />
@@ -124,6 +130,39 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           );
         })}
       </ul>
+      <section aria-label={it.veloce.squadra} data-testid="recap" className="panel p-4">
+        <h2 className="mb-3 text-xl font-bold">{it.veloce.squadra}</h2>
+        <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+          {opts.roles.map((r, i) => {
+            const pick = picks[i];
+            const current = i === step;
+            return (
+              <li
+                key={r}
+                data-testid={pick ? "recap-filled" : "recap-empty"}
+                className={`grid justify-items-center gap-1 rounded-xl p-2 text-center ${
+                  pick
+                    ? ""
+                    : current
+                      ? "border-2 border-dashed border-pink-400 bg-pink-500/10"
+                      : "border border-dashed border-white/20"
+                }`}
+              >
+                {pick ? (
+                  <CharacterCard character={pick.character} role={r} fluid />
+                ) : (
+                  <div className="grid aspect-[3/4.2] w-full max-w-[230px] place-items-center rounded-xl text-xs">
+                    <div>
+                      <div className="display text-base font-bold">{r}</div>
+                      <div className="muted">{current ? it.veloce.ora : it.veloce.vuoto}</div>
+                    </div>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </section>
     </main>
   );
 }
