@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipo scontro animato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: arcade da arena, rumoroso ma ordinato, in italiano
+   IDEA: la sabbia del colosseo vista dalla tribuna: due squadre, una pista, un tabellone
+   PICTURE: l'arena stessa, con due carte giganti che si scontrano e barre vita da picchiaduro
+   COLOUR and TYPE: sabbia + inchiostro, cobalto vs vermiglio, giallo limone per i colpi; Dela Gothic One + M PLUS Rounded
+   LAYOUT: arena in cima, comandi sotto, poi rose, cronaca e calcolo del server */
+:root{color-scheme:light dark;
+--bg:light-dark(#efe2c6,#1d1610);--ink:light-dark(#2a1b10,#f1e4c8);--sand:light-dark(#e3cfa6,#2b2117);
+--muted:light-dark(#6e5640,#b7a280);--line:light-dark(#cbb28a,#45372a);
+--a:#2448d8;--b:#e2401f;--hit:#f5de3a;--panel:light-dark(#f7eedb,#251c14)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "M PLUS Rounded 1c",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3vw,40px) max(4vw,14px)}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,.disp{font-family:"Dela Gothic One",Impact,sans-serif;font-weight:400;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.4vw,46px)}
+h2{font-size:22px;margin-bottom:12px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:64ch}
+/* arena */
+.arena{position:relative;margin-top:18px;border-radius:22px;overflow:hidden;
+background:radial-gradient(120% 80% at 50% 110%,var(--sand) 0 55%,transparent 56%),
+repeating-linear-gradient(90deg,transparent 0 46px,rgb(0 0 0/.04) 46px 48px),var(--panel);
+border:2px solid var(--line);min-height:440px;display:grid;grid-template-rows:auto 1fr;isolation:isolate}
+.hud{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center;padding:16px}
+.hp{display:grid;gap:6px}
+.hp .nm{font-family:"Dela Gothic One";font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hp.r{text-align:right}
+.bar{height:20px;border-radius:10px;background:rgb(0 0 0/.18);border:2px solid var(--ink);overflow:hidden;position:relative}
+.bar i{position:absolute;inset:0;transform-origin:left;transition:transform .35s ease-out;border-radius:7px}
+.bar .ghost{background:var(--hit);transition-duration:.9s;transition-delay:.25s}
+.hp.r .bar i{transform-origin:right}
+#hpA .fill{background:var(--a)}#hpB .fill{background:var(--b)}
+.vs{font-family:"Dela Gothic One";font-size:22px;text-align:center}
+.vs small{display:block;font:700 12px "M PLUS Rounded 1c";color:var(--muted)}
+.stage{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;justify-items:center;padding:8px 16px 28px}
+.card{width:min(38vw,210px);aspect-ratio:3/4.1;border-radius:18px;padding:12px;color:#fff;position:relative;
+display:grid;grid-template-rows:auto 1fr auto;box-shadow:0 14px 0 -4px rgb(0 0 0/.25),0 22px 30px -10px rgb(0 0 0/.45);
+border:3px solid #fff;transition:opacity .3s,transform .3s}
+.card.A{background:linear-gradient(160deg,#4d6dff,var(--a) 55%,#132a8f)}
+.card.B{background:linear-gradient(200deg,#ff7a58,var(--b) 55%,#8f1f0c)}
+.card .top{display:flex;justify-content:space-between;align-items:start;gap:6px;font-weight:800;font-size:13px}
+.card .rt{font-family:"Dela Gothic One";font-size:28px;line-height:1}
+.card svg{width:100%;height:100%;max-height:120px}
+.card .nm{font-family:"Dela Gothic One";font-size:clamp(14px,2.4vw,18px);line-height:1.1}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tags span{font:800 10px/1 "M PLUS Rounded 1c";padding:4px 6px;border-radius:6px;background:rgb(255 255 255/.22)}
+.card.idle{opacity:.35;transform:scale(.92)}
+.lungeA{animation:lungeA .45s ease-in-out}.lungeB{animation:lungeB .45s ease-in-out}
+@keyframes lungeA{45%{transform:translateX(38%) rotate(5deg) scale(1.06)}}
+@keyframes lungeB{45%{transform:translateX(-38%) rotate(-5deg) scale(1.06)}}
+.hit{animation:hit .4s}
+@keyframes hit{25%{transform:translateX(-8px);filter:brightness(2.2)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(6px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
+.fx{position:absolute;inset:0;pointer-events:none;z-index:3}
+.dmg{position:absolute;font-family:"Dela Gothic One";font-size:34px;color:var(--hit);-webkit-text-stroke:2px #2a1b10;paint-order:stroke;animation:rise .9s ease-out forwards}
+@keyframes rise{0%{transform:translateY(10px) scale(.6);opacity:0}25%{transform:translateY(-10px) scale(1.25);opacity:1}100%{transform:translateY(-70px) scale(1);opacity:0}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:2;pointer-events:none}
+.flash.on{animation:flash .5s}
+@keyframes flash{15%{opacity:.75}100%{opacity:0}}
+.banner{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) scale(.4);opacity:0;z-index:4;pointer-events:none;
+text-align:center;font-family:"Dela Gothic One";font-size:clamp(26px,6vw,56px);line-height:1;color:var(--hit);
+-webkit-text-stroke:3px #2a1b10;paint-order:stroke;white-space:nowrap;transition:transform .25s cubic-bezier(.3,1.8,.5,1),opacity .2s}
+.banner small{display:block;font-size:clamp(13px,2.4vw,20px);-webkit-text-stroke:2px #2a1b10;color:#fff;margin-top:8px}
+.banner.on{transform:translate(-50%,-50%) scale(1);opacity:1}
+.banner.ko{font-size:clamp(56px,14vw,130px)}
+/* controls */
+.ctl{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}
+button{font:800 15px "M PLUS Rounded 1c",sans-serif;min-height:44px;padding:0 18px;border-radius:12px;border:2px solid var(--ink);
+background:var(--panel);color:var(--ink);cursor:pointer}
+button.go{background:var(--ink);color:var(--bg)}
+button[aria-pressed=true]{background:var(--hit);color:#2a1b10}
+button:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.seed{color:var(--muted);font-size:14px;margin-left:auto}
+/* rosters */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.ros{background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:14px}
+.ros h2{display:flex;align-items:center;gap:8px}
+.ros h2 b{width:14px;height:14px;border-radius:4px;display:inline-block}
+.row{display:grid;grid-template-columns:7.2em minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 8px;border-radius:10px;font-size:14px}
+.row .r{color:var(--muted);font-weight:700}
+.row .n{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .v{font-family:"Dela Gothic One"}
+.row.on{background:var(--hit);color:#2a1b10}.row.on .r{color:#2a1b10}
+.log{list-style:none;margin:0;padding:0;max-height:320px;overflow:auto;font-size:14px}
+.log li{padding:6px 0;border-bottom:1px dashed var(--line)}
+.log li b.A{color:var(--a)}.log li b.B{color:var(--b)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+tfoot td{font-family:"Dela Gothic One";font-size:18px;border:0}
+.note{color:var(--muted);font-size:13px;margin-top:10px}
+details{margin-top:14px}summary{cursor:pointer;font-weight:800;min-height:44px;display:flex;align-items:center}
+pre{overflow-x:auto;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px;font-size:13px;max-height:340px}
+@media(max-width:600px){.grid2{grid-template-columns:minmax(0,1fr)}.arena{min-height:380px}.card{padding:9px}.card .rt{font-size:22px}
+.seed{margin-left:0;width:100%}.hud{padding:12px;gap:8px}.vs{font-size:16px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<section class="band"><div class="wrap">
+<h1>Scontro animato: prototipo</h1>
+<p class="sub">Il "server" calcola il risultato e scrive il copione dei colpi; la pagina lo recita. Premi Combatti, poi prova Rigioca (stesso seed, stesso scontro) e Nuova sfida.</p>
+
+<div class="arena" id="arena">
+  <div class="hud">
+    <div class="hp" id="hpA"><div class="nm" id="nmA"></div><div class="bar"><i class="ghost"></i><i class="fill"></i></div></div>
+    <div class="vs">VS<small id="round">pronto</small></div>
+    <div class="hp r" id="hpB"><div class="nm" id="nmB"></div><div class="bar"><i class="ghost"></i><i class="fill"></i></div></div>
+  </div>
+  <div class="stage" id="stage"><div id="slotA"></div><div id="slotB"></div></div>
+  <div class="flash" id="flash"></div>
+  <div class="fx" id="fx"></div>
+  <div class="banner" id="banner"></div>
+</div>
+
+<div class="ctl">
+  <button class="go" id="bGo">Combatti</button>
+  <button id="bNew">Nuova sfida</button>
+  <button id="bSkip">Salta</button>
+  <button id="bSpeed" aria-pressed="false">Velocità ×2</button>
+  <button id="bSound" aria-pressed="true">Suono</button>
+  <span class="seed" id="seed"></span>
+</div>
+<p class="note">Personaggi inventati, usati come segnaposto: nel gioco vero cambi solo la lista dei personaggi, il motore resta uguale.</p>
+</div></section>
+
+<section class="band" style="padding-top:0"><div class="wrap grid2">
+  <div class="ros"><h2><b style="background:var(--a)"></b><span id="tA"></span></h2><div id="rA"></div></div>
+  <div class="ros"><h2><b style="background:var(--b)"></b><span id="tB"></span></h2><div id="rB"></div></div>
+</div></section>
+
+<section class="band" style="padding-top:0"><div class="wrap grid2">
+  <div><h2>Cronaca</h2><ol class="log" id="log"><li>In attesa del primo colpo.</li></ol></div>
+  <div><h2>Come ha deciso il server</h2>
+    <table><thead><tr><th>Voce</th><th id="hA">A</th><th id="hB">B</th></tr></thead><tbody id="tb"></tbody><tfoot><tr><td>Totale</td><td id="totA">–</td><td id="totB">–</td></tr></tfoot></table>
+    <p class="note">Forma del giorno: ogni sfida aggiunge da 0 a 12 punti casuali a ogni personaggio, per questo il risultato cambia tra una sfida e l'altra.</p>
+    <details><summary>Vedi il copione JSON inviato al browser</summary><pre id="json"></pre></details>
+  </div>
+</div></section>
+
+<script>
+{
+const ROLES=['Capitano','Vice','Tank','Danno','Supporto','Supporto II','Guaritore'];
+const WANT={'Capitano':['MELEE','AURA','RANGE'],'Vice':['AURA','MELEE','MOBILITY'],'Tank':['GIANT','BARRIER','MELEE'],'Danno':['RANGE','ELEMENT','MELEE'],
+'Supporto':['SUMMON','MOBILITY','BARRIER'],'Supporto II':['SUMMON','MOBILITY','SPEED'],'Guaritore':['HEAL','AURA','REGEN']};
+const COUNTERS=[['MOBILITY','RANGE'],['BARRIER','ELEMENT'],['SPEED','GIANT'],['PSYCHIC','SPEED'],['RANGE','MELEE'],['MELEE','MOBILITY'],['AURA','BARRIER'],['ENERGY','BARRIER'],['STEALTH','SUMMON'],['REGEN','ELEMENT']];
+const TEAMS={
+A:{name:"Lame dell'Alba",duo:[0,1],duoName:"Fratelli d'arme",f:[
+['Ryo Kaminari',['MELEE','AURA'],94],['Sora Hinagiku',['AURA','MOBILITY'],88],['Gōzan',['GIANT','BARRIER'],86],['Kiri Asahi',['RANGE','ELEMENT'],90],
+['Mochi',['SUMMON','MOBILITY'],79],['Yuki Tsubame',['SPEED','ELEMENT'],81],['Hana Ibuki',['HEAL','AURA'],83]]},
+B:{name:'Corvi del Vuoto',duo:[0,3],duoName:'Patto di cenere',f:[
+['Kurogane Jin',['MELEE','ENERGY'],93],['Rei Shiden',['PSYCHIC','AURA','MOBILITY'],87],['Ōiwa',['GIANT','MELEE'],85],['Akane Hibana',['RANGE','ELEMENT'],91],
+['Nue',['STEALTH','SUMMON','MOBILITY'],80],['Kaze Ren',['SPEED','MOBILITY'],82],['Shion Mizuchi',['REGEN','HEAL'],81]]}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const other=s=>s==='A'?'B':'A';
+function rng(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ---------- "SERVER": calcola e scrive il copione ---------- */
+function simulate(seed){
+  const r=rng(seed),T={};
+  for(const s of ['A','B']){
+    T[s]=TEAMS[s].f.map(([name,tags,rating],i)=>{
+      const role=ROLES[i],n=tags.filter(t=>WANT[role].includes(t)).length;
+      const fit=n>=2?12:n===1?4:-8,form=Math.floor(r()*13);
+      return {name,tags,rating,role,fit,form,pow:rating+fit+form};});
+  }
+  const brk={A:{base:0,ruolo:0,forma:0,counter:0,duo:0},B:{base:0,ruolo:0,forma:0,counter:0,duo:0}};
+  for(const s of ['A','B'])for(const f of T[s]){brk[s].base+=f.rating;brk[s].ruolo+=f.fit;brk[s].forma+=f.form}
+  const counters=[];
+  for(const s of ['A','B'])for(const [w,l] of COUNTERS){
+    const nw=T[s].filter(f=>f.tags.includes(w)).length,nl=T[other(s)].filter(f=>f.tags.includes(l)).length;
+    if(nw&&nl&&nw>=nl)counters.push({da:s,rel:w+' > '+l,bonus:Math.min(20,8+4*(nw-nl)+2*nl)});
+  }
+  for(const s of ['A','B']){const keep=counters.filter(c=>c.da===s).sort((x,y)=>y.bonus-x.bonus||r()-.5).slice(0,2);
+    counters.splice(0,counters.length,...counters.filter(c=>c.da!==s),...keep)}
+  counters.forEach(c=>brk[c.da].counter+=c.bonus);
+  const duos=['A','B'].map(s=>({da:s,duo:TEAMS[s].duo,nome:TEAMS[s].duoName,bonus:12}));
+  duos.forEach(d=>brk[d.da].duo+=d.bonus);
+  const tot={};for(const s of ['A','B'])tot[s]=Object.values(brk[s]).reduce((a,b)=>a+b,0);
+  const win=tot.A>=tot.B?'A':'B',lose=other(win);
+  const rem=Math.max(8,Math.min(70,Math.round((tot[win]-tot[lose])/tot[win]*100*4)));
+  const ev=[{tipo:'ingresso'}];
+  const cA=counters.filter(c=>c.da==='A'),cB=counters.filter(c=>c.da==='B'),cq=[];
+  for(let i=0;i<Math.max(cA.length,cB.length);i++){if(cA[i])cq.push(cA[i]);if(cB[i])cq.push(cB[i])}
+  for(let i=0;i<7;i++){
+    const a=T.A[i],b=T.B[i],w=a.pow>=b.pow?'A':'B',d=Math.abs(a.pow-b.pow);
+    ev.push({tipo:'duello',ruolo:ROLES[i],idx:i});
+    if(d<8)ev.push({tipo:'attacco',da:other(w),idx:i,peso:4});
+    ev.push({tipo:'attacco',da:w,idx:i,peso:6+d});
+    if((i===2||i===4)&&cq.length){const take=i===2?Math.ceil(cq.length/2):cq.length;
+      for(const c of cq.splice(0,take))ev.push({tipo:'counter',da:c.da,rel:c.rel,bonus:c.bonus,peso:c.bonus,idx:i})}
+    if(i===5)for(const d2 of (w==='A'?duos:duos.slice().reverse()))ev.push({tipo:'combo',da:d2.da,duo:d2.duo,nome:d2.nome,bonus:d2.bonus,peso:d2.bonus,idx:i});
+  }
+  ev.push({tipo:'ko',da:win,peso:10,idx:0});
+  for(const s of ['A','B']){
+    const hits=ev.filter(e=>e.peso&&e.da===s),total=s===win?100:100-rem,sum=hits.reduce((a,e)=>a+e.peso,0);
+    let acc=0;hits.forEach((e,k)=>{e.danno=k===hits.length-1?total-acc:Math.round(e.peso/sum*total);acc+=e.danno});
+  }
+  ev.forEach(e=>delete e.peso);
+  return {T,brk,tot,win,ev};
+}
+
+/* ---------- BROWSER: recita il copione ---------- */
+let seed=1+Math.floor(Math.random()*9999),M,tok=0,speed=1,sound=true,ac,hp={A:100,B:100};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms/speed));
+function beep(f,d=.08,type='square',v=.08){if(!sound)return;try{ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);
+  o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+function emblem(name,role){
+  const ini=name.split(' ').map(w=>w[0]).join('').slice(0,2);
+  const shape={'Capitano':'M50 8 L62 34 L92 36 L68 56 L76 88 L50 70 L24 88 L32 56 L8 36 L38 34Z','Tank':'M50 8 L88 22 L84 62 Q50 96 16 62 L12 22Z',
+  'Guaritore':'M40 10 H60 V40 H90 V60 H60 V90 H40 V60 H10 V40 H40Z'}[role]||'M50 6 L92 50 L50 94 L8 50Z';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="${shape}" fill="rgb(255 255 255/.18)" stroke="#fff" stroke-width="3"/><text x="50" y="62" text-anchor="middle" font-family="Dela Gothic One" font-size="30" fill="#fff">${esc(ini)}</text></svg>`}
+function cardHTML(s,f,idle){return `<div class="card ${s}${idle?' idle':''}" id="card${s}"><div class="top"><span>${esc(f.role)}</span><span class="rt">${f.pow}</span></div>${emblem(f.name,f.role)}<div><div class="nm">${esc(f.name)}</div><div class="tags">${f.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div></div></div>`}
+function setDuel(i){
+  $('slotA').innerHTML=cardHTML('A',M.T.A[i]);$('slotB').innerHTML=cardHTML('B',M.T.B[i]);
+  for(const s of ['A','B'])[...$('r'+s).children].forEach((row,k)=>row.classList.toggle('on',k===i));
+}
+function setHP(){for(const s of ['A','B']){const v=Math.max(0,hp[s])/100;document.querySelectorAll('#hp'+s+' .bar i').forEach(x=>x.style.transform=`scaleX(${v})`)}}
+function restart(el,c){el.classList.remove(c);void el.offsetWidth;el.classList.add(c)}
+function dmg(side,n){const st=$('stage'),c=$('card'+side);if(!c)return;const a=$('arena').getBoundingClientRect(),b=c.getBoundingClientRect();
+  const d=document.createElement('div');d.className='dmg';d.textContent='-'+n;d.style.left=(b.left-a.left+b.width/2-24)+'px';d.style.top=(b.top-a.top+b.height*.3)+'px';
+  $('fx').appendChild(d);setTimeout(()=>d.remove(),1000)}
+async function banner(html,ms,ko){const b=$('banner');b.innerHTML=html;b.classList.toggle('ko',!!ko);b.classList.add('on');await sleep(ms);b.classList.remove('on');await sleep(180)}
+function line(e){const T=M.T,nm=s=>esc(TEAMS[s].name),tag=s=>`<b class="${s}">`;
+  switch(e.tipo){
+    case 'ingresso':return `Si entra nell'arena: ${tag('A')}${nm('A')}</b> contro ${tag('B')}${nm('B')}</b>.`;
+    case 'duello':return `<strong>${esc(e.ruolo)}</strong>: ${esc(T.A[e.idx].name)} contro ${esc(T.B[e.idx].name)}.`;
+    case 'attacco':{const f=T[e.da][e.idx],t=T[other(e.da)][e.idx];return `${tag(e.da)}${esc(f.name)}</b> colpisce ${esc(t.name)}: −${e.danno}.`}
+    case 'counter':return `Counter ${tag(e.da)}${nm(e.da)}</b> (${esc(e.rel)}, +${e.bonus} punti): −${e.danno}.`;
+    case 'combo':return `Combo duo ${tag(e.da)}${esc(e.nome)}</b>: ${esc(T[e.da][e.duo[0]].name)} + ${esc(T[e.da][e.duo[1]].name)} (+${e.bonus}): −${e.danno}.`;
+    case 'ko':return `K.O.! Vince ${tag(e.da)}${nm(e.da)}</b>, ${M.tot[e.da]} a ${M.tot[other(e.da)]}.`}}
+function log(e,first){const l=$('log');if(first)l.innerHTML='';const li=document.createElement('li');li.innerHTML=line(e);l.appendChild(li);l.scrollTop=l.scrollHeight}
+function hitOn(e){const t=other(e.da);hp[t]-=e.danno;setHP();const c=$('card'+t);if(c)restart(c,'hit');dmg(t,e.danno)}
+async function step(e,k){
+  if(e.tipo==='ingresso'){$('round').textContent='round 1';beep(330,.15);await banner('FIGHT!<small>'+esc(TEAMS.A.name)+' vs '+esc(TEAMS.B.name)+'</small>',900);log(e,true);return}
+  if(e.tipo==='duello'){$('round').textContent=e.ruolo;setDuel(e.idx);log(e);await sleep(450);return}
+  const att=$('card'+e.da);
+  if(e.tipo==='attacco'){if(att)restart(att,'lunge'+e.da);await sleep(200);beep(e.da==='A'?520:420,.07);hitOn(e);log(e);await sleep(650);return}
+  if(e.tipo==='counter'){restart($('flash'),'on');beep(880,.12,'sawtooth');await banner('COUNTER!<small>'+esc(e.rel)+'  +'+e.bonus+'</small>',850);
+    restart($('arena'),'shake');hitOn(e);log(e);await sleep(500);return}
+  if(e.tipo==='combo'){const T=M.T[e.da];beep(660,.1,'triangle');setTimeout(()=>beep(990,.14,'triangle'),110);
+    await banner('COMBO DUO!<small>'+esc(T[e.duo[0]].name)+' + '+esc(T[e.duo[1]].name)+'</small>',900);if(att)restart(att,'lunge'+e.da);await sleep(200);
+    restart($('arena'),'shake');hitOn(e);log(e);await sleep(550);return}
+  if(e.tipo==='ko'){setDuel(0);await sleep(300);restart($('card'+e.da),'lunge'+e.da);await sleep(220);restart($('flash'),'on');restart($('arena'),'shake');
+    hitOn(e);$('card'+other(e.da)).classList.add('idle');beep(160,.5,'sawtooth',.12);log(e);
+    await banner('K.O.',1100,true);$('round').textContent='finale';
+    await banner('VINCE<small>'+esc(TEAMS[e.da].name)+' · '+M.tot[e.da]+' a '+M.tot[other(e.da)]+'</small>',1800);showBreak()}
+}
+function showBreak(){const rows=[['Rating base','base'],['Adatti al ruolo','ruolo'],['Forma del giorno','forma'],['Counter','counter'],['Duo','duo']];
+  $('tb').innerHTML=rows.map(([l,k])=>`<tr><td>${l}</td><td>${M.brk.A[k]>0&&k!=='base'?'+':''}${M.brk.A[k]}</td><td>${M.brk.B[k]>0&&k!=='base'?'+':''}${M.brk.B[k]}</td></tr>`).join('');
+  $('totA').textContent=M.tot.A;$('totB').textContent=M.tot.B}
+function prepare(){M=simulate(seed);hp={A:100,B:100};setHP();$('seed').textContent='Seed #'+seed;
+  $('nmA').textContent=TEAMS.A.name;$('nmB').textContent=TEAMS.B.name;$('tA').textContent=TEAMS.A.name;$('tB').textContent=TEAMS.B.name;
+  $('hA').textContent=TEAMS.A.name;$('hB').textContent=TEAMS.B.name;
+  for(const s of ['A','B'])$('r'+s).innerHTML=M.T[s].map(f=>`<div class="row"><span class="r">${esc(f.role)}</span><span class="n">${esc(f.name)}</span><span class="v">${f.pow}</span></div>`).join('');
+  setDuel(0);$('tb').innerHTML='';$('totA').textContent='–';$('totB').textContent='–';$('round').textContent='pronto';
+  $('json').textContent=JSON.stringify(M.ev,null,1)}
+async function play(){const my=++tok;prepare();$('bGo').textContent='Rigioca';
+  for(let k=0;k<M.ev.length;k++){if(my!==tok)return;await step(M.ev[k],k)}}
+function skip(){tok++;$('banner').classList.remove('on');hp={A:100,B:100};M.ev.forEach((e,k)=>{if(e.danno)hp[other(e.da)]-=e.danno;log(e,k===0)});
+  setHP();setDuel(0);$('card'+other(M.win)).classList.add('idle');$('round').textContent='finale';showBreak()}
+$('bGo').addEventListener('click',play);
+$('bNew').addEventListener('click',()=>{seed=1+Math.floor(Math.random()*9999);play()});
+$('bSkip').addEventListener('click',()=>{if(M)skip()});
+$('bSpeed').addEventListener('click',e=>{speed=speed===1?2:1;e.currentTarget.setAttribute('aria-pressed',speed===2)});
+$('bSound').addEventListener('click',e=>{sound=!sound;e.currentTarget.setAttribute('aria-pressed',sound)});
+prepare();
+}
+</script>
+</body>
+</html>
