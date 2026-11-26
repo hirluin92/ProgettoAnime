@@ -296,7 +296,9 @@ class Partita:
     mazzo: list[Carta]
     profile_id: str | None
     premio: Premio | None = None
-    personale: bool = False  # mazzo dell'album: non vale per l'ELO
+    personale: bool = False  # mazzo dell'album o ranked: non vale per l'ELO contro la CPU
+    ranked: dict | None = None  # type: ignore[type-arg]  # partita classificata: info avversario
+    ranked_esito: Any = None
     giorno: str | None = None  # rompicapo del giorno: giorno e nome del giocatore
     nome: str | None = None
     creata: float = field(default_factory=time.time)
@@ -347,6 +349,7 @@ class TurnoOut(Model):
     finita: bool
     vinto: bool | None
     premio: Premio | None = None
+    ranked: Any = None  # esito classificato (RankedEsito) se è una partita ranked
 
 
 @router.post("/start")
@@ -437,6 +440,10 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
             )
             if p.giorno and p.nome:
                 _registra_giorno(p, s)
+            if p.ranked and p.profile_id and p.ranked_esito is None:
+                from app.ranked import chiudi
+
+                p.ranked_esito = chiudi(p.profile_id, vinto, p.mazzo, p.ranked)
     return TurnoOut(
         id=p.id,
         eventi=_eventi_con_carte(s, eventi),
@@ -445,6 +452,7 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
         finita=s.finita,
         vinto=vinto,
         premio=p.premio,
+        ranked=p.ranked_esito,
     )
 
 

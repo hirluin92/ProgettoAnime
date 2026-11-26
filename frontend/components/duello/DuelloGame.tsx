@@ -22,6 +22,7 @@ import {
   type TurnoOut,
 } from "@/lib/duello";
 import { getProfileId, useProfile } from "@/lib/profile";
+import { nomeLega, type RankedStart } from "@/lib/ranked";
 import Link from "next/link";
 import DuelloBoard, { fmt } from "./DuelloBoard";
 import DuelloCard, { DuelloTile } from "./DuelloCard";
@@ -77,7 +78,13 @@ function ClassificaGiorno({ righe }: { righe: GiornoRiga[] }) {
   );
 }
 
-export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
+export default function DuelloGame({
+  giorno = false,
+  ranked = false,
+}: {
+  giorno?: boolean;
+  ranked?: boolean;
+}) {
   const [fase, setFase] = useState<Fase>("draft");
   const [draft, setDraft] = useState<DraftDuello | null>(null);
   const [h, setH] = useState(0);
@@ -95,6 +102,8 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
   const [mazziProfilo, setMazziProfilo] = useState<string[]>([]);
   const [usaMazzo, setUsaMazzo] = useState(false);
   const [mazzoSel, setMazzoSel] = useState(0);
+  const [rk, setRk] = useState<RankedStart | null>(null);
+  const caricamento = useRef(0);
   const [info, setInfo] = useState<GiornoInfo | null>(null);
   const [nome, setNome] = useState("");
   const [esitoGiorno, setEsitoGiorno] = useState<GiornoEsito | null>(null);
@@ -113,8 +122,18 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
       setInfo(await api<GiornoInfo>("/api/duello/giorno/info"));
       return;
     }
+    if (ranked) {
+      // in sviluppo l'effetto parte due volte: vale solo l'ultimo caricamento, con seme e mani coerenti
+      const mio = ++caricamento.current;
+      const st = await api<RankedStart>(`/api/ranked/${getProfileId()}/start`, { method: "POST" });
+      const d = await api<DraftDuello>(`/api/duello/draft?seed=${st.seed}`);
+      if (mio !== caricamento.current) return;
+      setRk(st);
+      setDraft(d);
+      return;
+    }
     setDraft(await api<DraftDuello>("/api/duello/draft"));
-  }, [giorno]);
+  }, [giorno, ranked]);
   useEffect(() => {
     carica().catch((e: Error) => setError(e.message));
   }, [carica]);
@@ -236,15 +255,20 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
     const inizia = async () => {
       setBusy(true);
       try {
-        const g = await api<DuelloState>("/api/duello/start", {
-          method: "POST",
-          body: JSON.stringify({
-            seed: draft.seed,
-            picks,
-            livello,
-            profile_id: getProfileId(),
-          }),
-        });
+        const g = rk
+          ? await api<DuelloState>(`/api/ranked/partita/${rk.ranked_id}/inizia`, {
+              method: "POST",
+              body: JSON.stringify({ picks }),
+            })
+          : await api<DuelloState>("/api/duello/start", {
+              method: "POST",
+              body: JSON.stringify({
+                seed: draft.seed,
+                picks,
+                livello,
+                profile_id: getProfileId(),
+              }),
+            });
         setPartita(g);
         setStato(g.stato);
         setFase("gioco");
@@ -262,7 +286,21 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
             {pronto ? it.duello.mazzoPronto : it.duello.scegli}
           </h1>
           <p className="text-sm muted">{it.duello.sottotitolo}</p>
+          {rk && (
+            <p className="chip text-cyan-100" data-testid="ranked-avversario">
+              {fmt(it.ranked.avversario, {
+                nome: rk.avversario.nome,
+                lega: nomeLega(rk.avversario.lega, rk.avversario.divisione),
+              })}{" "}
+              · {rk.avversario.fantasma ? it.ranked.fantasma : it.ranked.sfidante}
+            </p>
+          )}
           <div className="flex flex-wrap items-center gap-2 pt-1 text-sm">
+            {!ranked && (
+              <Link href="/ranked" className="chip text-cyan-200">
+                ⚔ {it.ranked.giocaClassificata}
+              </Link>
+            )}
             <Link href="/duello/giorno" className="chip text-amber-200" data-testid="link-giorno">
               ★ {it.duello.giornoLink}
             </Link>
@@ -273,7 +311,7 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
             )}
           </div>
         </header>
-        {mazziProfilo.length > 0 && picks.length === 0 && (
+        {!ranked && mazziProfilo.length > 0 && picks.length === 0 && (
           <div className="flex flex-wrap gap-2" data-testid="duello-tab">
             <button
               className={`btn ${!usaMazzo ? "btn-primary" : ""}`}
@@ -398,7 +436,7 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
         )}
         {pronto && (
           <section className="panel space-y-4 p-5">
-            <div className="space-y-2">
+            <div className={`space-y-2 ${ranked ? "hidden" : ""}`}>
               <span className="eyebrow">{it.duello.livello}</span>
               <div className="flex gap-2">
                 {LIVELLI.map((l) => (
@@ -504,13 +542,46 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
               <ClassificaGiorno righe={esitoGiorno.classifica} />
             </div>
           )}
+          {esito.ranked && (
+            <div className="panel space-y-1 p-4 text-left" data-testid="ranked-esito">
+              <p className="font-bold">
+                {fmt(it.ranked.risultato, {
+                  a: esito.ranked.mmr_prima,
+                  b: esito.ranked.mmr_dopo,
+                  d: `${esito.ranked.mmr_dopo - esito.ranked.mmr_prima >= 0 ? "+" : ""}${esito.ranked.mmr_dopo - esito.ranked.mmr_prima}`,
+                })}
+              </p>
+              <p className="text-sm muted">
+                {nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo)}
+                {esito.ranked.in_piazzamento ? ` · ${it.ranked.piazzamentoFatto}` : ""}
+              </p>
+              {esito.ranked.promosso && (
+                <p className="font-bold text-emerald-300">
+                  {fmt(it.ranked.promosso, {
+                    lega: nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo),
+                  })}
+                </p>
+              )}
+              {esito.ranked.retrocesso && (
+                <p className="font-bold text-rose-300">
+                  {fmt(it.ranked.retrocesso, {
+                    lega: nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo),
+                  })}
+                </p>
+              )}
+            </div>
+          )}
           {esito.premio && <PremioPanel premio={esito.premio} />}
           <button
             className="btn btn-primary"
-            onClick={() => (giorno ? (window.location.href = "/duello") : carica().catch(err))}
+            onClick={() =>
+              giorno || ranked
+                ? (window.location.href = ranked ? "/ranked" : "/duello")
+                : carica().catch(err)
+            }
             data-testid="duello-rigioca"
           >
-            {giorno ? it.duello.indietro : it.duello.rigioca}
+            {ranked ? it.ranked.torna : giorno ? it.duello.indietro : it.duello.rigioca}
           </button>
         </motion.section>
       )}
