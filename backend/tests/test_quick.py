@@ -55,3 +55,23 @@ def test_over_budget_is_rejected() -> None:
             assert r.status_code == 422 and "budget" in r.text
             return
     assert rnd  # nessun caso trovato: improbabile ma non un errore
+
+
+def _min_completion(options: list[list[tuple[str, int]]], i: int, used: frozenset[str]) -> float:
+    """Costo minimo per riempire i ruoli da i in poi, senza ripetizioni (inf se impossibile)."""
+    if i == len(options):
+        return 0
+    best = float("inf")
+    for cid, cost in options[i]:
+        if cid in used or cost >= best:
+            continue
+        best = min(best, cost + _min_completion(options, i + 1, used | {cid}))
+    return best
+
+
+def test_every_draft_can_always_be_completed_within_budget() -> None:
+    """Il client ammette solo scelte che lasciano la squadra completabile: all'inizio lo è."""
+    for seed in range(1, 1501):
+        opts = build_options(seed)
+        grid = [[(c.id, cost_of(c)) for c in cs] for cs in opts.values()]
+        assert _min_completion(grid, 0, frozenset()) <= BUDGET, f"seed {seed}"
