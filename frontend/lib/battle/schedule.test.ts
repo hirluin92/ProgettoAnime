@@ -4,7 +4,12 @@ import type { MatchResult } from "../types/match";
 
 type Ev = MatchResult["eventi"][number];
 
-const stato = { hp: { A: [], B: [] }, energia: { A: [], B: [] }, scudo: { A: [], B: [] } };
+const stato = {
+  hp: { A: [], B: [] },
+  energia: { A: [], B: [] },
+  scudo: { A: [], B: [] },
+  hype: { A: 0, B: 0 },
+};
 
 function script(turni: number, speciali: number): Ev[] {
   const ev: Ev[] = [{ tipo: "ingresso", stato }];

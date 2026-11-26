@@ -63,3 +63,8 @@ def cpu_tattiche(seed: int, giocatore: list[str]) -> list[str]:
         else:
             out.append(rnd.choice(TATTICHE))
     return out
+
+
+def cpu_carica(seed: int) -> str:
+    """Politica della mossa finale della CPU: subito o trattenuta (dal seme)."""
+    return random.Random(f"carica:{seed}").choice(("subito", "carica"))

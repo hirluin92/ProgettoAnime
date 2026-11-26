@@ -10,6 +10,10 @@ from app.quick import cost_of, cpu_draft, deck_for
 client = TestClient(app)
 
 
+def a_id(seed: int) -> str:
+    return client.get(f"/api/quick/draft?seed={seed}").json()["arena"]["id"]
+
+
 def cheapest_picks(seed: int, rerolls: int = 0, swap: list[str] | None = None) -> dict:  # type: ignore[type-arg]
     """Un draft valido: carta più economica di ogni mano, ruoli in ordine."""
     deck = list(deck_for(seed))
@@ -28,6 +32,7 @@ def cheapest_picks(seed: int, rerolls: int = 0, swap: list[str] | None = None) -
         "picks": picks,
         "swap": swap,
         "tattiche": ["assalto", "tecnica", "guardia"],
+        "carica": "carica",
     }
 
 
@@ -37,6 +42,7 @@ def test_draft_endpoint_is_deterministic_and_complete() -> None:
     assert len(a["hands"]) == MAX_HANDS and a["rerolls"] == REROLLS and a["budget"] == BUDGET
     assert all(len(h["cards"]) == 5 for h in a["hands"])
     card = a["hands"][0]["cards"][0]
+    assert a["arena"]["id"] and a["arena"]["nome"] and a["arena"]["descrizione"]
     assert set(card["affinita"]) == set(ROLES) and card["cost"] == card["character"]["costo"]
 
 
@@ -58,6 +64,7 @@ def test_play_flow_and_swap(tmp_path) -> None:  # type: ignore[no-untyped-def]
     r = client.post("/api/quick/play", json=body)
     assert r.status_code == 200, r.text
     res = r.json()
+    assert res["result"]["arena"] == a_id(9) and res["result"]["carica"]["A"] == "carica"
     assert res["spent"] <= BUDGET and client.get(f"/api/matches/{res['id']}").status_code == 200
     first = res["result"]["squadre"]["A"]["members"]
     swapped = client.post("/api/quick/play", json={**body, "swap": ["Capitano", "Guaritore"]})

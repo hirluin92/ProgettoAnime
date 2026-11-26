@@ -6,7 +6,8 @@ import CharacterCard from "@/components/battle/CharacterCard";
 import { AffinityLegend } from "@/components/draft/Affinity";
 import { CardDetail, DetailSheet } from "@/components/draft/CardDetail";
 import SlotBoard from "@/components/draft/SlotBoard";
-import TacticsPlanner from "@/components/draft/TacticsPlanner";
+import TacticsPlanner, { type Carica } from "@/components/draft/TacticsPlanner";
+import { ARENE_INFO } from "@/lib/battle/arene";
 import { FASI, type Tattica } from "@/lib/battle/tattiche";
 import it from "@/i18n/it.json";
 import {
@@ -33,6 +34,7 @@ interface Props {
     picks: PickIn[],
     swap: string[] | null,
     tattiche: string[],
+    carica: Carica,
   ) => Promise<Played>;
   after?: ReactNode;
   header?: ReactNode;
@@ -49,6 +51,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const [sheet, setSheet] = useState<Option | null>(null);
   const [swap, setSwap] = useState<[string, string] | null>(null);
   const [swapFirst, setSwapFirst] = useState<string | null>(null);
+  const [carica, setCarica] = useState<Carica>("subito");
   const [piano, setPiano] = useState<(Tattica | null)[]>(Array(FASI).fill(null));
   const [played, setPlayed] = useState<Played | null>(null);
   const [busy, setBusy] = useState(false);
@@ -65,6 +68,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     setSwap(null);
     setSwapFirst(null);
     setPiano(Array(FASI).fill(null));
+    setCarica("subito");
     setPlayed(null);
     setError(null);
     setD(await load());
@@ -142,7 +146,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     setBusy(true);
     try {
       const picks = placed.map((p) => ({ id: p.option.character.id, role: p.role, hand: p.hand }));
-      setPlayed(await play(d, picks, swap, piano as string[]));
+      setPlayed(await play(d, picks, swap, piano as string[], carica));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -173,6 +177,16 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
         <h1 className="text-5xl font-black leading-none sm:text-6xl">{title}</h1>
       </div>
       {header}
+      <p
+        className="panel flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm"
+        data-testid="arena-banner"
+      >
+        <span className="text-xl">{ARENE_INFO[d.arena.id]?.icona}</span>
+        <b>
+          {it.draft.arena}: {d.arena.nome}
+        </b>
+        <span className="muted">{d.arena.descrizione}</span>
+      </p>
 
       <div className="panel space-y-3 p-4">
         <ol className="flex flex-wrap gap-1.5" aria-hidden="true">
@@ -361,6 +375,8 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           <TacticsPlanner
             value={piano}
             onChange={(f, t) => setPiano((p) => p.map((x, i) => (i === f ? t : x)))}
+            carica={carica}
+            onCarica={setCarica}
           />
         )}
         {swapping && (

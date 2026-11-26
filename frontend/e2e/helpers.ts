@@ -88,5 +88,6 @@ export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boo
   await page.getByTestId("tactic-0-assalto").click();
   await page.getByTestId("tactic-1-tecnica").click();
   await page.getByTestId("tactic-2-guardia").click();
+  await page.getByTestId("carica-carica").click();
   await page.getByTestId("fight").click();
 }

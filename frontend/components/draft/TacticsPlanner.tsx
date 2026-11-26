@@ -3,12 +3,18 @@
 import it from "@/i18n/it.json";
 import { BONUS, FASI, MALUS, TATTICA_INFO, TATTICHE, type Tattica } from "@/lib/battle/tattiche";
 
+export type Carica = "subito" | "carica";
+
 export default function TacticsPlanner({
   value,
   onChange,
+  carica,
+  onCarica,
 }: {
   value: (Tattica | null)[];
   onChange: (fase: number, t: Tattica) => void;
+  carica: Carica;
+  onCarica: (c: Carica) => void;
 }) {
   return (
     <div className="space-y-3" data-testid="tactics">
@@ -62,6 +68,32 @@ export default function TacticsPlanner({
           </fieldset>
         ))}
       </div>
+      <fieldset className="rounded-2xl border bg-white/[0.03] p-3">
+        <legend className="px-1 text-xs font-extrabold uppercase tracking-widest text-cyan-200">
+          {it.tattiche.carica.titolo}
+        </legend>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {(["subito", "carica"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              data-testid={`carica-${c}`}
+              aria-pressed={carica === c}
+              onClick={() => onCarica(c)}
+              className={`rounded-xl border px-3 py-2 text-left text-sm transition ${
+                carica === c
+                  ? "border-cyan-300 bg-cyan-300/20 shadow-[0_0_18px_rgb(53_224_255/0.4)]"
+                  : "border-white/15 bg-white/5 hover:bg-white/10"
+              }`}
+            >
+              <b>{c === "subito" ? it.tattiche.carica.subito : it.tattiche.carica.trattieni}</b>
+              <span className="block text-xs muted">
+                {c === "subito" ? it.tattiche.carica.subitoDesc : it.tattiche.carica.trattieniDesc}
+              </span>
+            </button>
+          ))}
+        </div>
+      </fieldset>
     </div>
   );
 }

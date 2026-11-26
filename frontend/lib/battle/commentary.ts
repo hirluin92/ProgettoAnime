@@ -92,7 +92,23 @@ export function commentary(result: MatchResult, e: Ev, index: number): string {
         e.esito === "pari" ? "Pari: nessuno prevale" : `Prevale ${result.squadre[e.esito].nome}`;
       return `Fase ${e.fase}: ${nomeTattica(e.tattica.A)} contro ${nomeTattica(e.tattica.B)}. ${chi}!`;
     }
+    case "effetti": {
+      const x = e.esiti[0];
+      const chi = nomeDi(result, x.lato, x.idx);
+      const cosa =
+        x.effetto === "bruciatura"
+          ? "le fiamme logorano"
+          : x.effetto === "corrosione"
+            ? "veleno e fuoco corrodono"
+            : "il veleno logora";
+      const ko = e.esiti.find((y) => y.ko);
+      return `A fine turno ${cosa} ${chi}${ko ? `: ${nomeDi(result, ko.lato, ko.idx)} cade!` : "."}`;
+    }
+    case "respiro":
+      return `Ultimo respiro! ${nomeDi(result, e.lato, e.idx)} non si arrende: scudo, energia piena e attacco potenziato.`;
     case "azione":
+      if (e.effetto === "combo")
+        return `Combo! ${nomeDi(result, e.da, e.idx)} colpisce subito dopo il compagno di legame.`;
       return descriviAzione(result, e, index);
     case "fine":
       return pick(FINE, result.seed, index).replace("{a}", result.squadre[e.vincitore].nome);

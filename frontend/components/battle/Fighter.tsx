@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { SHOW_IMAGES } from "@/lib/api";
+import { STATI_INFO } from "@/lib/battle/arene";
 import { ARCH_NOMI } from "@/lib/battle/labels";
 import type { Float } from "@/lib/battle/usePlayer";
 import type { Character } from "@/lib/types/match";
@@ -20,6 +21,8 @@ interface Props {
   special: boolean;
   hitN: number;
   floats: Float[];
+  /** stato alterato attivo (bruciatura, veleno, sigillo, corrosione) */
+  status?: string | null;
 }
 
 const FLOAT_STYLE: Record<Float["kind"], string> = {
@@ -29,6 +32,9 @@ const FLOAT_STYLE: Record<Float["kind"], string> = {
   miss: "text-sky-200 text-xs",
   stun: "text-fuchsia-300 text-xs",
   ko: "text-red-400",
+  burn: "text-orange-400",
+  poison: "text-lime-300",
+  seal: "text-violet-300 text-xs",
 };
 
 export default function Fighter({
@@ -43,6 +49,7 @@ export default function Fighter({
   special,
   hitN,
   floats,
+  status,
 }: Props) {
   const rar = rarity(ch.rating);
   const ko = hp <= 0;
@@ -92,6 +99,15 @@ export default function Fighter({
           )}
           {scudo > 0 && (
             <span className="absolute inset-x-0 top-0 h-1 bg-sky-300/90" aria-label="scudo" />
+          )}
+          {status && STATI_INFO[status] && !ko && (
+            <span
+              className="absolute left-0.5 top-1 text-[clamp(8px,1.2vw,14px)] drop-shadow"
+              title={STATI_INFO[status].nome}
+              data-testid="status"
+            >
+              {STATI_INFO[status].icona}
+            </span>
           )}
           <span className="absolute bottom-0 left-0 right-0 truncate bg-black/55 px-0.5 text-center text-[clamp(6px,0.9vw,10px)] font-bold leading-tight">
             {ch.nome.split(" ")[0]}

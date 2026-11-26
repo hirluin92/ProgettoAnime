@@ -1,6 +1,7 @@
 """Partita veloce V3: draft con slot liberi e affinità, rilanci, carta misteriosa, poi scontro."""
 
 from functools import lru_cache
+from typing import Literal
 
 from fastapi import APIRouter, HTTPException
 from pydantic import Field
@@ -21,6 +22,7 @@ from app.draft import (
 )
 from app.engine import affinita
 from app.engine import tattiche as tat
+from app.engine.arene import arena_per_seme
 from app.engine.models import Character, MatchResult, Model, Team
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
@@ -45,8 +47,15 @@ class Hand(Model):
     mystery_cost: int  # costo della prima carta se è la carta misteriosa di questo giro
 
 
+class ArenaInfo(Model):
+    id: str
+    nome: str
+    descrizione: str
+
+
 class DraftOptions(Model):
     seed: int
+    arena: ArenaInfo  # regola della partita, nota prima del draft
     budget: int
     roles: list[str]
     rerolls: int
@@ -66,6 +75,7 @@ class PlayRequest(Model):
     picks: list[PickIn] = Field(min_length=ROUNDS, max_length=ROUNDS)  # in ordine di giro
     swap: list[str] | None = Field(default=None, min_length=2, max_length=2)  # scambio finale
     tattiche: list[str] = Field(min_length=tat.FASI, max_length=tat.FASI)  # una per fase
+    carica: Literal["subito", "carica"] = "subito"  # quando lanciare la mossa finale
 
 
 class PlayResponse(Model):
@@ -94,8 +104,10 @@ def draft_options(seed: int) -> DraftOptions:
                 mystery_cost=mystery_cost(cards[0]),
             )
         )
+    ar = arena_per_seme(seed)
     return DraftOptions(
         seed=seed,
+        arena=ArenaInfo(id=ar.id, nome=ar.nome, descrizione=ar.descrizione),
         budget=BUDGET,
         roles=list(ROLES),
         rerolls=REROLLS,
@@ -151,7 +163,7 @@ def get_draft(seed: int | None = None) -> DraftOptions:
 
 @router.post("/play")
 def play(req: PlayRequest) -> PlayResponse:
-    return run_quick(req.seed, req.picks, req.swap, req.tattiche)
+    return run_quick(req.seed, req.picks, req.swap, req.tattiche, req.carica)
 
 
 def validate_picks(
@@ -198,7 +210,11 @@ def validate_picks(
 
 
 def run_quick(
-    seed: int, picks: list[PickIn], swap: list[str] | None, tattiche: list[str]
+    seed: int,
+    picks: list[PickIn],
+    swap: list[str] | None,
+    tattiche: list[str],
+    carica: str = "subito",
 ) -> PlayResponse:
     """Valida le scelte, fa il draft della CPU e simula lo scontro (salvato nel database)."""
     members, spent = validate_picks(seed, picks, swap)
@@ -211,5 +227,7 @@ def run_quick(
         seed * 7 + 1,
         load_ruleset(),
         tattiche={"A": tattiche, "B": tat.cpu_tattiche(seed, tattiche)},
+        arena=arena_per_seme(seed).id,
+        carica={"A": carica, "B": tat.cpu_carica(seed)},
     )
     return PlayResponse(id=repo.save_match(result), result=result, spent=spent, cpu_spent=cpu_spent)

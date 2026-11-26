@@ -24,7 +24,7 @@ Commit con identità `-c user.name=hirluin92 -c user.email=hirluin92@users.norep
 - **Motore v2** (`backend/app/engine/`): scontro 7 contro 7 a turni (max 10) fino al K.O.; statistiche da archetipo+rating+ruolo+sinergie; mossa speciale a energia piena; passive; legami (duo); sinergie/tratti; fila (prima linea/centro/retrovia). Dati: `backend/data/schede.json` (archetipo, mossa, passiva, tratti, **costo**) e `tratti.json`, generati da `scripts/gen_schede.py` (+ costi da `scripts/balance_v2.py --scrivi`).
 - **Bilanciamento:** `cd backend && uv run python ../scripts/balance_v2.py 6000 [--scrivi]` (prezzi) e `balance_v3.py` (affinità). Ultimo esito: ~5,9 turni, K.O. totale 97%, lato A 52%, dev. standard dei residui oltre il rating 0,04. Prezzi 1–12, media 7,2 (budget 50).
 - **Scena di combattimento v2:** `components/battle/{BattleScene,Fighter}.tsx`, `lib/battle/{usePlayer,schedule,commentary,labels}.ts`; taglio di scena per le mosse speciali; riepilogo con sinergie e migliore in campo.
-- Test: 78 pytest, 11 Vitest, 11 Playwright. `make lint`/`make test` puliti.
+- Test: 93 pytest, 13 Vitest, 11 Playwright. `make lint`/`make test` puliti.
 
 ## Milestone 10 — Grafica v3 (unita a `main` con la PR #1 il 2026-11-26, online su Vercel)
 Fatto: sistema di stile in `globals.css` (aurora animata, grana, pannelli con bordo luminoso, pulsanti con riflesso, `.reveal`/`.float`), font Barlow Condensed + Plus Jakarta Sans (Big Shoulders faceva fallire la CI: `next/font/google queries have exactly one entry`; provare sempre `npm run build` dopo aver cambiato font), `SiteNav` e footer, home riprogettata (hero con carte vere da `/api/quick/options`), draft con barra dei passi e budget, scheda dettagli della carta (pannello al mouse + finestra con pulsante "i" anche su mobile; mosse/passive in italiano da `lib/battle/effetti.ts`, tratti/gruppi da `lib/battle/tratti.ts`), asta come palcoscenico (`TimerRing`, tabellone giocatori), lobby con copia-link, ingresso, 404, torneo con podio, sfida con classifica a medaglie, scontro con introduzione "VS" (Salta la interrompe), banner "Vittoria", suoni (whoosh e fanfara in `lib/battle/sound.ts`). Controllato a 390 px: nessuno scorrimento orizzontale.
@@ -37,6 +37,10 @@ Non fatto di PROPOSTA_V3: tattiche segrete (fase 2), arene/mosse a tempo/combo/s
 
 ## Milestone 12 — Tattiche segrete (PROPOSTA_V3.md, fase 2)
 Fatto: `backend/app/engine/tattiche.py` (assalto > tecnica > guardia > assalto; fasi: turni 1-3, 4-6, 7-10; +15% / −10% di danno; CPU deterministica che legge lo schema), evento `fase` nel replay e campo `tattiche` nel risultato, `simulate(..., tattiche=...)`, API `POST /api/quick/play` e `/api/daily/play` con `tattiche` (3 valori obbligatori), interfaccia "Piano di battaglia" (`components/draft/TacticsPlanner.tsx`), banner e chip di fase nella scena. Le partite vecchie senza tattiche si leggono ancora.
+
+## Milestone 13 — Arene, stati, combo (PROPOSTA_V3.md, fase 3)
+Fatto: `engine/arene.py` (6 arene dal seme, mostrate prima del draft e nella scena), stati alterati (bruciatura/veleno/sigillo/corrosione) con eventi `effetti`, evento `respiro` (ultimo respiro), combo dei legami, recupero, hype nello `stato` di ogni evento, scelta *Subito/Trattieni* per la mossa finale (`carica` nell'API), momenti migliori con «Rivedi» (`lib/battle/momenti.ts`, `play(da)`), prezzi ricalcolati (media 7,7). Il simulatore resta equilibrato (6,1 turni, lato A 51%) e ogni arena è tra 40 e 60% per lato (test).
+Non fatto: contromossa alle combo; reazioni elementali oltre alla corrosione.
 
 ## Da fare (in ordine di valore)
 1. **L'utente gioca e riporta:** una partita veloce, un'asta con amici, la sfida del giorno. Poi correggere schede/mosse/prezzi in base a cosa gli sembra sbagliato e rilanciare `balance_v2.py --scrivi`.

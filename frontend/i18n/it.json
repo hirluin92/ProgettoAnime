@@ -80,7 +80,10 @@
     "nessunaSinergia": "Nessuna sinergia attiva",
     "eyebrow": "Scontro 7 contro 7",
     "vittoria": "Vittoria",
-    "fase": "Fase"
+    "fase": "Fase",
+    "pubblico": "Pubblico",
+    "momenti": "Momenti migliori",
+    "rivedi": "Rivedi"
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
@@ -229,13 +232,21 @@
     "scambiaHint": "Puoi scambiare di posto due carte, una sola volta. Tocca le due da scambiare, oppure combatti.",
     "scambiato": "Scambio fatto. Puoi annullarlo oppure combattere.",
     "combatti": "Combatti!",
-    "annullaScambio": "Annulla lo scambio"
+    "annullaScambio": "Annulla lo scambio",
+    "arena": "Arena"
   },
   "tattiche": {
     "titolo": "Piano di battaglia",
     "descrizione": "Scegli una tattica per ognuna delle 3 fasi. La CPU sceglie in segreto e legge i tuoi schemi: non essere prevedibile.",
     "batte": "batte",
     "effetto": "Chi vince il confronto infligge il +{bonus}% di danno nella fase, chi perde il -{malus}%. Se sono uguali, nessun effetto.",
-    "turni": ["turni 1-3", "turni 4-6", "turni 7-10"]
+    "turni": ["turni 1-3", "turni 4-6", "turni 7-10"],
+    "carica": {
+      "titolo": "Mossa finale",
+      "subito": "Subito",
+      "subitoDesc": "Si lancia appena l'energia è piena.",
+      "trattieni": "Trattieni",
+      "trattieniDesc": "Si lancia dal turno 4, con il +30% di danno."
+    }
   }
 }
