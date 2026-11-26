@@ -1,7 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
-import CharacterCard from "@/components/battle/CharacterCard";
+import CharacterCard, { rarity } from "@/components/battle/CharacterCard";
 import it from "@/i18n/it.json";
 import { ROLES, type RoomView } from "@/lib/messages";
 import { useRoom } from "@/lib/store";
@@ -64,17 +65,40 @@ export default function AuctionView({
               </span>
               {!awaiting && <Countdown deadline={lot.deadline} label={it.stanza.tempo} />}
             </div>
-            <div className="flex justify-center" data-testid="lot-card">
-              <CharacterCard character={lot.character} />
+            <div className="relative flex justify-center" data-testid="lot-card">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={lot.number}
+                  initial={{ rotateY: 90, scale: 0.75, opacity: 0 }}
+                  animate={{ rotateY: 0, scale: 1, opacity: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 140, damping: 16 }}
+                  style={{ perspective: 900 }}
+                >
+                  <motion.div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -inset-6 -z-10 rounded-full blur-2xl"
+                    style={{ background: rarity(lot.character.rating).glow }}
+                    initial={{ opacity: 0.9, scale: 0.6 }}
+                    animate={{ opacity: [0.9, 0.35], scale: [0.6, 1.1] }}
+                    transition={{ duration: 0.9 }}
+                  />
+                  <CharacterCard character={lot.character} />
+                </motion.div>
+              </AnimatePresence>
             </div>
-            <p
+            <motion.p
+              key={lot.current_bid}
+              initial={{ scale: 1.25 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 14 }}
               className="panel display py-2 text-center text-3xl font-bold text-gold"
               data-testid="current-bid"
             >
               {lot.current_bid > 0
                 ? `${lot.current_bid} · ${bidder?.name ?? ""}`
                 : it.stanza.nessunaOfferta}
-            </p>
+            </motion.p>
             {awaiting ? (
               <p data-testid="awaiting">
                 {room.players.find((p) => p.id === awaiting.player_id)?.name}{" "}

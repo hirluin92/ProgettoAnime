@@ -189,7 +189,8 @@ body::before {
     position: relative;
     display: grid;
     height: 100%;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: 0;
     gap: 0.35rem;
     overflow: hidden;
     border-radius: calc(1.1rem - 3px);
@@ -255,6 +256,59 @@ body::before {
   @media (prefers-reduced-motion: reduce) {
     .tcg-foil::after {
       animation: none;
+    }
+  }
+
+  .tcg-persp {
+    perspective: 800px;
+  }
+  .tcg-tilt {
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.14s ease-out;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+  .tcg-glare {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: var(--gl, 0);
+    transition: opacity 0.2s;
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      rgb(255 255 255 / 0.5),
+      rgb(255 255 255 / 0) 48%
+    );
+    mix-blend-mode: overlay;
+  }
+  .card-rays {
+    transform-origin: 50px 46px;
+    animation: spin 40s linear infinite;
+  }
+  .card-spark {
+    animation: twinkle 2.6s ease-in-out infinite;
+  }
+  .card-spark:nth-of-type(odd) {
+    animation-delay: 1.2s;
+  }
+  @keyframes spin {
+    to {
+      transform: translate(50px, 46px) rotate(360deg);
+    }
+  }
+  @keyframes twinkle {
+    50% {
+      opacity: 0.15;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-rays,
+    .card-spark,
+    .tcg-tilt {
+      animation: none;
+      transition: none;
     }
   }
 
