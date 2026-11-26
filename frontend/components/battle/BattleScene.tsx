@@ -6,6 +6,7 @@ import { SHOW_IMAGES } from "@/lib/api";
 import it from "@/i18n/it.json";
 import { paletteFor } from "@/lib/animePalette";
 import { FILE, ROLES, STAT_NOMI } from "@/lib/battle/labels";
+import { iconaTattica, nomeTattica } from "@/lib/battle/tattiche";
 import { fanfare, sweep } from "@/lib/battle/sound";
 import { useBattlePlayer, type Side } from "@/lib/battle/usePlayer";
 import type { MatchResult } from "@/lib/types/match";
@@ -176,6 +177,36 @@ export default function BattleScene({
             <small className="block text-xs font-bold opacity-70" data-testid="round">
               {s.turno ? `${it.battle.turno} ${s.turno}` : it.battle.pronto}
             </small>
+            {s.fase && (
+              <div
+                data-testid="fase"
+                className="mt-1 flex items-center justify-center gap-1 text-[0.68rem] font-extrabold uppercase tracking-wide"
+              >
+                <span
+                  className={
+                    s.fase.esito === "A"
+                      ? "text-emerald-300"
+                      : s.fase.esito === "B"
+                        ? "text-rose-300"
+                        : ""
+                  }
+                >
+                  {iconaTattica(s.fase.A)} {nomeTattica(s.fase.A)}
+                </span>
+                <span className="opacity-50">vs</span>
+                <span
+                  className={
+                    s.fase.esito === "B"
+                      ? "text-emerald-300"
+                      : s.fase.esito === "A"
+                        ? "text-rose-300"
+                        : ""
+                  }
+                >
+                  {nomeTattica(s.fase.B)} {iconaTattica(s.fase.B)}
+                </span>
+              </div>
+            )}
           </div>
           <TeamBar side="B" name={B.nome} pct={pct("B")} />
         </div>

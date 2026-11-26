@@ -6,6 +6,8 @@ import CharacterCard from "@/components/battle/CharacterCard";
 import { AffinityLegend } from "@/components/draft/Affinity";
 import { CardDetail, DetailSheet } from "@/components/draft/CardDetail";
 import SlotBoard from "@/components/draft/SlotBoard";
+import TacticsPlanner from "@/components/draft/TacticsPlanner";
+import { FASI, type Tattica } from "@/lib/battle/tattiche";
 import it from "@/i18n/it.json";
 import {
   allowed as canAfford,
@@ -26,7 +28,12 @@ export interface Played {
 interface Props {
   title: string;
   load: () => Promise<DraftOptions>;
-  play: (d: DraftOptions, picks: PickIn[], swap: string[] | null) => Promise<Played>;
+  play: (
+    d: DraftOptions,
+    picks: PickIn[],
+    swap: string[] | null,
+    tattiche: string[],
+  ) => Promise<Played>;
   after?: ReactNode;
   header?: ReactNode;
 }
@@ -42,6 +49,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const [sheet, setSheet] = useState<Option | null>(null);
   const [swap, setSwap] = useState<[string, string] | null>(null);
   const [swapFirst, setSwapFirst] = useState<string | null>(null);
+  const [piano, setPiano] = useState<(Tattica | null)[]>(Array(FASI).fill(null));
   const [played, setPlayed] = useState<Played | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +64,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     setSheet(null);
     setSwap(null);
     setSwapFirst(null);
+    setPiano(Array(FASI).fill(null));
     setPlayed(null);
     setError(null);
     setD(await load());
@@ -133,7 +142,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     setBusy(true);
     try {
       const picks = placed.map((p) => ({ id: p.option.character.id, role: p.role, hand: p.hand }));
-      setPlayed(await play(d, picks, swap));
+      setPlayed(await play(d, picks, swap, piano as string[]));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -349,11 +358,17 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           onSlot={drafting ? place : onSwapSlot}
         />
         {swapping && (
+          <TacticsPlanner
+            value={piano}
+            onChange={(f, t) => setPiano((p) => p.map((x, i) => (i === f ? t : x)))}
+          />
+        )}
+        {swapping && (
           <div className="flex flex-wrap gap-2 pt-1">
             <button
               className="btn btn-primary flex-1 text-lg"
               data-testid="fight"
-              disabled={busy}
+              disabled={busy || piano.some((t) => t === null)}
               onClick={() => void fight()}
             >
               {it.draft.combatti}

@@ -50,8 +50,12 @@ export type Turni = number;
 export type Tipo = "ingresso";
 export type Tipo1 = "turno";
 export type N = number;
-export type Tipo2 = "azione";
+export type Tipo2 = "fase";
 export type Turno1 = number;
+export type Fase1 = number;
+export type Esito = "A" | "B" | "pari";
+export type Tipo3 = "azione";
+export type Turno2 = number;
 export type Da = "A" | "B";
 export type Idx = number;
 export type Mossa1 = string;
@@ -65,11 +69,11 @@ export type Ko = boolean;
 export type Schivata = boolean;
 export type Crit = boolean;
 export type Stordito = boolean;
-export type Esiti = Esito[];
-export type Tipo3 = "fine";
+export type Esiti = Esito1[];
+export type Tipo4 = "fine";
 export type Vincitore1 = "A" | "B";
 export type Motivo = "ko" | "tempo";
-export type Eventi = (Ingresso | Turno | Azione | Fine)[];
+export type Eventi = (Ingresso | Turno | Fase | Azione | Fine)[];
 
 export interface MatchResult {
   seed: Seed;
@@ -82,6 +86,7 @@ export interface MatchResult {
   vincitore: Vincitore;
   pareggio: Pareggio;
   turni: Turni;
+  tattiche: Tattiche;
   eventi: Eventi;
 }
 export interface Squadre {
@@ -141,6 +146,9 @@ export interface Sinergia {
 export interface Totali {
   [k: string]: number;
 }
+export interface Tattiche {
+  [k: string]: string[];
+}
 export interface Ingresso {
   tipo: Tipo;
   stato: Stato;
@@ -166,9 +174,22 @@ export interface Turno {
   tipo: Tipo1;
   n: N;
 }
-export interface Azione {
+/**
+ * Inizio di una fase: le tattiche scelte dai due lati e chi vince il confronto.
+ */
+export interface Fase {
   tipo: Tipo2;
   turno: Turno1;
+  fase: Fase1;
+  tattica: Tattica;
+  esito: Esito;
+}
+export interface Tattica {
+  [k: string]: string;
+}
+export interface Azione {
+  tipo: Tipo3;
+  turno: Turno2;
   da: Da;
   idx: Idx;
   mossa: Mossa1;
@@ -177,7 +198,7 @@ export interface Azione {
   esiti: Esiti;
   stato: Stato;
 }
-export interface Esito {
+export interface Esito1 {
   lato: Lato1;
   idx: Idx1;
   delta: Delta;
@@ -188,7 +209,7 @@ export interface Esito {
   stordito: Stordito;
 }
 export interface Fine {
-  tipo: Tipo3;
+  tipo: Tipo4;
   vincitore: Vincitore1;
   motivo: Motivo;
 }

@@ -89,7 +89,7 @@ Oggi: simulazione automatica a turni (max 10), 7 contro 7, mossa speciale a ener
 
 ## 5. Fasi proposte
 1. **Draft v3 base (FATTA, milestone 11):** affinità, slot liberi, forme casuali, carta misteriosa, rilancio, scambio finale; simulatore di taratura; solo partita veloce e sfida del giorno. *(backend: scoring, dati forme, API; frontend: draft)*
-2. **Tattiche segrete a fasi** (partita veloce, sfida, poi stanze).
+2. **Tattiche segrete a fasi (FATTA, milestone 12):** nel draft veloce e nella sfida si scelgono 3 tattiche prima dello scontro (una per fase); la CPU parte a caso e poi legge lo schema del giocatore (40% contrasta l'ultima tattica, 25% ripete, 35% a caso, tutto dal seme). Scelta *prima* dello scontro e non fase per fase: così non servono sessioni sul server e la sfida del giorno non si può «esplorare» provando le fasi una alla volta. Il voto a fasi *dal vivo* resta per le stanze streamer (fase 5). Vittoria nel confronto +15% danno, sconfitta −10%.
 3. **Arene, mosse finali a tempo, combo, stati, recupero, ultimo respiro.**
 4. **Asta v3:** affinità visibile, missioni, rivalità, formazione.
 5. **Social e progressione:** draft a specchio, tabellone, stagioni, XP e livelli, profilo, PWA, momenti migliori.

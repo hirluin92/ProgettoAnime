@@ -41,6 +41,7 @@ class DailyPlay(Model):
     name: str = Field(min_length=1, max_length=24)
     picks: list[PickIn] = Field(min_length=7, max_length=7)
     swap: list[str] | None = Field(default=None, min_length=2, max_length=2)
+    tattiche: list[str] = Field(min_length=3, max_length=3)
 
 
 class DailyResult(Model):
@@ -80,7 +81,7 @@ def play(req: DailyPlay) -> DailyResult:
     with session_scope() as s:
         if s.scalar(select(DailyScore).where(DailyScore.day == day, DailyScore.name_key == key)):
             raise HTTPException(409, "hai già giocato la sfida di oggi con questo nome")
-    res = run_quick(seed_for(day), req.picks, req.swap)
+    res = run_quick(seed_for(day), req.picks, req.swap, req.tattiche)
     score = res.result.totali["A"] + (100 if res.result.vincitore == "A" else 0)
     try:
         with session_scope() as s:

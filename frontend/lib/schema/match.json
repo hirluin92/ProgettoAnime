@@ -210,6 +210,43 @@
       "title": "Esito",
       "type": "object"
     },
+    "Fase": {
+      "description": "Inizio di una fase: le tattiche scelte dai due lati e chi vince il confronto.",
+      "properties": {
+        "tipo": {
+          "const": "fase",
+          "default": "fase",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
+        },
+        "fase": {
+          "title": "Fase",
+          "type": "integer"
+        },
+        "tattica": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": ["A", "B"]
+          },
+          "title": "Tattica",
+          "type": "object"
+        },
+        "esito": {
+          "enum": ["A", "B", "pari"],
+          "title": "Esito",
+          "type": "string"
+        }
+      },
+      "required": ["tipo", "turno", "fase", "tattica", "esito"],
+      "title": "Fase",
+      "type": "object"
+    },
     "Fine": {
       "properties": {
         "tipo": {
@@ -496,11 +533,25 @@
       "title": "Turni",
       "type": "integer"
     },
+    "tattiche": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Tattiche",
+      "type": "object"
+    },
     "eventi": {
       "items": {
         "discriminator": {
           "mapping": {
             "azione": "#/$defs/Azione",
+            "fase": "#/$defs/Fase",
             "fine": "#/$defs/Fine",
             "ingresso": "#/$defs/Ingresso",
             "turno": "#/$defs/Turno"
@@ -513,6 +564,9 @@
           },
           {
             "$ref": "#/$defs/Turno"
+          },
+          {
+            "$ref": "#/$defs/Fase"
           },
           {
             "$ref": "#/$defs/Azione"
@@ -537,6 +591,7 @@
     "vincitore",
     "pareggio",
     "turni",
+    "tattiche",
     "eventi"
   ],
   "title": "MatchResult",

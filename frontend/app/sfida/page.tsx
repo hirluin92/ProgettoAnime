@@ -41,10 +41,10 @@ export default function Sfida() {
 
   const load = useCallback(async () => (await refresh()).draft, [refresh]);
   const play = useCallback(
-    async (_: DraftOptions, picks: PickIn[], swap: string[] | null) => {
+    async (_: DraftOptions, picks: PickIn[], swap: string[] | null, tattiche: string[]) => {
       const r = await api<Result>("/api/daily/play", {
         method: "POST",
-        body: JSON.stringify({ name, picks, swap }),
+        body: JSON.stringify({ name, picks, swap, tattiche }),
       });
       setResult(r);
       void refresh();

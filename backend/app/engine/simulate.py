@@ -3,10 +3,12 @@
 from dataclasses import dataclass, field
 from typing import Literal
 
+from . import tattiche as tat
 from .models import (
     Azione,
     Esito,
     Event,
+    Fase,
     Fine,
     Ingresso,
     MatchResult,
@@ -92,9 +94,15 @@ class U:
 
 class Battaglia:
     def __init__(
-        self, squadre: dict[Side, Team], seed: int, regole: Ruleset, registra: bool
+        self,
+        squadre: dict[Side, Team],
+        seed: int,
+        regole: Ruleset,
+        registra: bool,
+        tattiche: dict[Side, list[str]] | None = None,
     ) -> None:
         self.rng = Rng(seed)
+        self.tattiche = tattiche or {}
         self.registra = registra
         self.squadre = squadre
         self.sinergie: list[Sinergia] = []
@@ -184,7 +192,14 @@ class Battaglia:
                 m *= 1.12
         if u.passiva == "firststrike" and self.turno == 1:
             m *= 1.25
+        m *= self.molt_tattica(u.lato)
         return u.atk * m
+
+    def molt_tattica(self, lato: Side) -> float:
+        if not self.tattiche:
+            return 1.0
+        f = tat.fase_di_turno(self.turno)
+        return tat.moltiplicatore(lato, self.tattiche["A"][f], self.tattiche["B"][f])
 
     def bersaglio(self, att: U, modo: str) -> U | None:
         nemici = self.vivi(_altro(att.lato))
@@ -398,6 +413,14 @@ class Battaglia:
             self.turno = n
             if self.registra:
                 self.eventi.append(Turno(n=n))
+                if self.tattiche and n in tat.FASE_INIZIO:
+                    f = tat.fase_di_turno(n)
+                    ta, tb = self.tattiche["A"][f], self.tattiche["B"][f]
+                    self.eventi.append(
+                        Fase(
+                            turno=n, fase=f + 1, tattica={"A": ta, "B": tb}, esito=tat.esito(ta, tb)
+                        )
+                    )
             ordine = sorted(
                 (u for s in SIDES for u in self.unita[s] if u.vivo),
                 key=lambda u: (
@@ -457,11 +480,18 @@ class Battaglia:
 
 
 def simulate(
-    team_a: Team, team_b: Team, seed: int, rules: Ruleset, registra: bool = True
+    team_a: Team,
+    team_b: Team,
+    seed: int,
+    rules: Ruleset,
+    registra: bool = True,
+    tattiche: dict[Side, list[str]] | None = None,
 ) -> MatchResult:
     """Stesso input e stesso seed, stesso risultato."""
     teams: dict[Side, Team] = {"A": team_a, "B": team_b}
-    bt = Battaglia(teams, seed, rules, registra)
+    if tattiche is not None and not all(tat.valida(tattiche.get(s, [])) for s in SIDES):
+        raise ValueError("tattiche non valide")
+    bt = Battaglia(teams, seed, rules, registra, tattiche)
     vincitore, motivo = bt.gioca()
     tot: dict[Side, int] = {s: bt.percento(s) for s in SIDES}
     if registra:
@@ -478,5 +508,6 @@ def simulate(
         vincitore=vincitore,
         pareggio=motivo == "tempo" and tot["A"] == tot["B"],
         turni=bt.turno,
+        tattiche=tattiche or {},
         eventi=bt.eventi,
     )

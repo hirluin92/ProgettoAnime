@@ -23,7 +23,12 @@ def cheapest_picks(seed: int, rerolls: int = 0, swap: list[str] | None = None) -
         card = cards[0] if r == mist else min(cards, key=lambda c: (cost_of(c), c.id))
         picks.append({"id": card.id, "role": ROLES[r], "hand": h})
         h += 1
-    return {"seed": seed, "picks": picks, "swap": swap}
+    return {
+        "seed": seed,
+        "picks": picks,
+        "swap": swap,
+        "tattiche": ["assalto", "tecnica", "guardia"],
+    }
 
 
 def test_draft_endpoint_is_deterministic_and_complete() -> None:
@@ -107,7 +112,9 @@ def test_over_budget_is_rejected(tmp_path) -> None:  # type: ignore[no-untyped-d
             for i, p in enumerate(picks)
         )
         if spent > BUDGET:
-            r = client.post("/api/quick/play", json={"seed": seed, "picks": picks})
+            r = client.post(
+                "/api/quick/play", json={"seed": seed, "picks": picks, "tattiche": ["assalto"] * 3}
+            )
             assert r.status_code == 422 and "budget" in r.text
             return
     raise AssertionError("nessun caso sopra budget trovato")
