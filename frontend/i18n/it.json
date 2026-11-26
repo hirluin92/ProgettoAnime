@@ -55,7 +55,11 @@
         "t": "Modalità streamer",
         "d": "La chat di Twitch gioca come squadra."
       }
-    ]
+    ],
+    "scalaTitolo": "La Scala",
+    "scalaTesto": "Avversari sempre più forti e potenziamenti a ogni vittoria: quanti gradini sali?",
+    "raidTitolo": "Raid cooperativo",
+    "raidTesto": "2-4 amici costruiscono una squadra e sfidano un boss."
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -314,7 +318,8 @@
     "nessuno": "Nessuno ha ancora punti questo mese.",
     "esci": "Dimentica questo profilo",
     "gioca": "Gioca per guadagnare XP",
-    "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica."
+    "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica.",
+    "scala": "Record Scala"
   },
   "specchio": {
     "titolo": "Draft a specchio",
@@ -325,7 +330,8 @@
     "scelta": "Scelta da {nome}",
     "scegliSlot": "Dove metti {nome}? Scegli uno slot libero.",
     "avversario": "Squadra di {nome}",
-    "tempo": "Tempo"
+    "tempo": "Tempo",
+    "squadraComune": "La squadra di tutti"
   },
   "tabellone": {
     "titolo": "Tabellone",
@@ -335,5 +341,38 @@
     "quarti": "Quarti di finale",
     "turno": "Turno",
     "bye": "passa il turno"
+  },
+  "scala": {
+    "titolo": "La Scala",
+    "descrizione": "Avversari sempre più forti, un gradino alla volta, finché non perdi.",
+    "gradino": "Gradino",
+    "vinti": "{n} gradini vinti",
+    "sceglPot": "Scegli un potenziamento",
+    "forza": "Forza avversario",
+    "tua": "la tua",
+    "combatti": "Combatti il gradino {n}",
+    "fine": "La corsa è finita",
+    "completata": "Scala completata!",
+    "riepilogo": "Hai vinto {n} gradini.",
+    "nuova": "Nuova corsa",
+    "vinto1": "1 gradino vinto",
+    "riepilogo1": "Hai vinto 1 gradino."
+  },
+  "raid": {
+    "titolo": "Raid",
+    "descrizione": "Una squadra sola per tutti: a turno scegliete una carta e il suo slot, poi affrontate il boss insieme.",
+    "vittoria": "Boss sconfitto!",
+    "sconfitta": "Il boss resiste",
+    "vittoriaTesto": "Avete vinto insieme. Provate una difficoltà più alta!",
+    "sconfittaTesto": "Cambiate squadra e piano di battaglia e riprovate.",
+    "difficolta": {
+      "normale": "Normale",
+      "difficile": "Difficile",
+      "epico": "Epico"
+    },
+    "boss": "Boss",
+    "difficoltaTitolo": "Difficoltà",
+    "modRaid": "Raid cooperativo (2-4 giocatori)",
+    "pianoGruppo": "Il piano del gruppo: per ogni scelta vince quella più votata."
   }
 }

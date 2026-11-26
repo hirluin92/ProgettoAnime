@@ -35,8 +35,10 @@ export type ChatThreshold = number;
 export type BansPerPlayer = number;
 export type PlanTimeout = number;
 export type Formato = "girone" | "eliminazione";
-export type Modalita = "asta" | "specchio";
+export type Modalita = "asta" | "specchio" | "raid";
 export type PickTimeout = number;
+export type Boss = string;
+export type Difficolta = "normale" | "difficile" | "epico";
 
 export interface Join {
   type: Type;
@@ -96,4 +98,6 @@ export interface RoomSettings {
   formato: Formato;
   modalita: Modalita;
   pick_timeout: PickTimeout;
+  boss: Boss;
+  difficolta: Difficolta;
 }

@@ -21,6 +21,7 @@ export interface ProfileView {
   titolo: string;
   partite: number;
   vittorie: number;
+  best_scala: number;
   collezione: string[];
   collezione_totale: number;
   obiettivi: ObiettivoView[];

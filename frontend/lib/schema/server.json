@@ -634,6 +634,53 @@
       "title": "PlayerView",
       "type": "object"
     },
+    "RaidView": {
+      "description": "Esito del raid: il boss affrontato e lo scontro (rivedibile).",
+      "properties": {
+        "boss_id": {
+          "title": "Boss Id",
+          "type": "string"
+        },
+        "boss_nome": {
+          "title": "Boss Nome",
+          "type": "string"
+        },
+        "boss_descrizione": {
+          "title": "Boss Descrizione",
+          "type": "string"
+        },
+        "difficolta": {
+          "title": "Difficolta",
+          "type": "string"
+        },
+        "match_id": {
+          "title": "Match Id",
+          "type": "string"
+        },
+        "vinto": {
+          "title": "Vinto",
+          "type": "boolean"
+        },
+        "boss": {
+          "items": {
+            "$ref": "#/$defs/Character"
+          },
+          "title": "Boss",
+          "type": "array"
+        }
+      },
+      "required": [
+        "boss_id",
+        "boss_nome",
+        "boss_descrizione",
+        "difficolta",
+        "match_id",
+        "vinto",
+        "boss"
+      ],
+      "title": "RaidView",
+      "type": "object"
+    },
     "RoomArena": {
       "properties": {
         "id": {
@@ -713,7 +760,7 @@
         },
         "modalita": {
           "default": "asta",
-          "enum": ["asta", "specchio"],
+          "enum": ["asta", "specchio", "raid"],
           "title": "Modalita",
           "type": "string"
         },
@@ -723,6 +770,17 @@
           "minimum": 5,
           "title": "Pick Timeout",
           "type": "integer"
+        },
+        "boss": {
+          "default": "kaido",
+          "title": "Boss",
+          "type": "string"
+        },
+        "difficolta": {
+          "default": "normale",
+          "enum": ["normale", "difficile", "epico"],
+          "title": "Difficolta",
+          "type": "string"
         }
       },
       "required": [
@@ -735,7 +793,9 @@
         "plan_timeout",
         "formato",
         "modalita",
-        "pick_timeout"
+        "pick_timeout",
+        "boss",
+        "difficolta"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -763,7 +823,7 @@
           "type": "string"
         },
         "phase": {
-          "enum": ["lobby", "ban", "auction", "draft", "plan", "tournament"],
+          "enum": ["lobby", "ban", "auction", "draft", "plan", "tournament", "raid_result"],
           "title": "Phase",
           "type": "string"
         },
@@ -854,6 +914,16 @@
           ],
           "title": "Chat Plan"
         },
+        "raid": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RaidView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "arena": {
           "anyOf": [
             {
@@ -903,6 +973,7 @@
         "plan_deadline",
         "draft",
         "chat_plan",
+        "raid",
         "arena",
         "tournament",
         "streamer_channel",

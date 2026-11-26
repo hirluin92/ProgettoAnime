@@ -51,6 +51,7 @@ export default function PlanView({
         </div>
       </div>
       {room.arena && <ArenaBanner {...room.arena} />}
+      {room.settings.modalita === "raid" && <p className="text-sm muted">{it.raid.pianoGruppo}</p>}
       {mission && <MissionCard nome={mission.nome} descrizione={mission.descrizione} />}
       {room.streamer_channel && <ChatPlanVotes voti={room.chat_plan ?? {}} />}
       <div className="panel space-y-4 p-4">
