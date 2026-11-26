@@ -2,6 +2,7 @@
 
 import { SHOW_IMAGES } from "@/lib/api";
 import { paletteFor } from "@/lib/animePalette";
+import { rarity } from "@/components/battle/CharacterCard";
 import { ARCH_NOMI } from "@/lib/battle/labels";
 import type { CartaView } from "@/lib/duello";
 import it from "@/i18n/it.json";
@@ -28,72 +29,73 @@ export default function DuelloCard({
   testId,
 }: Props) {
   const pal = paletteFor(carta.anime);
+  const r = rarity(carta.rating);
   const p = potenza ?? carta.potenza;
   const delta = p - carta.potenza;
   const body = (
-    <>
+    <div
+      className="flex h-full flex-col overflow-hidden rounded-[13px] bg-[#0c0920]"
+      style={{ aspectRatio: compact ? undefined : "5 / 7.4" }}
+    >
       <div
-        className="relative overflow-hidden"
-        style={{
-          height: compact ? 44 : 120,
-          background: `linear-gradient(150deg, ${pal.from}, ${pal.to})`,
-        }}
+        className="relative min-h-[80px] flex-1"
+        style={{ background: `linear-gradient(150deg, ${pal.from}, ${pal.to})` }}
       >
         {SHOW_IMAGES && carta.immagine_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={carta.immagine_url}
             alt=""
-            loading="eager"
             referrerPolicy="no-referrer"
             className="absolute inset-0 size-full object-cover object-top"
           />
         ) : (
-          <span className="display absolute inset-0 grid place-items-center text-4xl font-black text-white/70">
+          <span className="display absolute inset-0 grid place-items-center text-6xl font-black text-white/70">
             {carta.nome.charAt(0)}
           </span>
         )}
         <span
-          className="absolute left-1 top-1 grid size-6 place-items-center rounded-full bg-sky-500 text-xs font-black text-white shadow"
+          className="absolute left-1.5 top-1.5 grid size-9 place-items-center rounded-full border-2 border-white/80 bg-sky-500 text-lg font-black text-white shadow-lg"
           title={it.duello.costo}
         >
           {carta.costo}
         </span>
         <span
-          className={`absolute right-1 top-1 grid min-w-6 place-items-center rounded-md px-1 text-sm font-black text-white shadow ${
-            delta > 0 ? "bg-emerald-600" : delta < 0 ? "bg-red-600" : "bg-black/70"
+          className={`absolute right-1.5 top-1.5 grid size-10 place-items-center rounded-xl border-2 border-white/80 text-2xl font-black text-white shadow-lg ${
+            delta > 0 ? "bg-emerald-600" : delta < 0 ? "bg-red-600" : "bg-black/80"
           }`}
           title={it.duello.potenza}
         >
           {p}
         </span>
+        <span className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#0c0920] to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 px-2.5 pb-1">
+          <div className="display text-lg font-black leading-none drop-shadow">{carta.nome}</div>
+          <div className="text-xs font-semibold text-white/70">
+            {ARCH_NOMI[carta.arch]} · {r.name}
+          </div>
+        </div>
       </div>
-      <div className="space-y-1 p-2 text-left">
-        <div className="truncate text-sm font-extrabold leading-tight">{carta.nome}</div>
-        {!compact && (
-          <>
-            <div className="text-xs leading-tight muted">{ARCH_NOMI[carta.arch]}</div>
-            <p className="text-xs leading-snug">
-              <b className="text-amber-300">{it.duello.alRivelarsi}:</b>{" "}
-              {pulisci(carta.testo_mossa)}
-            </p>
-            <p className="text-xs leading-snug">
-              <b className="text-sky-300">{it.duello.continuo}:</b> {pulisci(carta.testo_passiva)}
-            </p>
-          </>
-        )}
+      <div className="space-y-1.5 px-2.5 py-2">
+        <p className="text-[13px] leading-snug">
+          <b className="text-amber-300">{it.duello.alRivelarsi}:</b> {pulisci(carta.testo_mossa)}
+        </p>
+        <p className="text-[13px] leading-snug">
+          <b className="text-sky-300">{it.duello.continuo}:</b> {pulisci(carta.testo_passiva)}
+        </p>
       </div>
-    </>
+    </div>
   );
-  const cls = `panel block w-full overflow-hidden p-0 transition ${
-    selected ? "ring-2 ring-amber-300 -translate-y-1" : ""
-  } ${dim ? "opacity-40" : ""} ${onClick ? "cursor-pointer hover:-translate-y-0.5" : ""}`;
+  const cls = `block w-full rounded-2xl p-[3px] text-left transition ${
+    selected ? "-translate-y-2 ring-2 ring-white" : ""
+  } ${dim ? "opacity-45" : ""} ${onClick ? "cursor-pointer hover:-translate-y-1" : ""}`;
+  const style = { background: r.frame, boxShadow: `0 8px 26px -8px ${r.glow}` };
   return onClick ? (
-    <button type="button" onClick={onClick} className={cls} data-testid={testId}>
+    <button type="button" onClick={onClick} className={cls} style={style} data-testid={testId}>
       {body}
     </button>
   ) : (
-    <div className={cls} data-testid={testId}>
+    <div className={cls} style={style} data-testid={testId}>
       {body}
     </div>
   );
