@@ -59,32 +59,37 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
 
   if (!started || (!room && errorCode && errorCode !== "room_not_found"))
     return (
-      <main className="mx-auto max-w-md space-y-4 p-6 pt-16">
-        <h1 className="text-4xl font-bold">
-          {it.stanza.entra} {code}
-        </h1>
-        <input
-          aria-label={it.home.tuoNome}
-          placeholder={it.home.tuoNome}
-          className="field w-full"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        {error && (
-          <p role="alert" className="text-rose-400">
-            {error}
-          </p>
-        )}
-        <button
-          className="btn btn-primary w-full"
-          disabled={!name.trim()}
-          onClick={() => {
-            useRoom.getState().clearError();
-            setStarted(true);
-          }}
-        >
-          {it.stanza.entra}
-        </button>
+      <main className="mx-auto max-w-md px-5 pt-14">
+        <div className="panel reveal space-y-4 p-6 sm:p-8">
+          <div className="space-y-1">
+            <span className="eyebrow">{it.stanza.lobby}</span>
+            <h1 className="text-4xl font-black leading-none">
+              {it.stanza.entra} <span className="text-grad">{code}</span>
+            </h1>
+          </div>
+          <input
+            aria-label={it.home.tuoNome}
+            placeholder={it.home.tuoNome}
+            className="field w-full"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          {error && (
+            <p role="alert" className="text-rose-400">
+              {error}
+            </p>
+          )}
+          <button
+            className="btn btn-primary w-full text-lg"
+            disabled={!name.trim()}
+            onClick={() => {
+              useRoom.getState().clearError();
+              setStarted(true);
+            }}
+          >
+            {it.stanza.entra}
+          </button>
+        </div>
       </main>
     );
 

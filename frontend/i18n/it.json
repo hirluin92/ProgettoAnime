@@ -126,7 +126,15 @@
     "cerca": "Cerca un personaggio",
     "bannaBtn": "Banna",
     "asta": "Asta live",
-    "offertaAttuale": "Offerta attuale"
+    "offertaAttuale": "Offerta attuale",
+    "copiaLink": "Copia il link d'invito",
+    "copiato": "Link copiato!",
+    "postoLibero": "Posto libero",
+    "regole": "Regole della partita",
+    "entraTitolo": "Entra nella partita",
+    "torneo": "Torneo",
+    "guardaScontro": "Guarda lo scontro",
+    "squadre": "Le squadre"
   },
   "veloce": {
     "titolo": "Partita veloce",
