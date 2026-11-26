@@ -5,6 +5,8 @@ from typing import Literal
 
 from . import tattiche as tat
 from .arene import ARENE, Arena
+from .formazioni import DEFAULT as FORM_DEFAULT
+from .formazioni import FORMAZIONI
 from .models import (
     Azione,
     Effetti,
@@ -15,6 +17,7 @@ from .models import (
     Ingresso,
     MatchResult,
     Respiro,
+    RivalitaAttiva,
     Ruleset,
     Side,
     Sinergia,
@@ -24,7 +27,7 @@ from .models import (
     Unita,
 )
 from .rng import Rng
-from .roles import FILA, ROLES
+from .roles import ROLES
 from .scoring import (
     DUO_ATK,
     adatto,
@@ -52,6 +55,7 @@ CARICA_MOLT = 1.3  # ...con il 30% di danno in più
 RITARDO_PUNTI = 20  # recupero: energia +50% se si è indietro di 20 punti % di vita
 RITARDO_BONUS = 0.5
 RESPIRO_ATK = 1.3
+RIVALITA_BONUS = 1.08
 RESPIRO_SCUDO = 0.15
 HYPE_MAX = 100
 HYPE_SOGLIE: tuple[tuple[int, float], ...] = ((100, 0.08), (50, 0.04))
@@ -102,6 +106,7 @@ class U:
     legame_rotto: bool = False
     primo_turno: bool = True
     tags: frozenset[str] = frozenset()
+    bid: str = ""  # id del personaggio base (le forme condividono rivalità e legami)
     burn: int = 0  # turni di bruciatura rimasti
     veleno: int = 0
     sigillo: int = 0  # turni in cui non può lanciare la mossa finale
@@ -122,12 +127,16 @@ class Battaglia:
         tattiche: dict[Side, list[str]] | None = None,
         arena: str | None = None,
         carica: dict[Side, str] | None = None,
+        formazione: dict[Side, str] | None = None,
     ) -> None:
         self.rng = Rng(seed)
         self.tattiche = tattiche or {}
         self.arena: Arena = ARENE[arena] if arena else NEUTRA
         self.carica: dict[Side, str] = carica or {"A": "subito", "B": "subito"}
+        self.formazione: dict[Side, str] = formazione or {"A": FORM_DEFAULT, "B": FORM_DEFAULT}
         self.hype: dict[Side, int] = {"A": 0, "B": 0}
+        self.rivalita: list[RivalitaAttiva] = []
+        self.rivali: set[tuple[str, str]] = set()
         self.speciale_att: U | None = None  # chi sta lanciando la mossa finale in questo momento
         self.respiro_emesso: set[Side] = set()
         self.registra = registra
@@ -140,6 +149,13 @@ class Battaglia:
         self.energia_bonus: dict[Side, float] = {}
         for s in SIDES:
             self._prepara(s, regole)
+        for r in regole.rivalita:
+            for ia, ua in enumerate(self.unita["A"]):
+                for ib, ub in enumerate(self.unita["B"]):
+                    if {ua.bid, ub.bid} == {r.a, r.b}:
+                        self.rivalita.append(RivalitaAttiva(nome=r.nome, a=ia, b=ib))
+                        self.rivali.add((ua.bid, ub.bid))
+                        self.rivali.add((ub.bid, ua.bid))
 
     # ---------- preparazione ----------
     def _prepara(self, s: Side, regole: Ruleset) -> None:
@@ -147,7 +163,14 @@ class Battaglia:
         sin = sinergie_squadra(s, team, regole.tratti)
         self.sinergie += sin
         legami = legami_squadra(team, regole.duos)
-        bonus = {"atk": 0.0, "def": 0.0, "hp": 0.0, "spd": 0.0, "energy": 0.0}
+        bonus = {
+            "atk": team.bonus_missione,
+            "def": 0.0,
+            "hp": team.bonus_missione,
+            "spd": 0.0,
+            "energy": 0.0,
+        }
+        fila = FORMAZIONI[self.formazione[s]].fila
         for x in sin:
             if x.stat == "tutto":
                 for k in ("atk", "def", "hp"):
@@ -178,9 +201,10 @@ class Battaglia:
                 atk=atk,
                 dif=dif,
                 vel=vel,
-                fila=FILA[i],
+                fila=fila[i],
                 energia=min(ENERGIA_MAX, round(ENERGIA_INIZIALE * (1 + bonus["energy"]))),
                 tags=frozenset(ch.tags),
+                bid=ch.base_id or ch.id,
             )
             u.legati = [b if a == i else a for a, b, _ in legami if i in (a, b)]
             self.unita[s].append(u)
@@ -271,6 +295,8 @@ class Battaglia:
         if not bers.vivo:
             return 0
         base = self.atk_eff(att) * mult * (1 - VARIANZA + 2 * VARIANZA * self.rng.random())
+        if (att.bid, bers.bid) in self.rivali:
+            base *= RIVALITA_BONUS
         if self.arena.mancato and self.rng.random() < self.arena.mancato:
             e.schivata = True
             return 0
@@ -638,6 +664,7 @@ def simulate(
     tattiche: dict[Side, list[str]] | None = None,
     arena: str | None = None,
     carica: dict[Side, str] | None = None,
+    formazione: dict[Side, str] | None = None,
 ) -> MatchResult:
     """Stesso input e stesso seed, stesso risultato."""
     teams: dict[Side, Team] = {"A": team_a, "B": team_b}
@@ -647,7 +674,9 @@ def simulate(
         raise ValueError("arena sconosciuta")
     if carica is not None and not all(carica.get(s) in ("subito", "carica") for s in SIDES):
         raise ValueError("carica non valida")
-    bt = Battaglia(teams, seed, rules, registra, tattiche, arena, carica)
+    if formazione is not None and not all(formazione.get(s) in FORMAZIONI for s in SIDES):
+        raise ValueError("formazione non valida")
+    bt = Battaglia(teams, seed, rules, registra, tattiche, arena, carica, formazione)
     vincitore, motivo = bt.gioca()
     tot: dict[Side, int] = {s: bt.percento(s) for s in SIDES}
     if registra:
@@ -667,5 +696,7 @@ def simulate(
         tattiche=tattiche or {},
         arena=arena,
         carica=carica or {},
+        formazione=formazione or {},
+        rivalita=bt.rivalita,
         eventi=bt.eventi,
     )

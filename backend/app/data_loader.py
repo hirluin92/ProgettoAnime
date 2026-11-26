@@ -65,6 +65,7 @@ def load_ruleset() -> Ruleset:
     return Ruleset(
         duos=[Duo.model_validate(d) for d in _read("duos.json")],
         tratti=[Tratto.model_validate(d) for d in _read("tratti.json")],
+        rivalita=[Duo.model_validate(d) for d in _read("rivalita.json")],
     )
 
 
@@ -84,7 +85,7 @@ def validate() -> list[str]:
     if sum(c.rating > 95 for c in chars.values()) > MAX_ABOVE_95:
         errors.append(f"più di {MAX_ABOVE_95} personaggi sopra 95")
     rules = load_ruleset()
-    for d in rules.duos:
+    for d in [*rules.duos, *rules.rivalita]:
         for cid in (d.a, d.b):
             if cid not in chars:
                 errors.append(f"duo {d.nome}: personaggio inesistente {cid}")

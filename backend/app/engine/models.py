@@ -59,12 +59,15 @@ class Ruleset(Model):
 
     duos: list[Duo]
     tratti: list[Tratto]
+    rivalita: list[Duo] = Field(default_factory=list)
 
 
 class Team(Model):
     nome: str
     # 7 personaggi, nell'ordine dei ruoli in roles.ROLES
     members: list[Character] = Field(min_length=7, max_length=7)
+    # bonus della missione segreta completata (es. 0.03 = +3% attacco e vita)
+    bonus_missione: float = 0.0
 
 
 class Unita(Model):
@@ -83,6 +86,14 @@ class Sinergia(Model):
     stat: str
     valore: int
     membri: int
+
+
+class RivalitaAttiva(Model):
+    """Due personaggi su lati opposti con un conto in sospeso: +8% di danno l'uno contro l'altro."""
+
+    nome: str
+    a: int  # indice nella squadra A
+    b: int  # indice nella squadra B
 
 
 class Stato(Model):
@@ -184,5 +195,7 @@ class MatchResult(Model):
     # tattiche scelte per le 3 fasi (vuoto nelle partite senza tattiche e in quelle vecchie)
     tattiche: dict[Side, list[str]] = Field(default_factory=dict)
     arena: str | None = None
+    formazione: dict[Side, str] = Field(default_factory=dict)
+    rivalita: list[RivalitaAttiva] = Field(default_factory=list)
     carica: dict[Side, str] = Field(default_factory=dict)  # subito | carica, per lato
     eventi: list[Event]
