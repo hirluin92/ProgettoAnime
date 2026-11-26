@@ -367,6 +367,47 @@ def assegna_premio_scala(
         )
 
 
+def assegna_premio_duello(
+    profile_id: str | None, vinto: bool, livello: str, team_ids: list[str]
+) -> Premio | None:
+    """Fine di un duello: XP, punti stagione e collezione."""
+    if not profile_id or not UUID_RE.match(profile_id):
+        return None
+    with session_scope() as s:
+        row = s.get(ProfileRow, profile_id)
+        if row is None:
+            return None
+        prima = livello_per_xp(row.xp)
+        bonus = {"facile": 0, "normale": 10, "difficile": 25}.get(livello, 0)
+        guadagno = 20 + (30 + bonus if vinto else 0)
+        row.xp += guadagno
+        row.partite += 1
+        row.vittorie += int(vinto)
+        prima_coll = set(row.collezione)
+        row.collezione = sorted(prima_coll | set(team_ids))
+        pts = (3 if vinto else 1) + (2 if vinto and livello == "difficile" else 0)
+        stag = stagione_di(oggi())
+        sc = s.scalar(
+            select(SeasonScore).where(SeasonScore.season == stag, SeasonScore.profile_id == row.id)
+        )
+        if sc is None:
+            s.add(SeasonScore(season=stag, profile_id=row.id, name=row.name, points=pts))
+        else:
+            sc.points += pts
+            sc.name = row.name
+        dopo = livello_per_xp(row.xp)
+        return Premio(
+            xp=guadagno,
+            xp_totale=row.xp,
+            livello_prima=prima,
+            livello_dopo=dopo,
+            titolo=titolo_per_livello(dopo),
+            obiettivi_completati=[],
+            punti_stagione=pts,
+            nuove_carte=len(set(team_ids) - prima_coll),
+        )
+
+
 # ---------- API ----------
 @router.post("/profile")
 def upsert_profile(body: ProfileIn) -> ProfileView:

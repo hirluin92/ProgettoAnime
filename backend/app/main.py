@@ -11,6 +11,7 @@ from app.daily import router as daily_router
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
 from app.db.session import init_db
+from app.duello_api import router as duello_router
 from app.engine.models import Character, MatchResult, Team
 from app.engine.simulate import simulate
 from app.profilo import router as profilo_router
@@ -39,6 +40,7 @@ app.include_router(quick_router)
 app.include_router(daily_router)
 app.include_router(profilo_router)
 app.include_router(scala_router)
+app.include_router(duello_router)
 
 
 @app.get("/health")

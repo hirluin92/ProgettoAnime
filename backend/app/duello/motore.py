@@ -111,6 +111,11 @@ def nuovo(
     for i, m in enumerate((mazzo0, mazzo1)):
         pila = list(m)
         random.Random(f"mazzo:{seed}:{i}").shuffle(pila)
+        # mano iniziale giocabile: almeno una carta da 1-2 energia (se il mazzo ne ha)
+        if all(c.costo > 2 for c in pila[:MANO_INIZIALE]):
+            k = next((j for j in range(MANO_INIZIALE, len(pila)) if pila[j].costo <= 2), None)
+            if k is not None:
+                pila[0], pila[k] = pila[k], pila[0]
         lati.append(Lato(mazzo=pila[MANO_INIZIALE:], mano=pila[:MANO_INIZIALE]))
     return Stato(
         seed=seed,
