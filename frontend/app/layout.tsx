@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Big_Shoulders, Plus_Jakarta_Sans } from "next/font/google";
+import { Barlow_Condensed, Plus_Jakarta_Sans } from "next/font/google";
 import CookieBanner from "@/components/CookieBanner";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -7,7 +7,7 @@ import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
 
 const body = Plus_Jakarta_Sans({ variable: "--font-body", subsets: ["latin"] });
-const display = Big_Shoulders({
+const display = Barlow_Condensed({
   variable: "--font-display",
   subsets: ["latin"],
   weight: ["700", "800", "900"],
