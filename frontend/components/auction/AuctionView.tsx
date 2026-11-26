@@ -100,10 +100,12 @@ export default function AuctionView({
                 : it.stanza.nessunaOfferta}
             </motion.p>
             {awaiting ? (
-              <p data-testid="awaiting">
-                {room.players.find((p) => p.id === awaiting.player_id)?.name}{" "}
-                {it.stanza.scegliRuolo}
-              </p>
+              !myRoleTurn && (
+                <p data-testid="awaiting">
+                  {room.players.find((p) => p.id === awaiting.player_id)?.name}{" "}
+                  {it.stanza.scegliRuolo}
+                </p>
+              )
             ) : (
               <div className="grid grid-cols-4 gap-2">
                 {[1, 2, 5, 10].map((n) => (
