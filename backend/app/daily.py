@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from app.db.models import DailyScore
 from app.db.session import session_scope
 from app.engine.models import Model
-from app.quick import DraftOptions, PickIn, PlayResponse, draft_options, run_quick
+from app.quick import DraftOptions, PickIn, PlayResponse, draft_options, premio_per, run_quick
 
 router = APIRouter(prefix="/api/daily")
 TOP = 20
@@ -45,6 +45,7 @@ class DailyPlay(Model):
     tattiche: list[str] = Field(min_length=3, max_length=3)
     carica: Literal["subito", "carica"] = "subito"
     formazione: str = "classica"
+    profile_id: str | None = None
 
 
 class DailyResult(Model):
@@ -91,6 +92,7 @@ def play(req: DailyPlay) -> DailyResult:
             s.add(DailyScore(day=day, name=name, name_key=key, score=score, match_id=res.id))
     except IntegrityError as e:
         raise HTTPException(409, "hai già giocato la sfida di oggi con questo nome") from e
+    res.premio = premio_per(res, "sfida", req.profile_id, score)
     board = leaderboard(day)
     rank = next(i for i, r in enumerate(board, 1) if r.match_id == res.id)
     return DailyResult(play=res, score=score, rank=rank)

@@ -31,6 +31,7 @@ from app.engine.models import Character, MatchResult, Model, Team
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
 from app.engine.simulate import simulate
+from app.profilo import Partita, Premio, assegna_premio
 
 router = APIRouter(prefix="/api/quick")
 
@@ -97,6 +98,7 @@ class PlayRequest(Model):
     tattiche: list[str] = Field(min_length=tat.FASI, max_length=tat.FASI)  # una per fase
     carica: Literal["subito", "carica"] = "subito"  # quando lanciare la mossa finale
     formazione: str = "classica"
+    profile_id: str | None = None  # se presente: XP, obiettivi, collezione e stagione
 
 
 class PlayResponse(Model):
@@ -105,6 +107,7 @@ class PlayResponse(Model):
     spent: int
     cpu_spent: int
     missione: MissioneEsito
+    premio: Premio | None = None
 
 
 @lru_cache(maxsize=256)
@@ -185,7 +188,9 @@ def get_draft(seed: int | None = None) -> DraftOptions:
 
 @router.post("/play")
 def play(req: PlayRequest) -> PlayResponse:
-    return run_quick(req.seed, req.picks, req.swap, req.tattiche, req.carica, req.formazione)
+    res = run_quick(req.seed, req.picks, req.swap, req.tattiche, req.carica, req.formazione)
+    res.premio = premio_per(res, "veloce", req.profile_id)
+    return res
 
 
 def validate_picks(
@@ -229,6 +234,19 @@ def validate_picks(
             raise HTTPException(422, "scambio non valido")
         chosen[a], chosen[b] = chosen[b], chosen[a]
     return [chosen[r] for r in ROLES], spent
+
+
+def premio_per(
+    res: PlayResponse, kind: str, profile_id: str | None, score: int | None = None
+) -> Premio | None:
+    squadra = res.result.squadre["A"].members
+    partita = Partita(
+        result=res.result,
+        missione_ok=res.missione.riuscita,
+        kind=kind,
+        forme=sum(1 for m in squadra if m.forma),
+    )
+    return assegna_premio(profile_id, partita, [m.id for m in squadra], score)
 
 
 def cpu_formazione(seed: int) -> str:
