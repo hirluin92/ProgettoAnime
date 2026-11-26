@@ -238,7 +238,8 @@
     "profilo": "Profilo",
     "duello": "Duello",
     "album": "Album",
-    "negozio": "Negozio"
+    "negozio": "Negozio",
+    "ranked": "Ranked"
   },
   "draft": {
     "tono": {
@@ -554,5 +555,32 @@
     "riepilogo": "Carte nuove: {n} · Crediti restituiti: {m}",
     "vaiAlbum": "Vedi nell'album",
     "garanziaPity": "Leggendaria garantita!"
+  },
+  "ranked": {
+    "titolo": "Classificata",
+    "intro": "Ogni partita parte da un draft nuovo: conta la bravura, non la collezione. Affronti il mazzo di un altro giocatore di livello simile.",
+    "serveAccount": "Per giocare le classificate serve un account: registrati dal tuo profilo.",
+    "vaiProfilo": "Vai al profilo",
+    "senzaProfilo": "Crea un profilo e un account per giocare le classificate.",
+    "mmr": "Punti: {n}",
+    "piazzamento": "Piazzamento: ancora {n} partite per scoprire la tua lega",
+    "ultimaLega": "Sei nella lega più alta!",
+    "alProssimo": "{n} punti al gradino successivo",
+    "gioca": "Gioca una classificata",
+    "settimana": "Obiettivi della settimana",
+    "partiteSett": "Partite classificate: {n}",
+    "ritira": "Ritira {n} crediti",
+    "ritirato": "Ritirato",
+    "classifica": "Classifica",
+    "nessunoClass": "La classifica compare dopo le 5 partite di piazzamento.",
+    "avversario": "Avversario: {nome} · {lega}",
+    "fantasma": "Mazzo di un altro giocatore",
+    "sfidante": "Sfidante generato",
+    "risultato": "Punti {a} → {b} ({d})",
+    "promosso": "Promozione! Ora sei {lega}",
+    "retrocesso": "Retrocesso in {lega}",
+    "piazzamentoFatto": "Partita di piazzamento",
+    "torna": "Torna alla classificata",
+    "giocaClassificata": "Classificata"
   }
 }

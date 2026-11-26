@@ -59,6 +59,8 @@ class ProfileRow(Base):
         Integer, default=0, server_default="0"
     )  # pacchetti dall'ultima leggendaria
     pacchetti_aperti: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    mmr: Mapped[int] = mapped_column(Integer, default=1000, server_default="1000")  # ranked
+    ranked_partite: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     collezione: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
@@ -90,6 +92,34 @@ class ProfileDay(Base):
     day: Mapped[str] = mapped_column(String(10))
     fatti: Mapped[list[str]] = mapped_column(JSON, default=list)  # id obiettivi completati
     primo: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class RankedGhost(Base):
+    """Il mazzo di una partita classificata: diventa l'avversario di altri giocatori."""
+
+    __tablename__ = "ranked_ghosts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    profile_id: Mapped[str] = mapped_column(String(36), index=True)
+    name: Mapped[str] = mapped_column(String(24))
+    mmr: Mapped[int] = mapped_column(Integer, index=True)
+    mazzo: Mapped[list[str]] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
+
+
+class RankedSettimana(Base):
+    """Partite classificate giocate in una settimana e premi già ritirati."""
+
+    __tablename__ = "ranked_settimane"
+    __table_args__ = (UniqueConstraint("profile_id", "settimana", name="uq_ranked_sett"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    profile_id: Mapped[str] = mapped_column(String(36), index=True)
+    settimana: Mapped[str] = mapped_column(String(8))  # es. 2026-W48
+    partite: Mapped[int] = mapped_column(Integer, default=0)
+    ritirati: Mapped[list[int]] = mapped_column(JSON, default=list)  # soglie già incassate
 
 
 class SeasonScore(Base):
