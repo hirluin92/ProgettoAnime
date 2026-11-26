@@ -132,7 +132,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
       </ul>
       <section aria-label={it.veloce.squadra} data-testid="recap" className="panel p-4">
         <h2 className="mb-3 text-xl font-bold">{it.veloce.squadra}</h2>
-        <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+        <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:[grid-template-columns:repeat(7,minmax(0,1fr))]">
           {opts.roles.map((r, i) => {
             const pick = picks[i];
             const current = i === step;
@@ -140,7 +140,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
               <li
                 key={r}
                 data-testid={pick ? "recap-filled" : "recap-empty"}
-                className={`grid justify-items-center gap-1 rounded-xl p-2 text-center ${
+                className={`grid min-w-0 justify-items-center gap-1 rounded-xl p-2 text-center ${
                   pick
                     ? ""
                     : current
