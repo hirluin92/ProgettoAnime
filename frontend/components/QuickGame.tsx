@@ -4,10 +4,19 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
 import it from "@/i18n/it.json";
+import { MOSSE_EFFETTO, PASSIVA_EFFETTO } from "@/lib/battle/effetti";
+import { paletteFor } from "@/lib/animePalette";
+import { ARCH_NOMI } from "@/lib/battle/labels";
 import type { MatchResult } from "@/lib/types/match";
 
+export interface Detail {
+  mossa?: { nome: string; effetto?: string };
+  passiva?: { nome: string; effetto?: string };
+  tags?: string[];
+  gruppi?: string[];
+}
 export interface Option {
-  character: Parameters<typeof CharacterCard>[0]["character"] & { id: string };
+  character: Parameters<typeof CharacterCard>[0]["character"] & { id: string } & Detail;
   cost: number;
 }
 export interface Options {
@@ -36,6 +45,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const [picks, setPicks] = useState<Option[]>([]);
   const [played, setPlayed] = useState<Played | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [focus, setFocus] = useState<Option | null>(null);
 
   const start = useCallback(async () => {
     setPicks([]);
@@ -53,6 +63,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const choose = async (o: Option) => {
     if (!opts) return;
     const next = [...picks, o];
+    setFocus(null);
     setPicks(next);
     if (next.length === opts.roles.length) {
       try {
@@ -130,7 +141,6 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
             {it.veloce.scegli} <b className="text-gold">{role}</b> ({step + 1}/{opts.roles.length})
             · {it.stanza.budget}: <b data-testid="left">{opts.budget - spent}</b>
           </p>
-          <p className="text-xs muted">{it.veloce.passaSopra}</p>
         </div>
         <div
           className="h-2.5 overflow-hidden rounded-full bg-black/40"
@@ -146,6 +156,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           />
         </div>
       </div>
+      <CardDetail o={focus} />
       <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
         {opts.options[role].map((o) => {
           const taken = picks.some((p) => p.character.id === o.character.id);
@@ -155,6 +166,8 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
                 data-testid="option"
                 disabled={o.cost > maxCost || taken}
                 onClick={() => void choose(o)}
+                onMouseEnter={() => setFocus(o)}
+                onFocus={() => setFocus(o)}
                 className="relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 hover:scale-110 focus-visible:z-20 focus-visible:scale-110 disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:scale-100"
                 aria-label={`${o.character.nome}, costo ${o.cost}`}
               >
@@ -212,5 +225,71 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
         </ol>
       </section>
     </main>
+  );
+}
+
+function CardDetail({ o }: { o: Option | null }) {
+  const c = o?.character;
+  return (
+    <div
+      className="panel grid min-h-[7.5rem] gap-3 p-4 text-sm sm:grid-cols-[1fr_1fr_auto]"
+      aria-live="polite"
+      data-testid="card-detail"
+    >
+      {!c ? (
+        <p className="muted sm:col-span-3">{it.veloce.passaSopra}</p>
+      ) : (
+        <>
+          <div className="min-w-0">
+            <div className="display truncate text-2xl font-black leading-none">{c.nome}</div>
+            <div className="mt-1 text-xs muted">
+              {ARCH_NOMI[c.arch ?? ""] ?? c.arch} · {paletteFor(c.anime).label}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {(c.tags ?? []).map((t) => (
+                <span key={t} className="chip">
+                  {t}
+                </span>
+              ))}
+              {(c.gruppi ?? []).map((g) => (
+                <span key={g} className="chip text-cyan-200">
+                  {g}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="min-w-0 space-y-1.5">
+            {c.mossa && (
+              <p>
+                <b className="text-amber-200">⚡ {c.mossa.nome}</b>
+                {c.mossa.effetto && (
+                  <span className="muted">
+                    {" "}
+                    — {MOSSE_EFFETTO[c.mossa.effetto] ?? c.mossa.effetto}
+                  </span>
+                )}
+              </p>
+            )}
+            {c.passiva && (
+              <p>
+                <b className="text-cyan-200">◆ {c.passiva.nome}</b>
+                {c.passiva.effetto && (
+                  <span className="muted">
+                    {" "}
+                    — {PASSIVA_EFFETTO[c.passiva.effetto] ?? c.passiva.effetto}
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+          <div className="text-right">
+            <div className="display text-4xl font-black text-gold">{c.rating}</div>
+            <div className="text-xs muted">
+              {it.veloce.costo} {o?.cost}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
