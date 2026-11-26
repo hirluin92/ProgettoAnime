@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import it from "@/i18n/it.json";
 import { APP_NAME } from "@/lib/constants";
+import { useProfile } from "@/lib/profile";
 
 const LINKS = [
   { href: "/", label: it.nav.gioca },
   { href: "/veloce", label: it.nav.veloce },
   { href: "/sfida", label: it.nav.sfida },
+  { href: "/profilo", label: it.nav.profilo },
   { href: "/info", label: it.nav.info },
 ] as const;
 
@@ -30,6 +32,7 @@ export function Logo({ size = 34 }: { size?: number }) {
 
 export default function SiteNav() {
   const path = usePathname();
+  const { profile } = useProfile();
   const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
   return (
     <header className="site-chrome sticky top-0 z-40">
@@ -46,17 +49,25 @@ export default function SiteNav() {
           </Link>
           <ul className="flex items-center gap-1">
             {LINKS.map((l) => (
-              <li key={l.href}>
+              <li key={l.href} className={l.href === "/info" ? "hidden min-[430px]:block" : ""}>
                 <Link
                   href={l.href}
                   aria-current={active(l.href) ? "page" : undefined}
-                  className={`relative block rounded-full px-3.5 py-1.5 text-sm font-bold transition-colors ${
+                  className={`relative block rounded-full px-2.5 py-1.5 text-[0.8rem] font-bold sm:px-3.5 sm:text-sm transition-colors ${
                     active(l.href)
                       ? "bg-white/12 text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.18)]"
                       : "text-[#a9a3c7] hover:bg-white/8 hover:text-white"
                   }`}
                 >
                   {l.label}
+                  {l.href === "/profilo" && profile && (
+                    <span
+                      className="ml-1.5 rounded-full bg-amber-300/25 px-1.5 text-[0.65rem] font-black text-amber-200"
+                      data-testid="nav-livello"
+                    >
+                      {profile.livello}
+                    </span>
+                  )}
                 </Link>
               </li>
             ))}

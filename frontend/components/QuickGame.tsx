@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
 import ArenaBanner from "@/components/ArenaBanner";
+import PremioPanel from "@/components/PremioPanel";
 import MissionCard from "@/components/MissionCard";
 import { AffinityLegend } from "@/components/draft/Affinity";
 import { CardDetail, DetailSheet } from "@/components/draft/CardDetail";
@@ -19,6 +20,7 @@ import {
   type PickIn,
   type Placed,
 } from "@/lib/draft";
+import type { Premio } from "@/lib/profile";
 import type { MatchResult } from "@/lib/types/match";
 
 export interface Played {
@@ -27,6 +29,7 @@ export interface Played {
   spent: number;
   cpu_spent: number;
   missione: MissioneEsito;
+  premio: Premio | null;
 }
 
 interface Props {
@@ -60,6 +63,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const [piano, setPiano] = useState<(Tattica | null)[]>(Array(FASI).fill(null));
   const [played, setPlayed] = useState<Played | null>(null);
   const [busy, setBusy] = useState(false);
+  const [battleDone, setBattleDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const start = useCallback(async () => {
@@ -76,6 +80,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     setCarica("subito");
     setFormazione("classica");
     setPlayed(null);
+    setBattleDone(false);
     setError(null);
     setD(await load());
   }, [load]);
@@ -170,20 +175,25 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
             {it.battle.linkPartita}
           </a>
         </p>
-        <BattleScene result={played.result} autoplay />
-        <div className="grid gap-3 md:grid-cols-2" data-testid="mission-result">
-          <MissionCard
-            titolo={it.missione.tua}
-            nome={played.missione.nome}
-            descrizione={played.missione.descrizione}
-            esito={played.missione.riuscita}
-          />
-          <p className="text-sm muted">
-            {it.missione.cpu}:{" "}
-            {played.missione.cpu_riuscita ? it.missione.riuscita : it.missione.fallita}
-          </p>
-        </div>
-        {after}
+        <BattleScene result={played.result} autoplay onDone={() => setBattleDone(true)} />
+        {battleDone && (
+          <>
+            <div className="grid gap-3 md:grid-cols-2" data-testid="mission-result">
+              <MissionCard
+                titolo={it.missione.tua}
+                nome={played.missione.nome}
+                descrizione={played.missione.descrizione}
+                esito={played.missione.riuscita}
+              />
+              <p className="text-sm muted">
+                {it.missione.cpu}:{" "}
+                {played.missione.cpu_riuscita ? it.missione.riuscita : it.missione.fallita}
+              </p>
+            </div>
+            {played.premio && <PremioPanel premio={played.premio} />}
+          </>
+        )}
+        {battleDone && after}
       </main>
     );
 

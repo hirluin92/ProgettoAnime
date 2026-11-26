@@ -1,0 +1,386 @@
+"""Profilo, XP, livelli, obiettivi giornalieri, collezione e stagioni (V3).
+
+Il profilo è anonimo: un id casuale conservato nel browser. Le regole (XP, livelli, obiettivi)
+sono funzioni pure; l'accesso al database sta in `assegna_premio` e nel router.
+"""
+
+import random
+import re
+from collections.abc import Callable
+from dataclasses import dataclass
+from datetime import UTC, datetime
+
+from fastapi import APIRouter, HTTPException
+from pydantic import Field
+from sqlalchemy import select
+
+from app.data_loader import load_characters, load_forms
+from app.db.models import ProfileDay, ProfileRow, SeasonScore
+from app.db.session import session_scope
+from app.engine.models import Fase, MatchResult, Model
+
+router = APIRouter(prefix="/api")
+
+UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+XP_OBIETTIVO = 20
+XP_PRIMO_GIOCO = 10
+TOP_STAGIONE = 20
+
+TITOLI: tuple[tuple[int, str], ...] = (
+    (1, "Recluta"),
+    (3, "Sfidante"),
+    (5, "Veterano"),
+    (8, "Stratega"),
+    (12, "Campione"),
+    (18, "Leggenda"),
+)
+
+
+# ---------- regole pure ----------
+def xp_per_livello(livello: int) -> int:
+    """XP totali necessari per raggiungere un livello (livello 1 = 0)."""
+    return 60 * (livello - 1) ** 2
+
+
+def livello_per_xp(xp: int) -> int:
+    livello = 1
+    while xp >= xp_per_livello(livello + 1):
+        livello += 1
+    return livello
+
+
+def titolo_per_livello(livello: int) -> str:
+    return [t for soglia, t in TITOLI if livello >= soglia][-1]
+
+
+@dataclass(frozen=True)
+class Partita:
+    """Quello che serve a decidere premi e obiettivi di una partita finita."""
+
+    result: MatchResult
+    missione_ok: bool
+    kind: str  # "veloce" | "sfida"
+    forme: int  # quante carte in forma alternativa nella squadra del giocatore
+
+    @property
+    def vinto(self) -> bool:
+        return self.result.vincitore == "A" and not self.result.pareggio
+
+    @property
+    def ko_totale(self) -> bool:
+        return self.vinto and self.result.totali["B"] == 0
+
+    @property
+    def fasi_vinte(self) -> int:
+        return sum(1 for e in self.result.eventi if isinstance(e, Fase) and e.esito == "A")
+
+
+def xp_partita(p: Partita) -> int:
+    return (
+        20
+        + (30 if p.vinto else 0)
+        + (10 if p.ko_totale else 0)
+        + (15 if p.missione_ok else 0)
+        + (25 if p.kind == "sfida" else 0)
+    )
+
+
+@dataclass(frozen=True)
+class Obiettivo:
+    id: str
+    nome: str
+    descrizione: str
+    check: Callable[[Partita], bool]
+
+
+OBIETTIVI: dict[str, Obiettivo] = {
+    o.id: o
+    for o in (
+        Obiettivo("vinci", "Vittoria", "Vinci una partita.", lambda p: p.vinto),
+        Obiettivo(
+            "missione",
+            "Missione compiuta",
+            "Completa la tua missione segreta.",
+            lambda p: p.missione_ok,
+        ),
+        Obiettivo(
+            "sfida", "Sfida accettata", "Gioca la sfida del giorno.", lambda p: p.kind == "sfida"
+        ),
+        Obiettivo(
+            "ko",
+            "Annientamento",
+            "Vinci mandando K.O. tutta la squadra avversaria.",
+            lambda p: p.ko_totale,
+        ),
+        Obiettivo(
+            "rivalita",
+            "Vecchi conti",
+            "Vinci con una rivalità attiva in campo.",
+            lambda p: p.vinto and bool(p.result.rivalita),
+        ),
+        Obiettivo(
+            "forma",
+            "Nuova forma",
+            "Schiera un personaggio in forma alternativa.",
+            lambda p: p.forme > 0,
+        ),
+        Obiettivo(
+            "fasi",
+            "Stratega",
+            "Vinci almeno 2 fasi su 3 nel confronto delle tattiche.",
+            lambda p: p.fasi_vinte >= 2,
+        ),
+        Obiettivo(
+            "carica",
+            "Sangue freddo",
+            "Vinci trattenendo la mossa finale.",
+            lambda p: p.vinto and p.result.carica.get("A") == "carica",
+        ),
+    )
+}
+
+
+def obiettivi_del_giorno(giorno: str) -> list[Obiettivo]:
+    rnd = random.Random(f"obiettivi:{giorno}")
+    return [OBIETTIVI[i] for i in rnd.sample(list(OBIETTIVI), 3)]
+
+
+def stagione_di(giorno: str) -> str:
+    return giorno[:7]
+
+
+def punti_stagione(p: Partita, score: int | None) -> int:
+    if p.kind == "sfida" and score is not None:
+        return max(1, score // 10)
+    return 3 if p.vinto else 1
+
+
+# ---------- modelli ----------
+class ObiettivoView(Model):
+    id: str
+    nome: str
+    descrizione: str
+    fatto: bool
+
+
+class StagioneView(Model):
+    id: str
+    punti: int
+    posizione: int | None
+
+
+class ProfileView(Model):
+    id: str
+    name: str
+    xp: int
+    livello: int
+    xp_livello: int  # XP di inizio del livello attuale
+    xp_prossimo: int  # XP del livello successivo
+    titolo: str
+    partite: int
+    vittorie: int
+    collezione: list[str]
+    collezione_totale: int
+    obiettivi: list[ObiettivoView]
+    stagione: StagioneView
+
+
+class Premio(Model):
+    xp: int
+    xp_totale: int
+    livello_prima: int
+    livello_dopo: int
+    titolo: str
+    obiettivi_completati: list[ObiettivoView]
+    punti_stagione: int
+    nuove_carte: int
+
+
+class ProfileIn(Model):
+    id: str | None = None
+    name: str = Field(min_length=1, max_length=24)
+
+
+class SeasonRow(Model):
+    name: str
+    points: int
+
+
+class CollectionItem(Model):
+    id: str
+    nome: str
+    anime: str
+    rating: int
+    forma: str | None
+
+
+class SeasonView(Model):
+    season: str
+    top: list[SeasonRow]
+
+
+def oggi() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%d")
+
+
+def totale_collezione() -> int:
+    return len(load_characters()) + len(load_forms())
+
+
+# ---------- accesso ai dati ----------
+def _view(s, row: ProfileRow, giorno: str) -> ProfileView:  # type: ignore[no-untyped-def]
+    day = s.scalar(
+        select(ProfileDay).where(ProfileDay.profile_id == row.id, ProfileDay.day == giorno)
+    )
+    fatti = set(day.fatti) if day else set()
+    stagione = stagione_di(giorno)
+    mio = s.scalar(
+        select(SeasonScore).where(SeasonScore.season == stagione, SeasonScore.profile_id == row.id)
+    )
+    punti = mio.points if mio else 0
+    pos = None
+    if mio:
+        pos = 1 + len(
+            s.scalars(
+                select(SeasonScore.id).where(
+                    SeasonScore.season == stagione, SeasonScore.points > mio.points
+                )
+            ).all()
+        )
+    lv = livello_per_xp(row.xp)
+    return ProfileView(
+        id=row.id,
+        name=row.name,
+        xp=row.xp,
+        livello=lv,
+        xp_livello=xp_per_livello(lv),
+        xp_prossimo=xp_per_livello(lv + 1),
+        titolo=titolo_per_livello(lv),
+        partite=row.partite,
+        vittorie=row.vittorie,
+        collezione=sorted(row.collezione),
+        collezione_totale=totale_collezione(),
+        obiettivi=[
+            ObiettivoView(id=o.id, nome=o.nome, descrizione=o.descrizione, fatto=o.id in fatti)
+            for o in obiettivi_del_giorno(giorno)
+        ],
+        stagione=StagioneView(id=stagione, punti=punti, posizione=pos),
+    )
+
+
+def assegna_premio(
+    profile_id: str | None, partita: Partita, team_ids: list[str], score: int | None = None
+) -> Premio | None:
+    """Assegna XP, obiettivi, collezione e punti stagione a fine partita (se c'è un profilo)."""
+    if not profile_id or not UUID_RE.match(profile_id):
+        return None
+    giorno = oggi()
+    with session_scope() as s:
+        row = s.get(ProfileRow, profile_id)
+        if row is None:
+            return None
+        prima = livello_per_xp(row.xp)
+        day = s.scalar(
+            select(ProfileDay).where(ProfileDay.profile_id == profile_id, ProfileDay.day == giorno)
+        )
+        if day is None:
+            day = ProfileDay(profile_id=profile_id, day=giorno, fatti=[], primo=False)
+            s.add(day)
+        guadagno = xp_partita(partita)
+        if not day.primo:
+            guadagno += XP_PRIMO_GIOCO
+            day.primo = True
+        nuovi = [
+            o for o in obiettivi_del_giorno(giorno) if o.id not in day.fatti and o.check(partita)
+        ]
+        day.fatti = [*day.fatti, *(o.id for o in nuovi)]
+        guadagno += XP_OBIETTIVO * len(nuovi)
+        row.xp += guadagno
+        row.partite += 1
+        row.vittorie += int(partita.vinto)
+        prima_coll = set(row.collezione)
+        row.collezione = sorted(prima_coll | set(team_ids))
+        pts = punti_stagione(partita, score)
+        stag = stagione_di(giorno)
+        sc = s.scalar(
+            select(SeasonScore).where(SeasonScore.season == stag, SeasonScore.profile_id == row.id)
+        )
+        if sc is None:
+            s.add(SeasonScore(season=stag, profile_id=row.id, name=row.name, points=pts))
+        else:
+            sc.points += pts
+            sc.name = row.name
+        dopo = livello_per_xp(row.xp)
+        return Premio(
+            xp=guadagno,
+            xp_totale=row.xp,
+            livello_prima=prima,
+            livello_dopo=dopo,
+            titolo=titolo_per_livello(dopo),
+            obiettivi_completati=[
+                ObiettivoView(id=o.id, nome=o.nome, descrizione=o.descrizione, fatto=True)
+                for o in nuovi
+            ],
+            punti_stagione=pts,
+            nuove_carte=len(set(team_ids) - prima_coll),
+        )
+
+
+# ---------- API ----------
+@router.post("/profile")
+def upsert_profile(body: ProfileIn) -> ProfileView:
+    name = body.name.strip()[:24]
+    if not name:
+        raise HTTPException(422, "serve un nome")
+    if body.id is not None and not UUID_RE.match(body.id):
+        raise HTTPException(422, "id profilo non valido")
+    pid = body.id or _new_id()
+    with session_scope() as s:
+        row = s.get(ProfileRow, pid)
+        if row is None:
+            row = ProfileRow(id=pid, name=name, xp=0, partite=0, vittorie=0, collezione=[])
+            s.add(row)
+        else:
+            row.name = name
+        s.flush()
+        return _view(s, row, oggi())
+
+
+@router.get("/profile/{profile_id}")
+def get_profile(profile_id: str) -> ProfileView:
+    if not UUID_RE.match(profile_id):
+        raise HTTPException(422, "id profilo non valido")
+    with session_scope() as s:
+        row = s.get(ProfileRow, profile_id)
+        if row is None:
+            raise HTTPException(404, "profilo non trovato")
+        return _view(s, row, oggi())
+
+
+@router.get("/collection")
+def collection() -> list[CollectionItem]:
+    """Tutte le carte collezionabili: i personaggi e le loro forme."""
+    tutte = [*load_characters().values(), *load_forms().values()]
+    return [
+        CollectionItem(id=c.id, nome=c.nome, anime=c.anime, rating=c.rating, forma=c.forma)
+        for c in tutte
+    ]
+
+
+@router.get("/season")
+def season() -> SeasonView:
+    stag = stagione_di(oggi())
+    with session_scope() as s:
+        rows = s.scalars(
+            select(SeasonScore)
+            .where(SeasonScore.season == stag)
+            .order_by(SeasonScore.points.desc(), SeasonScore.id)
+            .limit(TOP_STAGIONE)
+        ).all()
+        return SeasonView(season=stag, top=[SeasonRow(name=r.name, points=r.points) for r in rows])
+
+
+def _new_id() -> str:
+    import uuid
+
+    return str(uuid.uuid4())

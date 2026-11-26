@@ -206,7 +206,8 @@
     "gioca": "Gioca",
     "veloce": "Veloce",
     "sfida": "Sfida",
-    "info": "Info"
+    "info": "Info",
+    "profilo": "Profilo"
   },
   "draft": {
     "tono": {
@@ -276,5 +277,31 @@
     "consegnato": "Piano consegnato: aspetto gli altri giocatori…",
     "tempo": "Tempo",
     "giocatori": "Piani consegnati"
+  },
+  "profilo": {
+    "titolo": "Il tuo profilo",
+    "sottotitolo": "Livello, collezione e classifica della stagione. Resta su questo dispositivo.",
+    "nome": "Come ti chiami?",
+    "crea": "Crea il profilo",
+    "salva": "Cambia nome",
+    "premio": "Ricompensa",
+    "nuovoLivello": "Nuovo livello!",
+    "stagione": "Punti stagione",
+    "nuoveCarte": "{n} nuove carte in collezione",
+    "livello": "Livello",
+    "xp": "XP",
+    "partite": "Partite",
+    "vittorie": "Vittorie",
+    "percentuale": "Vittorie %",
+    "obiettivi": "Obiettivi di oggi",
+    "obiettivoXp": "+20 XP ciascuno",
+    "collezione": "Collezione",
+    "bloccata": "???",
+    "classifica": "Classifica della stagione",
+    "tuaPosizione": "La tua posizione",
+    "nessuno": "Nessuno ha ancora punti questo mese.",
+    "esci": "Dimentica questo profilo",
+    "gioca": "Gioca per guadagnare XP",
+    "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica."
   }
 }
