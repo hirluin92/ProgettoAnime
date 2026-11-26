@@ -90,17 +90,17 @@ Crediti SOLO guadagnati giocando (metà degli XP di ogni partita; mai acquistabi
 Nelle stanze streamer con «Duello a corsie» la chat gioca un giocatore: a ogni turno `TorneoDuelli.piani_chat` propone 3 piani validi (A Equilibrato = euristica, B Tutto in una corsia, C Prudente) e la chat vota con `!a`, `!b`, `!c` (un voto per utente, vale l'ultimo; parità: sorteggio dal seme; nessun voto: piano A). Il turno della chat si risolve allo scadere del timer (gli altri giocatori aspettano). `RoomView.chat_duello` mostra opzioni e voti in diretta (`ChatDuelloVoti`, anche nell'overlay OBS). Testato con unit test e `feed_message`; nessun e2e dedicato (il test streamer esistente resta quello dell'asta).
 
 ## Da fare (in ordine di valore)
-1. **L'utente gioca e riporta:** una partita veloce, un'asta con amici, la sfida del giorno. Poi correggere schede/mosse/prezzi in base a cosa gli sembra sbagliato e rilanciare `balance_v2.py --scrivi`.
-2. **Revisione grafica (2026-11-26, fatta):** rivisti nel browser sfida, partita veloce, lobby, ban, asta con 2 giocatori, torneo, replay e overlay OBS; simulato 360 px. Corretti: recap squadra, home mobile, badge voto fuori bordo, errori del server invisibili nella stanza, testo doppio "sta scegliendo il ruolo". **Resta:** provare su un telefono vero; la fase di ban dura sempre 30 s anche se tutti hanno già bannato solo se i ban non sono finiti (da verificare con 2 umani); torneo e classifica sono molto spartani (nessuna squadra visibile, solo i link alle partite).
-3. **Grafica rimandata:** suoni migliori (oggi solo beep Web Audio), home con statistiche live (stanze attive, ultimi scontri), rifinitura asta e mobile, mostrare le statistiche/mossa/passiva leggibili nella carta o in un dettaglio.
-4. **Asta v2:** mostrare sinergie e fila nell'asta e nel recap della squadra; il costo misurato oggi vale solo per partita veloce/sfida, l'asta in stanza resta a offerte libere.
-5. **Revisione dei dati** (decisione dell'utente): le 100 schede e i rating sono miei, inventati. Obito e Gotenks senza immagine.
-6. **Qualità:** la CI deve far girare i test anche su **Postgres** (i test usano SQLite: un bug `integer out of range` era sfuggito per questo). Aggiungere un servizio Postgres alla CI.
-7. **Persistenza:** le stanze vivono in memoria (un riavvio le perde). Salvare lo stato su Postgres a ogni lotto.
-8. **Contenuti:** 140+ personaggi per reggere 20 giocatori (oggi ~14). Nome e dominio definitivi ("Arena Anime" è provvisorio, un solo punto: `frontend/lib/constants.ts`).
-9. **Crescita/legale:** contattare i primi streamer; se si vorrà guadagnare, chiedere il permesso ad AniList o togliere le immagini.
+Fatto dal 2026-11-26 (V4, vedi M18-M29 sopra): Duello a corsie, rompicapo del giorno, ELO, Veloce migliorato, torneo a duelli nelle stanze, account, album/mazzi, crediti/pacchetti, ranked a leghe, Scala roguelike, voto della chat, home aggiornata. Online: Vercel (frontend) e Render (backend, deploy manuale) alla data di M29.
+1. **L'utente gioca e riporta** (soprattutto: le partite a Duello, il ranked, la Scala, le stanze con duelli). Ritarare con `scripts/balance_duello.py` e correggere gli effetti più forti/deboli.
+2. **Raid a corsie** (ogni giocatore comanda una corsia contro un boss): non fatto; il Raid resta quello 7v7 (richiede di estendere il motore a più mani per lato).
+3. **Pulizia vecchio 7v7:** si tengono Veloce (richiesta dell'utente) e il Raid; da togliere quando si vorrà: `app/scala.py`, `ScalaLadder`, la vecchia `/sfida` (`app/daily.py`) e i relativi test/e2e. Rimuovere solo con l'ok dell'utente.
+4. **Account:** aggiungere Google e link via email (servono un client Google e un servizio email creati dall'utente; chiavi solo in `.env`). Oggi: nome utente + password + codice di recupero.
+5. **Ranked:** 1 contro 1 dal vivo (stanze esistenti), ricompense di fine stagione, protezione anti-farming oltre all'account.
+6. **Duello:** tutorial interattivo vero (oggi regole in un riquadro), animazioni di rivelazione per corsia, suoni, missioni segrete nei duelli delle stanze, replay dei duelli.
+7. **Qualità:** CI su Postgres (i test usano SQLite); il test e2e `streamer.spec.ts` è instabile in CI (lo stesso commit passa o fallisce); la CI a volte ha runner lentissimi (18+ min): rilanciare con `gh run rerun --failed`.
+8. **Persistenza:** stanze, partite del Duello, corse della Scala e sessioni ranked vivono in memoria (un riavvio le perde); salvare su Postgres se serve.
+9. **Contenuti e legale:** 123 carte (poche per l'album e i pacchetti: servono più forme/personaggi); dati inventati da rivedere; Obito e Gotenks senza immagine. Monetizzare NON è possibile finché si usano personaggi di terzi e immagini AniList (non commerciale): le strade sono permesso/licenza, o un'edizione con personaggi originali o di pubblico dominio (miti, storia) usando lo stesso motore. Crediti solo guadagnati, mai acquistabili.
 10. Cancellare l'app Fly.io; resettare la password Neon.
-11. Idee mai fatte: asta a buste segrete, bluff, mercato tra giocatori, account/collezione.
 
 ## Trappole già incontrate (non rifarle)
 - Le sostituzioni di testo via script Python con indentazione diversa falliscono **in silenzio** dopo Prettier: usare `Edit` o fare `assert` sul testo cercato.
