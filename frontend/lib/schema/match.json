@@ -1,12 +1,16 @@
 {
   "$defs": {
-    "Attacco": {
+    "Azione": {
       "properties": {
         "tipo": {
-          "const": "attacco",
-          "default": "attacco",
+          "const": "azione",
+          "default": "azione",
           "title": "Tipo",
           "type": "string"
+        },
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
         },
         "da": {
           "enum": ["A", "B"],
@@ -17,50 +21,31 @@
           "title": "Idx",
           "type": "integer"
         },
-        "danno": {
-          "title": "Danno",
-          "type": "integer"
+        "mossa": {
+          "title": "Mossa",
+          "type": "string"
+        },
+        "speciale": {
+          "title": "Speciale",
+          "type": "boolean"
+        },
+        "effetto": {
+          "title": "Effetto",
+          "type": "string"
+        },
+        "esiti": {
+          "items": {
+            "$ref": "#/$defs/Esito"
+          },
+          "title": "Esiti",
+          "type": "array"
+        },
+        "stato": {
+          "$ref": "#/$defs/Stato"
         }
       },
-      "required": ["tipo", "da", "idx", "danno"],
-      "title": "Attacco",
-      "type": "object"
-    },
-    "Breakdown": {
-      "properties": {
-        "base": {
-          "default": 0,
-          "title": "Base",
-          "type": "integer"
-        },
-        "ruolo": {
-          "default": 0,
-          "title": "Ruolo",
-          "type": "integer"
-        },
-        "firma": {
-          "default": 0,
-          "title": "Firma",
-          "type": "integer"
-        },
-        "forma": {
-          "default": 0,
-          "title": "Forma",
-          "type": "integer"
-        },
-        "counter": {
-          "default": 0,
-          "title": "Counter",
-          "type": "integer"
-        },
-        "duo": {
-          "default": 0,
-          "title": "Duo",
-          "type": "integer"
-        }
-      },
-      "required": ["base", "ruolo", "firma", "forma", "counter", "duo"],
-      "title": "Breakdown",
+      "required": ["tipo", "turno", "da", "idx", "mossa", "speciale", "effetto", "esiti", "stato"],
+      "title": "Azione",
       "type": "object"
     },
     "Character": {
@@ -107,100 +92,119 @@
           ],
           "default": null,
           "title": "Immagine Url"
+        },
+        "arch": {
+          "default": "BRU",
+          "title": "Arch",
+          "type": "string"
+        },
+        "mossa": {
+          "$ref": "#/$defs/Mossa",
+          "default": {
+            "nome": "Colpo speciale",
+            "effetto": "strike"
+          }
+        },
+        "passiva": {
+          "$ref": "#/$defs/Passiva",
+          "default": {
+            "nome": "Tempra",
+            "effetto": "armor"
+          }
+        },
+        "gruppi": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gruppi",
+          "type": "array"
+        },
+        "costo": {
+          "default": 6,
+          "maximum": 14,
+          "minimum": 1,
+          "title": "Costo",
+          "type": "integer"
         }
       },
-      "required": ["id", "nome", "anime", "ruolo_firma", "tags", "rating", "immagine_url"],
+      "required": [
+        "id",
+        "nome",
+        "anime",
+        "ruolo_firma",
+        "tags",
+        "rating",
+        "immagine_url",
+        "arch",
+        "mossa",
+        "passiva",
+        "gruppi",
+        "costo"
+      ],
       "title": "Character",
       "type": "object"
     },
-    "Combo": {
+    "Esito": {
       "properties": {
-        "tipo": {
-          "const": "combo",
-          "default": "combo",
-          "title": "Tipo",
-          "type": "string"
-        },
-        "da": {
+        "lato": {
           "enum": ["A", "B"],
-          "title": "Da",
-          "type": "string"
-        },
-        "duo": {
-          "items": {
-            "type": "integer"
-          },
-          "maxItems": 2,
-          "minItems": 2,
-          "title": "Duo",
-          "type": "array"
-        },
-        "nome": {
-          "title": "Nome",
-          "type": "string"
-        },
-        "bonus": {
-          "title": "Bonus",
-          "type": "integer"
-        },
-        "danno": {
-          "title": "Danno",
-          "type": "integer"
-        }
-      },
-      "required": ["tipo", "da", "duo", "nome", "bonus", "danno"],
-      "title": "Combo",
-      "type": "object"
-    },
-    "Counter": {
-      "properties": {
-        "tipo": {
-          "const": "counter",
-          "default": "counter",
-          "title": "Tipo",
-          "type": "string"
-        },
-        "da": {
-          "enum": ["A", "B"],
-          "title": "Da",
-          "type": "string"
-        },
-        "rel": {
-          "title": "Rel",
-          "type": "string"
-        },
-        "bonus": {
-          "title": "Bonus",
-          "type": "integer"
-        },
-        "danno": {
-          "title": "Danno",
-          "type": "integer"
-        }
-      },
-      "required": ["tipo", "da", "rel", "bonus", "danno"],
-      "title": "Counter",
-      "type": "object"
-    },
-    "Duello": {
-      "properties": {
-        "tipo": {
-          "const": "duello",
-          "default": "duello",
-          "title": "Tipo",
-          "type": "string"
-        },
-        "ruolo": {
-          "title": "Ruolo",
+          "title": "Lato",
           "type": "string"
         },
         "idx": {
           "title": "Idx",
           "type": "integer"
+        },
+        "delta": {
+          "title": "Delta",
+          "type": "integer"
+        },
+        "scudo": {
+          "title": "Scudo",
+          "type": "integer"
+        },
+        "ko": {
+          "title": "Ko",
+          "type": "boolean"
+        },
+        "schivata": {
+          "title": "Schivata",
+          "type": "boolean"
+        },
+        "crit": {
+          "title": "Crit",
+          "type": "boolean"
+        },
+        "stordito": {
+          "title": "Stordito",
+          "type": "boolean"
         }
       },
-      "required": ["tipo", "ruolo", "idx"],
-      "title": "Duello",
+      "required": ["lato", "idx", "delta", "scudo", "ko", "schivata", "crit", "stordito"],
+      "title": "Esito",
+      "type": "object"
+    },
+    "Fine": {
+      "properties": {
+        "tipo": {
+          "const": "fine",
+          "default": "fine",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "vincitore": {
+          "enum": ["A", "B"],
+          "title": "Vincitore",
+          "type": "string"
+        },
+        "motivo": {
+          "enum": ["ko", "tempo"],
+          "title": "Motivo",
+          "type": "string"
+        }
+      },
+      "required": ["tipo", "vincitore", "motivo"],
+      "title": "Fine",
       "type": "object"
     },
     "Ingresso": {
@@ -210,32 +214,118 @@
           "default": "ingresso",
           "title": "Tipo",
           "type": "string"
+        },
+        "stato": {
+          "$ref": "#/$defs/Stato"
         }
       },
-      "required": ["tipo"],
+      "required": ["tipo", "stato"],
       "title": "Ingresso",
       "type": "object"
     },
-    "Ko": {
+    "Mossa": {
       "properties": {
-        "tipo": {
-          "const": "ko",
-          "default": "ko",
-          "title": "Tipo",
+        "nome": {
+          "title": "Nome",
           "type": "string"
         },
-        "da": {
+        "effetto": {
+          "title": "Effetto",
+          "type": "string"
+        }
+      },
+      "required": ["nome", "effetto"],
+      "title": "Mossa",
+      "type": "object"
+    },
+    "Passiva": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "effetto": {
+          "title": "Effetto",
+          "type": "string"
+        }
+      },
+      "required": ["nome", "effetto"],
+      "title": "Passiva",
+      "type": "object"
+    },
+    "Sinergia": {
+      "properties": {
+        "lato": {
           "enum": ["A", "B"],
-          "title": "Da",
+          "title": "Lato",
           "type": "string"
         },
-        "danno": {
-          "title": "Danno",
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "stat": {
+          "title": "Stat",
+          "type": "string"
+        },
+        "valore": {
+          "title": "Valore",
+          "type": "integer"
+        },
+        "membri": {
+          "title": "Membri",
           "type": "integer"
         }
       },
-      "required": ["tipo", "da", "danno"],
-      "title": "Ko",
+      "required": ["lato", "nome", "stat", "valore", "membri"],
+      "title": "Sinergia",
+      "type": "object"
+    },
+    "Stato": {
+      "description": "Fotografia del campo dopo un'azione (cos\u00ec l'interfaccia non deve rifare i conti).",
+      "properties": {
+        "hp": {
+          "additionalProperties": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "propertyNames": {
+            "enum": ["A", "B"]
+          },
+          "title": "Hp",
+          "type": "object"
+        },
+        "energia": {
+          "additionalProperties": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "propertyNames": {
+            "enum": ["A", "B"]
+          },
+          "title": "Energia",
+          "type": "object"
+        },
+        "scudo": {
+          "additionalProperties": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "propertyNames": {
+            "enum": ["A", "B"]
+          },
+          "title": "Scudo",
+          "type": "object"
+        }
+      },
+      "required": ["hp", "energia", "scudo"],
+      "title": "Stato",
       "type": "object"
     },
     "Team": {
@@ -257,11 +347,61 @@
       "required": ["nome", "members"],
       "title": "Team",
       "type": "object"
+    },
+    "Turno": {
+      "properties": {
+        "tipo": {
+          "const": "turno",
+          "default": "turno",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        }
+      },
+      "required": ["tipo", "n"],
+      "title": "Turno",
+      "type": "object"
+    },
+    "Unita": {
+      "description": "Statistiche iniziali di un combattente (dopo ruolo, sinergie e legami).",
+      "properties": {
+        "hp": {
+          "title": "Hp",
+          "type": "integer"
+        },
+        "atk": {
+          "title": "Atk",
+          "type": "integer"
+        },
+        "dif": {
+          "title": "Dif",
+          "type": "integer"
+        },
+        "vel": {
+          "title": "Vel",
+          "type": "integer"
+        },
+        "adatto": {
+          "title": "Adatto",
+          "type": "boolean"
+        }
+      },
+      "required": ["hp", "atk", "dif", "vel", "adatto"],
+      "title": "Unita",
+      "type": "object"
     }
   },
   "properties": {
     "seed": {
       "title": "Seed",
+      "type": "integer"
+    },
+    "versione": {
+      "default": 2,
+      "title": "Versione",
       "type": "integer"
     },
     "squadre": {
@@ -272,6 +412,19 @@
         "enum": ["A", "B"]
       },
       "title": "Squadre",
+      "type": "object"
+    },
+    "unita": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/Unita"
+        },
+        "type": "array"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Unita",
       "type": "object"
     },
     "potenze": {
@@ -287,6 +440,13 @@
       "title": "Potenze",
       "type": "object"
     },
+    "sinergie": {
+      "items": {
+        "$ref": "#/$defs/Sinergia"
+      },
+      "title": "Sinergie",
+      "type": "array"
+    },
     "totali": {
       "additionalProperties": {
         "type": "integer"
@@ -295,16 +455,6 @@
         "enum": ["A", "B"]
       },
       "title": "Totali",
-      "type": "object"
-    },
-    "dettaglio": {
-      "additionalProperties": {
-        "$ref": "#/$defs/Breakdown"
-      },
-      "propertyNames": {
-        "enum": ["A", "B"]
-      },
-      "title": "Dettaglio",
       "type": "object"
     },
     "vincitore": {
@@ -316,16 +466,18 @@
       "title": "Pareggio",
       "type": "boolean"
     },
+    "turni": {
+      "title": "Turni",
+      "type": "integer"
+    },
     "eventi": {
       "items": {
         "discriminator": {
           "mapping": {
-            "attacco": "#/$defs/Attacco",
-            "combo": "#/$defs/Combo",
-            "counter": "#/$defs/Counter",
-            "duello": "#/$defs/Duello",
+            "azione": "#/$defs/Azione",
+            "fine": "#/$defs/Fine",
             "ingresso": "#/$defs/Ingresso",
-            "ko": "#/$defs/Ko"
+            "turno": "#/$defs/Turno"
           },
           "propertyName": "tipo"
         },
@@ -334,19 +486,13 @@
             "$ref": "#/$defs/Ingresso"
           },
           {
-            "$ref": "#/$defs/Duello"
+            "$ref": "#/$defs/Turno"
           },
           {
-            "$ref": "#/$defs/Attacco"
+            "$ref": "#/$defs/Azione"
           },
           {
-            "$ref": "#/$defs/Counter"
-          },
-          {
-            "$ref": "#/$defs/Combo"
-          },
-          {
-            "$ref": "#/$defs/Ko"
+            "$ref": "#/$defs/Fine"
           }
         ]
       },
@@ -356,12 +502,15 @@
   },
   "required": [
     "seed",
+    "versione",
     "squadre",
+    "unita",
     "potenze",
+    "sinergie",
     "totali",
-    "dettaglio",
     "vincitore",
     "pareggio",
+    "turni",
     "eventi"
   ],
   "title": "MatchResult",

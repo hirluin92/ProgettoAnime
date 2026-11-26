@@ -26,7 +26,12 @@
     "replay": "Replay dello scontro",
     "provaTitolo": "Prova dello scontro",
     "nuovaSfida": "Nuova sfida",
-    "linkPartita": "Apri il link condivisibile"
+    "linkPartita": "Apri il link condivisibile",
+    "turno": "Turno",
+    "turni": "turni",
+    "migliore": "Migliore in campo",
+    "sinergie": "Sinergie",
+    "nessunaSinergia": "Nessuna sinergia attiva"
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",

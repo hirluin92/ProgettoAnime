@@ -45,6 +45,13 @@ export type RuoloFirma = string;
 export type Tags = [string] | [string, string] | [string, string, string];
 export type Rating = number;
 export type ImmagineUrl = string | null;
+export type Arch = string;
+export type Nome1 = string;
+export type Effetto = string;
+export type Nome2 = string;
+export type Effetto1 = string;
+export type Gruppi = string[];
+export type Costo = number;
 export type IsChat = boolean;
 export type Connected = boolean;
 export type Complete = boolean;
@@ -153,6 +160,19 @@ export interface Character {
   tags: Tags;
   rating: Rating;
   immagine_url: ImmagineUrl;
+  arch: Arch;
+  mossa: Mossa;
+  passiva: Passiva;
+  gruppi: Gruppi;
+  costo: Costo;
+}
+export interface Mossa {
+  nome: Nome1;
+  effetto: Effetto;
+}
+export interface Passiva {
+  nome: Nome2;
+  effetto: Effetto1;
 }
 export interface LotView {
   number: Number;

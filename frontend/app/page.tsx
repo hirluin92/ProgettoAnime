@@ -13,14 +13,22 @@ const HERO: Parameters<typeof CharacterCard>[0]["character"][] = [
   {
     nome: "Monkey D. Luffy",
     anime: "one-piece",
-    tags: ["MELEE", "TRANSFORM", "GIANT"],
+    arch: "BRU",
+    mossa: { nome: "Gomu Gomu Gatling" },
     rating: 93,
   },
-  { nome: "Satoru Gojo", anime: "jujutsu-kaisen", tags: ["BARRIER", "ENERGY", "AURA"], rating: 97 },
+  {
+    nome: "Satoru Gojo",
+    anime: "jujutsu-kaisen",
+    arch: "MAG",
+    mossa: { nome: "Vuoto Viola" },
+    rating: 97,
+  },
   {
     nome: "Tanjiro Kamado",
     anime: "demon-slayer",
-    tags: ["MELEE", "ELEMENT", "SPEED"],
+    arch: "BRU",
+    mossa: { nome: "Hinokami Kagura" },
     rating: 84,
   },
 ];

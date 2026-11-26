@@ -1,6 +1,8 @@
 # Proposta V2 — combattimento, personaggi, grafica
 
-Stato: **bozza da approvare**. Niente di questo è implementato.
+Stato: **implementata** (motore v2, schede dei 100 personaggi, sinergie, prezzi misurati, scena di combattimento v2).
+Da fare: suoni migliori, home con statistiche live, rifinitura di asta e mobile, revisione dei dati da parte tua.
+Per rilanciare il bilanciamento: `cd backend && uv run python ../scripts/balance_v2.py 6000 --scrivi`.
 
 ## 1. Perché cambiare
 

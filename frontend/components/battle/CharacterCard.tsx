@@ -5,10 +5,13 @@ import { useId, useState } from "react";
 import { SHOW_IMAGES } from "@/lib/api";
 import { paletteFor } from "@/lib/animePalette";
 import type { Character } from "@/lib/types/match";
+import { ARCH_NOMI } from "@/lib/battle/labels";
 import CardArt from "./CardArt";
 
 interface Props {
-  character: Pick<Character, "nome" | "anime" | "tags" | "rating"> & {
+  character: Pick<Character, "nome" | "anime" | "rating"> & {
+    arch?: string;
+    mossa?: { nome: string };
     immagine_url?: string | null;
   };
   role?: string;
@@ -155,7 +158,10 @@ export default function CharacterCard({
                 <img
                   src={character.immagine_url!}
                   alt={character.nome}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgFailed(true)}
+                  className="absolute inset-0 h-full w-full object-cover object-top"
                 />
               ) : (
                 <CardArt
@@ -167,15 +173,17 @@ export default function CharacterCard({
               )}
             </div>
             <div>
-              <div className="flex flex-wrap gap-1">
-                {character.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-md bg-white/12 px-1.5 py-0.5 text-[0.62rem] font-extrabold uppercase tracking-wide"
-                  >
-                    {t}
+              <div className="flex flex-wrap items-center gap-1">
+                {character.arch && (
+                  <span className="rounded-md bg-white/15 px-1.5 py-0.5 text-[0.62rem] font-extrabold uppercase tracking-wide">
+                    {ARCH_NOMI[character.arch] ?? character.arch}
                   </span>
-                ))}
+                )}
+                {character.mossa && (
+                  <span className="truncate text-[0.62rem] font-bold text-amber-200">
+                    ⚡ {character.mossa.nome}
+                  </span>
+                )}
               </div>
               <div className="mt-1 flex items-center justify-between text-[0.62rem] font-bold uppercase tracking-widest opacity-60">
                 <span>{pal.label}</span>

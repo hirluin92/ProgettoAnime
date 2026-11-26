@@ -1,5 +1,7 @@
 from typing import Any
 
+from pydantic import ValidationError
+
 from app.db.models import MatchRow, new_match_id
 from app.db.session import session_scope
 from app.engine.models import MatchResult
@@ -23,4 +25,9 @@ def get_match(match_id: str) -> MatchResult | None:
     with session_scope() as s:
         row = s.get(MatchRow, match_id)
         data: dict[str, Any] | None = row.result if row else None
-    return MatchResult.model_validate(data) if data else None
+    if not data:
+        return None
+    try:
+        return MatchResult.model_validate(data)
+    except ValidationError:  # partita salvata con un motore precedente: non più leggibile
+        return None

@@ -122,9 +122,55 @@
           ],
           "default": null,
           "title": "Immagine Url"
+        },
+        "arch": {
+          "default": "BRU",
+          "title": "Arch",
+          "type": "string"
+        },
+        "mossa": {
+          "$ref": "#/$defs/Mossa",
+          "default": {
+            "nome": "Colpo speciale",
+            "effetto": "strike"
+          }
+        },
+        "passiva": {
+          "$ref": "#/$defs/Passiva",
+          "default": {
+            "nome": "Tempra",
+            "effetto": "armor"
+          }
+        },
+        "gruppi": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Gruppi",
+          "type": "array"
+        },
+        "costo": {
+          "default": 6,
+          "maximum": 14,
+          "minimum": 1,
+          "title": "Costo",
+          "type": "integer"
         }
       },
-      "required": ["id", "nome", "anime", "ruolo_firma", "tags", "rating", "immagine_url"],
+      "required": [
+        "id",
+        "nome",
+        "anime",
+        "ruolo_firma",
+        "tags",
+        "rating",
+        "immagine_url",
+        "arch",
+        "mossa",
+        "passiva",
+        "gruppi",
+        "costo"
+      ],
       "title": "Character",
       "type": "object"
     },
@@ -368,6 +414,36 @@
       },
       "required": ["match_id", "a", "b", "winner", "total_a", "total_b"],
       "title": "MatchRef",
+      "type": "object"
+    },
+    "Mossa": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "effetto": {
+          "title": "Effetto",
+          "type": "string"
+        }
+      },
+      "required": ["nome", "effetto"],
+      "title": "Mossa",
+      "type": "object"
+    },
+    "Passiva": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "effetto": {
+          "title": "Effetto",
+          "type": "string"
+        }
+      },
+      "required": ["nome", "effetto"],
+      "title": "Passiva",
       "type": "object"
     },
     "PlayerPassed": {

@@ -144,3 +144,14 @@ def test_dev_endpoints_disabled_without_dev_tools(monkeypatch) -> None:  # type:
     client = TestClient(app)
     assert client.post("/api/dev/random-match").status_code == 404
     assert client.post("/api/dev/fake-chat/ABCDE", json={"messages": []}).status_code == 404
+
+
+def test_old_format_match_is_not_found(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from app.db import repo
+    from app.db.models import MatchRow
+    from app.db.session import configure, session_scope
+
+    configure(f"sqlite:///{tmp_path / 'old.db'}")
+    with session_scope() as s:
+        s.add(MatchRow(id="vecchia", room_code=None, seed=1, result={"seed": 1, "eventi": []}))
+    assert repo.get_match("vecchia") is None

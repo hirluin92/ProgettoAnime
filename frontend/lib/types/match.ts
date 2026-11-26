@@ -6,6 +6,7 @@
  */
 
 export type Seed = number;
+export type Versione = number;
 export type Nome = string;
 /**
  * @minItems 7
@@ -23,50 +24,62 @@ export type RuoloFirma = string;
 export type Tags = [string] | [string, string] | [string, string, string];
 export type Rating = number;
 export type ImmagineUrl = string | null;
-export type Base = number;
-export type Ruolo = number;
-export type Firma = number;
-export type Forma = number;
-export type Counter = number;
-export type Duo = number;
+export type Arch = string;
+export type Nome2 = string;
+export type Effetto = string;
+export type Nome3 = string;
+export type Effetto1 = string;
+export type Gruppi = string[];
+export type Costo = number;
+export type Hp = number;
+export type Atk = number;
+export type Dif = number;
+export type Vel = number;
+export type Adatto = boolean;
+export type Lato = "A" | "B";
+export type Nome4 = string;
+export type Stat = string;
+export type Valore = number;
+export type Membri = number;
+export type Sinergie = Sinergia[];
 export type Vincitore = "A" | "B";
 export type Pareggio = boolean;
+export type Turni = number;
 export type Tipo = "ingresso";
-export type Tipo1 = "duello";
-export type Ruolo1 = string;
-export type Idx = number;
-export type Tipo2 = "attacco";
+export type Tipo1 = "turno";
+export type N = number;
+export type Tipo2 = "azione";
+export type Turno1 = number;
 export type Da = "A" | "B";
+export type Idx = number;
+export type Mossa1 = string;
+export type Speciale = boolean;
+export type Effetto2 = string;
+export type Lato1 = "A" | "B";
 export type Idx1 = number;
-export type Danno = number;
-export type Tipo3 = "counter";
-export type Da1 = "A" | "B";
-export type Rel = string;
-export type Bonus = number;
-export type Danno1 = number;
-export type Tipo4 = "combo";
-export type Da2 = "A" | "B";
-/**
- * @minItems 2
- * @maxItems 2
- */
-export type Duo1 = [number, number];
-export type Nome2 = string;
-export type Bonus1 = number;
-export type Danno2 = number;
-export type Tipo5 = "ko";
-export type Da3 = "A" | "B";
-export type Danno3 = number;
-export type Eventi = (Ingresso | Duello | Attacco | Counter1 | Combo | Ko)[];
+export type Delta = number;
+export type Scudo1 = number;
+export type Ko = boolean;
+export type Schivata = boolean;
+export type Crit = boolean;
+export type Stordito = boolean;
+export type Esiti = Esito[];
+export type Tipo3 = "fine";
+export type Vincitore1 = "A" | "B";
+export type Motivo = "ko" | "tempo";
+export type Eventi = (Ingresso | Turno | Azione | Fine)[];
 
 export interface MatchResult {
   seed: Seed;
+  versione: Versione;
   squadre: Squadre;
+  unita: Unita;
   potenze: Potenze;
+  sinergie: Sinergie;
   totali: Totali;
-  dettaglio: Dettaglio;
   vincitore: Vincitore;
   pareggio: Pareggio;
+  turni: Turni;
   eventi: Eventi;
 }
 export interface Squadre {
@@ -84,55 +97,94 @@ export interface Character {
   tags: Tags;
   rating: Rating;
   immagine_url: ImmagineUrl;
+  arch: Arch;
+  mossa: Mossa;
+  passiva: Passiva;
+  gruppi: Gruppi;
+  costo: Costo;
+}
+export interface Mossa {
+  nome: Nome2;
+  effetto: Effetto;
+}
+export interface Passiva {
+  nome: Nome3;
+  effetto: Effetto1;
+}
+export interface Unita {
+  [k: string]: Unita1[];
+}
+/**
+ * Statistiche iniziali di un combattente (dopo ruolo, sinergie e legami).
+ */
+export interface Unita1 {
+  hp: Hp;
+  atk: Atk;
+  dif: Dif;
+  vel: Vel;
+  adatto: Adatto;
 }
 export interface Potenze {
   [k: string]: number[];
 }
+export interface Sinergia {
+  lato: Lato;
+  nome: Nome4;
+  stat: Stat;
+  valore: Valore;
+  membri: Membri;
+}
 export interface Totali {
   [k: string]: number;
 }
-export interface Dettaglio {
-  [k: string]: Breakdown;
-}
-export interface Breakdown {
-  base: Base;
-  ruolo: Ruolo;
-  firma: Firma;
-  forma: Forma;
-  counter: Counter;
-  duo: Duo;
-}
 export interface Ingresso {
   tipo: Tipo;
+  stato: Stato;
 }
-export interface Duello {
+/**
+ * Fotografia del campo dopo un'azione (così l'interfaccia non deve rifare i conti).
+ */
+export interface Stato {
+  hp: Hp1;
+  energia: Energia;
+  scudo: Scudo;
+}
+export interface Hp1 {
+  [k: string]: number[];
+}
+export interface Energia {
+  [k: string]: number[];
+}
+export interface Scudo {
+  [k: string]: number[];
+}
+export interface Turno {
   tipo: Tipo1;
-  ruolo: Ruolo1;
-  idx: Idx;
+  n: N;
 }
-export interface Attacco {
+export interface Azione {
   tipo: Tipo2;
+  turno: Turno1;
   da: Da;
+  idx: Idx;
+  mossa: Mossa1;
+  speciale: Speciale;
+  effetto: Effetto2;
+  esiti: Esiti;
+  stato: Stato;
+}
+export interface Esito {
+  lato: Lato1;
   idx: Idx1;
-  danno: Danno;
+  delta: Delta;
+  scudo: Scudo1;
+  ko: Ko;
+  schivata: Schivata;
+  crit: Crit;
+  stordito: Stordito;
 }
-export interface Counter1 {
+export interface Fine {
   tipo: Tipo3;
-  da: Da1;
-  rel: Rel;
-  bonus: Bonus;
-  danno: Danno1;
-}
-export interface Combo {
-  tipo: Tipo4;
-  da: Da2;
-  duo: Duo1;
-  nome: Nome2;
-  bonus: Bonus1;
-  danno: Danno2;
-}
-export interface Ko {
-  tipo: Tipo5;
-  da: Da3;
-  danno: Danno3;
+  vincitore: Vincitore1;
+  motivo: Motivo;
 }
