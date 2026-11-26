@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MatchResult } from "../types/match";
+import it from "@/i18n/it.json";
+import { nomeTattica } from "./tattiche";
 import { commentary } from "./commentary";
 import { baseMs, timeScale } from "./schedule";
 import { beep } from "./sound";
@@ -37,6 +39,8 @@ export interface PlayerState {
   hits: Record<string, number>;
   floats: Float[];
   banner: Banner | null;
+  /** fase in corso: tattiche dei due lati ed esito del confronto */
+  fase: { n: number; A: string; B: string; esito: "A" | "B" | "pari" } | null;
   shake: number;
   flash: number;
   log: Azione[];
@@ -57,6 +61,7 @@ export function initialState(result: MatchResult): PlayerState {
     hits: {},
     floats: [],
     banner: null,
+    fase: null,
     shake: 0,
     flash: 0,
     log: [],
@@ -120,6 +125,18 @@ export function useBattlePlayer(result: MatchResult, opts: Options) {
         case "turno":
           patch({ turno: e.n, actor: null });
           await sleep(base);
+          break;
+        case "fase":
+          snd(e.esito === "pari" ? 440 : e.esito === "A" ? 660 : 220, 0.2, "triangle");
+          patch({
+            fase: { n: e.fase, A: e.tattica.A, B: e.tattica.B, esito: e.esito },
+            banner: {
+              title: `${it.battle.fase} ${e.fase}`,
+              sub: `${nomeTattica(e.tattica.A)} vs ${nomeTattica(e.tattica.B)}`,
+            },
+          });
+          await sleep(base);
+          patch({ banner: null });
           break;
         case "azione": {
           const att = result.squadre[e.da].members[e.idx];

@@ -20,6 +20,7 @@ from app.draft import (
     mystery_round,
 )
 from app.engine import affinita
+from app.engine import tattiche as tat
 from app.engine.models import Character, MatchResult, Model, Team
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
@@ -64,6 +65,7 @@ class PlayRequest(Model):
     seed: int
     picks: list[PickIn] = Field(min_length=ROUNDS, max_length=ROUNDS)  # in ordine di giro
     swap: list[str] | None = Field(default=None, min_length=2, max_length=2)  # scambio finale
+    tattiche: list[str] = Field(min_length=tat.FASI, max_length=tat.FASI)  # una per fase
 
 
 class PlayResponse(Model):
@@ -149,7 +151,7 @@ def get_draft(seed: int | None = None) -> DraftOptions:
 
 @router.post("/play")
 def play(req: PlayRequest) -> PlayResponse:
-    return run_quick(req.seed, req.picks, req.swap)
+    return run_quick(req.seed, req.picks, req.swap, req.tattiche)
 
 
 def validate_picks(
@@ -195,14 +197,19 @@ def validate_picks(
     return [chosen[r] for r in ROLES], spent
 
 
-def run_quick(seed: int, picks: list[PickIn], swap: list[str] | None = None) -> PlayResponse:
+def run_quick(
+    seed: int, picks: list[PickIn], swap: list[str] | None, tattiche: list[str]
+) -> PlayResponse:
     """Valida le scelte, fa il draft della CPU e simula lo scontro (salvato nel database)."""
     members, spent = validate_picks(seed, picks, swap)
+    if not tat.valida(tattiche):
+        raise HTTPException(422, "tattiche non valide")
     cpu, cpu_spent = cpu_draft(seed)
     result = simulate(
         Team(nome="Tu", members=members),
         Team(nome="CPU", members=cpu),
         seed * 7 + 1,
         load_ruleset(),
+        tattiche={"A": tattiche, "B": tat.cpu_tattiche(seed, tattiche)},
     )
     return PlayResponse(id=repo.save_match(result), result=result, spent=spent, cpu_spent=cpu_spent)

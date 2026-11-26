@@ -79,7 +79,8 @@
     "sinergie": "Sinergie",
     "nessunaSinergia": "Nessuna sinergia attiva",
     "eyebrow": "Scontro 7 contro 7",
-    "vittoria": "Vittoria"
+    "vittoria": "Vittoria",
+    "fase": "Fase"
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
@@ -229,5 +230,12 @@
     "scambiato": "Scambio fatto. Puoi annullarlo oppure combattere.",
     "combatti": "Combatti!",
     "annullaScambio": "Annulla lo scambio"
+  },
+  "tattiche": {
+    "titolo": "Piano di battaglia",
+    "descrizione": "Scegli una tattica per ognuna delle 3 fasi. La CPU sceglie in segreto e legge i tuoi schemi: non essere prevedibile.",
+    "batte": "batte",
+    "effetto": "Chi vince il confronto infligge il +{bonus}% di danno nella fase, chi perde il -{malus}%. Se sono uguali, nessun effetto.",
+    "turni": ["turni 1-3", "turni 4-6", "turni 7-10"]
   }
 }

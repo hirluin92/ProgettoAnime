@@ -1,0 +1,21 @@
+// Tattiche a fasi (specchio di backend/app/engine/tattiche.py).
+export const TATTICHE = ["assalto", "tecnica", "guardia"] as const;
+export type Tattica = (typeof TATTICHE)[number];
+
+export const TATTICA_INFO: Record<Tattica, { nome: string; icona: string; batte: Tattica }> = {
+  assalto: { nome: "Assalto", icona: "⚔️", batte: "tecnica" },
+  tecnica: { nome: "Tecnica", icona: "✨", batte: "guardia" },
+  guardia: { nome: "Guardia", icona: "🛡️", batte: "assalto" },
+};
+
+export const FASI = 3;
+export const BONUS = 15;
+export const MALUS = 10;
+
+export function nomeTattica(t: string): string {
+  return TATTICA_INFO[t as Tattica]?.nome ?? t;
+}
+
+export function iconaTattica(t: string): string {
+  return TATTICA_INFO[t as Tattica]?.icona ?? "";
+}

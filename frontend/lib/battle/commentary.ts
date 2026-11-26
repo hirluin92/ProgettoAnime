@@ -1,3 +1,4 @@
+import { nomeTattica } from "./tattiche";
 import type { MatchResult } from "../types/match";
 
 type Ev = MatchResult["eventi"][number];
@@ -86,6 +87,11 @@ export function commentary(result: MatchResult, e: Ev, index: number): string {
       return pick(INGRESSO, result.seed, index).replace("{a}", A.nome).replace("{b}", B.nome);
     case "turno":
       return `Turno ${e.n}`;
+    case "fase": {
+      const chi =
+        e.esito === "pari" ? "Pari: nessuno prevale" : `Prevale ${result.squadre[e.esito].nome}`;
+      return `Fase ${e.fase}: ${nomeTattica(e.tattica.A)} contro ${nomeTattica(e.tattica.B)}. ${chi}!`;
+    }
     case "azione":
       return descriviAzione(result, e, index);
     case "fine":

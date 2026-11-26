@@ -6,10 +6,10 @@ import { api } from "@/lib/api";
 import type { DraftOptions, PickIn } from "@/lib/draft";
 
 const load = () => api<DraftOptions>("/api/quick/draft");
-const play = (d: DraftOptions, picks: PickIn[], swap: string[] | null) =>
+const play = (d: DraftOptions, picks: PickIn[], swap: string[] | null, tattiche: string[]) =>
   api<Played>("/api/quick/play", {
     method: "POST",
-    body: JSON.stringify({ seed: d.seed, picks, swap }),
+    body: JSON.stringify({ seed: d.seed, picks, swap, tattiche }),
   });
 
 export default function Veloce() {

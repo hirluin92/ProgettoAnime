@@ -126,13 +126,23 @@ class Azione(Model):
     stato: Stato
 
 
+class Fase(Model):
+    """Inizio di una fase: le tattiche scelte dai due lati e chi vince il confronto."""
+
+    tipo: Literal["fase"] = "fase"
+    turno: int
+    fase: int  # 1-3
+    tattica: dict[Side, str]
+    esito: Literal["A", "B", "pari"]
+
+
 class Fine(Model):
     tipo: Literal["fine"] = "fine"
     vincitore: Side
     motivo: Literal["ko", "tempo"]
 
 
-Event = Annotated[Ingresso | Turno | Azione | Fine, Field(discriminator="tipo")]
+Event = Annotated[Ingresso | Turno | Fase | Azione | Fine, Field(discriminator="tipo")]
 
 
 class MatchResult(Model):
@@ -146,4 +156,6 @@ class MatchResult(Model):
     vincitore: Side
     pareggio: bool
     turni: int
+    # tattiche scelte per le 3 fasi (vuoto nelle partite senza tattiche e in quelle vecchie)
+    tattiche: dict[Side, list[str]] = Field(default_factory=dict)
     eventi: list[Event]
