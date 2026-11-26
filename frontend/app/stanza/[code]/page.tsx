@@ -4,6 +4,7 @@ import { use, useEffect, useMemo, useRef, useState } from "react";
 import AuctionView from "@/components/auction/AuctionView";
 import BanView from "@/components/auction/BanView";
 import Lobby from "@/components/auction/Lobby";
+import PlanView from "@/components/auction/PlanView";
 import Tournament from "@/components/auction/Tournament";
 import it from "@/i18n/it.json";
 import { useRoom } from "@/lib/store";
@@ -116,6 +117,7 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
       {room.phase === "lobby" && <Lobby room={room} me={me} socket={socket} />}
       {room.phase === "ban" && <BanView room={room} me={me} socket={socket} />}
       {room.phase === "auction" && <AuctionView room={room} me={me} socket={socket} />}
+      {room.phase === "plan" && <PlanView room={room} me={me} socket={socket} />}
       {room.phase === "tournament" &&
         (tournament ? <Tournament room={room} t={tournament} /> : <p>{it.stanza.inAttesa}</p>)}
     </main>

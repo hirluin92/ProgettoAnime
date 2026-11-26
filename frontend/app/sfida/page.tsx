@@ -47,10 +47,11 @@ export default function Sfida() {
       swap: string[] | null,
       tattiche: string[],
       carica: string,
+      formazione: string,
     ) => {
       const r = await api<Result>("/api/daily/play", {
         method: "POST",
-        body: JSON.stringify({ name, picks, swap, tattiche, carica }),
+        body: JSON.stringify({ name, picks, swap, tattiche, carica, formazione }),
       });
       setResult(r);
       void refresh();

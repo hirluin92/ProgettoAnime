@@ -12,10 +12,11 @@ const play = (
   swap: string[] | null,
   tattiche: string[],
   carica: string,
+  formazione: string,
 ) =>
   api<Played>("/api/quick/play", {
     method: "POST",
-    body: JSON.stringify({ seed: d.seed, picks, swap, tattiche, carica }),
+    body: JSON.stringify({ seed: d.seed, picks, swap, tattiche, carica, formazione }),
   });
 
 export default function Veloce() {

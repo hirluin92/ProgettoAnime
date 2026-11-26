@@ -22,6 +22,7 @@ async def play_room(mgr: RoomManager):  # type: ignore[no-untyped-def]
         await mgr.connect(room, p, FakeSocket())
     room.settings.timer = 1
     room.settings.role_timeout = 1
+    room.settings.plan_timeout = 0  # niente fase piano: piani predefiniti
     pool = mgr.pool(room)
     mgr.pool = lambda r: pool * 3  # type: ignore[method-assign]
     mgr.ensure_loop(room)

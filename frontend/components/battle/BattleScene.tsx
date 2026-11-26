@@ -491,6 +491,19 @@ export default function BattleScene({
               </div>
             </div>
           )}
+          {s.phase === "done" && result.rivalita.length > 0 && (
+            <section className="panel mt-4 space-y-2 p-5" data-testid="rivalita">
+              <h3 className="text-2xl font-extrabold">{it.rivalita.titolo}</h3>
+              <ul className="flex flex-wrap gap-2">
+                {result.rivalita.map((r) => (
+                  <li key={`${r.a}-${r.b}`} className="chip">
+                    ⚔ {A.members[r.a].nome} vs {B.members[r.b].nome} · {r.nome} ·{" "}
+                    {it.rivalita.testo}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           {s.phase === "done" && momenti.length > 0 && (
             <section className="panel mt-4 space-y-2 p-5" data-testid="momenti">
               <h3 className="text-2xl font-extrabold">{it.battle.momenti}</h3>

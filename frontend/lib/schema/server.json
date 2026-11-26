@@ -308,9 +308,16 @@
         "now": {
           "title": "Now",
           "type": "number"
+        },
+        "affinita": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Affinita",
+          "type": "object"
         }
       },
-      "required": ["type", "number", "character", "deadline", "now"],
+      "required": ["type", "number", "character", "deadline", "now", "affinita"],
       "title": "LotStarted",
       "type": "object"
     },
@@ -358,6 +365,13 @@
               "type": "null"
             }
           ]
+        },
+        "affinita": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Affinita",
+          "type": "object"
         }
       },
       "required": [
@@ -367,7 +381,8 @@
         "bidder_id",
         "deadline",
         "passed",
-        "await_role"
+        "await_role",
+        "affinita"
       ],
       "title": "LotView",
       "type": "object"
@@ -440,6 +455,60 @@
       },
       "required": ["match_id", "a", "b", "winner", "total_a", "total_b"],
       "title": "MatchRef",
+      "type": "object"
+    },
+    "Mission": {
+      "description": "Missione segreta del giocatore (messaggio privato).",
+      "properties": {
+        "type": {
+          "const": "mission",
+          "default": "mission",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "descrizione": {
+          "title": "Descrizione",
+          "type": "string"
+        }
+      },
+      "required": ["type", "id", "nome", "descrizione"],
+      "title": "Mission",
+      "type": "object"
+    },
+    "MissionResult": {
+      "description": "La missione segreta di un giocatore, svelata a fine torneo.",
+      "properties": {
+        "player_id": {
+          "title": "Player Id",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "descrizione": {
+          "title": "Descrizione",
+          "type": "string"
+        },
+        "riuscita": {
+          "title": "Riuscita",
+          "type": "boolean"
+        }
+      },
+      "required": ["player_id", "id", "nome", "descrizione", "riuscita"],
+      "title": "MissionResult",
       "type": "object"
     },
     "Mossa": {
@@ -532,10 +601,43 @@
         "complete": {
           "title": "Complete",
           "type": "boolean"
+        },
+        "ready": {
+          "title": "Ready",
+          "type": "boolean"
         }
       },
-      "required": ["id", "name", "color", "budget", "slots", "is_chat", "connected", "complete"],
+      "required": [
+        "id",
+        "name",
+        "color",
+        "budget",
+        "slots",
+        "is_chat",
+        "connected",
+        "complete",
+        "ready"
+      ],
       "title": "PlayerView",
+      "type": "object"
+    },
+    "RoomArena": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "descrizione": {
+          "title": "Descrizione",
+          "type": "string"
+        }
+      },
+      "required": ["id", "nome", "descrizione"],
+      "title": "RoomArena",
       "type": "object"
     },
     "RoomSettings": {
@@ -582,9 +684,24 @@
           "minimum": 0,
           "title": "Bans Per Player",
           "type": "integer"
+        },
+        "plan_timeout": {
+          "default": 45,
+          "maximum": 180,
+          "minimum": 0,
+          "title": "Plan Timeout",
+          "type": "integer"
         }
       },
-      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold", "bans_per_player"],
+      "required": [
+        "budget",
+        "timer",
+        "role_timeout",
+        "anime",
+        "chat_threshold",
+        "bans_per_player",
+        "plan_timeout"
+      ],
       "title": "RoomSettings",
       "type": "object"
     },
@@ -611,7 +728,7 @@
           "type": "string"
         },
         "phase": {
-          "enum": ["lobby", "ban", "auction", "tournament"],
+          "enum": ["lobby", "ban", "auction", "plan", "tournament"],
           "title": "Phase",
           "type": "string"
         },
@@ -664,6 +781,27 @@
           ],
           "title": "Ban Deadline"
         },
+        "plan_deadline": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Plan Deadline"
+        },
+        "arena": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RoomArena"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "tournament": {
           "anyOf": [
             {
@@ -700,6 +838,8 @@
         "lots_left",
         "bans",
         "ban_deadline",
+        "plan_deadline",
+        "arena",
         "tournament",
         "streamer_channel",
         "server_time"
@@ -772,9 +912,16 @@
           },
           "title": "Classifica",
           "type": "array"
+        },
+        "missioni": {
+          "items": {
+            "$ref": "#/$defs/MissionResult"
+          },
+          "title": "Missioni",
+          "type": "array"
         }
       },
-      "required": ["giornate", "classifica"],
+      "required": ["giornate", "classifica", "missioni"],
       "title": "TournamentView",
       "type": "object"
     }
@@ -789,6 +936,7 @@
       "lot_skipped": "#/$defs/LotSkipped",
       "lot_started": "#/$defs/LotStarted",
       "lot_won": "#/$defs/LotWon",
+      "mission": "#/$defs/Mission",
       "player_passed": "#/$defs/PlayerPassed",
       "room_state": "#/$defs/RoomState",
       "tournament_result": "#/$defs/TournamentResult"
@@ -801,6 +949,9 @@
     },
     {
       "$ref": "#/$defs/RoomState"
+    },
+    {
+      "$ref": "#/$defs/Mission"
     },
     {
       "$ref": "#/$defs/LotStarted"

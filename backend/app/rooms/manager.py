@@ -3,12 +3,18 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import os
+import random
 import secrets
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
+from app.engine import tattiche as tat
+from app.engine.arene import arena_per_seme
+from app.engine.formazioni import DEFAULT as FORM_DEFAULT
+from app.engine.formazioni import FORMAZIONI
+from app.engine.missioni import BONUS, MISSIONI, completata, missione_per_seme
 from app.engine.models import Team
 from app.engine.roles import ROLES
 from app.engine.simulate import simulate
@@ -20,7 +26,9 @@ from app.rooms.models import (
     MAX_PLAYERS,
     MIN_PLAYERS,
     MatchRef,
+    MissionResult,
     Player,
+    RoomArena,
     RoomSettings,
     RoomView,
     TournamentView,
@@ -34,7 +42,9 @@ from app.rooms.protocol import (
     ErrorMsg,
     Join,
     Joined,
+    Mission,
     Pass,
+    Plan,
     RoomState,
     ServerMessage,
     Spectate,
@@ -52,6 +62,11 @@ BAN_SECONDS = 30
 
 class Socket(Protocol):
     async def send_text(self, data: str) -> None: ...
+
+
+def _arena_info(seed: int) -> RoomArena:
+    a = arena_per_seme(seed)
+    return RoomArena(id=a.id, nome=a.nome, descrizione=a.descrizione)
 
 
 class RoomError(Exception):
@@ -73,6 +88,7 @@ class Room:
     tournament: TournamentView | None = None
     bans: dict[str, list[str]] = field(default_factory=dict)  # id giocatore -> id personaggi
     ban_deadline: float | None = None
+    plan_deadline: float | None = None
     streamer_channel: str | None = None
     last_activity: float = field(default_factory=now)
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
@@ -89,8 +105,9 @@ class Room:
             settings=self.settings, players=[p.view() for p in self.players.values()],
             lot=a.view() if a else None, lots_left=a.lots_left if a else 0,
             bans={pid: [chars[c] for c in ids if c in chars] for pid, ids in self.bans.items()},
-            ban_deadline=self.ban_deadline,
-            tournament=self.tournament, streamer_channel=self.streamer_channel,
+            ban_deadline=self.ban_deadline, plan_deadline=self.plan_deadline,
+            arena=_arena_info(self.seed), tournament=self.tournament,
+            streamer_channel=self.streamer_channel,
             server_time=now(),
         )  # fmt: skip
 
@@ -188,8 +205,16 @@ class RoomManager:
                 return
             if out:
                 await room.broadcast(out)
-            if room.auction and room.auction.finished and room.phase == "auction":
-                await self._finish_auction(room)
+            await self._after(room)
+
+    async def _after(self, room: Room) -> None:
+        """Passaggi di fase dopo un messaggio o un tick: missioni private, piano, torneo."""
+        if room.phase == "auction":
+            await self._send_missions(room)
+        if room.auction and room.auction.finished and room.phase == "auction":
+            await self._finish_auction(room)
+        if room.phase == "plan" and self._plan_over(room):
+            await self._run_tournament(room)
 
     async def _dispatch(self, room: Room, pid: str, msg: ClientMessage) -> list[ServerMessage]:
         match msg:
@@ -210,6 +235,8 @@ class RoomManager:
                 return self._auction(room).place_bid(pid, msg.amount, now())
             case Pass():
                 return self._auction(room).pass_lot(pid, now())
+            case Plan():
+                return self._set_plan(room, pid, msg)
             case AssignRole():
                 if msg.role not in ROLES:
                     raise BidError("bad_role", "Ruolo sconosciuto")
@@ -258,6 +285,9 @@ class RoomManager:
         room.phase = "auction"
         room.ban_deadline = None
         room.auction = Auction(room.players, room.settings, self.pool(room), room.seed)
+        room.extras["missions_sent"] = False
+        for p in room.players.values():
+            p.missione = None if p.is_chat else missione_per_seme(room.seed, p.id).id
         return [RoomState(room=room.view()), *room.auction.start(now())]
 
     def _ban(self, room: Room, pid: str, character_id: str) -> list[ServerMessage]:
@@ -274,26 +304,107 @@ class RoomManager:
             return self._begin_auction(room)
         return [RoomState(room=room.view())]
 
-    # ---- fine asta e torneo ----
+    # ---- missioni, piano e torneo ----
+    async def _send_missions(self, room: Room) -> None:
+        """Manda a ciascun giocatore, e solo a lui, la sua missione segreta."""
+        if room.extras.get("missions_sent"):
+            return
+        room.extras["missions_sent"] = True
+        for pid, p in room.players.items():
+            ws = room.sockets.get(pid)
+            if ws and p.missione:
+                m = MISSIONI[p.missione]
+                await room.send(ws, Mission(id=m.id, nome=m.nome, descrizione=m.descrizione))
+
+    def _humans(self, room: Room) -> list[Player]:
+        return [p for p in room.players.values() if not p.is_chat and p.complete]
+
+    def _plan_over(self, room: Room) -> bool:
+        if room.plan_deadline is not None and now() >= room.plan_deadline:
+            return True
+        return all(p.plan is not None for p in self._humans(room))
+
+    def _set_plan(self, room: Room, pid: str, msg: Plan) -> list[ServerMessage]:
+        p = room.players.get(pid)
+        if room.phase != "plan" or p is None or p.is_chat or not p.complete:
+            raise RoomError("not_plan_phase", "Non è il momento del piano di battaglia")
+        if msg.tattiche is not None and not tat.valida(msg.tattiche):
+            raise RoomError("bad_plan", "Tattiche non valide")
+        if msg.formazione not in FORMAZIONI:
+            raise RoomError("bad_plan", "Formazione non valida")
+        p.plan = {"tattiche": msg.tattiche, "carica": msg.carica, "formazione": msg.formazione}
+        return [RoomState(room=room.view())]
+
+    def _plan_of(self, room: Room, p: Player) -> dict[str, Any]:
+        """Il piano consegnato; se manca (chat, tempo scaduto) uno predefinito e deterministico."""
+        plan = p.plan or {}
+        tattiche = plan.get("tattiche")
+        if not tattiche:
+            rnd = random.Random(f"{room.seed}:{p.id}:piano")
+            tattiche = [rnd.choice(tat.TATTICHE) for _ in range(tat.FASI)]
+        return {
+            "tattiche": tattiche,
+            "carica": plan.get("carica", "subito"),
+            "formazione": plan.get("formazione", FORM_DEFAULT),
+        }
+
     async def _finish_auction(self, room: Room) -> None:
+        if room.settings.plan_timeout > 0 and self._humans(room):
+            room.phase = "plan"
+            room.plan_deadline = now() + room.settings.plan_timeout
+            await room.broadcast([RoomState(room=room.view())])
+            return
+        await self._run_tournament(room)
+
+    async def _run_tournament(self, room: Room) -> None:
         room.phase = "tournament"
+        room.plan_deadline = None
         players = [p for p in room.players.values() if p.complete]
         ids = [p.id for p in players]
         rounds: list[list[MatchRef]] = []
         rules = load_ruleset()
+        arena = arena_per_seme(room.seed).id
+        # missioni: svelate ora; chi le ha completate ha +3% attacco e vita in ogni scontro
+        missioni: list[MissionResult] = []
+        bonus: dict[str, float] = {}
+        for p in players:
+            if not p.missione:
+                continue
+            team = Team(nome=p.name, members=[p.slots[r] for r in ROLES])  # type: ignore[misc]
+            ok = completata(p.missione, team, p.budget, rules)
+            m = MISSIONI[p.missione]
+            missioni.append(
+                MissionResult(
+                    player_id=p.id, id=m.id, nome=m.nome, descrizione=m.descrizione, riuscita=ok
+                )
+            )
+            bonus[p.id] = BONUS if ok else 0.0
         for rnd in tournament.schedule(len(players)):
             refs = []
             for i, j in rnd:
                 pa, pb = players[i], players[j]
-                team_a = Team(nome=pa.name, members=[pa.slots[r] for r in ROLES])  # type: ignore[misc]
-                team_b = Team(nome=pb.name, members=[pb.slots[r] for r in ROLES])  # type: ignore[misc]
-                res = simulate(team_a, team_b, tournament.match_seed(room.seed, i, j), rules)
+                team_a = Team(nome=pa.name, members=[pa.slots[r] for r in ROLES],  # type: ignore[misc]
+                              bonus_missione=bonus.get(pa.id, 0.0))  # fmt: skip
+                team_b = Team(nome=pb.name, members=[pb.slots[r] for r in ROLES],  # type: ignore[misc]
+                              bonus_missione=bonus.get(pb.id, 0.0))  # fmt: skip
+                plan_a, plan_b = self._plan_of(room, pa), self._plan_of(room, pb)
+                res = simulate(
+                    team_a,
+                    team_b,
+                    tournament.match_seed(room.seed, i, j),
+                    rules,
+                    tattiche={"A": plan_a["tattiche"], "B": plan_b["tattiche"]},
+                    arena=arena,
+                    carica={"A": plan_a["carica"], "B": plan_b["carica"]},
+                    formazione={"A": plan_a["formazione"], "B": plan_b["formazione"]},
+                )
                 mid = await asyncio.to_thread(repo.save_match, res, room.code)
                 winner = None if res.pareggio else (pa.id if res.vincitore == "A" else pb.id)
                 refs.append(MatchRef(match_id=mid, a=pa.id, b=pb.id, winner=winner,
                                      total_a=res.totali["A"], total_b=res.totali["B"]))  # fmt: skip
             rounds.append(refs)
         room.tournament = tournament.build(ids, rounds)
+        room.tournament.missioni = missioni
         await room.broadcast(
             [RoomState(room=room.view()), TournamentResult(tournament=room.tournament)]
         )
@@ -308,6 +419,9 @@ class RoomManager:
             await room.broadcast([RoomState(room=room.view())])
             if room.tournament:
                 await room.send(ws, TournamentResult(tournament=room.tournament))
+            if player.missione and room.phase in ("auction", "plan"):
+                m = MISSIONI[player.missione]
+                await room.send(ws, Mission(id=m.id, nome=m.nome, descrizione=m.descrizione))
 
     async def disconnect(self, room: Room, player: Player, ws: Socket) -> None:
         async with room.lock:
@@ -361,8 +475,7 @@ class RoomManager:
                     out += self._prune_lobby(room)
                 if out:
                     await room.broadcast(out)
-                if room.auction and room.auction.finished and room.phase == "auction":
-                    await self._finish_auction(room)
+                await self._after(room)
 
     async def _chat_tick(self, room: Room) -> list[ServerMessage]:
         hook = room.extras.get("chat_tick")

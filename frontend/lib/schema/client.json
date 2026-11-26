@@ -95,6 +95,48 @@
       "title": "Pass",
       "type": "object"
     },
+    "Plan": {
+      "description": "Piano di battaglia: tattiche per le 3 fasi (omesse = a caso), mossa finale, formazione.",
+      "properties": {
+        "type": {
+          "const": "plan",
+          "default": "plan",
+          "title": "Type",
+          "type": "string"
+        },
+        "tattiche": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 3,
+              "minItems": 3,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tattiche"
+        },
+        "carica": {
+          "default": "subito",
+          "enum": ["subito", "carica"],
+          "title": "Carica",
+          "type": "string"
+        },
+        "formazione": {
+          "default": "classica",
+          "title": "Formazione",
+          "type": "string"
+        }
+      },
+      "required": ["type", "tattiche", "carica", "formazione"],
+      "title": "Plan",
+      "type": "object"
+    },
     "RoomSettings": {
       "properties": {
         "budget": {
@@ -139,9 +181,24 @@
           "minimum": 0,
           "title": "Bans Per Player",
           "type": "integer"
+        },
+        "plan_timeout": {
+          "default": 45,
+          "maximum": 180,
+          "minimum": 0,
+          "title": "Plan Timeout",
+          "type": "integer"
         }
       },
-      "required": ["budget", "timer", "role_timeout", "anime", "chat_threshold", "bans_per_player"],
+      "required": [
+        "budget",
+        "timer",
+        "role_timeout",
+        "anime",
+        "chat_threshold",
+        "bans_per_player",
+        "plan_timeout"
+      ],
       "title": "RoomSettings",
       "type": "object"
     },
@@ -195,6 +252,7 @@
       "bid": "#/$defs/Bid",
       "join": "#/$defs/Join",
       "pass": "#/$defs/Pass",
+      "plan": "#/$defs/Plan",
       "spectate": "#/$defs/Spectate",
       "start": "#/$defs/Start",
       "update_settings": "#/$defs/UpdateSettings"
@@ -222,6 +280,9 @@
     },
     {
       "$ref": "#/$defs/AssignRole"
+    },
+    {
+      "$ref": "#/$defs/Plan"
     },
     {
       "$ref": "#/$defs/UpdateSettings"

@@ -8,6 +8,7 @@
 export type Server =
   | Joined
   | RoomState
+  | Mission
   | LotStarted
   | BidPlaced
   | PlayerPassed
@@ -22,7 +23,7 @@ export type PlayerId = string;
 export type Token = string;
 export type Type1 = "room_state";
 export type Code = string;
-export type Phase = "lobby" | "ban" | "auction" | "tournament";
+export type Phase = "lobby" | "ban" | "auction" | "plan" | "tournament";
 export type HostId = string;
 export type Budget = number;
 export type Timer = number;
@@ -30,6 +31,7 @@ export type RoleTimeout = number;
 export type Anime = string[];
 export type ChatThreshold = number;
 export type BansPerPlayer = number;
+export type PlanTimeout = number;
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -57,6 +59,7 @@ export type BaseId = string | null;
 export type IsChat = boolean;
 export type Connected = boolean;
 export type Complete = boolean;
+export type Ready = boolean;
 export type Players = PlayerView[];
 export type Number = number;
 export type CurrentBid = number;
@@ -68,6 +71,10 @@ export type Amount = number;
 export type Deadline1 = number;
 export type LotsLeft = number;
 export type BanDeadline = number | null;
+export type PlanDeadline = number | null;
+export type Id2 = string;
+export type Nome3 = string;
+export type Descrizione = string;
 export type MatchId = string;
 export type A = string;
 export type B = string;
@@ -82,31 +89,41 @@ export type Pareggi = number;
 export type Sconfitte = number;
 export type Totale = number;
 export type Classifica = StandingRow[];
+export type PlayerId3 = string;
+export type Id3 = string;
+export type Nome4 = string;
+export type Descrizione1 = string;
+export type Riuscita = boolean;
+export type Missioni = MissionResult[];
 export type StreamerChannel = string | null;
 export type ServerTime = number;
-export type Type2 = "lot_started";
+export type Type2 = "mission";
+export type Id4 = string;
+export type Nome5 = string;
+export type Descrizione2 = string;
+export type Type3 = "lot_started";
 export type Number1 = number;
 export type Deadline2 = number;
 export type Now = number;
-export type Type3 = "bid_placed";
-export type PlayerId3 = string;
+export type Type4 = "bid_placed";
+export type PlayerId4 = string;
 export type Amount1 = number;
 export type Deadline3 = number;
 export type Now1 = number;
-export type Type4 = "player_passed";
-export type PlayerId4 = string;
-export type Type5 = "lot_won";
+export type Type5 = "player_passed";
 export type PlayerId5 = string;
+export type Type6 = "lot_won";
+export type PlayerId6 = string;
 export type Amount2 = number;
 export type RoleDeadline = number | null;
-export type Type6 = "lot_assigned";
-export type PlayerId6 = string;
+export type Type7 = "lot_assigned";
+export type PlayerId7 = string;
 export type Role = string;
 export type Amount3 = number;
-export type Type7 = "lot_skipped";
-export type Type8 = "auction_finished";
-export type Type9 = "tournament_result";
-export type Type10 = "error";
+export type Type8 = "lot_skipped";
+export type Type9 = "auction_finished";
+export type Type10 = "tournament_result";
+export type Type11 = "error";
 export type Code1 = string;
 export type Message = string;
 
@@ -129,6 +146,8 @@ export interface RoomView {
   lots_left: LotsLeft;
   bans: Bans;
   ban_deadline: BanDeadline;
+  plan_deadline: PlanDeadline;
+  arena: RoomArena | null;
   tournament: TournamentView | null;
   streamer_channel: StreamerChannel;
   server_time: ServerTime;
@@ -140,6 +159,7 @@ export interface RoomSettings {
   anime: Anime;
   chat_threshold: ChatThreshold;
   bans_per_player: BansPerPlayer;
+  plan_timeout: PlanTimeout;
 }
 export interface PlayerView {
   id: Id;
@@ -150,6 +170,7 @@ export interface PlayerView {
   is_chat: IsChat;
   connected: Connected;
   complete: Complete;
+  ready: Ready;
 }
 export interface Slots {
   [k: string]: Character | null;
@@ -186,18 +207,28 @@ export interface LotView {
   deadline: Deadline;
   passed: Passed;
   await_role: AwaitRole | null;
+  affinita: Affinita;
 }
 export interface AwaitRole {
   player_id: PlayerId1;
   amount: Amount;
   deadline: Deadline1;
 }
+export interface Affinita {
+  [k: string]: number;
+}
 export interface Bans {
   [k: string]: Character[];
+}
+export interface RoomArena {
+  id: Id2;
+  nome: Nome3;
+  descrizione: Descrizione;
 }
 export interface TournamentView {
   giornate: Giornate;
   classifica: Classifica;
+  missioni: Missioni;
 }
 export interface MatchRef {
   match_id: MatchId;
@@ -215,43 +246,66 @@ export interface StandingRow {
   sconfitte: Sconfitte;
   totale: Totale;
 }
-export interface LotStarted {
+/**
+ * La missione segreta di un giocatore, svelata a fine torneo.
+ */
+export interface MissionResult {
+  player_id: PlayerId3;
+  id: Id3;
+  nome: Nome4;
+  descrizione: Descrizione1;
+  riuscita: Riuscita;
+}
+/**
+ * Missione segreta del giocatore (messaggio privato).
+ */
+export interface Mission {
   type: Type2;
+  id: Id4;
+  nome: Nome5;
+  descrizione: Descrizione2;
+}
+export interface LotStarted {
+  type: Type3;
   number: Number1;
   character: Character;
   deadline: Deadline2;
   now: Now;
+  affinita: Affinita1;
+}
+export interface Affinita1 {
+  [k: string]: number;
 }
 export interface BidPlaced {
-  type: Type3;
-  player_id: PlayerId3;
+  type: Type4;
+  player_id: PlayerId4;
   amount: Amount1;
   deadline: Deadline3;
   now: Now1;
 }
 export interface PlayerPassed {
-  type: Type4;
-  player_id: PlayerId4;
-}
-export interface LotWon {
   type: Type5;
   player_id: PlayerId5;
+}
+export interface LotWon {
+  type: Type6;
+  player_id: PlayerId6;
   amount: Amount2;
   role_deadline: RoleDeadline;
 }
 export interface LotAssigned {
-  type: Type6;
-  player_id: PlayerId6;
+  type: Type7;
+  player_id: PlayerId7;
   character: Character;
   role: Role;
   amount: Amount3;
 }
 export interface LotSkipped {
-  type: Type7;
+  type: Type8;
   character: Character;
 }
 export interface AuctionFinished {
-  type: Type8;
+  type: Type9;
   teams: Teams;
 }
 export interface Teams {
@@ -260,11 +314,11 @@ export interface Teams {
   };
 }
 export interface TournamentResult {
-  type: Type9;
+  type: Type10;
   tournament: TournamentView;
 }
 export interface ErrorMsg {
-  type: Type10;
+  type: Type11;
   code: Code1;
   message: Message;
 }

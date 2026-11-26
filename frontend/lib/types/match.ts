@@ -33,6 +33,7 @@ export type Gruppi = string[];
 export type Costo = number;
 export type Forma = string | null;
 export type BaseId = string | null;
+export type BonusMissione = number;
 export type Hp = number;
 export type Atk = number;
 export type Dif = number;
@@ -48,6 +49,10 @@ export type Vincitore = "A" | "B";
 export type Pareggio = boolean;
 export type Turni = number;
 export type Arena = string | null;
+export type Nome5 = string;
+export type A = number;
+export type B = number;
+export type Rivalita = RivalitaAttiva[];
 export type Tipo = "ingresso";
 export type Tipo1 = "turno";
 export type N = number;
@@ -97,6 +102,8 @@ export interface MatchResult {
   turni: Turni;
   tattiche: Tattiche;
   arena: Arena;
+  formazione: Formazione;
+  rivalita: Rivalita;
   carica: Carica;
   eventi: Eventi;
 }
@@ -106,6 +113,7 @@ export interface Squadre {
 export interface Team {
   nome: Nome;
   members: Members;
+  bonus_missione: BonusMissione;
 }
 export interface Character {
   id: Id;
@@ -159,6 +167,17 @@ export interface Totali {
 }
 export interface Tattiche {
   [k: string]: string[];
+}
+export interface Formazione {
+  [k: string]: string;
+}
+/**
+ * Due personaggi su lati opposti con un conto in sospeso: +8% di danno l'uno contro l'altro.
+ */
+export interface RivalitaAttiva {
+  nome: Nome5;
+  a: A;
+  b: B;
 }
 export interface Carica {
   [k: string]: string;

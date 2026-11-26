@@ -396,6 +396,26 @@
       "title": "Respiro",
       "type": "object"
     },
+    "RivalitaAttiva": {
+      "description": "Due personaggi su lati opposti con un conto in sospeso: +8% di danno l'uno contro l'altro.",
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "a": {
+          "title": "A",
+          "type": "integer"
+        },
+        "b": {
+          "title": "B",
+          "type": "integer"
+        }
+      },
+      "required": ["nome", "a", "b"],
+      "title": "RivalitaAttiva",
+      "type": "object"
+    },
     "Sinergia": {
       "properties": {
         "lato": {
@@ -495,9 +515,14 @@
           "minItems": 7,
           "title": "Members",
           "type": "array"
+        },
+        "bonus_missione": {
+          "default": 0.0,
+          "title": "Bonus Missione",
+          "type": "number"
         }
       },
-      "required": ["nome", "members"],
+      "required": ["nome", "members", "bonus_missione"],
       "title": "Team",
       "type": "object"
     },
@@ -648,6 +673,23 @@
       "default": null,
       "title": "Arena"
     },
+    "formazione": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Formazione",
+      "type": "object"
+    },
+    "rivalita": {
+      "items": {
+        "$ref": "#/$defs/RivalitaAttiva"
+      },
+      "title": "Rivalita",
+      "type": "array"
+    },
     "carica": {
       "additionalProperties": {
         "type": "string"
@@ -713,6 +755,8 @@
     "turni",
     "tattiche",
     "arena",
+    "formazione",
+    "rivalita",
     "carica",
     "eventi"
   ],
