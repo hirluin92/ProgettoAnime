@@ -236,7 +236,8 @@
     "sfida": "Sfida",
     "info": "Info",
     "profilo": "Profilo",
-    "duello": "Duello"
+    "duello": "Duello",
+    "album": "Album"
   },
   "draft": {
     "tono": {
@@ -498,5 +499,36 @@
     "copia": "Copia",
     "copiato": "Copiato!",
     "protetto": "Profilo protetto: @{nome}"
+  },
+  "album": {
+    "titolo": "Il tuo album",
+    "possiedi": "Possiedi {n} carte su {tot}",
+    "senzaProfilo": "Crea un profilo per iniziare la tua collezione: le carte che peschi nel draft entrano qui.",
+    "tuttiAnime": "Tutti gli anime",
+    "rarita": {
+      "comune": "Comune",
+      "rara": "Rara",
+      "epica": "Epica",
+      "leggendaria": "Leggendaria"
+    },
+    "tutte": "Tutte",
+    "soloPossedute": "Solo possedute",
+    "mazzi": "I tuoi mazzi",
+    "nuovoMazzo": "Nuovo mazzo",
+    "nomeMazzo": "Nome del mazzo",
+    "elimina": "Elimina",
+    "salva": "Salva i mazzi",
+    "salvato": "Salvato!",
+    "regole": "Un mazzo ha {mazzo} carte tue: al più {leg} leggendarie, {alte} tra epiche e leggendarie, costo totale {costo}.",
+    "stato": "{n}/{mazzo} carte · costo {costo}/{maxCosto} · leggendarie {leg}/{maxLeg}",
+    "aggiungi": "Tocca una carta posseduta per aggiungerla o toglierla dal mazzo selezionato.",
+    "nessunMazzo": "Crea un mazzo per scegliere le carte.",
+    "nonPosseduta": "Non ancora posseduta",
+    "giocaMazzo": "Gioca con un tuo mazzo",
+    "draftTab": "Draft",
+    "mazzoTab": "Mazzo personale",
+    "scegliMazzo": "Scegli il mazzo",
+    "nessunoSalvato": "Non hai ancora mazzi salvati: creali nell'Album.",
+    "senzaElo": "Con un mazzo personale non cambia l'ELO."
   }
 }

@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/duello", label: it.nav.duello },
   { href: "/veloce", label: it.nav.veloce },
   { href: "/sfida", label: it.nav.sfida },
+  { href: "/album", label: it.nav.album },
   { href: "/profilo", label: it.nav.profilo },
   { href: "/info", label: it.nav.info },
 ] as const;
@@ -50,7 +51,10 @@ export default function SiteNav() {
           </Link>
           <ul className="flex items-center gap-1">
             {LINKS.map((l) => (
-              <li key={l.href} className={l.href === "/info" ? "hidden min-[430px]:block" : ""}>
+              <li
+                key={l.href}
+                className={["/info", "/veloce", "/sfida"].includes(l.href) ? "hidden sm:block" : ""}
+              >
                 <Link
                   href={l.href}
                   aria-current={active(l.href) ? "page" : undefined}

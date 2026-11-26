@@ -53,6 +53,7 @@ class ProfileRow(Base):
     username: Mapped[str | None] = mapped_column(String(20), unique=True, nullable=True, index=True)
     pw_hash: Mapped[str | None] = mapped_column(String(200), nullable=True)
     recovery_hash: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    mazzi: Mapped[list[dict]] = mapped_column(JSON, default=list)  # type: ignore[type-arg]
     collezione: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)

@@ -92,6 +92,9 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const skip = useRef(false);
   const { profile } = useProfile();
+  const [mazziProfilo, setMazziProfilo] = useState<string[]>([]);
+  const [usaMazzo, setUsaMazzo] = useState(false);
+  const [mazzoSel, setMazzoSel] = useState(0);
   const [info, setInfo] = useState<GiornoInfo | null>(null);
   const [nome, setNome] = useState("");
   const [esitoGiorno, setEsitoGiorno] = useState<GiornoEsito | null>(null);
@@ -115,6 +118,13 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
   useEffect(() => {
     carica().catch((e: Error) => setError(e.message));
   }, [carica]);
+
+  useEffect(() => {
+    if (!profile || giorno) return;
+    api<{ mazzi: { nome: string; carte: string[] }[] }>(`/api/album/${profile.id}`)
+      .then((a) => setMazziProfilo(a.mazzi.filter((m) => m.carte.length === 8).map((m) => m.nome)))
+      .catch(() => undefined);
+  }, [profile, giorno]);
 
   const err = (e: unknown) => setError(e instanceof Error ? e.message : it.duello.errore);
 
@@ -263,7 +273,84 @@ export default function DuelloGame({ giorno = false }: { giorno?: boolean }) {
             )}
           </div>
         </header>
-        {!pronto && (
+        {mazziProfilo.length > 0 && picks.length === 0 && (
+          <div className="flex flex-wrap gap-2" data-testid="duello-tab">
+            <button
+              className={`btn ${!usaMazzo ? "btn-primary" : ""}`}
+              onClick={() => setUsaMazzo(false)}
+            >
+              {it.album.draftTab}
+            </button>
+            <button
+              className={`btn ${usaMazzo ? "btn-primary" : ""}`}
+              onClick={() => setUsaMazzo(true)}
+              data-testid="tab-mazzo"
+            >
+              {it.album.mazzoTab}
+            </button>
+          </div>
+        )}
+        {usaMazzo && picks.length === 0 && (
+          <section className="panel space-y-4 p-5" data-testid="mazzo-personale">
+            <div className="space-y-2">
+              <span className="eyebrow">{it.album.scegliMazzo}</span>
+              <div className="flex flex-wrap gap-2">
+                {mazziProfilo.map((n, i) => (
+                  <button
+                    key={n + i}
+                    className={`btn ${mazzoSel === i ? "btn-primary" : ""}`}
+                    onClick={() => setMazzoSel(i)}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <span className="eyebrow">{it.duello.livello}</span>
+              <div className="flex gap-2">
+                {LIVELLI.map((l) => (
+                  <button
+                    key={l}
+                    className={`btn ${livello === l ? "btn-primary" : ""}`}
+                    onClick={() => setLivello(l)}
+                  >
+                    {it.duello.livelli[l]}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="text-xs muted">{it.album.senzaElo}</p>
+            <button
+              className="btn btn-gold w-full"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  const g = await api<DuelloState>("/api/duello/start-personale", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      profile_id: getProfileId(),
+                      mazzo: mazzoSel,
+                      livello,
+                    }),
+                  });
+                  setPartita(g);
+                  setStato(g.stato);
+                  setFase("gioco");
+                } catch (e) {
+                  err(e);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+              data-testid="inizia-personale"
+            >
+              {it.duello.inizia}
+            </button>
+          </section>
+        )}
+        {!pronto && !usaMazzo && (
           <section className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="text-sm font-bold" data-testid="duello-conta">
