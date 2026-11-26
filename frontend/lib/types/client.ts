@@ -6,7 +6,17 @@
  */
 
 export type Client =
-  Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Pick | Plan | UpdateSettings;
+  | Join
+  | Spectate
+  | Start
+  | Ban
+  | Bid
+  | Pass
+  | AssignRole
+  | Pick
+  | Plan
+  | DuelloMosse
+  | UpdateSettings;
 export type Type = "join";
 export type Name = string;
 export type Token = string | null;
@@ -26,7 +36,52 @@ export type Type8 = "plan";
 export type Tattiche = [string, string, string] | null;
 export type Carica = "subito" | "carica";
 export type Formazione = string;
-export type Type9 = "update_settings";
+export type Type9 = "duello_mosse";
+/**
+ * @maxItems 12
+ */
+export type Mosse =
+  | []
+  | [MossaIn]
+  | [MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn]
+  | [MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn, MossaIn]
+  | [
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+    ]
+  | [
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+      MossaIn,
+    ];
+export type Carta = string;
+export type Corsia = number;
+export type Type10 = "update_settings";
 export type Budget = number;
 export type Timer = number;
 export type RoleTimeout = number;
@@ -39,6 +94,8 @@ export type Modalita = "asta" | "specchio" | "raid";
 export type PickTimeout = number;
 export type Boss = string;
 export type Difficolta = "normale" | "difficile" | "epico";
+export type Regole = "classico" | "duello";
+export type TurnoDuello = number;
 
 export interface Join {
   type: Type;
@@ -83,8 +140,19 @@ export interface Plan {
   carica: Carica;
   formazione: Formazione;
 }
-export interface UpdateSettings {
+/**
+ * Le carte giocate in questo turno del duello (segrete fino alla rivelazione).
+ */
+export interface DuelloMosse {
   type: Type9;
+  mosse: Mosse;
+}
+export interface MossaIn {
+  carta: Carta;
+  corsia: Corsia;
+}
+export interface UpdateSettings {
+  type: Type10;
   settings: RoomSettings;
 }
 export interface RoomSettings {
@@ -100,4 +168,6 @@ export interface RoomSettings {
   pick_timeout: PickTimeout;
   boss: Boss;
   difficolta: Difficolta;
+  regole: Regole;
+  turno_duello: TurnoDuello;
 }

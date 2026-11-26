@@ -1,7 +1,8 @@
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import Field
 
+from app.duello_api import MossaIn, StatoView
 from app.engine.models import Character, Model
 from app.rooms.models import RoomSettings, RoomView, TournamentView
 
@@ -58,13 +59,30 @@ class Plan(Model):
     formazione: str = "classica"
 
 
+class DuelloMosse(Model):
+    """Le carte giocate in questo turno del duello (segrete fino alla rivelazione)."""
+
+    type: Literal["duello_mosse"] = "duello_mosse"
+    mosse: list[MossaIn] = Field(default_factory=list, max_length=12)
+
+
 class UpdateSettings(Model):
     type: Literal["update_settings"] = "update_settings"
     settings: RoomSettings
 
 
 ClientMessage = Annotated[
-    Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Pick | Plan | UpdateSettings,
+    Join
+    | Spectate
+    | Start
+    | Ban
+    | Bid
+    | Pass
+    | AssignRole
+    | Pick
+    | Plan
+    | DuelloMosse
+    | UpdateSettings,
     Field(discriminator="type"),
 ]
 
@@ -143,6 +161,21 @@ class TournamentResult(Model):
     tournament: TournamentView
 
 
+class DuelloAggiornamento(Model):
+    """Il duello del giocatore (messaggio privato): plancia, mano, eventi dell'ultimo turno."""
+
+    type: Literal["duello"] = "duello"
+    avversario: str | None  # id dell'avversario; None = turno di riposo
+    vista: StatoView
+    eventi: list[dict[str, Any]]  # eventi dell'ultimo turno risolto (dal tuo punto di vista)
+    scadenza: float
+    now: float
+    inviate: bool  # hai già consegnato le mosse di questo turno
+    avversario_pronto: bool
+    nuovo: bool  # primo messaggio di un duello (anche dopo una riconnessione)
+    giornata: int
+
+
 class ErrorMsg(Model):
     type: Literal["error"] = "error"
     code: str
@@ -151,6 +184,6 @@ class ErrorMsg(Model):
 
 ServerMessage = Annotated[
     Joined | RoomState | Mission | LotStarted | BidPlaced | PlayerPassed | LotWon | LotAssigned
-    | LotSkipped | AuctionFinished | TournamentResult | ErrorMsg,
+    | LotSkipped | AuctionFinished | TournamentResult | DuelloAggiornamento | ErrorMsg,
     Field(discriminator="type"),
 ]  # fmt: skip

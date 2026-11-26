@@ -34,6 +34,8 @@ class RoomSettings(Model):
     pick_timeout: int = Field(default=20, ge=5, le=120)  # secondi per scelta (specchio, raid)
     boss: str = "kaido"  # boss del raid
     difficolta: Literal["normale", "difficile", "epico"] = "normale"
+    regole: Literal["classico", "duello"] = "classico"  # combattimento del torneo
+    turno_duello: int = Field(default=30, ge=10, le=90)  # secondi per turno nei duelli
 
 
 class PlayerView(Model):
@@ -136,9 +138,28 @@ class RaidView(Model):
     boss: list[Character]  # la squadra del boss (il Capitano è il boss)
 
 
+class DuelloPubblico(Model):
+    """Un duello in corso visto da tutti (gli spettatori non vedono mani né mosse)."""
+
+    a: str  # id giocatore
+    b: str | None
+    turno: int
+    corsie_vinte: list[int]
+    finito: bool
+    vincitore: str | None
+
+
+class DuelliView(Model):
+    giornata: int  # 1-based
+    giornate: int  # totali (0 se eliminazione: dipende dai vincitori)
+    duelli: list[DuelloPubblico]
+
+
 class RoomView(Model):
     code: str
-    phase: Literal["lobby", "ban", "auction", "draft", "plan", "tournament", "raid_result"]
+    phase: Literal[
+        "lobby", "ban", "auction", "draft", "plan", "duelli", "tournament", "raid_result"
+    ]
     host_id: str
     settings: RoomSettings
     players: list[PlayerView]
@@ -152,6 +173,7 @@ class RoomView(Model):
     raid: "RaidView | None"
     arena: RoomArena | None
     tournament: TournamentView | None
+    duelli: DuelliView | None = None
     streamer_channel: str | None
     server_time: float
 

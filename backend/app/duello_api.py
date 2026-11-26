@@ -132,7 +132,14 @@ def vista_carta(c: Carta) -> CartaView:
     )
 
 
-def vista_stato(stato: Stato) -> StatoView:
+def _flip(lato: int, x: int) -> int:
+    """Indice dal punto di vista di `lato`: 0 = chi guarda, 1 = l'avversario."""
+    return x if lato == 0 else 1 - x
+
+
+def vista_stato(stato: Stato, lato: int = 0) -> StatoView:
+    """La plancia vista da `lato` (0 = chi guarda sempre a sinistra). Mano e mazzo: solo i suoi."""
+    altro = 1 - lato
     corsie: list[list[list[IstanzaView]]] = []
     for c in range(CORSIE):
         eff, _ = potenze_corsia(stato, c)
@@ -142,25 +149,26 @@ def vista_stato(stato: Stato) -> StatoView:
                     IstanzaView(
                         uid=i.uid,
                         carta=vista_carta(i.carta),
-                        lato=i.lato,
+                        lato=_flip(lato, i.lato),
                         corsia=i.corsia,
                         potenza=eff[i.uid],
                         mod=i.mod,
                     )
-                    for i in stato.corsie[c][lato]
+                    for i in stato.corsie[c][l]
                 ]
-                for lato in (0, 1)
+                for l in (lato, altro)  # noqa: E741
             ]
         )
+    v = corsie_vinte(stato)
     return StatoView(
         turno=stato.turno,
         turni=6,
-        energia=energia(stato, 0),
-        energia_cpu=energia(stato, 1),
-        mano=[vista_carta(c) for c in stato.lati[0].mano],
-        mano_cpu=len(stato.lati[1].mano),
-        mazzo=len(stato.lati[0].mazzo),
-        mazzo_cpu=len(stato.lati[1].mazzo),
+        energia=energia(stato, lato),
+        energia_cpu=energia(stato, altro),
+        mano=[vista_carta(c) for c in stato.lati[lato].mano],
+        mano_cpu=len(stato.lati[altro].mano),
+        mazzo=len(stato.lati[lato].mazzo),
+        mazzo_cpu=len(stato.lati[altro].mazzo),
         luoghi=[
             LuogoView(
                 id=LUOGHI[i].id,
@@ -171,11 +179,33 @@ def vista_stato(stato: Stato) -> StatoView:
             for i in stato.luoghi
         ],
         corsie=corsie,
-        totali=totali(stato),
-        corsie_vinte=corsie_vinte(stato),
+        totali=[[t[lato], t[altro]] for t in totali(stato)],
+        corsie_vinte=[v[lato], v[altro]],
         finita=stato.finita,
-        vincitore=stato.vincitore,
+        vincitore=None if stato.vincitore is None else _flip(lato, stato.vincitore),
     )
+
+
+def eventi_per_lato(eventi: list[dict[str, Any]], lato: int) -> list[dict[str, Any]]:
+    """Gli eventi del turno dal punto di vista di `lato`, con i dati delle carte svelate."""
+    out: list[dict[str, Any]] = []
+    for e in eventi:
+        e = dict(e)
+        if "lato" in e:
+            e["lato"] = _flip(lato, e["lato"])
+        if "primo" in e:
+            e["primo"] = _flip(lato, e["primo"])
+        if e.get("t") == "rivela":
+            e["carta_view"] = vista_carta(_tutte()[e["carta"]][0]).model_dump()
+        if e.get("t") == "punteggi":
+            e["corsie"] = [[t[lato], t[1 - lato]] for t in e["corsie"]]
+        if e.get("t") == "fine":
+            if e["vincitore"] is not None:
+                e["vincitore"] = _flip(lato, e["vincitore"])
+            e["corsie_vinte"] = [e["corsie_vinte"][lato], e["corsie_vinte"][1 - lato]]
+            e["corsie"] = [[t[lato], t[1 - lato]] for t in e["corsie"]]
+        out.append(e)
+    return out
 
 
 # ---------- draft ----------

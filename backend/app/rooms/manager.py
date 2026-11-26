@@ -10,6 +10,9 @@ from typing import Any, Protocol
 
 from app.data_loader import load_characters, load_forms, load_ruleset
 from app.db import repo
+from app.duello.carte import Carta
+from app.duello.motore import MossaNonValida, corsie_vinte
+from app.duello_api import _legami, _pool, _tutte, eventi_per_lato, vista_stato
 from app.engine import tattiche as tat
 from app.engine.arene import ARENE, arena_per_seme
 from app.engine.formazioni import DEFAULT as FORM_DEFAULT
@@ -22,11 +25,14 @@ from app.engine.simulate import simulate
 from app.raid import boss_team, load_bosses
 from app.rooms import tournament
 from app.rooms.auction import Auction, BidError
+from app.rooms.duelli import Aggiornamento, Giocatore, TorneoDuelli
 from app.rooms.models import (
     CODE_ALPHABET,
     COLORS,
     MAX_PLAYERS,
     MIN_PLAYERS,
+    DuelliView,
+    DuelloPubblico,
     MatchRef,
     MissionResult,
     Player,
@@ -42,6 +48,8 @@ from app.rooms.protocol import (
     Ban,
     Bid,
     ClientMessage,
+    DuelloAggiornamento,
+    DuelloMosse,
     ErrorMsg,
     Join,
     Joined,
@@ -107,6 +115,7 @@ class Room:
     spectators: list[Socket] = field(default_factory=list)
     task: asyncio.Task[None] | None = None
     extras: dict[str, Any] = field(default_factory=dict)  # es. stato chat Twitch
+    invii: list[tuple[str, ServerMessage]] = field(default_factory=list)  # messaggi privati
 
     def view(self) -> RoomView:
         a = self.auction
@@ -125,9 +134,30 @@ class Room:
             ),
             arena=_arena_info(self.seed, self.settings), raid=self.raid,
             tournament=self.tournament,
+            duelli=self._duelli_view(),
             streamer_channel=self.streamer_channel,
             server_time=now(),
         )  # fmt: skip
+
+    def _duelli_view(self) -> DuelliView | None:
+        t: TorneoDuelli | None = self.extras.get("duelli")
+        if t is None or self.phase != "duelli":
+            return None
+        return DuelliView(
+            giornata=len(t.rounds) + 1,
+            giornate=len(t._giornate),
+            duelli=[
+                DuelloPubblico(
+                    a=d.a.id,
+                    b=d.b.id if d.b else None,
+                    turno=min(d.stato.turno, 6) if d.stato else 0,
+                    corsie_vinte=corsie_vinte(d.stato) if d.stato else [0, 0],
+                    finito=d.finito,
+                    vincitore=d.vincitore,
+                )
+                for d in t.corrente
+            ],
+        )
 
     async def broadcast(self, msgs: list[ServerMessage]) -> None:
         targets = [*self.sockets.values(), *self.spectators]
@@ -224,6 +254,14 @@ class RoomManager:
             if out:
                 await room.broadcast(out)
             await self._after(room)
+            await self._flush(room)
+
+    async def _flush(self, room: Room) -> None:
+        """Invia i messaggi privati accumulati (mano e plancia dei duelli)."""
+        invii, room.invii = room.invii, []
+        for pid, msg in invii:
+            if ws := room.sockets.get(pid):
+                await room.send(ws, msg)
 
     async def _after(self, room: Room) -> None:
         """Passaggi di fase dopo un messaggio o un tick: missioni private, piano, torneo."""
@@ -259,6 +297,8 @@ class RoomManager:
                 return self._pick(room, pid, msg)
             case Plan():
                 return self._set_plan(room, pid, msg)
+            case DuelloMosse():
+                return self._duello_mosse(room, pid, msg)
             case AssignRole():
                 if msg.role not in ROLES:
                     raise BidError("bad_role", "Ruolo sconosciuto")
@@ -489,12 +529,89 @@ class RoomManager:
         return plan
 
     async def _finish_auction(self, room: Room) -> None:
+        if room.settings.regole == "duello" and room.settings.modalita != "raid":
+            await self._begin_duelli(room)
+            return
         if room.settings.plan_timeout > 0 and self._humans(room):
             room.phase = "plan"
             room.plan_deadline = now() + room.settings.plan_timeout
             await room.broadcast([RoomState(room=room.view())])
             return
         await self._run_tournament(room)
+
+    # ---- torneo a duelli ----
+    def _mazzo_di(self, p: Player) -> list[Carta]:
+        return [_tutte()[c.id][0] for r in ROLES if (c := p.slots[r]) is not None]
+
+    async def _begin_duelli(self, room: Room) -> None:
+        room.phase = "duelli"
+        room.plan_deadline = None
+        players = [p for p in room.players.values() if p.complete]
+        leg, riv = _legami()
+        giocatori = [Giocatore(p.id, p.name, self._mazzo_di(p), bot=p.is_chat) for p in players]
+        t = TorneoDuelli(
+            room.seed, giocatori, room.settings.formato, room.settings.turno_duello,
+            leg, riv, _pool(),
+        )  # fmt: skip
+        room.extras["duelli"] = t
+        self._accoda(room, t.avvia(now()))
+        await room.broadcast([RoomState(room=room.view())])
+
+    def _accoda(self, room: Room, aggiornamenti: list[Aggiornamento]) -> None:
+        t: TorneoDuelli = room.extras["duelli"]
+        for pid, d, eventi, nuovo in aggiornamenti:
+            lato = d.lato_di(pid)
+            if lato is None or d.stato is None:
+                continue
+            altro = d.b if lato == 0 else d.a
+            room.invii.append(
+                (
+                    pid,
+                    DuelloAggiornamento(
+                        avversario=altro.id if altro else None,
+                        vista=vista_stato(d.stato, lato),
+                        eventi=eventi_per_lato(eventi, lato),
+                        scadenza=d.scadenza,
+                        now=now(),
+                        inviate=d.mosse[lato] is not None,
+                        avversario_pronto=d.mosse[1 - lato] is not None,
+                        nuovo=nuovo,
+                        giornata=len(t.rounds) + 1,
+                    ),
+                )
+            )
+
+    def _duello_mosse(self, room: Room, pid: str, msg: DuelloMosse) -> list[ServerMessage]:
+        t: TorneoDuelli | None = room.extras.get("duelli")
+        if room.phase != "duelli" or t is None:
+            raise RoomError("not_duel_phase", "Non è il momento dei duelli")
+        try:
+            agg = t.invia(pid, [(m.carta, m.corsia) for m in msg.mosse], now())
+        except MossaNonValida as e:
+            raise RoomError("bad_moves", str(e)) from e
+        self._accoda(room, agg)
+        return [RoomState(room=room.view())] if any(ev for _, _, ev, _ in agg) else []
+
+    async def _duelli_tick(self, room: Room) -> list[ServerMessage]:
+        t: TorneoDuelli | None = room.extras.get("duelli")
+        if t is None:
+            return []
+        round_prima = len(t.rounds)
+        agg = t.tick(now())
+        self._accoda(room, agg)
+        if t.finito:
+            ids = [g.id for g in t.giocatori]
+            room.tournament = (
+                tournament.build_eliminazione(ids, t.rounds)
+                if t.formato == "eliminazione"
+                else tournament.build(ids, t.rounds)
+            )
+            room.phase = "tournament"
+            room.extras.pop("duelli", None)
+            return [RoomState(room=room.view()), TournamentResult(tournament=room.tournament)]
+        if any(ev for _, _, ev, _ in agg) or len(t.rounds) != round_prima:
+            return [RoomState(room=room.view())]
+        return []
 
     async def _run_tournament(self, room: Room) -> None:
         if room.settings.modalita == "raid":
@@ -595,6 +712,11 @@ class RoomManager:
             await room.broadcast([RoomState(room=room.view())])
             if room.tournament:
                 await room.send(ws, TournamentResult(tournament=room.tournament))
+            if room.phase == "duelli" and (t := room.extras.get("duelli")) is not None:
+                d = t.duello_di(player.id)
+                if d is not None and not d.finito:
+                    self._accoda(room, [(player.id, d, [], True)])
+                    await self._flush(room)
             if player.missione and room.phase in ("auction", "plan"):
                 m = MISSIONI[player.missione]
                 await room.send(ws, Mission(id=m.id, nome=m.nome, descrizione=m.descrizione))
@@ -654,11 +776,14 @@ class RoomManager:
                     sp.tick(now())
                     if (sp.round, sp.picks_in_round) != prima:
                         out += [RoomState(room=room.view())]
+                elif room.phase == "duelli":
+                    out += await self._duelli_tick(room)
                 elif room.phase == "lobby":
                     out += self._prune_lobby(room)
                 if out:
                     await room.broadcast(out)
                 await self._after(room)
+                await self._flush(room)
 
     async def _chat_tick(self, room: Room) -> list[ServerMessage]:
         hook = room.extras.get("chat_tick")

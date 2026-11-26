@@ -3,6 +3,7 @@
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import AuctionView from "@/components/auction/AuctionView";
 import BanView from "@/components/auction/BanView";
+import DuelliView from "@/components/auction/DuelliView";
 import Lobby from "@/components/auction/Lobby";
 import PlanView from "@/components/auction/PlanView";
 import RaidResultView from "@/components/auction/RaidResultView";
@@ -122,6 +123,7 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
       {room.phase === "draft" && <SpecchioView room={room} me={me} socket={socket} />}
       {room.phase === "raid_result" && <RaidResultView room={room} />}
       {room.phase === "plan" && <PlanView room={room} me={me} socket={socket} />}
+      {room.phase === "duelli" && <DuelliView room={room} socket={socket} />}
       {room.phase === "tournament" &&
         (tournament ? <Tournament room={room} t={tournament} /> : <p>{it.stanza.inAttesa}</p>)}
     </main>
