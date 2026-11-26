@@ -7,6 +7,7 @@ import it from "@/i18n/it.json";
 import { MOSSE_EFFETTO, PASSIVA_EFFETTO } from "@/lib/battle/effetti";
 import { paletteFor } from "@/lib/animePalette";
 import { ARCH_NOMI } from "@/lib/battle/labels";
+import { GRUPPI_NOMI, TRATTI_NOMI } from "@/lib/battle/tratti";
 import type { MatchResult } from "@/lib/types/match";
 
 export interface Detail {
@@ -46,6 +47,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const [played, setPlayed] = useState<Played | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [focus, setFocus] = useState<Option | null>(null);
+  const [sheet, setSheet] = useState<Option | null>(null);
 
   const start = useCallback(async () => {
     setPicks([]);
@@ -64,6 +66,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     if (!opts) return;
     const next = [...picks, o];
     setFocus(null);
+    setSheet(null);
     setPicks(next);
     if (next.length === opts.roles.length) {
       try {
@@ -161,7 +164,15 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
         {opts.options[role].map((o) => {
           const taken = picks.some((p) => p.character.id === o.character.id);
           return (
-            <li key={o.character.id} className="w-full min-w-0">
+            <li key={o.character.id} className="relative w-full min-w-0">
+              <button
+                type="button"
+                aria-label={`${it.veloce.dettagli}: ${o.character.nome}`}
+                className="absolute right-2 top-2 z-30 grid size-7 place-items-center rounded-full border border-white/40 bg-black/70 text-xs font-black text-white backdrop-blur transition hover:scale-110 hover:bg-black/90"
+                onClick={() => setSheet(o)}
+              >
+                i
+              </button>
               <button
                 data-testid="option"
                 disabled={o.cost > maxCost || taken}
@@ -224,15 +235,72 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           })}
         </ol>
       </section>
+      {sheet && (
+        <DetailSheet
+          o={sheet}
+          canPick={
+            sheet.cost <= maxCost && !picks.some((p) => p.character.id === sheet.character.id)
+          }
+          onClose={() => setSheet(null)}
+          onPick={() => void choose(sheet)}
+        />
+      )}
     </main>
   );
 }
 
-function CardDetail({ o }: { o: Option | null }) {
+function DetailSheet({
+  o,
+  canPick,
+  onClose,
+  onPick,
+}: {
+  o: Option;
+  canPick: boolean;
+  onClose: () => void;
+  onPick: () => void;
+}) {
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
+  }, [onClose]);
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={o.character.nome}
+      className="fixed inset-0 z-50 grid place-items-end bg-black/70 p-3 backdrop-blur-sm sm:place-items-center"
+      onClick={onClose}
+    >
+      <div
+        className="panel reveal grid max-h-[92vh] w-full max-w-2xl gap-4 overflow-auto p-4 sm:grid-cols-[220px_1fr] sm:p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto w-[200px] sm:w-[220px]">
+          <CharacterCard character={o.character} fluid />
+        </div>
+        <div className="flex min-w-0 flex-col gap-3">
+          <CardDetail o={o} bare />
+          <div className="mt-auto flex gap-2">
+            <button className="btn flex-1" onClick={onClose}>
+              {it.veloce.chiudi}
+            </button>
+            <button className="btn btn-primary flex-1" disabled={!canPick} onClick={onPick}>
+              {it.veloce.scegliCarta} ({o.cost})
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CardDetail({ o, bare }: { o: Option | null; bare?: boolean }) {
   const c = o?.character;
   return (
     <div
-      className="panel grid min-h-[7.5rem] gap-3 p-4 text-sm sm:grid-cols-[1fr_1fr_auto]"
+      className={`grid gap-3 text-sm ${bare ? "" : "panel min-h-[7.5rem] p-4 sm:grid-cols-[1fr_1fr_auto]"}`}
       aria-live="polite"
       data-testid="card-detail"
     >
@@ -248,12 +316,12 @@ function CardDetail({ o }: { o: Option | null }) {
             <div className="mt-2 flex flex-wrap gap-1">
               {(c.tags ?? []).map((t) => (
                 <span key={t} className="chip">
-                  {t}
+                  {TRATTI_NOMI[t] ?? t}
                 </span>
               ))}
               {(c.gruppi ?? []).map((g) => (
                 <span key={g} className="chip text-cyan-200">
-                  {g}
+                  {GRUPPI_NOMI[g] ?? g}
                 </span>
               ))}
             </div>

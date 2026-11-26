@@ -1,11 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SHOW_IMAGES } from "@/lib/api";
 import it from "@/i18n/it.json";
 import { paletteFor } from "@/lib/animePalette";
 import { FILE, ROLES, STAT_NOMI } from "@/lib/battle/labels";
+import { fanfare, sweep } from "@/lib/battle/sound";
 import { useBattlePlayer, type Side } from "@/lib/battle/usePlayer";
 import type { MatchResult } from "@/lib/types/match";
 import CardArt from "./CardArt";
@@ -75,9 +76,34 @@ export default function BattleScene({
   const { state: s, play, skip } = useBattlePlayer(result, { speed, sound, reduced });
   const { A, B } = result.squadre;
 
+  // Introduzione "VS" di circa 2 secondi prima dello scontro; "Salta" la interrompe senza riavviare.
+  const [intro, setIntro] = useState(false);
+  const cancelled = useRef(false);
   useEffect(() => {
-    if (autoplay) void play();
-  }, [autoplay, play]);
+    if (!autoplay) return;
+    cancelled.current = false;
+    if (reduced) {
+      void play();
+      return;
+    }
+    setIntro(true);
+    if (sound) sweep(180, 900, 0.6);
+    const t = setTimeout(() => {
+      setIntro(false);
+      if (!cancelled.current) void play();
+    }, 2000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, play, reduced]);
+  const doSkip = () => {
+    cancelled.current = true;
+    setIntro(false);
+    skip();
+  };
+  useEffect(() => {
+    if (s.phase === "done" && sound && !cancelled.current) fanfare();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.phase]);
 
   useEffect(() => {
     if (s.phase === "done") onDone?.();
@@ -256,6 +282,46 @@ export default function BattleScene({
           )}
         </AnimatePresence>
 
+        <AnimatePresence>
+          {intro && (
+            <motion.div
+              key="intro"
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-[#07060f]/85 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.35 } }}
+            >
+              <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-6">
+                <motion.div
+                  className="display truncate text-right text-[clamp(1.6rem,6vw,4rem)] font-black text-cyan-200"
+                  initial={{ x: -160, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 140, damping: 16 }}
+                >
+                  {A.nome}
+                </motion.div>
+                <motion.div
+                  className="display text-grad text-[clamp(2.4rem,9vw,6rem)] font-black"
+                  initial={{ scale: 3, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.35, type: "spring", stiffness: 200, damping: 12 }}
+                >
+                  VS
+                </motion.div>
+                <motion.div
+                  className="display truncate text-[clamp(1.6rem,6vw,4rem)] font-black text-pink-300"
+                  initial={{ x: 160, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 140, damping: 16 }}
+                >
+                  {B.nome}
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {s.phase === "done" && !reduced && (
           <motion.div
             aria-hidden="true"
@@ -295,7 +361,7 @@ export default function BattleScene({
             <button className="btn btn-primary" onClick={() => void play()}>
               {s.phase === "idle" ? it.battle.combatti : it.battle.rigioca}
             </button>
-            <button className="btn" onClick={skip}>
+            <button className="btn" onClick={doSkip}>
               {it.battle.salta}
             </button>
             <button

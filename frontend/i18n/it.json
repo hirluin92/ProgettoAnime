@@ -149,7 +149,10 @@
     "vuoto": "Libero",
     "ora": "Ora",
     "passaSopra": "Passa sopra una carta per ingrandirla",
-    "draft": "Draft"
+    "draft": "Draft",
+    "dettagli": "Dettagli",
+    "chiudi": "Chiudi",
+    "scegliCarta": "Scegli"
   },
   "overlay": {
     "votaInChat": "Scrivi in chat: !offro N",
