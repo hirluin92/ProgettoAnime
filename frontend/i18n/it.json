@@ -124,7 +124,9 @@
     "banRimasti": "Ban rimasti",
     "bannati": "Bannati",
     "cerca": "Cerca un personaggio",
-    "bannaBtn": "Banna"
+    "bannaBtn": "Banna",
+    "asta": "Asta live",
+    "offertaAttuale": "Offerta attuale"
   },
   "veloce": {
     "titolo": "Partita veloce",
