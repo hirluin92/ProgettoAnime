@@ -72,6 +72,30 @@ export default function DuelloBoard({
         </div>
       </header>
 
+      <div
+        className="sticky top-14 z-30 -mx-1 grid grid-cols-3 gap-1.5 rounded-xl bg-[#05040c]/90 p-1.5 backdrop-blur md:hidden"
+        data-testid="duello-striscia"
+      >
+        {stato.luoghi.map((l, k) => {
+          const [tu, cpu] = stato.totali[k];
+          return (
+            <div
+              key={l.id + k}
+              className={`rounded-lg px-2 py-1 text-center text-xs ${
+                tu > cpu ? "bg-emerald-500/15" : cpu > tu ? "bg-red-500/15" : "bg-white/5"
+              }`}
+            >
+              <div className="truncate font-bold">{l.nome}</div>
+              <div className="text-base font-black">
+                <span className="text-emerald-300">{tu}</span>
+                <span className="mx-1 muted">–</span>
+                <span className="text-red-300">{cpu}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="grid gap-3 md:grid-cols-3">
         {stato.luoghi.map((l, k) => {
           const [tu, cpu] = stato.totali[k];
@@ -96,7 +120,7 @@ export default function DuelloBoard({
                   </p>
                 )}
               </div>
-              <div className="grid min-h-[92px] grid-cols-4 content-start gap-1.5">
+              <div className="grid min-h-[56px] grid-cols-4 content-start gap-1.5 md:min-h-[92px]">
                 {loro.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -116,7 +140,7 @@ export default function DuelloBoard({
                   {cpu}
                 </span>
               </div>
-              <div className="grid min-h-[92px] grid-cols-4 content-start gap-1.5">
+              <div className="grid min-h-[56px] grid-cols-4 content-start gap-1.5 md:min-h-[92px]">
                 {mie.map((i) => (
                   <DuelloTile
                     key={i.uid}
