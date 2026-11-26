@@ -6,7 +6,7 @@
  */
 
 export type Client =
-  Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Plan | UpdateSettings;
+  Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Pick | Plan | UpdateSettings;
 export type Type = "join";
 export type Name = string;
 export type Token = string | null;
@@ -19,11 +19,14 @@ export type Amount = number;
 export type Type5 = "pass";
 export type Type6 = "assign_role";
 export type Role = string;
-export type Type7 = "plan";
+export type Type7 = "pick";
+export type CharacterId1 = string;
+export type Role1 = string;
+export type Type8 = "plan";
 export type Tattiche = [string, string, string] | null;
 export type Carica = "subito" | "carica";
 export type Formazione = string;
-export type Type8 = "update_settings";
+export type Type9 = "update_settings";
 export type Budget = number;
 export type Timer = number;
 export type RoleTimeout = number;
@@ -31,6 +34,9 @@ export type Anime = string[];
 export type ChatThreshold = number;
 export type BansPerPlayer = number;
 export type PlanTimeout = number;
+export type Formato = "girone" | "eliminazione";
+export type Modalita = "asta" | "specchio";
+export type PickTimeout = number;
 
 export interface Join {
   type: Type;
@@ -59,16 +65,24 @@ export interface AssignRole {
   role: Role;
 }
 /**
+ * Draft a specchio: carta scelta e slot dove metterla.
+ */
+export interface Pick {
+  type: Type7;
+  character_id: CharacterId1;
+  role: Role1;
+}
+/**
  * Piano di battaglia: tattiche per le 3 fasi (omesse = a caso), mossa finale, formazione.
  */
 export interface Plan {
-  type: Type7;
+  type: Type8;
   tattiche: Tattiche;
   carica: Carica;
   formazione: Formazione;
 }
 export interface UpdateSettings {
-  type: Type8;
+  type: Type9;
   settings: RoomSettings;
 }
 export interface RoomSettings {
@@ -79,4 +93,7 @@ export interface RoomSettings {
   chat_threshold: ChatThreshold;
   bans_per_player: BansPerPlayer;
   plan_timeout: PlanTimeout;
+  formato: Formato;
+  modalita: Modalita;
+  pick_timeout: PickTimeout;
 }

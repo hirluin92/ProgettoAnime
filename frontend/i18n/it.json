@@ -142,7 +142,14 @@
     "guardaScontro": "Guarda lo scontro",
     "squadre": "Le squadre",
     "timerPiano": "Piano di battaglia (s)",
-    "dovRende": "Dove rende"
+    "dovRende": "Dove rende",
+    "modalita": "Modalità",
+    "modAsta": "Asta con gli amici",
+    "modSpecchio": "Draft a specchio (2 giocatori)",
+    "formato": "Formato torneo",
+    "fmtGirone": "Girone all'italiana",
+    "fmtElim": "Eliminazione diretta",
+    "tempoScelta": "Tempo per scelta (s)"
   },
   "veloce": {
     "titolo": "Partita veloce",
@@ -276,7 +283,12 @@
     "modifica": "Cambia il piano",
     "consegnato": "Piano consegnato: aspetto gli altri giocatori…",
     "tempo": "Tempo",
-    "giocatori": "Piani consegnati"
+    "giocatori": "Piani consegnati",
+    "chat": {
+      "titolo": "La chat vota",
+      "comandi": "Comandi: !f1 assalto · !f2 tecnica · !f3 guardia · !carica / !subito · !form muro",
+      "voti": "voti"
+    }
   },
   "profilo": {
     "titolo": "Il tuo profilo",
@@ -303,5 +315,25 @@
     "esci": "Dimentica questo profilo",
     "gioca": "Gioca per guadagnare XP",
     "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica."
+  },
+  "specchio": {
+    "titolo": "Draft a specchio",
+    "descrizione": "Le stesse 5 carte per entrambi: prima sceglie uno, poi l'altro. Le altre 3 spariscono.",
+    "giro": "Giro",
+    "tuoTurno": "Tocca a te!",
+    "turnoDi": "Tocca a {nome}",
+    "scelta": "Scelta da {nome}",
+    "scegliSlot": "Dove metti {nome}? Scegli uno slot libero.",
+    "avversario": "Squadra di {nome}",
+    "tempo": "Tempo"
+  },
+  "tabellone": {
+    "titolo": "Tabellone",
+    "campione": "Campione",
+    "finale": "Finale",
+    "semifinali": "Semifinali",
+    "quarti": "Quarti di finale",
+    "turno": "Turno",
+    "bye": "passa il turno"
   }
 }

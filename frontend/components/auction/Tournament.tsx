@@ -10,6 +10,14 @@ const MEDAL = ["🥇", "🥈", "🥉"];
 const ORDER = [1, 0, 2];
 const HEIGHT = ["h-36", "h-28", "h-20"];
 
+function nomeTurno(i: number, tot: number): string {
+  const manca = tot - 1 - i;
+  if (manca === 0) return it.tabellone.finale;
+  if (manca === 1) return it.tabellone.semifinali;
+  if (manca === 2) return it.tabellone.quarti;
+  return `${it.tabellone.turno} ${i + 1}`;
+}
+
 export default function Tournament({ room, t }: { room: RoomView; t: TournamentView }) {
   const player = (id: string) => room.players.find((p) => p.id === id);
   const name = (id: string) => player(id)?.name ?? "?";
@@ -53,6 +61,63 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
         </div>
       )}
 
+      {t.formato === "eliminazione" && (
+        <section className="space-y-3" data-testid="tabellone">
+          <h3 className="eyebrow">{it.tabellone.titolo}</h3>
+          {t.campione && (
+            <p className="display text-grad text-center text-4xl font-black" data-testid="campione">
+              🏆 {it.tabellone.campione}: {name(t.campione)}
+            </p>
+          )}
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {t.giornate.map((round, i) => (
+              <div key={i} className="grid min-w-[15rem] flex-1 content-around gap-3">
+                <div className="text-center text-xs font-extrabold uppercase tracking-widest text-cyan-200">
+                  {nomeTurno(i, t.giornate.length)}
+                </div>
+                {round.map((m, k) => (
+                  <div
+                    key={`${m.a}-${m.b}-${k}`}
+                    className="panel overflow-hidden text-sm"
+                    data-testid="bracket-match"
+                  >
+                    {[m.a, m.b].map((pid, side) => (
+                      <div
+                        key={side}
+                        className={`flex items-center gap-2 px-3 py-2 ${
+                          pid && m.winner === pid ? "bg-white/10 font-extrabold" : "opacity-60"
+                        } ${side === 0 ? "border-b" : ""}`}
+                      >
+                        <span
+                          className="size-2.5 shrink-0 rounded-full"
+                          style={{ background: player(pid)?.color ?? "transparent" }}
+                        />
+                        <span className="min-w-0 flex-1 truncate">
+                          {pid ? name(pid) : it.tabellone.bye}
+                        </span>
+                        {!m.bye && (
+                          <span className="display tabular-nums">
+                            {side === 0 ? m.total_a : m.total_b}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                    {m.match_id && (
+                      <Link
+                        href={`/partita/${m.match_id}`}
+                        className="block border-t px-3 py-1 text-center text-[0.65rem] font-bold uppercase tracking-widest text-cyan-200 hover:bg-white/5"
+                      >
+                        {it.stanza.guardaScontro} →
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="panel overflow-x-auto">
         <table className="w-full text-sm [&_td]:px-4 [&_td]:py-3 [&_th]:px-4 [&_th]:py-3">
           <thead>
@@ -89,42 +154,43 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
       </div>
 
       <div className="space-y-6">
-        {t.giornate.map((g, i) => (
-          <div key={i} className="space-y-2">
-            <h3 className="eyebrow">
-              {it.stanza.giornata} {i + 1}
-            </h3>
-            <ul className="grid gap-3 md:grid-cols-2">
-              {g.map((m) => (
-                <li key={m.match_id}>
-                  <Link
-                    className="panel panel-hover block p-4"
-                    data-testid="match-link"
-                    href={`/partita/${m.match_id}`}
-                  >
-                    <span className="sr-only">
-                      {name(m.a)} {m.total_a} – {m.total_b} {name(m.b)}
-                      {m.winner
-                        ? ` (${it.stanza.vince} ${name(m.winner)})`
-                        : ` (${it.stanza.pareggio})`}
-                    </span>
-                    <span className="flex items-center justify-between gap-3" aria-hidden="true">
-                      <Side p={player(m.a)} total={m.total_a} win={m.winner === m.a} />
-                      <span className="display text-xl font-black muted">VS</span>
-                      <Side p={player(m.b)} total={m.total_b} win={m.winner === m.b} right />
-                    </span>
-                    <span
-                      className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
-                      aria-hidden="true"
+        {t.formato !== "eliminazione" &&
+          t.giornate.map((g, i) => (
+            <div key={i} className="space-y-2">
+              <h3 className="eyebrow">
+                {it.stanza.giornata} {i + 1}
+              </h3>
+              <ul className="grid gap-3 md:grid-cols-2">
+                {g.map((m) => (
+                  <li key={m.match_id}>
+                    <Link
+                      className="panel panel-hover block p-4"
+                      data-testid="match-link"
+                      href={`/partita/${m.match_id}`}
                     >
-                      {it.stanza.guardaScontro} →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+                      <span className="sr-only">
+                        {name(m.a)} {m.total_a} – {m.total_b} {name(m.b)}
+                        {m.winner
+                          ? ` (${it.stanza.vince} ${name(m.winner)})`
+                          : ` (${it.stanza.pareggio})`}
+                      </span>
+                      <span className="flex items-center justify-between gap-3" aria-hidden="true">
+                        <Side p={player(m.a)} total={m.total_a} win={m.winner === m.a} />
+                        <span className="display text-xl font-black muted">VS</span>
+                        <Side p={player(m.b)} total={m.total_b} win={m.winner === m.b} right />
+                      </span>
+                      <span
+                        className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
+                        aria-hidden="true"
+                      >
+                        {it.stanza.guardaScontro} →
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
       </div>
 
       {t.missioni.length > 0 && (
