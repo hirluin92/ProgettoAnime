@@ -17,8 +17,8 @@
     "modalita": "Da solo, subito",
     "veloceTitolo": "Partita veloce",
     "veloceTesto": "Fai il draft da solo contro la CPU e guarda lo scontro 7 contro 7.",
-    "sfidaTitolo": "Sfida del giorno",
-    "sfidaTesto": "Stesse opzioni per tutti, un solo tentativo. Sali in classifica.",
+    "sfidaTitolo": "Rompicapo del giorno",
+    "sfidaTesto": "Stesso mazzo e stessa CPU per tutti, un solo tentativo: vince chi gioca meglio. Sali in classifica.",
     "vai": "Gioca",
     "comeTitolo": "Come si gioca",
     "passi": [
@@ -61,7 +61,11 @@
     "raidTitolo": "Raid cooperativo",
     "raidTesto": "2-4 amici costruiscono una squadra e sfidano un boss.",
     "duelloTitolo": "Duello",
-    "duelloTesto": "Nuovo! 6 turni, 3 corsie, carte in segreto: vince chi gioca meglio, non chi ha le carte più forti."
+    "duelloTesto": "Nuovo! 6 turni, 3 corsie, carte in segreto: vince chi gioca meglio, non chi ha le carte più forti.",
+    "rankedTitolo": "Classificata",
+    "rankedTesto": "Leghe da Bronzo a Campione: draft nuovo a ogni partita, conta solo la bravura.",
+    "albumTitolo": "Album e pacchetti",
+    "albumTesto": "Colleziona le carte, crea i tuoi mazzi e apri pacchetti con i crediti guadagnati giocando."
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
