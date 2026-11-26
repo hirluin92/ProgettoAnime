@@ -40,3 +40,24 @@ test("il Duello: regole, draft di 8 carte, 6 turni contro la CPU e risultato", a
   await page.getByTestId("duello-rigioca").click();
   await expect(page.getByTestId("duello-draft")).toBeVisible();
 });
+
+test("rompicapo del giorno: mazzo uguale per tutti, partita, stelle e classifica", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  await page.goto("/duello");
+  await page.getByTestId("duello-capito").click();
+  await expect(page.getByTestId("duello-costo")).toHaveCount(0); // nessuna carta scelta ancora
+  await page.getByTestId("duello-offerta").first().click();
+  await expect(page.getByTestId("duello-costo")).toContainText("energia in 6 turni: 21");
+  await page.getByTestId("link-giorno").click();
+  await expect(page.getByTestId("duello-giorno")).toBeVisible();
+  await page.getByTestId("giorno-nome").fill(`Prova${Date.now() % 100000}`);
+  await page.getByTestId("giorno-via").click();
+  for (let t = 1; t <= 6; t++) {
+    await expect(page.getByTestId("duello-turno")).toContainText(`Turno ${t} di 6`);
+    await page.getByTestId("duello-conferma").click();
+  }
+  await expect(page.getByTestId("duello-esito")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId("giorno-classifica")).toContainText("1.");
+});

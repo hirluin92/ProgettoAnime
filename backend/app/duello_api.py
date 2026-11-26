@@ -3,14 +3,20 @@
 import random
 import secrets
 import time
+import zlib
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from pydantic import Field
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from app.data_loader import load_characters, load_forms, load_ruleset
+from app.db.models import DuelloGiorno
+from app.db.session import session_scope
 from app.draft import build_deck, forms_by_base, hand
 from app.duello import ai
 from app.duello.carte import Carta, carta_da, descr_mossa, descr_passiva
@@ -227,9 +233,9 @@ def _valida_draft(seed: int, picks: list[PickIn]) -> list[Carta]:
     return out
 
 
-def mazzo_cpu(seed: int) -> list[Carta]:
-    """Il mazzo della CPU: pesca dal proprio mazzo cercando una buona curva di costi."""
-    deck = _deck(seed + 1)[:40]
+def mazzo_bilanciato(seed: int, escludi: frozenset[str] = frozenset()) -> list[Carta]:
+    """8 carte con una buona curva di costi (per la CPU e per il rompicapo del giorno)."""
+    deck = [c for c in _deck(seed)[:60] if c.id not in escludi][:40]
     obiettivo = {1: 1, 2: 2, 3: 2, 4: 2, 5: 1}
     scelte: list[Carta] = []
     for costo, n in obiettivo.items():
@@ -246,6 +252,10 @@ def mazzo_cpu(seed: int) -> list[Carta]:
     return scelte[:MAZZO]
 
 
+def mazzo_cpu(seed: int, escludi: frozenset[str] = frozenset()) -> list[Carta]:
+    return mazzo_bilanciato(seed + 1, escludi)
+
+
 # ---------- partite ----------
 @dataclass
 class Partita:
@@ -256,6 +266,8 @@ class Partita:
     mazzo: list[Carta]
     profile_id: str | None
     premio: Premio | None = None
+    giorno: str | None = None  # rompicapo del giorno: giorno e nome del giocatore
+    nome: str | None = None
     creata: float = field(default_factory=time.time)
 
 
@@ -359,8 +371,10 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
         vinto = None if s.vincitore is None else s.vincitore == 0
         if p.premio is None:
             p.premio = assegna_premio_duello(
-                p.profile_id, bool(vinto), p.livello, [c.id for c in p.mazzo]
+                p.profile_id, vinto, p.livello, [c.id for c in p.mazzo]
             )
+            if p.giorno and p.nome:
+                _registra_giorno(p, s)
     return TurnoOut(
         id=p.id,
         eventi=_eventi_con_carte(s, eventi),
@@ -370,3 +384,141 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
         vinto=vinto,
         premio=p.premio,
     )
+
+
+# ---------- rompicapo del giorno ----------
+GIORNO_LIVELLO = "normale"
+TOP = 20
+
+
+def oggi() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%d")
+
+
+def seed_giorno(day: str) -> int:
+    return zlib.crc32(f"duello:{day}".encode()) & 0x7FFFFFFF
+
+
+class GiornoRiga(Model):
+    nome: str
+    stelle: int
+    punteggio: int
+
+
+class GiornoInfo(Model):
+    day: str
+    mazzo: list[CartaView]
+    mazzo_cpu: list[CartaView]
+    classifica: list[GiornoRiga]
+
+
+class GiornoStart(Model):
+    name: str = Field(min_length=1, max_length=24)
+    profile_id: str | None = None
+
+
+class GiornoEsito(Model):
+    stelle: int
+    punteggio: int
+    posizione: int
+    classifica: list[GiornoRiga]
+
+
+def classifica(day: str) -> list[GiornoRiga]:
+    with session_scope() as s:
+        rows = s.scalars(
+            select(DuelloGiorno)
+            .where(DuelloGiorno.day == day)
+            .order_by(DuelloGiorno.stelle.desc(), DuelloGiorno.punteggio.desc(), DuelloGiorno.id)
+        ).all()
+        return [GiornoRiga(nome=r.name, stelle=r.stelle, punteggio=r.punteggio) for r in rows]
+
+
+def stelle_e_punteggio(stato: Stato) -> tuple[int, int]:
+    """0 = sconfitta, 1 = pareggio, 2 = vittoria, 3 = vittoria con tutte e 3 le corsie."""
+    tot = totali(stato)
+    margine = sum(t[0] - t[1] for t in tot)
+    if stato.vincitore is None:
+        return 1, margine
+    if stato.vincitore != 0:
+        return 0, margine
+    return (3 if corsie_vinte(stato)[0] == 3 else 2), margine
+
+
+def _registra_giorno(p: Partita, stato: Stato) -> None:
+    assert p.giorno and p.nome
+    stelle, margine = stelle_e_punteggio(stato)
+    try:
+        with session_scope() as s:
+            s.add(
+                DuelloGiorno(
+                    day=p.giorno,
+                    name=p.nome,
+                    name_key=p.nome.lower(),
+                    stelle=stelle,
+                    punteggio=margine,
+                )
+            )
+    except IntegrityError:
+        pass
+
+
+def _mazzo_cpu_giorno(seed: int) -> list[Carta]:
+    return mazzo_cpu(seed, frozenset(c.id for c in mazzo_bilanciato(seed)))
+
+
+@router.get("/giorno/info")
+def giorno_info() -> GiornoInfo:
+    day = oggi()
+    seed = seed_giorno(day)
+    return GiornoInfo(
+        day=day,
+        mazzo=[vista_carta(c) for c in mazzo_bilanciato(seed)],
+        mazzo_cpu=[vista_carta(c) for c in _mazzo_cpu_giorno(seed)],
+        classifica=classifica(day)[:TOP],
+    )
+
+
+@router.post("/giorno/start")
+def giorno_start(body: GiornoStart) -> DuelloState:
+    _pulisci()
+    day = oggi()
+    name = body.name.strip()
+    if not name:
+        raise HTTPException(422, "serve un nome")
+    with session_scope() as s:
+        if s.scalar(
+            select(DuelloGiorno).where(
+                DuelloGiorno.day == day, DuelloGiorno.name_key == name.lower()
+            )
+        ):
+            raise HTTPException(409, "hai già giocato il rompicapo di oggi con questo nome")
+    seed = seed_giorno(day)
+    leg, riv = _legami()
+    mio = mazzo_bilanciato(seed)
+    stato = nuovo(seed, mio, _mazzo_cpu_giorno(seed), leg, riv)
+    p = Partita(
+        id=secrets.token_urlsafe(9),
+        stato=stato,
+        livello=GIORNO_LIVELLO,
+        rng=random.Random(f"cpu:{seed}"),
+        mazzo=mio,
+        profile_id=body.profile_id,
+        giorno=day,
+        nome=name,
+    )
+    PARTITE[p.id] = p
+    return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
+
+
+@router.get("/giorno/{partita_id}/esito")
+def giorno_esito(partita_id: str) -> GiornoEsito:
+    p = PARTITE.get(partita_id)
+    if p is None or not p.giorno or not p.nome:
+        raise HTTPException(404, "partita non trovata")
+    if not p.stato.finita:
+        raise HTTPException(409, "la partita non è finita")
+    stelle, margine = stelle_e_punteggio(p.stato)
+    board = classifica(p.giorno)
+    pos = next((i for i, r in enumerate(board, 1) if r.nome.lower() == p.nome.lower()), 0)
+    return GiornoEsito(stelle=stelle, punteggio=margine, posizione=pos, classifica=board[:TOP])

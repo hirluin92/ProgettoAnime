@@ -22,6 +22,7 @@ export interface ProfileView {
   partite: number;
   vittorie: number;
   best_scala: number;
+  elo: number;
   collezione: string[];
   collezione_totale: number;
   obiettivi: ObiettivoView[];
@@ -36,6 +37,8 @@ export interface Premio {
   obiettivi_completati: ObiettivoView[];
   punti_stagione: number;
   nuove_carte: number;
+  elo_prima?: number | null;
+  elo_dopo?: number | null;
 }
 export interface CollectionItem {
   id: string;
