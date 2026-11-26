@@ -50,6 +50,9 @@ class ProfileRow(Base):
     vittorie: Mapped[int] = mapped_column(Integer, default=0)
     best_scala: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     elo: Mapped[int] = mapped_column(Integer, default=1200, server_default="1200")
+    username: Mapped[str | None] = mapped_column(String(20), unique=True, nullable=True, index=True)
+    pw_hash: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    recovery_hash: Mapped[str | None] = mapped_column(String(200), nullable=True)
     collezione: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)

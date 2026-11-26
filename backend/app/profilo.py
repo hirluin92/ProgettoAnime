@@ -181,6 +181,7 @@ class ProfileView(Model):
     vittorie: int
     best_scala: int  # gradino più alto raggiunto nella Scala
     elo: int = 1200  # punteggio di abilità nei Duelli
+    username: str | None = None  # None = profilo anonimo, non ancora protetto da password
     collezione: list[str]
     collezione_totale: int
     obiettivi: list[ObiettivoView]
@@ -264,6 +265,7 @@ def _view(s, row: ProfileRow, giorno: str) -> ProfileView:  # type: ignore[no-un
         vittorie=row.vittorie,
         best_scala=row.best_scala,
         elo=row.elo,
+        username=row.username,
         collezione=sorted(row.collezione),
         collezione_totale=totale_collezione(),
         obiettivi=[

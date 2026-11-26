@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import it from "@/i18n/it.json";
+import AccountPanel from "@/components/AccountPanel";
 import { api } from "@/lib/api";
 import { paletteFor } from "@/lib/animePalette";
 import {
@@ -19,6 +20,7 @@ export default function ProfiloPage() {
   const [items, setItems] = useState<CollectionItem[]>([]);
   const [season, setSeason] = useState<SeasonView | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [accesso, setAccesso] = useState(false);
 
   useEffect(() => {
     api<CollectionItem[]>("/api/collection")
@@ -51,6 +53,20 @@ export default function ProfiloPage() {
 
   if (loading) return <main className="p-6">{it.stanza.connessione}</main>;
 
+  if (!profile && accesso)
+    return (
+      <main className="mx-auto max-w-md px-5 pt-14">
+        <AccountPanel
+          modo="accedi"
+          onFatto={() => {
+            setAccesso(false);
+            void reload();
+          }}
+          onAltro={() => setAccesso(false)}
+        />
+      </main>
+    );
+
   if (!profile)
     return (
       <main className="mx-auto max-w-md px-5 pt-14" data-testid="profilo-nuovo">
@@ -80,6 +96,13 @@ export default function ProfiloPage() {
           >
             {it.profilo.crea}
           </button>
+          <button
+            className="w-full text-center text-sm underline muted"
+            onClick={() => setAccesso(true)}
+            data-testid="ho-account"
+          >
+            {it.account.haiAccount}
+          </button>
         </div>
       </main>
     );
@@ -102,6 +125,11 @@ export default function ProfiloPage() {
           <div>
             <span className="eyebrow">{profile.titolo}</span>
             <h1 className="truncate text-5xl font-black leading-none">{profile.name}</h1>
+            {profile.username && (
+              <p className="text-sm muted" data-testid="profilo-utente">
+                {it.account.protetto.replace("{nome}", profile.username)}
+              </p>
+            )}
           </div>
           <div
             className="h-3 overflow-hidden rounded-full bg-black/40"
@@ -133,6 +161,7 @@ export default function ProfiloPage() {
           ))}
         </dl>
       </header>
+      {!profile.username && <AccountPanel modo="registra" onFatto={() => void reload()} />}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="panel space-y-3 p-5" data-testid="obiettivi">

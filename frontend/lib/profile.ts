@@ -23,6 +23,7 @@ export interface ProfileView {
   vittorie: number;
   best_scala: number;
   elo: number;
+  username: string | null;
   collezione: string[];
   collezione_totale: number;
   obiettivi: ObiettivoView[];
@@ -107,4 +108,40 @@ export async function creaProfilo(name: string): Promise<ProfileView> {
   });
   saveProfileId(p.id);
   return p;
+}
+
+export interface AccountOut {
+  profile: ProfileView;
+  codice_recupero: string | null;
+}
+
+/** Collega nome utente e password al profilo di questo dispositivo. */
+export async function registra(username: string, password: string): Promise<AccountOut> {
+  // niente «profile-change» qui: il pannello deve restare per mostrare il codice di recupero
+  return api<AccountOut>("/api/account/registra", {
+    method: "POST",
+    body: JSON.stringify({ profile_id: getProfileId(), username, password }),
+  });
+}
+
+/** Accede a un profilo esistente (anche da un altro dispositivo). */
+export async function accedi(username: string, password: string): Promise<AccountOut> {
+  const out = await api<AccountOut>("/api/account/accedi", {
+    method: "POST",
+    body: JSON.stringify({ username, password }),
+  });
+  saveProfileId(out.profile.id);
+  return out;
+}
+
+export async function recupera(
+  username: string,
+  codice: string,
+  nuovaPassword: string,
+): Promise<AccountOut> {
+  // l'id si salva dopo che l'utente ha visto il nuovo codice (vedi AccountPanel)
+  return api<AccountOut>("/api/account/recupera", {
+    method: "POST",
+    body: JSON.stringify({ username, codice, nuova_password: nuovaPassword }),
+  });
 }
