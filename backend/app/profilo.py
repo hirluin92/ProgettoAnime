@@ -179,6 +179,7 @@ class ProfileView(Model):
     titolo: str
     partite: int
     vittorie: int
+    best_scala: int  # gradino più alto raggiunto nella Scala
     collezione: list[str]
     collezione_totale: int
     obiettivi: list[ObiettivoView]
@@ -258,6 +259,7 @@ def _view(s, row: ProfileRow, giorno: str) -> ProfileView:  # type: ignore[no-un
         titolo=titolo_per_livello(lv),
         partite=row.partite,
         vittorie=row.vittorie,
+        best_scala=row.best_scala,
         collezione=sorted(row.collezione),
         collezione_totale=totale_collezione(),
         obiettivi=[
@@ -321,6 +323,45 @@ def assegna_premio(
                 ObiettivoView(id=o.id, nome=o.nome, descrizione=o.descrizione, fatto=True)
                 for o in nuovi
             ],
+            punti_stagione=pts,
+            nuove_carte=len(set(team_ids) - prima_coll),
+        )
+
+
+def assegna_premio_scala(
+    profile_id: str | None, gradini: int, team_ids: list[str]
+) -> Premio | None:
+    """Fine di una corsa della Scala: XP e punti stagione in base ai gradini vinti."""
+    if not profile_id or not UUID_RE.match(profile_id):
+        return None
+    with session_scope() as s:
+        row = s.get(ProfileRow, profile_id)
+        if row is None:
+            return None
+        prima = livello_per_xp(row.xp)
+        guadagno = 20 + 15 * gradini
+        row.xp += guadagno
+        row.best_scala = max(row.best_scala, gradini)
+        prima_coll = set(row.collezione)
+        row.collezione = sorted(prima_coll | set(team_ids))
+        pts = max(1, gradini * 2)
+        stag = stagione_di(oggi())
+        sc = s.scalar(
+            select(SeasonScore).where(SeasonScore.season == stag, SeasonScore.profile_id == row.id)
+        )
+        if sc is None:
+            s.add(SeasonScore(season=stag, profile_id=row.id, name=row.name, points=pts))
+        else:
+            sc.points += pts
+            sc.name = row.name
+        dopo = livello_per_xp(row.xp)
+        return Premio(
+            xp=guadagno,
+            xp_totale=row.xp,
+            livello_prima=prima,
+            livello_dopo=dopo,
+            titolo=titolo_per_livello(dopo),
+            obiettivi_completati=[],
             punti_stagione=pts,
             nuove_carte=len(set(team_ids) - prima_coll),
         )

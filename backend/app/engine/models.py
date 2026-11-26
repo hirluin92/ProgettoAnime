@@ -68,6 +68,15 @@ class Team(Model):
     members: list[Character] = Field(min_length=7, max_length=7)
     # bonus della missione segreta completata (es. 0.03 = +3% attacco e vita)
     bonus_missione: float = 0.0
+    # potenziamenti di squadra (Scala): attacco, vita, difesa, energia iniziale, scudo iniziale
+    bonus_atk: float = 0.0
+    bonus_hp: float = 0.0
+    bonus_dif: float = 0.0
+    energia_iniziale: int = 0
+    scudo_iniziale: float = 0.0  # frazione della vita massima
+    # moltiplicatori del Capitano (slot 0) per i boss dei raid
+    boss_hp: float = 1.0
+    boss_atk: float = 1.0
 
 
 class Unita(Model):

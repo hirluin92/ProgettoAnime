@@ -11,7 +11,7 @@ from typing import Any, Protocol
 from app.data_loader import load_characters, load_forms, load_ruleset
 from app.db import repo
 from app.engine import tattiche as tat
-from app.engine.arene import arena_per_seme
+from app.engine.arene import ARENE, arena_per_seme
 from app.engine.formazioni import DEFAULT as FORM_DEFAULT
 from app.engine.formazioni import FORMAZIONI
 from app.engine.missioni import BONUS, MISSIONI, completata, missione_per_seme
@@ -19,6 +19,7 @@ from app.engine.models import Team
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
 from app.engine.simulate import simulate
+from app.raid import boss_team, load_bosses
 from app.rooms import tournament
 from app.rooms.auction import Auction, BidError
 from app.rooms.models import (
@@ -29,6 +30,7 @@ from app.rooms.models import (
     MatchRef,
     MissionResult,
     Player,
+    RaidView,
     RoomArena,
     RoomSettings,
     RoomView,
@@ -54,6 +56,7 @@ from app.rooms.protocol import (
     TournamentResult,
     UpdateSettings,
 )  # fmt: skip
+from app.rooms.raid_room import Raid
 from app.rooms.specchio import Specchio, SpecchioError
 from app.rooms.store import InMemoryRoomStore, RoomStore
 
@@ -67,8 +70,11 @@ class Socket(Protocol):
     async def send_text(self, data: str) -> None: ...
 
 
-def _arena_info(seed: int) -> RoomArena:
-    a = arena_per_seme(seed)
+def _arena_info(seed: int, settings: RoomSettings | None = None) -> RoomArena:
+    if settings is not None and settings.modalita == "raid" and settings.boss in load_bosses():
+        a = ARENE[load_bosses()[settings.boss].arena]  # nel raid l'arena la decide il boss
+    else:
+        a = arena_per_seme(seed)
     return RoomArena(id=a.id, nome=a.nome, descrizione=a.descrizione)
 
 
@@ -92,7 +98,8 @@ class Room:
     bans: dict[str, list[str]] = field(default_factory=dict)  # id giocatore -> id personaggi
     ban_deadline: float | None = None
     plan_deadline: float | None = None
-    specchio: Specchio | None = None
+    specchio: Specchio | Raid | None = None
+    raid: RaidView | None = None
     streamer_channel: str | None = None
     last_activity: float = field(default_factory=now)
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
@@ -116,7 +123,8 @@ class Room:
                 if self.phase == "plan" and "chat_plan" in self.extras
                 else None
             ),
-            arena=_arena_info(self.seed), tournament=self.tournament,
+            arena=_arena_info(self.seed, self.settings), raid=self.raid,
+            tournament=self.tournament,
             streamer_channel=self.streamer_channel,
             server_time=now(),
         )  # fmt: skip
@@ -283,6 +291,8 @@ class RoomManager:
             raise RoomError("few_players", "Servono almeno 2 giocatori")
         if room.settings.modalita == "specchio":
             return self._begin_specchio(room)
+        if room.settings.modalita == "raid":
+            return self._begin_raid(room)
         pool = self.pool(room)
         humans = [p for p in room.players.values() if not p.is_chat]
         max_bans = room.settings.bans_per_player * len(humans)
@@ -315,6 +325,77 @@ class RoomManager:
             room.settings.pick_timeout, now(),
         )  # fmt: skip
         return [RoomState(room=room.view())]
+
+    def _begin_raid(self, room: Room) -> list[ServerMessage]:
+        humans = [p for p in room.players.values() if not p.is_chat]
+        if not 2 <= len(humans) <= 4 or len(room.players) != len(humans):
+            raise RoomError("raid_players", "Il raid è per 2-4 giocatori, senza chat")
+        if room.settings.boss not in load_bosses():
+            raise RoomError("bad_boss", "Boss sconosciuto")
+        for p in humans:
+            p.slots = dict.fromkeys(ROLES)
+            p.missione = None  # nel raid non ci sono missioni segrete
+            p.plan = None
+        room.raid = None
+        room.phase = "draft"
+        room.specchio = Raid(
+            humans, room.seed, list(load_characters().values()), load_forms(),
+            room.settings.pick_timeout, now(),
+        )  # fmt: skip
+        return [RoomState(room=room.view())]
+
+    def _raid_plan(self, room: Room, humans: list[Player]) -> dict[str, Any]:
+        """Il piano di tutti: per ogni scelta vince la più votata (a parità, a caso dal seme)."""
+        piani = [p.plan for p in humans if p.plan]
+        rnd = random.Random(f"{room.seed}:raid")
+
+        def maggioranza(valori: list[Any], default: Any) -> Any:
+            if not valori:
+                return default
+            conta = {v: valori.count(v) for v in set(map(str, valori))}
+            top = max(conta.values())
+            return rnd.choice(sorted(v for v, c in conta.items() if c == top))
+
+        tattiche = []
+        for f in range(tat.FASI):
+            voti = [p["tattiche"][f] for p in piani if p.get("tattiche")]
+            tattiche.append(maggioranza(voti, rnd.choice(tat.TATTICHE)))
+        return {
+            "tattiche": tattiche,
+            "carica": maggioranza([p["carica"] for p in piani], "subito"),
+            "formazione": maggioranza([p["formazione"] for p in piani], FORM_DEFAULT),
+        }
+
+    async def _run_raid(self, room: Room) -> None:
+        humans = self._humans(room)
+        room.plan_deadline = None
+        piano = self._raid_plan(room, humans)
+        team = Team(nome="La squadra", members=[humans[0].slots[r] for r in ROLES])  # type: ignore[misc]
+        boss = load_bosses()[room.settings.boss]
+        bt = boss_team(boss.id, room.settings.difficolta)
+        rules = load_ruleset()
+        res = simulate(
+            team,
+            bt,
+            room.seed,
+            rules,
+            tattiche={"A": piano["tattiche"], "B": tat.cpu_tattiche(room.seed, piano["tattiche"])},
+            arena=boss.arena,
+            carica={"A": piano["carica"], "B": tat.cpu_carica(room.seed)},
+            formazione={"A": piano["formazione"], "B": "classica"},
+        )
+        mid = await asyncio.to_thread(repo.save_match, res, room.code)
+        room.raid = RaidView(
+            boss_id=boss.id,
+            boss_nome=boss.nome,
+            boss_descrizione=boss.descrizione,
+            difficolta=room.settings.difficolta,
+            match_id=mid,
+            vinto=res.vincitore == "A",
+            boss=bt.members,
+        )
+        room.phase = "raid_result"
+        await room.broadcast([RoomState(room=room.view())])
 
     def _pick(self, room: Room, pid: str, msg: Pick) -> list[ServerMessage]:
         if room.phase != "draft" or room.specchio is None:
@@ -416,6 +497,9 @@ class RoomManager:
         await self._run_tournament(room)
 
     async def _run_tournament(self, room: Room) -> None:
+        if room.settings.modalita == "raid":
+            await self._run_raid(room)
+            return
         room.phase = "tournament"
         room.plan_deadline = None
         players = [p for p in room.players.values() if p.complete]

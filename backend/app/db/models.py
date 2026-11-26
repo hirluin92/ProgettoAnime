@@ -48,6 +48,7 @@ class ProfileRow(Base):
     xp: Mapped[int] = mapped_column(Integer, default=0)
     partite: Mapped[int] = mapped_column(Integer, default=0)
     vittorie: Mapped[int] = mapped_column(Integer, default=0)
+    best_scala: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     collezione: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
