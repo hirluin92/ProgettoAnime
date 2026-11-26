@@ -103,6 +103,7 @@ export default function DuelloGame({
   const [usaMazzo, setUsaMazzo] = useState(false);
   const [mazzoSel, setMazzoSel] = useState(0);
   const [rk, setRk] = useState<RankedStart | null>(null);
+  const caricamento = useRef(0);
   const [info, setInfo] = useState<GiornoInfo | null>(null);
   const [nome, setNome] = useState("");
   const [esitoGiorno, setEsitoGiorno] = useState<GiornoEsito | null>(null);
@@ -122,9 +123,13 @@ export default function DuelloGame({
       return;
     }
     if (ranked) {
+      // in sviluppo l'effetto parte due volte: vale solo l'ultimo caricamento, con seme e mani coerenti
+      const mio = ++caricamento.current;
       const st = await api<RankedStart>(`/api/ranked/${getProfileId()}/start`, { method: "POST" });
+      const d = await api<DraftDuello>(`/api/duello/draft?seed=${st.seed}`);
+      if (mio !== caricamento.current) return;
       setRk(st);
-      setDraft(await api<DraftDuello>(`/api/duello/draft?seed=${st.seed}`));
+      setDraft(d);
       return;
     }
     setDraft(await api<DraftDuello>("/api/duello/draft"));
