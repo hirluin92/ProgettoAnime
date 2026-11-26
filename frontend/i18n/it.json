@@ -478,5 +478,25 @@
     "avvPronto": "{nome} ha già scelto",
     "tempo": "Tempo: {s}s",
     "riposo": "Turno di riposo: passi automaticamente"
+  },
+  "account": {
+    "proteggi": "Proteggi il tuo profilo",
+    "proteggiTesto": "Scegli un nome utente e una password: potrai ritrovare XP, collezione ed ELO da qualsiasi dispositivo.",
+    "utente": "Nome utente (lettere, numeri, _)",
+    "password": "Password (almeno 8 caratteri)",
+    "crea": "Crea l'account",
+    "haiAccount": "Hai già un account? Accedi",
+    "accedi": "Accedi",
+    "nuovoProfilo": "Torna a creare un profilo",
+    "dimenticata": "Password dimenticata",
+    "codice": "Codice di recupero",
+    "nuovaPassword": "Nuova password",
+    "reimposta": "Reimposta la password",
+    "codiceTitolo": "Salva il tuo codice di recupero",
+    "codiceTesto": "Serve se dimentichi la password. Lo vedi solo ora: scrivilo o copialo in un posto sicuro.",
+    "codiceSalvato": "L'ho salvato",
+    "copia": "Copia",
+    "copiato": "Copiato!",
+    "protetto": "Profilo protetto: @{nome}"
   }
 }

@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, TypeAdapter
 
+from app.account import router as account_router
 from app.daily import router as daily_router
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
@@ -41,6 +42,7 @@ app.include_router(daily_router)
 app.include_router(profilo_router)
 app.include_router(scala_router)
 app.include_router(duello_router)
+app.include_router(account_router)
 
 
 @app.get("/health")

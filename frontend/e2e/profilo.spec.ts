@@ -31,3 +31,33 @@ test("l'app è installabile: manifesto, icone e service worker", async ({ reques
   expect((await request.get("/sw.js")).ok()).toBeTruthy();
   expect((await request.get("/offline.html")).ok()).toBeTruthy();
 });
+
+test("account: registrazione, codice di recupero e accesso da un altro dispositivo", async ({
+  page,
+  browser,
+}) => {
+  const utente = `utente${Date.now() % 1000000}`;
+  await page.goto("/profilo");
+  await page.getByLabel("Come ti chiami?").fill("Giulia");
+  await page.getByRole("button", { name: "Crea il profilo" }).click();
+  await expect(page.getByTestId("profilo")).toBeVisible();
+
+  await page.getByTestId("account-utente").fill(utente);
+  await page.getByTestId("account-password").fill("password123");
+  await page.getByTestId("account-invia").click();
+  await expect(page.getByTestId("account-codice")).toBeVisible();
+  await page.getByTestId("codice-ok").click();
+  await expect(page.getByTestId("profilo-utente")).toContainText(utente);
+
+  // altro dispositivo: contesto pulito, accede con le stesse credenziali
+  const ctx = await browser.newContext();
+  const altro = await ctx.newPage();
+  await altro.goto("/profilo");
+  await altro.getByTestId("ho-account").click();
+  await altro.getByTestId("account-utente").fill(utente);
+  await altro.getByTestId("account-password").fill("password123");
+  await altro.getByTestId("account-invia").click();
+  await expect(altro.getByTestId("profilo")).toBeVisible();
+  await expect(altro.getByText("Giulia").first()).toBeVisible();
+  await ctx.close();
+});
