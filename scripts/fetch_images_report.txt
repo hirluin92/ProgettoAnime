@@ -1,0 +1,12 @@
+OK    gyomei-himejima              -> Gyoumei Himejima  (cerca: Gyoumei Himejima)
+OK    yuji-itadori                 -> Yuuji Itadori  (cerca: Yuuji Itadori)
+OK    ryomen-sukuna                -> Sukuna  (cerca: Sukuna)
+MANCA obito-uchiha                 nessun risultato nell'anime atteso
+OK    barbabianca                  -> Newgate Edward  (cerca: Edward Newgate)
+OK    numero-18                    -> Jinzouningen 18-gou  (cerca: Android 18)
+MANCA gotenks                      nessun risultato nell'anime atteso
+OK    kyojuro-rengoku              -> Kyoujurou Rengoku  (cerca: Kyoujurou Rengoku)
+OK    daki                         -> Daki  (cerca: Daki)
+OK    shoko-ieiri                  -> Shouko Ieiri  (cerca: Shouko Ieiri)
+
+Con immagine: 98/100

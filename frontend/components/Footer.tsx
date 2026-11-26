@@ -8,6 +8,11 @@ export default function Footer() {
       data-testid="footer"
     >
       <p>{it.footer}</p>
+      <p className="mt-1">
+        <a className="underline hover:text-white" href="https://anilist.co" rel="noreferrer">
+          {it.footerCredito}
+        </a>
+      </p>
       <p className="mt-2">
         <Link className="underline hover:text-white" href="/info">
           {it.info.link}

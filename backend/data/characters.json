@@ -9,7 +9,8 @@
       "AURA",
       "SUMMON"
     ],
-    "rating": 92
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b17-phjcWCkRuIhu.png"
   },
   {
     "id": "sasuke-uchiha",
@@ -21,7 +22,8 @@
       "ELEMENT",
       "SPEED"
     ],
-    "rating": 91
+    "rating": 91,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b13-SISLEw1oAD7a.png"
   },
   {
     "id": "kakashi-hatake",
@@ -33,7 +35,8 @@
       "MELEE",
       "MOBILITY"
     ],
-    "rating": 88
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b85-mkVBh2yjxjmx.png"
   },
   {
     "id": "sakura-haruno",
@@ -45,7 +48,8 @@
       "MELEE",
       "REGEN"
     ],
-    "rating": 80
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b145-IorfpI8arxeX.png"
   },
   {
     "id": "gaara",
@@ -57,7 +61,8 @@
       "ELEMENT",
       "GIANT"
     ],
-    "rating": 85
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b1662-4E5J0LX9jZKZ.png"
   },
   {
     "id": "jiraiya",
@@ -69,7 +74,8 @@
       "ELEMENT",
       "MOBILITY"
     ],
-    "rating": 87
+    "rating": 87,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2423-RO5MyoXSA9OL.png"
   },
   {
     "id": "monkey-d-luffy",
@@ -81,7 +87,8 @@
       "TRANSFORM",
       "GIANT"
     ],
-    "rating": 93
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b40-MNypXsxSRb1R.png"
   },
   {
     "id": "roronoa-zoro",
@@ -93,7 +100,8 @@
       "SPEED",
       "AURA"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b62-S7oAeA9WInjV.png"
   },
   {
     "id": "sanji",
@@ -105,7 +113,8 @@
       "ELEMENT",
       "SPEED"
     ],
-    "rating": 87
+    "rating": 87,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b305-6lisPmHtCnLT.png"
   },
   {
     "id": "nami",
@@ -117,7 +126,8 @@
       "RANGE",
       "MOBILITY"
     ],
-    "rating": 70
+    "rating": 70,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b723-vp5hPptgnNEC.png"
   },
   {
     "id": "tony-tony-chopper",
@@ -129,7 +139,8 @@
       "TRANSFORM",
       "MELEE"
     ],
-    "rating": 72
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b309-H64NhbJ2ywIQ.jpg"
   },
   {
     "id": "jinbe",
@@ -141,7 +152,8 @@
       "ELEMENT",
       "BARRIER"
     ],
-    "rating": 84
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b18938-yZANEfjsVhW4.png"
   },
   {
     "id": "son-goku",
@@ -153,7 +165,8 @@
       "ENERGY",
       "TRANSFORM"
     ],
-    "rating": 98
+    "rating": 98,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/246-wsRRr6z1kii8.png"
   },
   {
     "id": "vegeta",
@@ -165,7 +178,8 @@
       "MELEE",
       "AURA"
     ],
-    "rating": 94
+    "rating": 94,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b913-NIFkKazWM8VO.png"
   },
   {
     "id": "piccolo",
@@ -177,7 +191,8 @@
       "REGEN",
       "TRANSFORM"
     ],
-    "rating": 86
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b914-KuS8AWjqBrqa.jpg"
   },
   {
     "id": "son-gohan",
@@ -189,7 +204,8 @@
       "MELEE",
       "TRANSFORM"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2093-kdFZhqcNSsqW.png"
   },
   {
     "id": "crilin",
@@ -201,7 +217,8 @@
       "SPEED",
       "MELEE"
     ],
-    "rating": 72
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2159-qtEuMYyOUkwY.jpg"
   },
   {
     "id": "majin-bu",
@@ -213,7 +230,8 @@
       "GIANT",
       "ENERGY"
     ],
-    "rating": 91
+    "rating": 91,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/1012.jpg"
   },
   {
     "id": "tanjiro-kamado",
@@ -225,7 +243,8 @@
       "ELEMENT",
       "SPEED"
     ],
-    "rating": 84
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b126071-BTNEc1nRIv68.png"
   },
   {
     "id": "zenitsu-agatsuma",
@@ -237,7 +256,8 @@
       "MELEE",
       "ELEMENT"
     ],
-    "rating": 80
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b129131-FZrQ7lSlxmEr.png"
   },
   {
     "id": "inosuke-hashibira",
@@ -249,7 +269,8 @@
       "SPEED",
       "STEALTH"
     ],
-    "rating": 78
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n129130-SJC0Kn1DU39E.jpg"
   },
   {
     "id": "shinobu-kocho",
@@ -261,7 +282,8 @@
       "SPEED",
       "MELEE"
     ],
-    "rating": 82
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136070-MC9LLxJsHyHE.png"
   },
   {
     "id": "gyomei-himejima",
@@ -273,7 +295,8 @@
       "MELEE",
       "AURA"
     ],
-    "rating": 89
+    "rating": 89,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b137778-H4Uzb9cSCvZ6.jpg"
   },
   {
     "id": "tengen-uzui",
@@ -285,7 +308,8 @@
       "MELEE",
       "MOBILITY"
     ],
-    "rating": 83
+    "rating": 83,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136071-99Kexnnn2PiV.png"
   },
   {
     "id": "yuji-itadori",
@@ -297,7 +321,8 @@
       "SPEED",
       "REGEN"
     ],
-    "rating": 82
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b127212-FVm2tD0erQ5B.png"
   },
   {
     "id": "satoru-gojo",
@@ -309,7 +334,8 @@
       "ENERGY",
       "AURA"
     ],
-    "rating": 97
+    "rating": 97,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b127691-9zqh1xpIubn7.png"
   },
   {
     "id": "megumi-fushiguro",
@@ -321,7 +347,8 @@
       "BARRIER",
       "STEALTH"
     ],
-    "rating": 83
+    "rating": 83,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b126635-L0y3I92JSUkN.png"
   },
   {
     "id": "nobara-kugisaki",
@@ -333,7 +360,8 @@
       "ENERGY",
       "MELEE"
     ],
-    "rating": 76
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b133700-f6sOO3TcgLV6.png"
   },
   {
     "id": "ryomen-sukuna",
@@ -345,7 +373,8 @@
       "MELEE",
       "AURA"
     ],
-    "rating": 96
+    "rating": 96,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b133701-rCQuDpHr3UZL.png"
   },
   {
     "id": "maki-zenin",
@@ -357,7 +386,8 @@
       "SPEED",
       "MOBILITY"
     ],
-    "rating": 79
+    "rating": 79,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b134167-5TCytk45YByD.png"
   },
   {
     "id": "itachi-uchiha",
@@ -369,7 +399,8 @@
       "ELEMENT",
       "PSYCHIC"
     ],
-    "rating": 93
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b14-9Kb1E5oel1ke.png"
   },
   {
     "id": "minato-namikaze",
@@ -381,7 +412,8 @@
       "MOBILITY",
       "MELEE"
     ],
-    "rating": 94
+    "rating": 94,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2535-Xq9WKNPJQEt3.png"
   },
   {
     "id": "madara-uchiha",
@@ -393,7 +425,8 @@
       "GIANT",
       "AURA"
     ],
-    "rating": 96
+    "rating": 96,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b53901-HnRKSoHMG5Vg.png"
   },
   {
     "id": "hinata-hyuga",
@@ -405,7 +438,8 @@
       "SPEED",
       "AURA"
     ],
-    "rating": 78
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b1555-Q41GLTV3FvYF.png"
   },
   {
     "id": "shikamaru-nara",
@@ -417,7 +451,8 @@
       "STEALTH",
       "MOBILITY"
     ],
-    "rating": 80
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2007-QaesJlIZDifj.jpg"
   },
   {
     "id": "rock-lee",
@@ -429,7 +464,8 @@
       "SPEED",
       "AURA"
     ],
-    "rating": 82
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b306-oUTOO45xInXt.png"
   },
   {
     "id": "neji-hyuga",
@@ -441,7 +477,8 @@
       "SPEED",
       "BARRIER"
     ],
-    "rating": 83
+    "rating": 83,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b1694-TL4obouDwJ7k.jpg"
   },
   {
     "id": "tsunade",
@@ -453,7 +490,8 @@
       "MELEE",
       "REGEN"
     ],
-    "rating": 88
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2767-r61Cj9v8I0wl.png"
   },
   {
     "id": "orochimaru",
@@ -465,7 +503,8 @@
       "REGEN",
       "STEALTH"
     ],
-    "rating": 86
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n2455-V9tLMS3TIgJW.png"
   },
   {
     "id": "might-guy",
@@ -477,7 +516,8 @@
       "SPEED",
       "AURA"
     ],
-    "rating": 89
+    "rating": 89,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b307-xieUEdhdTVwQ.png"
   },
   {
     "id": "killer-bee",
@@ -489,7 +529,8 @@
       "GIANT",
       "ELEMENT"
     ],
-    "rating": 84
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b18473-AiI3mk28a1Nm.png"
   },
   {
     "id": "pain",
@@ -501,7 +542,8 @@
       "SUMMON",
       "BARRIER"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b3180-ITMGBLWNBOgV.png"
   },
   {
     "id": "kisame-hoshigaki",
@@ -513,7 +555,8 @@
       "MELEE",
       "GIANT"
     ],
-    "rating": 85
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/2672-oxbHx8n3N7WY.jpg"
   },
   {
     "id": "obito-uchiha",
@@ -537,7 +580,8 @@
       "MELEE",
       "RANGE"
     ],
-    "rating": 88
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2072-Lc6jEdsueJUK.jpg"
   },
   {
     "id": "trafalgar-law",
@@ -549,7 +593,8 @@
       "PSYCHIC",
       "ELEMENT"
     ],
-    "rating": 87
+    "rating": 87,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b13767-U604OJN9dxCn.jpg"
   },
   {
     "id": "nico-robin",
@@ -561,7 +606,8 @@
       "STEALTH",
       "SUMMON"
     ],
-    "rating": 79
+    "rating": 79,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b61-ywXUyyocEEqt.png"
   },
   {
     "id": "usopp",
@@ -573,7 +619,8 @@
       "STEALTH",
       "SUMMON"
     ],
-    "rating": 70
+    "rating": 70,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b724-GFGgI9AJQkfy.jpg"
   },
   {
     "id": "franky",
@@ -585,7 +632,8 @@
       "ENERGY",
       "BARRIER"
     ],
-    "rating": 76
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n64-ChX6ZzHHjXqA.png"
   },
   {
     "id": "brook",
@@ -597,7 +645,8 @@
       "MELEE",
       "STEALTH"
     ],
-    "rating": 72
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b5627-av8oD3zhKvDl.png"
   },
   {
     "id": "barbabianca",
@@ -609,7 +658,8 @@
       "MELEE",
       "AURA"
     ],
-    "rating": 95
+    "rating": 95,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2751-NnzW0N2vCTjX.jpg"
   },
   {
     "id": "shanks",
@@ -621,7 +671,8 @@
       "MELEE",
       "SPEED"
     ],
-    "rating": 95
+    "rating": 95,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b727-wUJx7M1z5xON.png"
   },
   {
     "id": "dracule-mihawk",
@@ -633,7 +684,8 @@
       "AURA",
       "SPEED"
     ],
-    "rating": 94
+    "rating": 94,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n2064-OpnF4nLi6bvL.png"
   },
   {
     "id": "boa-hancock",
@@ -645,7 +697,8 @@
       "MELEE",
       "MOBILITY"
     ],
-    "rating": 85
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b16342-kVOF6V5Q94go.png"
   },
   {
     "id": "sabo",
@@ -657,7 +710,8 @@
       "MELEE",
       "SPEED"
     ],
-    "rating": 86
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b32893-3weZS61cdwLD.png"
   },
   {
     "id": "kaido",
@@ -669,7 +723,8 @@
       "TRANSFORM",
       "ELEMENT"
     ],
-    "rating": 95
+    "rating": 95,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b46109-MT7Hm4Bk93In.png"
   },
   {
     "id": "charlotte-katakuri",
@@ -681,7 +736,8 @@
       "MELEE",
       "SPEED"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b124077-TODX2ThCdyx2.png"
   },
   {
     "id": "marshall-d-teach",
@@ -693,7 +749,8 @@
       "ELEMENT",
       "ENERGY"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b3331-7ZJDc4BNv9Yp.jpg"
   },
   {
     "id": "trunks",
@@ -705,7 +762,8 @@
       "ENERGY",
       "SPEED"
     ],
-    "rating": 85
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b2707-YKWmn4q87oF8.png"
   },
   {
     "id": "freezer",
@@ -717,7 +775,8 @@
       "TRANSFORM",
       "AURA"
     ],
-    "rating": 93
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b3694-bDfOdSSdFfPv.png"
   },
   {
     "id": "cell",
@@ -729,7 +788,8 @@
       "ENERGY",
       "TRANSFORM"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/3908.jpg"
   },
   {
     "id": "tenshinhan",
@@ -741,7 +801,8 @@
       "RANGE",
       "MOBILITY"
     ],
-    "rating": 78
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b5499-Cn9kTD2J9dU5.png"
   },
   {
     "id": "yamcha",
@@ -753,7 +814,8 @@
       "SPEED",
       "ENERGY"
     ],
-    "rating": 68
+    "rating": 68,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b4014-of2ONLvA7T8p.jpg"
   },
   {
     "id": "goten",
@@ -765,7 +827,8 @@
       "MELEE",
       "SPEED"
     ],
-    "rating": 74
+    "rating": 74,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/2551.jpg"
   },
   {
     "id": "broly",
@@ -777,7 +840,8 @@
       "ENERGY",
       "TRANSFORM"
     ],
-    "rating": 94
+    "rating": 94,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b4945-iE59qIP7TxPu.png"
   },
   {
     "id": "jiren",
@@ -789,7 +853,8 @@
       "ENERGY",
       "MELEE"
     ],
-    "rating": 95
+    "rating": 95,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b126257-nGjgbsnxZkUB.png"
   },
   {
     "id": "beerus",
@@ -801,7 +866,8 @@
       "AURA",
       "BARRIER"
     ],
-    "rating": 97
+    "rating": 97,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b76348-pGWrznfxgPIV.png"
   },
   {
     "id": "whis",
@@ -813,7 +879,8 @@
       "SPEED",
       "ENERGY"
     ],
-    "rating": 96
+    "rating": 96,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b76346-BNh2DE5Rh2IW.jpg"
   },
   {
     "id": "numero-18",
@@ -825,7 +892,8 @@
       "MELEE",
       "SPEED"
     ],
-    "rating": 80
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b4318-HfIy9rOIOZXM.png"
   },
   {
     "id": "gotenks",
@@ -849,7 +917,8 @@
       "SUMMON",
       "MOBILITY"
     ],
-    "rating": 60
+    "rating": 60,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b678-2YCe13F0tFos.jpg"
   },
   {
     "id": "dende",
@@ -861,7 +930,8 @@
       "REGEN",
       "ENERGY"
     ],
-    "rating": 64
+    "rating": 64,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/6273.jpg"
   },
   {
     "id": "kyojuro-rengoku",
@@ -873,7 +943,8 @@
       "MELEE",
       "AURA"
     ],
-    "rating": 88
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b129133-VlTPowwt68rJ.png"
   },
   {
     "id": "giyu-tomioka",
@@ -885,7 +956,8 @@
       "MELEE",
       "SPEED"
     ],
-    "rating": 86
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b130050-qsLThJs5VIbz.png"
   },
   {
     "id": "muichiro-tokito",
@@ -897,7 +969,8 @@
       "MELEE",
       "STEALTH"
     ],
-    "rating": 87
+    "rating": 87,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136069-6PLglx4tETUX.png"
   },
   {
     "id": "mitsuri-kanroji",
@@ -909,7 +982,8 @@
       "SPEED",
       "MOBILITY"
     ],
-    "rating": 84
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136072-xVwyRUKdpybi.png"
   },
   {
     "id": "sanemi-shinazugawa",
@@ -921,7 +995,8 @@
       "SPEED",
       "AURA"
     ],
-    "rating": 85
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b137774-O1iYrnGLB71l.png"
   },
   {
     "id": "obanai-iguro",
@@ -933,7 +1008,8 @@
       "SPEED",
       "MOBILITY"
     ],
-    "rating": 80
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b137777-kGViiNyx0wa7.jpg"
   },
   {
     "id": "nezuko-kamado",
@@ -945,7 +1021,8 @@
       "TRANSFORM",
       "MELEE"
     ],
-    "rating": 83
+    "rating": 83,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b127518-NRlq1CQ1v1ro.png"
   },
   {
     "id": "kokushibo",
@@ -957,7 +1034,8 @@
       "ELEMENT",
       "REGEN"
     ],
-    "rating": 93
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b141918-Bfgq88XJFOPz.png"
   },
   {
     "id": "muzan-kibutsuji",
@@ -969,7 +1047,8 @@
       "TRANSFORM",
       "SUMMON"
     ],
-    "rating": 92
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b129132-4nIZakUZ1o8W.jpg"
   },
   {
     "id": "akaza",
@@ -981,7 +1060,8 @@
       "AURA",
       "REGEN"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b141694-0COi0GVXPuEn.png"
   },
   {
     "id": "douma",
@@ -993,7 +1073,8 @@
       "REGEN",
       "BARRIER"
     ],
-    "rating": 88
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b144591-v2yrXtHorZFS.png"
   },
   {
     "id": "kanao-tsuyuri",
@@ -1005,7 +1086,8 @@
       "MELEE",
       "MOBILITY"
     ],
-    "rating": 74
+    "rating": 74,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b139038-OcOoDUyLEsRn.png"
   },
   {
     "id": "genya-shinazugawa",
@@ -1017,7 +1099,8 @@
       "REGEN",
       "GIANT"
     ],
-    "rating": 70
+    "rating": 70,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b137776-E0QuFD7y19OQ.jpg"
   },
   {
     "id": "daki",
@@ -1029,7 +1112,8 @@
       "MOBILITY",
       "REGEN"
     ],
-    "rating": 72
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b139734-ZEy1ccFcwjaK.jpg"
   },
   {
     "id": "toji-fushiguro",
@@ -1041,7 +1125,8 @@
       "SPEED",
       "STEALTH"
     ],
-    "rating": 92
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b162722-btzdghBizxKS.jpg"
   },
   {
     "id": "kento-nanami",
@@ -1053,7 +1138,8 @@
       "AURA",
       "SPEED"
     ],
-    "rating": 86
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b133704-8wLTGjc234q2.png"
   },
   {
     "id": "yuta-okkotsu",
@@ -1065,7 +1151,8 @@
       "SUMMON",
       "AURA"
     ],
-    "rating": 93
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b129571-GHJk7gviHOOw.jpg"
   },
   {
     "id": "aoi-todo",
@@ -1077,7 +1164,8 @@
       "MOBILITY",
       "GIANT"
     ],
-    "rating": 84
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b137975-6TH7PiLWJaqy.png"
   },
   {
     "id": "panda",
@@ -1089,7 +1177,8 @@
       "MELEE",
       "TRANSFORM"
     ],
-    "rating": 72
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b137974-9qnK3DPrvLKh.jpg"
   },
   {
     "id": "toge-inumaki",
@@ -1101,7 +1190,8 @@
       "BARRIER",
       "SPEED"
     ],
-    "rating": 76
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b157115-kdhRYQdVhH95.png"
   },
   {
     "id": "kenjaku",
@@ -1113,7 +1203,8 @@
       "SUMMON",
       "STEALTH"
     ],
-    "rating": 90
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b289584-KndGudJZm5Ik.jpg"
   },
   {
     "id": "mahito",
@@ -1125,7 +1216,8 @@
       "REGEN",
       "MELEE"
     ],
-    "rating": 82
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b133702-Y7JRG5vAvjIL.png"
   },
   {
     "id": "jogo",
@@ -1137,7 +1229,8 @@
       "ENERGY",
       "RANGE"
     ],
-    "rating": 85
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b156991-niYjdp9CxO4w.png"
   },
   {
     "id": "hanami",
@@ -1149,7 +1242,8 @@
       "ELEMENT",
       "REGEN"
     ],
-    "rating": 80
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b172743-4Y5SXqED6A3G.jpg"
   },
   {
     "id": "kinji-hakari",
@@ -1161,7 +1255,8 @@
       "MELEE",
       "AURA"
     ],
-    "rating": 88
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b197584-fK7Jc6DLfx7e.jpg"
   },
   {
     "id": "hajime-kashimo",
@@ -1173,7 +1268,8 @@
       "SPEED",
       "MELEE"
     ],
-    "rating": 86
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b248143-w5ZilMdkvpbe.jpg"
   },
   {
     "id": "shoko-ieiri",
@@ -1185,7 +1281,8 @@
       "REGEN",
       "STEALTH"
     ],
-    "rating": 65
+    "rating": 65,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b158154-UCqbiULli62P.png"
   },
   {
     "id": "mai-zenin",
@@ -1197,6 +1294,7 @@
       "SUMMON",
       "STEALTH"
     ],
-    "rating": 68
+    "rating": 68,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b134168-FdWz5w2LqpeF.jpg"
   }
 ]

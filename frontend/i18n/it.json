@@ -108,11 +108,12 @@
       "Nella stanza streamer la chat di Twitch gioca come squadra scrivendo !offro N."
     ],
     "disclaimer": "Disclaimer",
-    "noImmagini": "I nomi dei personaggi sono usati solo a scopo di gioco; il sito non ospita immagini, loghi o artwork ufficiali.",
+    "noImmagini": "Le immagini dei personaggi sono collegate dal servizio AniList (anilist.co) e restano di proprietà dei rispettivi titolari dei diritti. Il sito non le ospita né le copia. Per le altre carte usiamo illustrazioni originali.",
     "rimozione": "Richieste di rimozione",
     "rimozioneTesto": "Se sei un titolare dei diritti e vuoi la rimozione di un contenuto, scrivi a",
     "cookie": "Cookie",
-    "cookieTesto": "Il gioco salva nel tuo browser solo il necessario (ad esempio il token per rientrare in una stanza). Nessuno script di analisi o pubblicità viene caricato senza il tuo consenso."
+    "cookieTesto": "Il gioco salva nel tuo browser solo il necessario (ad esempio il token per rientrare in una stanza). Nessuno script di analisi o pubblicità viene caricato senza il tuo consenso.",
+    "credito": "Immagini dei personaggi: AniList"
   },
   "sfida": {
     "titolo": "Sfida del giorno",
@@ -122,5 +123,6 @@
     "vuota": "Nessuno ha ancora giocato oggi.",
     "punteggio": "Punteggio",
     "posizione": "Posizione"
-  }
+  },
+  "footerCredito": "Immagini: AniList"
 }

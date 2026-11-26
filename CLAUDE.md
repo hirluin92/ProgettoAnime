@@ -27,6 +27,6 @@ leggila sempre prima di iniziare un lavoro nuovo.
 
 ## Vincoli da non violare
 
-- Nessuna immagine, logo o artwork ufficiale degli anime: solo nomi e dati testuali.
+- Immagini dei personaggi: solo collegate (hotlink) dal servizio AniList, mai copiate né ospitate; credito in footer e in /info. Nessun logo o artwork ufficiale scaricato da altre fonti. L'API AniList è gratuita solo per uso non commerciale: finché usa le immagini, la pubblicità resta spenta (`NEXT_PUBLIC_ADS_ENABLED` non attivo).
 - Il motore di gioco non legge né scrive file, rete o database: riceve dati e restituisce dati.
 - `reference/scontro.html` è solo un riferimento: non va servito né importato.

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { SHOW_IMAGES } from "@/lib/api";
 import { paletteFor } from "@/lib/animePalette";
 import type { Character } from "@/lib/types/match";
@@ -74,8 +74,9 @@ export default function CharacterCard({
   const pal = paletteFor(character.anime);
   const rar = rarity(character.rating);
   const dir = side === "B" ? -1 : 1;
-  const showImg = SHOW_IMAGES && !!character.immagine_url;
   const uid = useId().replace(/:/g, "");
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImg = SHOW_IMAGES && !!character.immagine_url && !imgFailed;
   const sizeClass = compact
     ? "w-28 text-[11px]"
     : fluid
