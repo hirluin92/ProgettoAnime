@@ -41,6 +41,14 @@ class AssignRole(Model):
     role: str
 
 
+class Pick(Model):
+    """Draft a specchio: carta scelta e slot dove metterla."""
+
+    type: Literal["pick"] = "pick"
+    character_id: str
+    role: str
+
+
 class Plan(Model):
     """Piano di battaglia: tattiche per le 3 fasi (omesse = a caso), mossa finale, formazione."""
 
@@ -56,7 +64,7 @@ class UpdateSettings(Model):
 
 
 ClientMessage = Annotated[
-    Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Plan | UpdateSettings,
+    Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Pick | Plan | UpdateSettings,
     Field(discriminator="type"),
 ]
 

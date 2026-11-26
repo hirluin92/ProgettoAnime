@@ -3,6 +3,7 @@
 import { use, useEffect, useMemo, useState } from "react";
 import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
+import ChatPlanVotes from "@/components/ChatPlanVotes";
 import Countdown from "@/components/auction/Countdown";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
@@ -63,6 +64,11 @@ export default function Overlay({ params }: { params: Promise<{ code: string }> 
             </div>
             <div className="mt-2 text-xl opacity-80">{it.overlay.votaInChat}</div>
           </div>
+        </div>
+      )}
+      {room?.phase === "plan" && (
+        <div className="absolute left-10 top-10 w-[760px] rounded-3xl bg-black/65 p-6">
+          <ChatPlanVotes voti={room.chat_plan ?? {}} compact />
         </div>
       )}
       {room && room.phase !== "lobby" && !match && (

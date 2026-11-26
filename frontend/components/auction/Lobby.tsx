@@ -134,6 +134,44 @@ export default function Lobby({
             />
           </label>
           <label className="grid gap-1 text-sm font-bold">
+            {it.stanza.modalita}
+            <select
+              aria-label={it.stanza.modalita}
+              className="field"
+              value={s.modalita}
+              onChange={(e) => upd({ modalita: e.target.value as RoomSettings["modalita"] })}
+            >
+              <option value="asta">{it.stanza.modAsta}</option>
+              <option value="specchio">{it.stanza.modSpecchio}</option>
+            </select>
+          </label>
+          <label className="grid gap-1 text-sm font-bold">
+            {it.stanza.formato}
+            <select
+              aria-label={it.stanza.formato}
+              className="field"
+              value={s.formato}
+              onChange={(e) => upd({ formato: e.target.value as RoomSettings["formato"] })}
+            >
+              <option value="girone">{it.stanza.fmtGirone}</option>
+              <option value="eliminazione">{it.stanza.fmtElim}</option>
+            </select>
+          </label>
+          {s.modalita === "specchio" && (
+            <label className="grid gap-1 text-sm font-bold">
+              {it.stanza.tempoScelta}
+              <input
+                aria-label={it.stanza.tempoScelta}
+                className="field"
+                type="number"
+                min={5}
+                max={120}
+                value={s.pick_timeout}
+                onChange={(e) => upd({ pick_timeout: num(e.target.value, 20) })}
+              />
+            </label>
+          )}
+          <label className="grid gap-1 text-sm font-bold">
             {it.stanza.ban}
             <input
               aria-label={it.stanza.ban}

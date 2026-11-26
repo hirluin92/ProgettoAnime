@@ -1,5 +1,6 @@
-"""Offerte della chat: voti `!offro N` aggregati ogni secondo."""
+"""Voti della chat: offerte `!offro N` (asta) e piano di battaglia (`!f1 assalto`, `!carica`)."""
 
+import random
 import re
 from collections import Counter
 from collections.abc import Callable
@@ -14,6 +15,45 @@ if TYPE_CHECKING:
 OFFER_RE = re.compile(r"^\s*!offro\s+(\d{1,3})\s*$", re.IGNORECASE)
 CHAT_ID = "chat"
 INTERVAL = 1.0
+
+# piano di battaglia votato dalla chat (fase "plan")
+PLAN_FASE_RE = re.compile(r"^\s*!f([1-3])\s+(assalto|tecnica|guardia)\s*$", re.IGNORECASE)
+PLAN_CARICA_RE = re.compile(r"^\s*!(subito|carica)\s*$", re.IGNORECASE)
+PLAN_FORM_RE = re.compile(r"^\s*!form\s+(classica|muro|assalto|guerriglia)\s*$", re.IGNORECASE)
+
+
+def parse_plan(text: str) -> tuple[str, str] | None:
+    """(casella, valore) di un voto sul piano, oppure None. Caselle: f1, f2, f3, carica, form."""
+    if m := PLAN_FASE_RE.match(text):
+        return f"f{m.group(1)}", m.group(2).lower()
+    if m := PLAN_CARICA_RE.match(text):
+        return "carica", m.group(1).lower()
+    if m := PLAN_FORM_RE.match(text):
+        return "form", m.group(1).lower()
+    return None
+
+
+class ChatPlan:
+    """Voti della chat sul piano: un voto per utente e casella, vale l'ultimo."""
+
+    def __init__(self) -> None:
+        self.votes: dict[str, dict[str, str]] = {}
+
+    def add(self, user: str, casella: str, valore: str) -> None:
+        self.votes.setdefault(casella, {})[user.lower()] = valore
+
+    def tally(self) -> dict[str, dict[str, int]]:
+        return {c: dict(Counter(v.values())) for c, v in self.votes.items()}
+
+    def winner(self, casella: str, seed: str) -> str | None:
+        """Il valore più votato; a parità sceglie a caso in modo deterministico dal seme."""
+        counts = Counter(self.votes.get(casella, {}).values())
+        if not counts:
+            return None
+        top = max(counts.values())
+        return random.Random(f"{seed}:{casella}").choice(
+            sorted(v for v, c in counts.items() if c == top)
+        )
 
 
 def parse_offer(text: str) -> int | None:
@@ -44,6 +84,13 @@ class ChatVotes:
 
 def feed_message(room: "Room", user: str, text: str) -> bool:
     """Registra un messaggio di chat sul lotto corrente. True se era un voto valido."""
+    if room.phase == "plan":
+        plan: ChatPlan | None = room.extras.get("chat_plan")
+        voto = parse_plan(text)
+        if plan is None or voto is None:
+            return False
+        plan.add(user, *voto)
+        return True
     votes: ChatVotes | None = room.extras.get("chat_votes")
     amount = parse_offer(text)
     a = room.auction

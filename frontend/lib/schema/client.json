@@ -95,6 +95,28 @@
       "title": "Pass",
       "type": "object"
     },
+    "Pick": {
+      "description": "Draft a specchio: carta scelta e slot dove metterla.",
+      "properties": {
+        "type": {
+          "const": "pick",
+          "default": "pick",
+          "title": "Type",
+          "type": "string"
+        },
+        "character_id": {
+          "title": "Character Id",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": ["type", "character_id", "role"],
+      "title": "Pick",
+      "type": "object"
+    },
     "Plan": {
       "description": "Piano di battaglia: tattiche per le 3 fasi (omesse = a caso), mossa finale, formazione.",
       "properties": {
@@ -188,6 +210,25 @@
           "minimum": 0,
           "title": "Plan Timeout",
           "type": "integer"
+        },
+        "formato": {
+          "default": "girone",
+          "enum": ["girone", "eliminazione"],
+          "title": "Formato",
+          "type": "string"
+        },
+        "modalita": {
+          "default": "asta",
+          "enum": ["asta", "specchio"],
+          "title": "Modalita",
+          "type": "string"
+        },
+        "pick_timeout": {
+          "default": 20,
+          "maximum": 120,
+          "minimum": 5,
+          "title": "Pick Timeout",
+          "type": "integer"
         }
       },
       "required": [
@@ -197,7 +238,10 @@
         "anime",
         "chat_threshold",
         "bans_per_player",
-        "plan_timeout"
+        "plan_timeout",
+        "formato",
+        "modalita",
+        "pick_timeout"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -252,6 +296,7 @@
       "bid": "#/$defs/Bid",
       "join": "#/$defs/Join",
       "pass": "#/$defs/Pass",
+      "pick": "#/$defs/Pick",
       "plan": "#/$defs/Plan",
       "spectate": "#/$defs/Spectate",
       "start": "#/$defs/Start",
@@ -280,6 +325,9 @@
     },
     {
       "$ref": "#/$defs/AssignRole"
+    },
+    {
+      "$ref": "#/$defs/Pick"
     },
     {
       "$ref": "#/$defs/Plan"

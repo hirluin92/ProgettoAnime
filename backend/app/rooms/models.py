@@ -5,6 +5,7 @@ from typing import Any, Literal
 
 from pydantic import Field
 
+from app.engine.affinita import affinita
 from app.engine.models import Character, Model
 from app.engine.roles import ROLES
 
@@ -28,6 +29,9 @@ class RoomSettings(Model):
     plan_timeout: int = Field(
         default=45, ge=0, le=180
     )  # secondi per il piano di battaglia; 0 = salta
+    formato: Literal["girone", "eliminazione"] = "girone"  # formato del torneo
+    modalita: Literal["asta", "specchio"] = "asta"  # asta con gli amici o draft a specchio (2)
+    pick_timeout: int = Field(default=20, ge=5, le=120)  # secondi per scelta (specchio)
 
 
 class PlayerView(Model):
@@ -40,6 +44,7 @@ class PlayerView(Model):
     connected: bool
     complete: bool
     ready: bool  # ha consegnato il piano di battaglia (la chat è sempre pronta)
+    slot_aff: dict[str, int]  # affinità della carta in ogni slot occupato (punti %)
 
 
 class AwaitRole(Model):
@@ -66,6 +71,7 @@ class MatchRef(Model):
     winner: str | None  # None = pareggio
     total_a: int
     total_b: int
+    bye: bool = False  # turno saltato (eliminazione): passa il giocatore a
 
 
 class StandingRow(Model):
@@ -97,11 +103,28 @@ class TournamentView(Model):
     giornate: list[list[MatchRef]]
     classifica: list[StandingRow]
     missioni: list[MissionResult] = Field(default_factory=list)
+    formato: Literal["girone", "eliminazione"] = "girone"
+    campione: str | None = None  # id del vincitore (solo eliminazione)
+
+
+class SpecchioCard(Model):
+    character: Character
+    affinita: dict[str, int]
+    taken_by: str | None  # id del giocatore che l'ha già scelta
+
+
+class SpecchioView(Model):
+    round: int  # 0-based
+    rounds: int
+    turn_player_id: str | None
+    first_player_id: str
+    deadline: float
+    hand: list[SpecchioCard]
 
 
 class RoomView(Model):
     code: str
-    phase: Literal["lobby", "ban", "auction", "plan", "tournament"]
+    phase: Literal["lobby", "ban", "auction", "draft", "plan", "tournament"]
     host_id: str
     settings: RoomSettings
     players: list[PlayerView]
@@ -110,6 +133,8 @@ class RoomView(Model):
     bans: dict[str, list[Character]]
     ban_deadline: float | None
     plan_deadline: float | None
+    draft: SpecchioView | None
+    chat_plan: dict[str, dict[str, int]] | None  # voti della chat sul piano (fase piano)
     arena: RoomArena | None
     tournament: TournamentView | None
     streamer_channel: str | None
@@ -143,6 +168,7 @@ class Player:
             slots=self.slots, is_chat=self.is_chat,
             connected=self.connected or self.is_chat, complete=self.complete,
             ready=self.is_chat or self.plan is not None,
+            slot_aff={r: affinita(c, r) for r, c in self.slots.items() if c is not None},
         )  # fmt: skip
 
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ArenaBanner from "@/components/ArenaBanner";
+import ChatPlanVotes from "@/components/ChatPlanVotes";
 import MissionCard from "@/components/MissionCard";
 import TacticsPlanner, { type Carica } from "@/components/draft/TacticsPlanner";
 import it from "@/i18n/it.json";
@@ -51,6 +52,7 @@ export default function PlanView({
       </div>
       {room.arena && <ArenaBanner {...room.arena} />}
       {mission && <MissionCard nome={mission.nome} descrizione={mission.descrizione} />}
+      {room.streamer_channel && <ChatPlanVotes voti={room.chat_plan ?? {}} />}
       <div className="panel space-y-4 p-4">
         <TacticsPlanner
           value={piano}

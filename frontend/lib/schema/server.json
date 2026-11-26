@@ -451,9 +451,14 @@
         "total_b": {
           "title": "Total B",
           "type": "integer"
+        },
+        "bye": {
+          "default": false,
+          "title": "Bye",
+          "type": "boolean"
         }
       },
-      "required": ["match_id", "a", "b", "winner", "total_a", "total_b"],
+      "required": ["match_id", "a", "b", "winner", "total_a", "total_b", "bye"],
       "title": "MatchRef",
       "type": "object"
     },
@@ -605,6 +610,13 @@
         "ready": {
           "title": "Ready",
           "type": "boolean"
+        },
+        "slot_aff": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Slot Aff",
+          "type": "object"
         }
       },
       "required": [
@@ -616,7 +628,8 @@
         "is_chat",
         "connected",
         "complete",
-        "ready"
+        "ready",
+        "slot_aff"
       ],
       "title": "PlayerView",
       "type": "object"
@@ -691,6 +704,25 @@
           "minimum": 0,
           "title": "Plan Timeout",
           "type": "integer"
+        },
+        "formato": {
+          "default": "girone",
+          "enum": ["girone", "eliminazione"],
+          "title": "Formato",
+          "type": "string"
+        },
+        "modalita": {
+          "default": "asta",
+          "enum": ["asta", "specchio"],
+          "title": "Modalita",
+          "type": "string"
+        },
+        "pick_timeout": {
+          "default": 20,
+          "maximum": 120,
+          "minimum": 5,
+          "title": "Pick Timeout",
+          "type": "integer"
         }
       },
       "required": [
@@ -700,7 +732,10 @@
         "anime",
         "chat_threshold",
         "bans_per_player",
-        "plan_timeout"
+        "plan_timeout",
+        "formato",
+        "modalita",
+        "pick_timeout"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -728,7 +763,7 @@
           "type": "string"
         },
         "phase": {
-          "enum": ["lobby", "ban", "auction", "plan", "tournament"],
+          "enum": ["lobby", "ban", "auction", "draft", "plan", "tournament"],
           "title": "Phase",
           "type": "string"
         },
@@ -792,6 +827,33 @@
           ],
           "title": "Plan Deadline"
         },
+        "draft": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SpecchioView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chat_plan": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "type": "object"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Chat Plan"
+        },
         "arena": {
           "anyOf": [
             {
@@ -839,12 +901,83 @@
         "bans",
         "ban_deadline",
         "plan_deadline",
+        "draft",
+        "chat_plan",
         "arena",
         "tournament",
         "streamer_channel",
         "server_time"
       ],
       "title": "RoomView",
+      "type": "object"
+    },
+    "SpecchioCard": {
+      "properties": {
+        "character": {
+          "$ref": "#/$defs/Character"
+        },
+        "affinita": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Affinita",
+          "type": "object"
+        },
+        "taken_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Taken By"
+        }
+      },
+      "required": ["character", "affinita", "taken_by"],
+      "title": "SpecchioCard",
+      "type": "object"
+    },
+    "SpecchioView": {
+      "properties": {
+        "round": {
+          "title": "Round",
+          "type": "integer"
+        },
+        "rounds": {
+          "title": "Rounds",
+          "type": "integer"
+        },
+        "turn_player_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Turn Player Id"
+        },
+        "first_player_id": {
+          "title": "First Player Id",
+          "type": "string"
+        },
+        "deadline": {
+          "title": "Deadline",
+          "type": "number"
+        },
+        "hand": {
+          "items": {
+            "$ref": "#/$defs/SpecchioCard"
+          },
+          "title": "Hand",
+          "type": "array"
+        }
+      },
+      "required": ["round", "rounds", "turn_player_id", "first_player_id", "deadline", "hand"],
+      "title": "SpecchioView",
       "type": "object"
     },
     "StandingRow": {
@@ -919,9 +1052,27 @@
           },
           "title": "Missioni",
           "type": "array"
+        },
+        "formato": {
+          "default": "girone",
+          "enum": ["girone", "eliminazione"],
+          "title": "Formato",
+          "type": "string"
+        },
+        "campione": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Campione"
         }
       },
-      "required": ["giornate", "classifica", "missioni"],
+      "required": ["giornate", "classifica", "missioni", "formato", "campione"],
       "title": "TournamentView",
       "type": "object"
     }

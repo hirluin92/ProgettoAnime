@@ -119,9 +119,10 @@ MISSIONI: dict[str, Missione] = {
 ORDINE: tuple[str, ...] = tuple(MISSIONI)
 
 
-def missione_per_seme(seed: int, chiave: str = "") -> Missione:
+def missione_per_seme(seed: int, chiave: str = "", escludi: tuple[str, ...] = ()) -> Missione:
     """Missione deterministica (stesso seme e chiave: stessa missione)."""
-    return MISSIONI[random.Random(f"missione:{seed}:{chiave}").choice(ORDINE)]
+    ammesse = [m for m in ORDINE if m not in escludi]
+    return MISSIONI[random.Random(f"missione:{seed}:{chiave}").choice(ammesse)]
 
 
 def completata(mid: str, team: Team, budget_avanzato: int, regole: Ruleset) -> bool:

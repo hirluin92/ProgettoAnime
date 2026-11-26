@@ -23,7 +23,7 @@ export type PlayerId = string;
 export type Token = string;
 export type Type1 = "room_state";
 export type Code = string;
-export type Phase = "lobby" | "ban" | "auction" | "plan" | "tournament";
+export type Phase = "lobby" | "ban" | "auction" | "draft" | "plan" | "tournament";
 export type HostId = string;
 export type Budget = number;
 export type Timer = number;
@@ -32,6 +32,9 @@ export type Anime = string[];
 export type ChatThreshold = number;
 export type BansPerPlayer = number;
 export type PlanTimeout = number;
+export type Formato = "girone" | "eliminazione";
+export type Modalita = "asta" | "specchio";
+export type PickTimeout = number;
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -72,6 +75,18 @@ export type Deadline1 = number;
 export type LotsLeft = number;
 export type BanDeadline = number | null;
 export type PlanDeadline = number | null;
+export type Round = number;
+export type Rounds = number;
+export type TurnPlayerId = string | null;
+export type FirstPlayerId = string;
+export type Deadline2 = number;
+export type TakenBy = string | null;
+export type Hand = SpecchioCard[];
+export type ChatPlan = {
+  [k: string]: {
+    [k: string]: number;
+  };
+} | null;
 export type Id2 = string;
 export type Nome3 = string;
 export type Descrizione = string;
@@ -81,6 +96,7 @@ export type B = string;
 export type Winner = string | null;
 export type TotalA = number;
 export type TotalB = number;
+export type Bye = boolean;
 export type Giornate = MatchRef[][];
 export type PlayerId2 = string;
 export type Punti = number;
@@ -95,6 +111,8 @@ export type Nome4 = string;
 export type Descrizione1 = string;
 export type Riuscita = boolean;
 export type Missioni = MissionResult[];
+export type Formato1 = "girone" | "eliminazione";
+export type Campione = string | null;
 export type StreamerChannel = string | null;
 export type ServerTime = number;
 export type Type2 = "mission";
@@ -103,12 +121,12 @@ export type Nome5 = string;
 export type Descrizione2 = string;
 export type Type3 = "lot_started";
 export type Number1 = number;
-export type Deadline2 = number;
+export type Deadline3 = number;
 export type Now = number;
 export type Type4 = "bid_placed";
 export type PlayerId4 = string;
 export type Amount1 = number;
-export type Deadline3 = number;
+export type Deadline4 = number;
 export type Now1 = number;
 export type Type5 = "player_passed";
 export type PlayerId5 = string;
@@ -147,6 +165,8 @@ export interface RoomView {
   bans: Bans;
   ban_deadline: BanDeadline;
   plan_deadline: PlanDeadline;
+  draft: SpecchioView | null;
+  chat_plan: ChatPlan;
   arena: RoomArena | null;
   tournament: TournamentView | null;
   streamer_channel: StreamerChannel;
@@ -160,6 +180,9 @@ export interface RoomSettings {
   chat_threshold: ChatThreshold;
   bans_per_player: BansPerPlayer;
   plan_timeout: PlanTimeout;
+  formato: Formato;
+  modalita: Modalita;
+  pick_timeout: PickTimeout;
 }
 export interface PlayerView {
   id: Id;
@@ -171,6 +194,7 @@ export interface PlayerView {
   connected: Connected;
   complete: Complete;
   ready: Ready;
+  slot_aff: SlotAff;
 }
 export interface Slots {
   [k: string]: Character | null;
@@ -199,6 +223,9 @@ export interface Passiva {
   nome: Nome2;
   effetto: Effetto1;
 }
+export interface SlotAff {
+  [k: string]: number;
+}
 export interface LotView {
   number: Number;
   character: Character;
@@ -220,6 +247,22 @@ export interface Affinita {
 export interface Bans {
   [k: string]: Character[];
 }
+export interface SpecchioView {
+  round: Round;
+  rounds: Rounds;
+  turn_player_id: TurnPlayerId;
+  first_player_id: FirstPlayerId;
+  deadline: Deadline2;
+  hand: Hand;
+}
+export interface SpecchioCard {
+  character: Character;
+  affinita: Affinita1;
+  taken_by: TakenBy;
+}
+export interface Affinita1 {
+  [k: string]: number;
+}
 export interface RoomArena {
   id: Id2;
   nome: Nome3;
@@ -229,6 +272,8 @@ export interface TournamentView {
   giornate: Giornate;
   classifica: Classifica;
   missioni: Missioni;
+  formato: Formato1;
+  campione: Campione;
 }
 export interface MatchRef {
   match_id: MatchId;
@@ -237,6 +282,7 @@ export interface MatchRef {
   winner: Winner;
   total_a: TotalA;
   total_b: TotalB;
+  bye: Bye;
 }
 export interface StandingRow {
   player_id: PlayerId2;
@@ -269,18 +315,18 @@ export interface LotStarted {
   type: Type3;
   number: Number1;
   character: Character;
-  deadline: Deadline2;
+  deadline: Deadline3;
   now: Now;
-  affinita: Affinita1;
+  affinita: Affinita2;
 }
-export interface Affinita1 {
+export interface Affinita2 {
   [k: string]: number;
 }
 export interface BidPlaced {
   type: Type4;
   player_id: PlayerId4;
   amount: Amount1;
-  deadline: Deadline3;
+  deadline: Deadline4;
   now: Now1;
 }
 export interface PlayerPassed {
