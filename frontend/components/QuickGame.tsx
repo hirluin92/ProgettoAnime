@@ -113,12 +113,12 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
         {opts.options[role].map((o) => {
           const taken = picks.some((p) => p.character.id === o.character.id);
           return (
-            <li key={o.character.id}>
+            <li key={o.character.id} className="w-full min-w-0">
               <button
                 data-testid="option"
                 disabled={o.cost > maxCost || taken}
                 onClick={() => void choose(o)}
-                className="relative grid min-h-11 w-full justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 hover:scale-110 focus-visible:z-20 focus-visible:scale-110 disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:scale-100"
+                className="relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 hover:scale-110 focus-visible:z-20 focus-visible:scale-110 disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:scale-100"
                 aria-label={`${o.character.nome}, costo ${o.cost}`}
               >
                 <CharacterCard character={o.character} role={role} fluid />

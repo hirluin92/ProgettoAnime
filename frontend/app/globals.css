@@ -189,6 +189,7 @@ body::before {
     position: relative;
     display: grid;
     height: 100%;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto;
     min-height: 0;
     gap: 0.35rem;

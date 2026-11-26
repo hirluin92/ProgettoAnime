@@ -67,11 +67,11 @@ export default function Home() {
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 sm:py-16">
-      <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
-        <div className="space-y-8">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
+        <div className="min-w-0 space-y-8">
           <header className="space-y-4">
             <span className="chip text-cyan-200">⚔ Aste live · Draft · Tornei</span>
-            <h1 className="text-6xl font-bold leading-[0.95] sm:text-7xl">
+            <h1 className="text-5xl font-bold leading-[0.95] sm:text-7xl">
               <span className="text-grad">{APP_NAME}</span>
             </h1>
             <p className="max-w-md text-lg muted">{it.home.sottotitolo}</p>
@@ -111,16 +111,16 @@ export default function Home() {
             >
               {it.home.creaStanza}
             </button>
-            <div className="flex gap-2 pt-1">
+            <div className="flex flex-wrap gap-2 pt-1">
               <input
                 aria-label={it.home.codice}
                 placeholder={it.home.codice}
                 maxLength={5}
-                className="field min-w-0 flex-1 text-center uppercase tracking-[0.3em]"
+                className="field min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em]"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
-              <button className="btn" disabled={code.trim().length < 5} onClick={join}>
+              <button className="btn flex-1" disabled={code.trim().length < 5} onClick={join}>
                 {it.home.entraCodice}
               </button>
             </div>
