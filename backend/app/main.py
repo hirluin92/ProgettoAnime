@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, TypeAdapter
 
 from app.account import router as account_router
+from app.album import router as album_router
 from app.daily import router as daily_router
 from app.data_loader import load_characters, load_ruleset
 from app.db import repo
@@ -43,6 +44,7 @@ app.include_router(profilo_router)
 app.include_router(scala_router)
 app.include_router(duello_router)
 app.include_router(account_router)
+app.include_router(album_router)
 
 
 @app.get("/health")
@@ -91,6 +93,25 @@ def random_match() -> StoredMatch:
         load_ruleset(),
     )
     return StoredMatch(id=repo.save_match(result), result=result)
+
+
+@app.post("/api/dev/regala-carte/{profile_id}")
+def regala_carte(profile_id: str) -> dict[str, int]:
+    """Solo per i test e2e: aggiunge alla collezione 12 carte comuni o rare a basso costo."""
+    if os.environ.get("DEV_TOOLS") != "1":
+        raise HTTPException(404, "non disponibile")
+    from app.album import rarita
+    from app.db.models import ProfileRow
+    from app.db.session import session_scope
+    from app.duello_api import _tutte
+
+    ids = [c.id for c, _ in _tutte().values() if rarita(c.rating) in ("comune", "rara") and c.costo <= 3]
+    with session_scope() as s:
+        row = s.get(ProfileRow, profile_id)
+        if row is None:
+            raise HTTPException(404, "profilo non trovato")
+        row.collezione = sorted(set(row.collezione or []) | set(ids[:12]))
+        return {"carte": len(row.collezione)}
 
 
 @app.get("/api/matches/{match_id}")

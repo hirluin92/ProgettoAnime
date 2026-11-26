@@ -384,7 +384,11 @@ def nuovo_elo(mio: int, avversario: int, esito: float) -> int:
 
 
 def assegna_premio_duello(
-    profile_id: str | None, vinto: bool | None, livello: str, team_ids: list[str]
+    profile_id: str | None,
+    vinto: bool | None,
+    livello: str,
+    team_ids: list[str],
+    conta_elo: bool = True,
 ) -> Premio | None:
     """Fine di un duello: XP, punti stagione e collezione."""
     if not profile_id or not UUID_RE.match(profile_id):
@@ -402,9 +406,9 @@ def assegna_premio_duello(
         prima_coll = set(row.collezione)
         row.collezione = sorted(prima_coll | set(team_ids))
         elo_prima = row.elo
-        row.elo = nuovo_elo(
-            row.elo, ELO_CPU.get(livello, 1200), 0.5 if vinto is None else (1.0 if vinto else 0.0)
-        )
+        if conta_elo:
+            esito = 0.5 if vinto is None else (1.0 if vinto else 0.0)
+            row.elo = nuovo_elo(row.elo, ELO_CPU.get(livello, 1200), esito)
         pts = (3 if vinto else 1) + (2 if vinto and livello == "difficile" else 0)
         stag = stagione_di(oggi())
         sc = s.scalar(

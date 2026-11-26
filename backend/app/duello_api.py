@@ -296,6 +296,7 @@ class Partita:
     mazzo: list[Carta]
     profile_id: str | None
     premio: Premio | None = None
+    personale: bool = False  # mazzo dell'album: non vale per l'ELO
     giorno: str | None = None  # rompicapo del giorno: giorno e nome del giocatore
     nome: str | None = None
     creata: float = field(default_factory=time.time)
@@ -315,6 +316,12 @@ class StartIn(Model):
     picks: list[PickIn] = Field(min_length=MAZZO, max_length=MAZZO)
     livello: str = "normale"
     profile_id: str | None = None
+
+
+class StartPersonaleIn(Model):
+    profile_id: str
+    mazzo: int = Field(ge=0, le=9)
+    livello: str = "normale"
 
 
 class MossaIn(Model):
@@ -362,6 +369,31 @@ def start(body: StartIn) -> DuelloState:
     return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
 
 
+@router.post("/start-personale")
+def start_personale(body: StartPersonaleIn) -> DuelloState:
+    """Partita con un proprio mazzo dell'album: niente ELO (il ranked è sempre a draft)."""
+    from app.album import mazzo_di_profilo
+
+    _pulisci()
+    if body.livello not in ai.LIVELLI:
+        raise HTTPException(422, "livello non valido")
+    mazzo = mazzo_di_profilo(body.profile_id, body.mazzo)
+    seed = random.randint(1, 2**31 - 1)
+    leg, riv = _legami()
+    stato = nuovo(seed, mazzo, mazzo_cpu(seed), leg, riv)
+    p = Partita(
+        id=secrets.token_urlsafe(9),
+        stato=stato,
+        livello=body.livello,
+        rng=random.Random(f"cpu:{seed}"),
+        mazzo=mazzo,
+        profile_id=body.profile_id,
+        personale=True,
+    )
+    PARTITE[p.id] = p
+    return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
+
+
 @router.get("/{partita_id}")
 def leggi(partita_id: str) -> DuelloState:
     p = PARTITE.get(partita_id)
@@ -401,7 +433,7 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
         vinto = None if s.vincitore is None else s.vincitore == 0
         if p.premio is None:
             p.premio = assegna_premio_duello(
-                p.profile_id, vinto, p.livello, [c.id for c in p.mazzo]
+                p.profile_id, vinto, p.livello, [c.id for c in p.mazzo], conta_elo=not p.personale
             )
             if p.giorno and p.nome:
                 _registra_giorno(p, s)
