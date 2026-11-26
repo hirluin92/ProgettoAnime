@@ -12,6 +12,7 @@ const LINKS = [
   { href: "/veloce", label: it.nav.veloce },
   { href: "/sfida", label: it.nav.sfida },
   { href: "/album", label: it.nav.album },
+  { href: "/negozio", label: it.nav.negozio },
   { href: "/profilo", label: it.nav.profilo },
   { href: "/info", label: it.nav.info },
 ] as const;
@@ -53,7 +54,11 @@ export default function SiteNav() {
             {LINKS.map((l) => (
               <li
                 key={l.href}
-                className={["/info", "/veloce", "/sfida"].includes(l.href) ? "hidden sm:block" : ""}
+                className={
+                  ["/info", "/veloce", "/sfida", "/negozio"].includes(l.href)
+                    ? "hidden sm:block"
+                    : ""
+                }
               >
                 <Link
                   href={l.href}

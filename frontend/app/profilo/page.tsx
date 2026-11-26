@@ -146,13 +146,14 @@ export default function ProfiloPage() {
             {profile.xp} / {profile.xp_prossimo} {it.profilo.xp}
           </p>
         </div>
-        <dl className="grid grid-cols-2 gap-3 text-center sm:grid-cols-5">
+        <dl className="grid grid-cols-2 gap-3 text-center sm:grid-cols-6">
           {[
             [it.profilo.partite, profile.partite],
             [it.profilo.vittorie, profile.vittorie],
             [it.profilo.percentuale, `${pct}%`],
             [it.profilo.scala, profile.best_scala],
             [it.profilo.elo, profile.elo],
+            [it.profilo.crediti, profile.crediti],
           ].map(([k, v]) => (
             <div key={String(k)} className="rounded-2xl border bg-white/[0.04] px-4 py-2">
               <dt className="text-[0.6rem] font-extrabold uppercase tracking-widest muted">{k}</dt>

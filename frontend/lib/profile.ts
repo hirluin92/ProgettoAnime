@@ -24,6 +24,8 @@ export interface ProfileView {
   best_scala: number;
   elo: number;
   username: string | null;
+  crediti: number;
+  pity: number;
   collezione: string[];
   collezione_totale: number;
   obiettivi: ObiettivoView[];
@@ -38,6 +40,7 @@ export interface Premio {
   obiettivi_completati: ObiettivoView[];
   punti_stagione: number;
   nuove_carte: number;
+  crediti?: number;
   elo_prima?: number | null;
   elo_dopo?: number | null;
 }

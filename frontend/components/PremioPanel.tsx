@@ -42,6 +42,11 @@ export default function PremioPanel({ premio }: { premio: Premio }) {
         <li className="chip">
           {it.profilo.stagione}: +{premio.punti_stagione}
         </li>
+        {!!premio.crediti && (
+          <li className="chip text-amber-200" data-testid="premio-crediti">
+            +{premio.crediti} {it.profilo.crediti}
+          </li>
+        )}
         {premio.elo_prima != null && premio.elo_dopo != null && (
           <li className="chip text-amber-200" data-testid="premio-elo">
             ELO {premio.elo_dopo} ({premio.elo_dopo - premio.elo_prima >= 0 ? "+" : ""}
