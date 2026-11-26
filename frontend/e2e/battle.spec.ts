@@ -8,11 +8,10 @@ test("lo scontro di prova si recita e si può saltare", async ({ page }) => {
   await expect(page.getByTestId("banner")).toBeVisible();
   await page.getByRole("button", { name: "Salta" }).click();
   await expect(page.getByTestId("result")).toBeVisible();
-  await page.getByRole("button", { name: "Velocità ×2" }).click();
-  await expect(page.getByRole("button", { name: "Velocità ×2" })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  const veloce = page.getByRole("button", { name: "Velocità ×2" });
+  await expect(veloce).toHaveAttribute("aria-pressed", "true"); // ×2 di default
+  await veloce.click();
+  await expect(veloce).toHaveAttribute("aria-pressed", "false");
 });
 
 test("la pagina /partita/[id] rilegge uno scontro salvato", async ({ page, request }) => {
