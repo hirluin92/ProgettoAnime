@@ -85,9 +85,20 @@ export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boo
     await slots.nth(6).click();
     await expect(page.getByTestId("swap-hint")).toContainText("Scambio fatto");
   }
-  await page.getByTestId("tactic-0-assalto").click();
-  await page.getByTestId("tactic-1-tecnica").click();
-  await page.getByTestId("tactic-2-guardia").click();
   await page.getByTestId("carica-carica").click();
+  // tattiche: nella Veloce si gioca una fase alla volta (con il resoconto), altrove tutte insieme
+  const scelte: [number, string][] = [
+    [0, "assalto"],
+    [1, "tecnica"],
+    [2, "guardia"],
+  ];
+  for (const [f, t] of scelte) {
+    await page.getByTestId(`tactic-${f}-${t}`).click();
+    const gioca = page.getByTestId(`gioca-fase-${f + 1}`);
+    if (await gioca.count()) {
+      await gioca.click();
+      await expect(page.getByTestId(`fase-report-${f + 1}`)).toBeVisible();
+    }
+  }
   await page.getByTestId("fight").click();
 }

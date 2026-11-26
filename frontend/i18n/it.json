@@ -89,7 +89,11 @@
     "fase": "Fase",
     "pubblico": "Pubblico",
     "momenti": "Momenti migliori",
-    "rivedi": "Rivedi"
+    "rivedi": "Rivedi",
+    "perche": "Perché è andata così",
+    "condividi": "Condividi lo scontro",
+    "copiato": "Link copiato!",
+    "testoCondivisione": "Ho {esito} contro la CPU su Arena Anime: guarda lo scontro!"
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
@@ -264,7 +268,15 @@
       "subitoDesc": "Si lancia appena l'energia è piena.",
       "trattieni": "Trattieni",
       "trattieniDesc": "Si lancia dal turno 4, con il +30% di danno."
-    }
+    },
+    "fasiLive": "Scegli una fase alla volta: dopo ogni fase vedi come è andata e cosa ha fatto la CPU.",
+    "giocaFase": "Gioca la fase {n}",
+    "faseBloccata": "Prima gioca la fase precedente",
+    "fasiRisultato": "Com'è andata la fase {n}",
+    "tue": "Tu",
+    "cpu": "CPU",
+    "momenti": "Momenti chiave",
+    "vitaSquadra": "Vita della squadra"
   },
   "formazione": {
     "titolo": "Formazione",

@@ -34,6 +34,7 @@ export default function Veloce() {
       title={it.veloce.titolo}
       load={load}
       play={play}
+      fasiLive
       after={
         <button className="btn btn-primary" onClick={() => window.location.reload()}>
           {it.veloce.rigioca}

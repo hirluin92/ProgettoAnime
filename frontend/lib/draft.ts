@@ -86,3 +86,20 @@ export function bestRoles(aff: Record<string, number>, n = 2): [string, number][
     .sort((a, b) => b[1] - a[1])
     .slice(0, n);
 }
+
+// Anteprima di una fase (specchio di backend/app/quick.py: FaseOut).
+export interface MembroFase {
+  nome: string;
+  hp_pct: number;
+  vivo: boolean;
+}
+export interface FaseOut {
+  fase: number;
+  tue: string[];
+  cpu: string[];
+  confronti: string[];
+  membri: Record<"A" | "B", MembroFase[]>;
+  percento: Record<"A" | "B", number>;
+  righe: string[];
+  finita: boolean;
+}

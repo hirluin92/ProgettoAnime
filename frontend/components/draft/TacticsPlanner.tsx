@@ -6,7 +6,14 @@ import { BONUS, FASI, MALUS, TATTICA_INFO, TATTICHE, type Tattica } from "@/lib/
 
 export type Carica = "subito" | "carica";
 
+export interface FasiLive {
+  giocate: number; // fasi già giocate in anteprima (0-2)
+  busy: boolean;
+  onGioca: (n: number) => void; // gioca le prime n fasi
+}
+
 export default function TacticsPlanner({
+  live,
   value,
   onChange,
   carica,
@@ -14,6 +21,7 @@ export default function TacticsPlanner({
   formazione,
   onFormazione,
 }: {
+  live?: FasiLive;
   value: (Tattica | null)[];
   onChange: (fase: number, t: Tattica) => void;
   carica: Carica;
@@ -38,13 +46,20 @@ export default function TacticsPlanner({
             </span>
           ))}
         </p>
+        {live && <p className="mt-1 text-xs text-cyan-100">{it.tattiche.fasiLive}</p>}
         <p className="mt-1 text-xs muted">
           {it.tattiche.effetto.replace("{bonus}", String(BONUS)).replace("{malus}", String(MALUS))}
         </p>
       </div>
       <div className="grid gap-3 md:grid-cols-3">
         {Array.from({ length: FASI }, (_, f) => (
-          <fieldset key={f} className="rounded-2xl border bg-white/[0.03] p-3">
+          <fieldset
+            key={f}
+            disabled={!!live && (f > live.giocate || f < live.giocate)}
+            className={`rounded-2xl border bg-white/[0.03] p-3 ${
+              live && f > live.giocate ? "opacity-50" : ""
+            }`}
+          >
             <legend className="px-1 text-xs font-extrabold uppercase tracking-widest text-cyan-200">
               {it.battle.fase} {f + 1} · {it.tattiche.turni[f]}
             </legend>
@@ -70,10 +85,27 @@ export default function TacticsPlanner({
                 );
               })}
             </div>
+            {live && f === live.giocate && f < FASI - 1 && (
+              <button
+                type="button"
+                className="btn btn-primary mt-2 w-full text-sm"
+                disabled={!value[f] || live.busy}
+                onClick={() => live.onGioca(f + 1)}
+                data-testid={`gioca-fase-${f + 1}`}
+              >
+                {it.tattiche.giocaFase.replace("{n}", String(f + 1))}
+              </button>
+            )}
+            {live && f > live.giocate && (
+              <p className="mt-2 text-xs muted">{it.tattiche.faseBloccata}</p>
+            )}
           </fieldset>
         ))}
       </div>
-      <fieldset className="rounded-2xl border bg-white/[0.03] p-3">
+      <fieldset
+        disabled={!!live && live.giocate > 0}
+        className="rounded-2xl border bg-white/[0.03] p-3 disabled:opacity-60"
+      >
         <legend className="px-1 text-xs font-extrabold uppercase tracking-widest text-cyan-200">
           {it.tattiche.carica.titolo}
         </legend>
@@ -100,7 +132,9 @@ export default function TacticsPlanner({
         </div>
       </fieldset>
       {formazione !== undefined && onFormazione && (
-        <FormationPicker value={formazione} onChange={onFormazione} />
+        <fieldset disabled={!!live && live.giocate > 0} className="disabled:opacity-60">
+          <FormationPicker value={formazione} onChange={onFormazione} />
+        </fieldset>
       )}
     </div>
   );

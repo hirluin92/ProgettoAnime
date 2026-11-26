@@ -5,16 +5,20 @@ import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
 import ArenaBanner from "@/components/ArenaBanner";
 import PremioPanel from "@/components/PremioPanel";
+import ShareButton from "@/components/ShareButton";
 import MissionCard from "@/components/MissionCard";
 import { AffinityLegend } from "@/components/draft/Affinity";
 import { CardDetail, DetailSheet } from "@/components/draft/CardDetail";
 import SlotBoard from "@/components/draft/SlotBoard";
+import FaseReport from "@/components/draft/FaseReport";
 import TacticsPlanner, { type Carica } from "@/components/draft/TacticsPlanner";
 import { FASI, type Tattica } from "@/lib/battle/tattiche";
 import it from "@/i18n/it.json";
+import { api } from "@/lib/api";
 import {
   allowed as canAfford,
   type DraftOptions,
+  type FaseOut,
   type MissioneEsito,
   type Option,
   type PickIn,
@@ -30,6 +34,7 @@ export interface Played {
   cpu_spent: number;
   missione: MissioneEsito | null;
   premio: Premio | null;
+  perche?: string[];
 }
 
 interface Props {
@@ -46,9 +51,18 @@ interface Props {
   after?: ReactNode;
   header?: ReactNode;
   senzaMissione?: boolean; // per la Scala: niente missione né spese mostrate
+  fasiLive?: boolean; // Veloce: le tattiche si scelgono una fase alla volta
 }
 
-export default function QuickGame({ title, load, play, after, header, senzaMissione }: Props) {
+export default function QuickGame({
+  title,
+  load,
+  play,
+  after,
+  header,
+  senzaMissione,
+  fasiLive,
+}: Props) {
   const [d, setD] = useState<DraftOptions | null>(null);
   const [placed, setPlaced] = useState<Placed[]>([]);
   const [h, setH] = useState(0); // indice della mano corrente
@@ -63,6 +77,7 @@ export default function QuickGame({ title, load, play, after, header, senzaMissi
   const [formazione, setFormazione] = useState("classica");
   const [piano, setPiano] = useState<(Tattica | null)[]>(Array(FASI).fill(null));
   const [played, setPlayed] = useState<Played | null>(null);
+  const [fasi, setFasi] = useState<FaseOut[]>([]);
   const [busy, setBusy] = useState(false);
   const [battleDone, setBattleDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +93,7 @@ export default function QuickGame({ title, load, play, after, header, senzaMissi
     setSwap(null);
     setSwapFirst(null);
     setPiano(Array(FASI).fill(null));
+    setFasi([]);
     setCarica("subito");
     setFormazione("classica");
     setPlayed(null);
@@ -154,6 +170,28 @@ export default function QuickGame({ title, load, play, after, header, senzaMissi
       setSwapFirst(null);
     }
   };
+  const anteprima = async (n: number) => {
+    setBusy(true);
+    try {
+      const picks = placed.map((p) => ({ id: p.option.character.id, role: p.role, hand: p.hand }));
+      const r = await api<FaseOut>("/api/quick/fase", {
+        method: "POST",
+        body: JSON.stringify({
+          seed: d.seed,
+          picks,
+          swap,
+          tattiche: piano.slice(0, n),
+          carica,
+          formazione,
+        }),
+      });
+      setFasi((f) => [...f.slice(0, n - 1), r]);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
   const fight = async () => {
     setBusy(true);
     try {
@@ -195,6 +233,17 @@ export default function QuickGame({ title, load, play, after, header, senzaMissi
                 </p>
               </div>
             )}
+            {played.perche && played.perche.length > 0 && (
+              <section className="panel space-y-2 p-4" data-testid="perche">
+                <h2 className="eyebrow">{it.battle.perche}</h2>
+                <ul className="list-disc space-y-1 pl-5 text-sm">
+                  {played.perche.map((x) => (
+                    <li key={x}>{x}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            <ShareButton matchId={played.id} vinto={played.result.vincitore === "A"} />
             {played.premio && <PremioPanel premio={played.premio} />}
           </>
         )}
@@ -394,12 +443,17 @@ export default function QuickGame({ title, load, play, after, header, senzaMissi
           roles={d.roles}
           byRole={byRole}
           selected={sel}
-          mode={drafting ? "place" : swapping && !swap ? "swap" : "idle"}
+          mode={drafting ? "place" : swapping && !swap && fasi.length === 0 ? "swap" : "idle"}
           swapFirst={swapFirst}
           onSlot={drafting ? place : onSwapSlot}
         />
         {swapping && (
           <TacticsPlanner
+            live={
+              fasiLive
+                ? { giocate: fasi.length, busy, onGioca: (n) => void anteprima(n) }
+                : undefined
+            }
             value={piano}
             onChange={(f, t) => setPiano((p) => p.map((x, i) => (i === f ? t : x)))}
             carica={carica}
@@ -408,12 +462,15 @@ export default function QuickGame({ title, load, play, after, header, senzaMissi
             onFormazione={setFormazione}
           />
         )}
+        {swapping && fasi.map((r, i) => <FaseReport key={i} r={r} n={i + 1} />)}
         {swapping && (
           <div className="flex flex-wrap gap-2 pt-1">
             <button
               className="btn btn-primary flex-1 text-lg"
               data-testid="fight"
-              disabled={busy || piano.some((t) => t === null)}
+              disabled={
+                busy || piano.some((t) => t === null) || (!!fasiLive && fasi.length < FASI - 1)
+              }
               onClick={() => void fight()}
             >
               {it.draft.combatti}

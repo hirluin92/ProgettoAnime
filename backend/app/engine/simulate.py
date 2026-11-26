@@ -146,6 +146,7 @@ class Battaglia:
         self.iniziali: dict[Side, list[Unita]] = {"A": [], "B": []}
         self.eventi: list[Event] = []
         self.turno = 0
+        self.limite_turno: int | None = None  # per le anteprime di fase
         self.energia_bonus: dict[Side, float] = {}
         for s in SIDES:
             self._prepara(s, regole)
@@ -588,7 +589,7 @@ class Battaglia:
     def gioca(self) -> tuple[Side, Literal["ko", "tempo"]]:
         if self.registra:
             self.eventi.append(Ingresso(stato=self.stato()))
-        for n in range(1, MAX_TURNI + 1):
+        for n in range(1, (self.limite_turno or MAX_TURNI) + 1):
             self.turno = n
             if self.registra:
                 self.eventi.append(Turno(n=n))
@@ -707,3 +708,24 @@ def simulate(
         rivalita=bt.rivalita,
         eventi=bt.eventi,
     )
+
+
+def simulate_fino_a(
+    team_a: Team,
+    team_b: Team,
+    seed: int,
+    rules: Ruleset,
+    tattiche: dict[Side, list[str]],
+    fino_turno: int,
+    arena: str | None = None,
+    carica: dict[Side, str] | None = None,
+    formazione: dict[Side, str] | None = None,
+) -> tuple[list[Event], dict[Side, list[int]], dict[Side, list[int]]]:
+    """Gioca solo i primi `fino_turno` turni: eventi, HP rimasti e HP massimi per lato."""
+    teams: dict[Side, Team] = {"A": team_a, "B": team_b}
+    bt = Battaglia(teams, seed, rules, True, tattiche, arena, carica, formazione)
+    bt.limite_turno = fino_turno
+    bt.gioca()
+    hp = {s: [u.hp for u in bt.unita[s]] for s in SIDES}
+    mx = {s: [u.maxhp for u in bt.unita[s]] for s in SIDES}
+    return bt.eventi, hp, mx
