@@ -153,7 +153,7 @@
     "dettagli": "Dettagli",
     "chiudi": "Chiudi",
     "scegliCarta": "Scegli",
-    "noteBudget": "Le carte spente costano troppo: ti lascerebbero senza budget per i ruoli ancora liberi.",
+    "noteBudget": "Le carte spente costano troppo: ti lascerebbero senza budget per i giri ancora da fare.",
     "bloccato": "Con il budget rimasto non si può completare la squadra. Ricomincia il draft.",
     "ricomincia": "Ricomincia"
   },
@@ -201,5 +201,33 @@
     "veloce": "Veloce",
     "sfida": "Sfida",
     "info": "Info"
+  },
+  "draft": {
+    "tono": {
+      "ottimo": "Ottimo",
+      "buono": "Buono",
+      "neutro": "Nella norma",
+      "debole": "Debole"
+    },
+    "legenda": "Quanto rende nello slot:",
+    "rendeDipiu": "Rende di più come",
+    "scegliQuesta": "Scegli questa carta",
+    "potenza": "potenza",
+    "giro": "Giro",
+    "misteriosa": "Carta misteriosa",
+    "scegli": "Scegli una carta",
+    "scambio": "Scambio finale",
+    "rilanci": "Rilanci",
+    "cartaMisteriosa": "Carta misteriosa",
+    "laTuaMano": "La tua mano",
+    "rilancia": "Rilancia la mano",
+    "rilancioHint": "Scarta queste 5 carte e pescane altre 5 (massimo 2 per partita)",
+    "scopri": "Scopri",
+    "noteBudget": "Le carte spente costano troppo: ti lascerebbero senza budget per i giri ancora da fare.",
+    "scegliSlot": "Dove metti {nome}? Scegli uno slot libero.",
+    "scambiaHint": "Puoi scambiare di posto due carte, una sola volta. Tocca le due da scambiare, oppure combatti.",
+    "scambiato": "Scambio fatto. Puoi annullarlo oppure combattere.",
+    "combatti": "Combatti!",
+    "annullaScambio": "Annulla lo scambio"
   }
 }

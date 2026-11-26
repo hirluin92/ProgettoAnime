@@ -1,14 +1,15 @@
 "use client";
 
-import QuickGame, { type Options, type Played } from "@/components/QuickGame";
+import QuickGame, { type Played } from "@/components/QuickGame";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
+import type { DraftOptions, PickIn } from "@/lib/draft";
 
-const load = () => api<Options>("/api/quick/options");
-const play = (o: Options, ids: string[]) =>
+const load = () => api<DraftOptions>("/api/quick/draft");
+const play = (d: DraftOptions, picks: PickIn[], swap: string[] | null) =>
   api<Played>("/api/quick/play", {
     method: "POST",
-    body: JSON.stringify({ seed: o.seed, picks: ids }),
+    body: JSON.stringify({ seed: d.seed, picks, swap }),
   });
 
 export default function Veloce() {

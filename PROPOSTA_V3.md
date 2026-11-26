@@ -1,6 +1,6 @@
 # PROPOSTA V3 — draft libero con affinità, combattimento tattico
 
-Stato: **proposta, da confermare**. Nessun codice scritto. Le cifre sono ipotesi da tarare con la simulazione (fase 1).
+Stato: **fase 1 fatta** (milestone 11: draft v3 base, vedi §5 e §6). Le fasi 2-6 restano da fare.
 Vincoli invariati: motore puro e deterministico, il server è l'unica autorità, testi in italiano in `it.json`, immagini solo collegate da AniList, una milestone alla volta su un branch.
 
 ## 0. Cosa decidiamo di non fare
@@ -88,7 +88,7 @@ Oggi: simulazione automatica a turni (max 10), 7 contro 7, mossa speciale a ener
 - **Condivisione:** carta della squadra fatta solo di testo e illustrazioni originali. Un'immagine con le immagini AniList generata sul dispositivo è una zona grigia rispetto ai vincoli (niente copie né hosting): da non fare senza una verifica.
 
 ## 5. Fasi proposte
-1. **Draft v3 base:** affinità, slot liberi, forme casuali, carta misteriosa, rilancio, scambio finale; simulatore di taratura; solo partita veloce e sfida del giorno. *(backend: scoring, dati forme, API; frontend: draft)*
+1. **Draft v3 base (FATTA, milestone 11):** affinità, slot liberi, forme casuali, carta misteriosa, rilancio, scambio finale; simulatore di taratura; solo partita veloce e sfida del giorno. *(backend: scoring, dati forme, API; frontend: draft)*
 2. **Tattiche segrete a fasi** (partita veloce, sfida, poi stanze).
 3. **Arene, mosse finali a tempo, combo, stati, recupero, ultimo respiro.**
 4. **Asta v3:** affinità visibile, missioni, rivalità, formazione.
@@ -98,9 +98,19 @@ Oggi: simulazione automatica a turni (max 10), 7 contro 7, mossa speciale a ener
 Ogni fase = un branch `milestone/<n>-<nome>`, test verdi, lint pulito, riepilogo con istruzioni.
 
 ## 6. Taratura e test
-- Estendere `scripts/balance_v2.py` in un `balance_v3.py`: draft simulati con tre giocatori (casuale, che sceglie il migliore per potenza, che ottimizza anche lo slot).
-- Obiettivi: il giocatore che ottimizza gli slot batte quello casuale di 8–12 punti percentuali; nessun archetipo oltre il 55% di vittorie; lato A/B entro 52%; nessuna scelta di slot dominante in più del 40% dei casi.
-- Test: affinità come funzione pura (proprietà: monotona nei limiti, deterministica); regole di draft (nessun vicolo cieco con slot liberi, già coperto in parte da `lib/draft.ts`); scontri con tattiche (stesso seme → stesso risultato).
+Strumento: `scripts/balance_v3.py` (`cd backend && uv run python ../scripts/balance_v3.py [N]`) confronta tre modi di piazzare 7 carte: *casuale*, *avido* (ogni carta nello slot migliore al momento) e *ottimo* (assegnazione che massimizza la potenza). I prezzi si ricalcolano con `scripts/balance_v2.py --scrivi`.
+
+**Risultati misurati (fase 1, tabella di §1.1 senza ritocchi):**
+- ottimo contro avido: **59%** (obiettivo 8-12 punti: ok). È la distanza che conta, perché un giocatore reale ragiona almeno un poco.
+- ottimo contro casuale: 89%; avido contro casuale: 83%. Piazzare a caso è un errore pesante, ma non dominante: una squadra forte piazzata a caso batte ancora una squadra debole piazzata perfettamente nel 79% dei casi. La qualità delle carte resta più importante dello slot.
+- specchio ottimo/ottimo: 51%.
+- vittorie per archetipo (piazzamento ottimo): ASS 57,5 · TAN 54,7 · BRU 51,6 · MAG 51,0 · EVO 46,8 · SUP 46,6 · GUA 39,8 · TIR 35,3. TIR e GUA sono deboli come unità, ma costano meno (i prezzi seguono le vittorie). ASS è appena sopra l'obiettivo del 55%.
+- il criterio "nessuno slot dominante" è stato sostituito da: ogni archetipo ha almeno due slot con affinità >= +10 (test `test_every_archetype_has_two_good_slots`).
+- prezzi ricalcolati: media 8,0 (prima 7,2), quindi il budget del draft veloce è **56**.
+
+**Regole anti-blocco:** ogni mano contiene una carta da 6 punti o meno (verificato su 3000 semi) e una carta si può scegliere solo se `spesi + costo + 6 × giri rimasti <= budget`. La carta misteriosa costa al massimo 3.
+
+**Test:** affinità come funzione pura (limiti, determinismo, forme), mazzo deterministico, mano sempre con carta economica, caso peggiore senza vicoli ciechi, validazione server (mano, ruolo, rilanci, misteriosa, scambio, budget), API e sfida del giorno; Vitest sulla logica del client; Playwright sul draft completo con rilancio e scambio.
 
 ## 7. Domande aperte
 1. Le forme: quante e per chi (serve contenuto nuovo, nomi e statistiche).

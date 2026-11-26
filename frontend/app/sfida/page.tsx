@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import QuickGame, { type Options, type Played } from "@/components/QuickGame";
+import QuickGame, { type Played } from "@/components/QuickGame";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
+import type { DraftOptions, PickIn } from "@/lib/draft";
 
 interface Row {
   name: string;
@@ -12,7 +13,7 @@ interface Row {
 }
 interface Daily {
   day: string;
-  options: Options;
+  draft: DraftOptions;
   leaderboard: Row[];
 }
 interface Result {
@@ -38,12 +39,12 @@ export default function Sfida() {
     void refresh();
   }, [refresh]);
 
-  const load = useCallback(async () => (await refresh()).options, [refresh]);
+  const load = useCallback(async () => (await refresh()).draft, [refresh]);
   const play = useCallback(
-    async (_: Options, ids: string[]) => {
+    async (_: DraftOptions, picks: PickIn[], swap: string[] | null) => {
       const r = await api<Result>("/api/daily/play", {
         method: "POST",
-        body: JSON.stringify({ name, picks: ids }),
+        body: JSON.stringify({ name, picks, swap }),
       });
       setResult(r);
       void refresh();

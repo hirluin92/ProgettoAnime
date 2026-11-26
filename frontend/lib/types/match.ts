@@ -31,6 +31,8 @@ export type Nome3 = string;
 export type Effetto1 = string;
 export type Gruppi = string[];
 export type Costo = number;
+export type Forma = string | null;
+export type BaseId = string | null;
 export type Hp = number;
 export type Atk = number;
 export type Dif = number;
@@ -102,6 +104,8 @@ export interface Character {
   passiva: Passiva;
   gruppi: Gruppi;
   costo: Costo;
+  forma: Forma;
+  base_id: BaseId;
 }
 export interface Mossa {
   nome: Nome2;
