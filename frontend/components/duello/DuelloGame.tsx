@@ -20,7 +20,7 @@ import {
   type TurnoOut,
 } from "@/lib/duello";
 import { getProfileId } from "@/lib/profile";
-import DuelloCard from "./DuelloCard";
+import DuelloCard, { DuelloTile } from "./DuelloCard";
 
 type Fase = "regole" | "draft" | "gioco";
 interface Mossa {
@@ -63,6 +63,7 @@ export default function DuelloGame() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const skip = useRef(false);
+  const [dettaglio, setDettaglio] = useState<CartaView | null>(null);
 
   const carica = useCallback(async () => {
     setError(null);
@@ -287,7 +288,7 @@ export default function DuelloGame() {
         </div>
       </header>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid gap-3 md:grid-cols-3">
         {stato.luoghi.map((l, k) => {
           const [tu, cpu] = stato.totali[k];
           const mie = stato.corsie[k][0];
@@ -302,32 +303,44 @@ export default function DuelloGame() {
             >
               <div className="text-center">
                 <div className="display text-base font-extrabold leading-none">{l.nome}</div>
-                <p className="mt-0.5 text-[10px] leading-tight muted">{l.regola}</p>
+                <p className="mt-0.5 text-xs leading-tight muted">{l.regola}</p>
                 {l.favorisce.length > 0 && (
-                  <p className="text-[9px] text-amber-300">
+                  <p className="text-xs text-amber-300">
                     {fmt(it.duello.favorisce, {
                       a: l.favorisce.map((a) => ARCH_NOMI[a] ?? a).join(", "),
                     })}
                   </p>
                 )}
               </div>
-              <div className="flex min-h-[64px] flex-col gap-1">
+              <div className="grid min-h-[84px] grid-cols-4 content-start gap-1.5 md:grid-cols-2">
                 {loro.map((i) => (
-                  <DuelloCard key={i.uid} carta={i.carta} potenza={i.potenza} compact />
+                  <DuelloTile
+                    key={i.uid}
+                    carta={i.carta}
+                    potenza={i.potenza}
+                    tinta="cpu"
+                    onClick={() => setDettaglio(i.carta)}
+                  />
                 ))}
               </div>
-              <div className="flex items-center justify-between rounded-lg bg-black/40 px-2 py-1 text-sm font-black">
+              <div className="flex items-center justify-between rounded-lg bg-black/50 px-3 py-1.5 text-xl font-black">
                 <span className="text-emerald-300" data-testid={`tot-tu-${k}`}>
                   {tu}
                 </span>
-                <span className="text-[10px] muted">vs</span>
+                <span className="text-xs muted">vs</span>
                 <span className="text-red-300" data-testid={`tot-cpu-${k}`}>
                   {cpu}
                 </span>
               </div>
-              <div className="flex min-h-[64px] flex-col gap-1">
+              <div className="grid min-h-[84px] grid-cols-4 content-start gap-1.5 md:grid-cols-2">
                 {mie.map((i) => (
-                  <DuelloCard key={i.uid} carta={i.carta} potenza={i.potenza} compact />
+                  <DuelloTile
+                    key={i.uid}
+                    carta={i.carta}
+                    potenza={i.potenza}
+                    tinta="tu"
+                    onClick={() => setDettaglio(i.carta)}
+                  />
                 ))}
                 <AnimatePresence>
                   {prossime.map((m) => (
@@ -397,16 +410,17 @@ export default function DuelloGame() {
               </button>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-7">
+          <div className="-mx-3 flex snap-x gap-2 overflow-x-auto px-3 pb-2">
             {inMano.map((c) => (
-              <DuelloCard
-                key={c.id}
-                carta={c}
-                selected={sel === c.id}
-                dim={c.costo > stato.energia - speso}
-                onClick={() => setSel(sel === c.id ? null : c.id)}
-                testId="duello-mano"
-              />
+              <div key={c.id} className="w-40 shrink-0 snap-start">
+                <DuelloCard
+                  carta={c}
+                  selected={sel === c.id}
+                  dim={c.costo > stato.energia - speso}
+                  onClick={() => setSel(sel === c.id ? null : c.id)}
+                  testId="duello-mano"
+                />
+              </div>
             ))}
           </div>
         </section>
@@ -436,6 +450,20 @@ export default function DuelloGame() {
             {it.duello.rigioca}
           </button>
         </motion.section>
+      )}
+      {dettaglio && (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4"
+          onClick={() => setDettaglio(null)}
+          data-testid="duello-dettaglio"
+        >
+          <div className="w-64" onClick={(e) => e.stopPropagation()}>
+            <DuelloCard carta={dettaglio} />
+            <button className="btn mt-3 w-full" onClick={() => setDettaglio(null)}>
+              {it.duello.chiudi}
+            </button>
+          </div>
+        </div>
       )}
     </main>
   );

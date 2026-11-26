@@ -35,7 +35,7 @@ export default function DuelloCard({
       <div
         className="relative overflow-hidden"
         style={{
-          height: compact ? 44 : 88,
+          height: compact ? 44 : 120,
           background: `linear-gradient(150deg, ${pal.from}, ${pal.to})`,
         }}
       >
@@ -44,7 +44,7 @@ export default function DuelloCard({
           <img
             src={carta.immagine_url}
             alt=""
-            loading="lazy"
+            loading="eager"
             referrerPolicy="no-referrer"
             className="absolute inset-0 size-full object-cover object-top"
           />
@@ -68,16 +68,16 @@ export default function DuelloCard({
           {p}
         </span>
       </div>
-      <div className="space-y-0.5 p-1.5 text-left">
-        <div className="truncate text-[11px] font-extrabold leading-tight">{carta.nome}</div>
+      <div className="space-y-1 p-2 text-left">
+        <div className="truncate text-sm font-extrabold leading-tight">{carta.nome}</div>
         {!compact && (
           <>
-            <div className="text-[10px] leading-tight muted">{ARCH_NOMI[carta.arch]}</div>
-            <p className="text-[10px] leading-snug">
+            <div className="text-xs leading-tight muted">{ARCH_NOMI[carta.arch]}</div>
+            <p className="text-xs leading-snug">
               <b className="text-amber-300">{it.duello.alRivelarsi}:</b>{" "}
               {pulisci(carta.testo_mossa)}
             </p>
-            <p className="text-[10px] leading-snug">
+            <p className="text-xs leading-snug">
               <b className="text-sky-300">{it.duello.continuo}:</b> {pulisci(carta.testo_passiva)}
             </p>
           </>
@@ -96,5 +96,58 @@ export default function DuelloCard({
     <div className={cls} data-testid={testId}>
       {body}
     </div>
+  );
+}
+
+/** Miniatura in corsia: arte quadrata, potenza ben visibile, nome leggibile. Tocca per il dettaglio. */
+export function DuelloTile({
+  carta,
+  potenza,
+  onClick,
+  tinta,
+}: {
+  carta: CartaView;
+  potenza: number;
+  onClick?: () => void;
+  tinta?: "tu" | "cpu";
+}) {
+  const pal = paletteFor(carta.anime);
+  const delta = potenza - carta.potenza;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group relative block overflow-hidden rounded-xl border bg-black/40 text-left ${
+        tinta === "cpu" ? "border-red-400/40" : "border-emerald-400/40"
+      }`}
+      data-testid="duello-tile"
+    >
+      <div
+        className="relative aspect-square"
+        style={{ background: `linear-gradient(150deg, ${pal.from}, ${pal.to})` }}
+      >
+        {SHOW_IMAGES && carta.immagine_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={carta.immagine_url}
+            alt=""
+            referrerPolicy="no-referrer"
+            className="absolute inset-0 size-full object-cover object-top"
+          />
+        ) : (
+          <span className="display absolute inset-0 grid place-items-center text-3xl font-black text-white/70">
+            {carta.nome.charAt(0)}
+          </span>
+        )}
+        <span
+          className={`absolute bottom-1 right-1 grid min-w-8 place-items-center rounded-lg px-1.5 py-0.5 text-lg font-black leading-none text-white shadow-lg ${
+            delta > 0 ? "bg-emerald-600" : delta < 0 ? "bg-red-600" : "bg-black/80"
+          }`}
+        >
+          {potenza}
+        </span>
+      </div>
+      <div className="truncate px-1.5 py-1 text-xs font-bold">{carta.nome.split(" ")[0]}</div>
+    </button>
   );
 }
