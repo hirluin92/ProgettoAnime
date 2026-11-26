@@ -105,7 +105,11 @@ def regala_carte(profile_id: str) -> dict[str, int]:
     from app.db.session import session_scope
     from app.duello_api import _tutte
 
-    ids = [c.id for c, _ in _tutte().values() if rarita(c.rating) in ("comune", "rara") and c.costo <= 3]
+    ids = [
+        c.id
+        for c, _ in _tutte().values()
+        if rarita(c.rating) in ("comune", "rara") and c.costo <= 3
+    ]
     with session_scope() as s:
         row = s.get(ProfileRow, profile_id)
         if row is None:
