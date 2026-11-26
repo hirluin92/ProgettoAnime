@@ -1,0 +1,1522 @@
+{
+ "naruto-uzumaki": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Rasengan",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Modalità Eremitica",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "squadra-7",
+   "hokage",
+   "jinchuriki"
+  ],
+  "costo": 10
+ },
+ "sasuke-uchiha": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Chidori",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Sharingan",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "squadra-7",
+   "uchiha"
+  ],
+  "costo": 10
+ },
+ "kakashi-hatake": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Raikiri",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Copia",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "squadra-7"
+  ],
+  "costo": 10
+ },
+ "sakura-haruno": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Cento Guarigioni",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Forza Mostruosa",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "squadra-7"
+  ],
+  "costo": 5
+ },
+ "gaara": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Tomba di Sabbia",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Assoluta Difesa",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "jinchuriki"
+  ],
+  "costo": 8
+ },
+ "jiraiya": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Invocazione del Rospo",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Modalità Eremitica",
+   "effetto": "energy"
+  },
+  "tratti": [
+   "sannin"
+  ],
+  "costo": 6
+ },
+ "monkey-d-luffy": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Gomu Gomu Gatling",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Gear Fourth",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "cappello-di-paglia",
+   "fratelli-di-mare"
+  ],
+  "costo": 8
+ },
+ "roronoa-zoro": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Santoryu Oni Giri",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Volontà di Ferro",
+   "effetto": "laststand"
+  },
+  "tratti": [
+   "cappello-di-paglia",
+   "spadaccini"
+  ],
+  "costo": 8
+ },
+ "sanji": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Diable Jambe",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Cavalleria",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 9
+ },
+ "nami": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Thunderbolt Tempo",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Clima-Tact",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 4
+ },
+ "tony-tony-chopper": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Rumble Ball",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Cuore di Renna",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 3
+ },
+ "jinbe": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Karate degli Uomini-Pesce",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Armatura d'Acqua",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 9
+ },
+ "son-goku": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Kamehameha",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Istinto Superiore",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "saiyan",
+   "guerrieri-z"
+  ],
+  "costo": 10
+ },
+ "vegeta": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Final Flash",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Orgoglio Saiyan",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "saiyan",
+   "guerrieri-z",
+   "famiglia-briefs"
+  ],
+  "costo": 9
+ },
+ "piccolo": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Makankosappo",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Rigenerazione Namecciana",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "guerrieri-z"
+  ],
+  "costo": 8
+ },
+ "son-gohan": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Masenko",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Potenziale Nascosto",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "saiyan",
+   "guerrieri-z"
+  ],
+  "costo": 7
+ },
+ "crilin": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Kienzan",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Veterano",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "guerrieri-z"
+  ],
+  "costo": 3
+ },
+ "majin-bu": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Furia di Bu",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Corpo Elastico",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "cattivi"
+  ],
+  "costo": 10
+ },
+ "tanjiro-kamado": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Hinokami Kagura",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Naso Sopraffino",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "corpo-sterminatori",
+   "famiglia-kamado"
+  ],
+  "costo": 5
+ },
+ "zenitsu-agatsuma": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Tuono e Fulmine Sesta Forma",
+   "effetto": "haste"
+  },
+  "passiva": {
+   "nome": "Velocità Fulminea",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "corpo-sterminatori"
+  ],
+  "costo": 8
+ },
+ "inosuke-hashibira": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Respiro della Bestia",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Sensi Animali",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "corpo-sterminatori"
+  ],
+  "costo": 6
+ },
+ "shinobu-kocho": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Danza dell'Ape",
+   "effetto": "revive"
+  },
+  "passiva": {
+   "nome": "Veleno di Glicine",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 6
+ },
+ "gyomei-himejima": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Catena Meteorica",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Corpo Roccioso",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 10
+ },
+ "tengen-uzui": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Esplosione Sonora",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Occhio Musicale",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 9
+ },
+ "yuji-itadori": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Pugno Divergente",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Resistenza",
+   "effetto": "laststand"
+  },
+  "tratti": [
+   "studenti-tokyo"
+  ],
+  "costo": 6
+ },
+ "satoru-gojo": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Vuoto Viola",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Infinito",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "studenti-tokyo",
+   "stregoni-forti"
+  ],
+  "costo": 12
+ },
+ "megumi-fushiguro": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Dieci Ombre",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Ombra Protettiva",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "studenti-tokyo"
+  ],
+  "costo": 6
+ },
+ "nobara-kugisaki": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Chiodo Risonante",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Voodoo",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "studenti-tokyo"
+  ],
+  "costo": 5
+ },
+ "ryomen-sukuna": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Santuario Malevolo",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Re delle Maledizioni",
+   "effetto": "lifesteal"
+  },
+  "tratti": [
+   "maledizioni"
+  ],
+  "costo": 11
+ },
+ "maki-zenin": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Lancia Divina",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Corpo Potenziato",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "studenti-tokyo",
+   "clan-zenin"
+  ],
+  "costo": 6
+ },
+ "itachi-uchiha": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Tsukuyomi",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Illusione",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "akatsuki",
+   "uchiha"
+  ],
+  "costo": 9
+ },
+ "minato-namikaze": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Hiraishin",
+   "effetto": "haste"
+  },
+  "passiva": {
+   "nome": "Lampo Giallo",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "hokage"
+  ],
+  "costo": 10
+ },
+ "madara-uchiha": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Meteora Perfetta",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Susanoo",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "uchiha"
+  ],
+  "costo": 10
+ },
+ "hinata-hyuga": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Pugno Gentile",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Byakugan",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "hyuga"
+  ],
+  "costo": 6
+ },
+ "shikamaru-nara": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Cattura dell'Ombra",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Mente Geniale",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "konoha-giovani"
+  ],
+  "costo": 8
+ },
+ "rock-lee": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Loto Primario",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Otto Porte",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "team-guy"
+  ],
+  "costo": 5
+ },
+ "neji-hyuga": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Otto Trigrammi",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Byakugan",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "team-guy",
+   "hyuga"
+  ],
+  "costo": 8
+ },
+ "tsunade": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Creazione Rigenerante",
+   "effetto": "healall"
+  },
+  "passiva": {
+   "nome": "Cento Guarigioni",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "sannin",
+   "hokage"
+  ],
+  "costo": 7
+ },
+ "orochimaru": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Serpente Gigante",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Rinascita",
+   "effetto": "laststand"
+  },
+  "tratti": [
+   "sannin"
+  ],
+  "costo": 6
+ },
+ "might-guy": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Hachimon Porta della Morte",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Spirito Giovanile",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "team-guy"
+  ],
+  "costo": 7
+ },
+ "killer-bee": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Lariat",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Otto Code",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "jinchuriki"
+  ],
+  "costo": 8
+ },
+ "pain": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Shinra Tensei",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Sei Sentieri",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "akatsuki"
+  ],
+  "costo": 9
+ },
+ "kisame-hoshigaki": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Grande Squalo",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Samehada",
+   "effetto": "lifesteal"
+  },
+  "tratti": [
+   "akatsuki"
+  ],
+  "costo": 8
+ },
+ "obito-uchiha": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Kamui",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Intangibilità",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "akatsuki",
+   "uchiha"
+  ],
+  "costo": 9
+ },
+ "portgas-d-ace": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Pugno di Fuoco",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Corpo di Fiamma",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "fratelli-di-mare"
+  ],
+  "costo": 7
+ },
+ "trafalgar-law": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Room",
+   "effetto": "debuff"
+  },
+  "passiva": {
+   "nome": "Chirurgo della Morte",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "supernova"
+  ],
+  "costo": 9
+ },
+ "nico-robin": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Cien Fleur",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Occhio Onnisciente",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 6
+ },
+ "usopp": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Colpo di Fionda",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Bugiardo Leggendario",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 2
+ },
+ "franky": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Radical Beam",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Corpo Cyborg",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 5
+ },
+ "brook": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Cavalcata dell'Anima",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Corpo Scheletrico",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "cappello-di-paglia"
+  ],
+  "costo": 5
+ },
+ "barbabianca": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Gura Gura no Mi",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Terremoto",
+   "effetto": "thorns"
+  },
+  "tratti": [
+   "imperatori"
+  ],
+  "costo": 9
+ },
+ "shanks": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Pressione del Re",
+   "effetto": "debuff"
+  },
+  "passiva": {
+   "nome": "Haki del Re",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "imperatori"
+  ],
+  "costo": 10
+ },
+ "dracule-mihawk": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Taglio Supremo",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Miglior Spadaccino",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "spadaccini"
+  ],
+  "costo": 11
+ },
+ "boa-hancock": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Mero Mero Mellow",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Bellezza Letale",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "supernova"
+  ],
+  "costo": 7
+ },
+ "sabo": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Dragon Claw",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Fiamme Rivoluzionarie",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "fratelli-di-mare"
+  ],
+  "costo": 5
+ },
+ "kaido": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Ragnarok",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Drago Supremo",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "imperatori"
+  ],
+  "costo": 9
+ },
+ "charlotte-katakuri": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Mochi Perforante",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Preveggenza",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "supernova"
+  ],
+  "costo": 9
+ },
+ "marshall-d-teach": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Kurouzu",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Due Frutti",
+   "effetto": "lifesteal"
+  },
+  "tratti": [
+   "imperatori"
+  ],
+  "costo": 7
+ },
+ "trunks": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Burning Attack",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Spada del Futuro",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "saiyan",
+   "famiglia-briefs"
+  ],
+  "costo": 6
+ },
+ "freezer": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Death Ball",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Forma Finale",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "cattivi"
+  ],
+  "costo": 10
+ },
+ "cell": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Kamehameha Perfetto",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Rigenerazione Cellulare",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "cattivi",
+   "androidi"
+  ],
+  "costo": 9
+ },
+ "tenshinhan": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Tricuspide",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Terzo Occhio",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "guerrieri-z"
+  ],
+  "costo": 6
+ },
+ "yamcha": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Rogafufuken",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Veterano",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "guerrieri-z"
+  ],
+  "costo": 4
+ },
+ "goten": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Kamehameha Junior",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Slancio Infantile",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "saiyan"
+  ],
+  "costo": 4
+ },
+ "broly": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Eraser Cannon",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Leggendario",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "saiyan",
+   "cattivi"
+  ],
+  "costo": 9
+ },
+ "jiren": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Pugno della Giustizia",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Occhi Divini",
+   "effetto": "armor"
+  },
+  "tratti": [],
+  "costo": 8
+ },
+ "beerus": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Hakai",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Dio della Distruzione",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "dei"
+  ],
+  "costo": 11
+ },
+ "whis": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Colpo dell'Angelo",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Istinto Superiore",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "dei"
+  ],
+  "costo": 9
+ },
+ "numero-18": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Colpo Rotante",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Cyborg",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "androidi"
+  ],
+  "costo": 5
+ },
+ "gotenks": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Super Ghost Kamikaze",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Fusione",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "saiyan"
+  ],
+  "costo": 7
+ },
+ "bulma": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Scudo Capsule",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Genio",
+   "effetto": "energy"
+  },
+  "tratti": [
+   "famiglia-briefs"
+  ],
+  "costo": 1
+ },
+ "dende": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Guarigione Namecciana",
+   "effetto": "healall"
+  },
+  "passiva": {
+   "nome": "Dono Divino",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "guerrieri-z"
+  ],
+  "costo": 1
+ },
+ "kyojuro-rengoku": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Nona Forma Rengoku",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Fiamma Indomita",
+   "effetto": "laststand"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 8
+ },
+ "giyu-tomioka": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Undicesima Forma Calma",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Respiro dell'Acqua",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 9
+ },
+ "muichiro-tokito": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Luna Nebbiosa",
+   "effetto": "haste"
+  },
+  "passiva": {
+   "nome": "Marchio dei Cacciatori",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 10
+ },
+ "mitsuri-kanroji": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Frusta d'Amore",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Muscoli Densi",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 6
+ },
+ "sanemi-shinazugawa": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Tornado Ruggente",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Sangue Raro",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 7
+ },
+ "obanai-iguro": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Serpente Doppio",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Serpente Kaburamaru",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "pilastri"
+  ],
+  "costo": 8
+ },
+ "nezuko-kamado": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Sangue Esplosivo",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Forma Demone",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "demoni",
+   "famiglia-kamado"
+  ],
+  "costo": 9
+ },
+ "kokushibo": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Luna Piena",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Sei Occhi",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "lune-superiori",
+   "demoni"
+  ],
+  "costo": 9
+ },
+ "muzan-kibutsuji": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Tentacoli",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Corpo Perfetto",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "demoni"
+  ],
+  "costo": 8
+ },
+ "akaza": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Annientamento",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Rilevamento",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "lune-superiori",
+   "demoni"
+  ],
+  "costo": 8
+ },
+ "douma": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Fiocchi di Ghiaccio",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Corpo Gelido",
+   "effetto": "lifesteal"
+  },
+  "tratti": [
+   "lune-superiori",
+   "demoni"
+  ],
+  "costo": 10
+ },
+ "kanao-tsuyuri": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Fiore Occhi",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Vista Superiore",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "corpo-sterminatori"
+  ],
+  "costo": 6
+ },
+ "genya-shinazugawa": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Fucilata",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Fame Demoniaca",
+   "effetto": "lifesteal"
+  },
+  "tratti": [
+   "corpo-sterminatori"
+  ],
+  "costo": 4
+ },
+ "daki": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Nastri di Obi",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Rigenerazione",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "lune-superiori",
+   "demoni"
+  ],
+  "costo": 4
+ },
+ "toji-fushiguro": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Catena dell'Ombra",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Zero Energia",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "clan-zenin"
+  ],
+  "costo": 9
+ },
+ "kento-nanami": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Rapporto 7:3",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Straordinari",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "stregoni-forti"
+  ],
+  "costo": 7
+ },
+ "yuta-okkotsu": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Rika",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Copia",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "stregoni-forti"
+  ],
+  "costo": 10
+ },
+ "aoi-todo": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Boogie Woogie",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Migliore Amico",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "stregoni-forti"
+  ],
+  "costo": 7
+ },
+ "panda": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Modalità Gorilla",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Triplo Nucleo",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "studenti-tokyo"
+  ],
+  "costo": 4
+ },
+ "toge-inumaki": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Voce Maledetta",
+   "effetto": "debuff"
+  },
+  "passiva": {
+   "nome": "Parole Maledette",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "studenti-tokyo"
+  ],
+  "costo": 5
+ },
+ "kenjaku": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Manipolazione delle Maledizioni",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Cervello Antico",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "maledizioni"
+  ],
+  "costo": 9
+ },
+ "mahito": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Trasfigurazione Inerte",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Anima Plasmabile",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "maledizioni"
+  ],
+  "costo": 7
+ },
+ "jogo": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Meteora Eruttiva",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Vulcano",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "maledizioni"
+  ],
+  "costo": 8
+ },
+ "hanami": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Radici Fameliche",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Natura",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "maledizioni"
+  ],
+  "costo": 6
+ },
+ "kinji-hakari": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Jackpot",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Casinò Infinito",
+   "effetto": "laststand"
+  },
+  "tratti": [
+   "stregoni-forti"
+  ],
+  "costo": 8
+ },
+ "hajime-kashimo": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Lampo Ricorrente",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Corpo Elettrico",
+   "effetto": "firststrike"
+  },
+  "tratti": [],
+  "costo": 6
+ },
+ "shoko-ieiri": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Tecnica Inversa",
+   "effetto": "revive"
+  },
+  "passiva": {
+   "nome": "Dottoressa",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "studenti-tokyo"
+  ],
+  "costo": 1
+ },
+ "mai-zenin": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Proiettile di Costruzione",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Sorella Minore",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "clan-zenin"
+  ],
+  "costo": 2
+ }
+}

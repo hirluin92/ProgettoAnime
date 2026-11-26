@@ -76,5 +76,5 @@ def test_eight_players_full_tournament(tmp_path) -> None:  # type: ignore[no-unt
         res = repo.get_match(m.match_id)
         assert res is not None
         assert res.totali["A"] == m.total_a and res.totali["B"] == m.total_b
-        assert res.eventi[0].tipo == "ingresso" and res.eventi[-1].tipo == "ko"
+        assert res.eventi[0].tipo == "ingresso" and res.eventi[-1].tipo == "fine"
     assert tournament.match_seed(room.seed, 0, 1) == tournament.match_seed(room.seed, 0, 1)

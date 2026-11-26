@@ -1,0 +1,292 @@
+[
+ {
+  "id": "squadra-7",
+  "nome": "Squadra 7",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "hokage",
+  "nome": "Hokage",
+  "stat": "hp",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 16
+  }
+ },
+ {
+  "id": "jinchuriki",
+  "nome": "Jinchuriki",
+  "stat": "hp",
+  "soglie": {
+   "2": 8,
+   "3": 14,
+   "4": 20
+  }
+ },
+ {
+  "id": "uchiha",
+  "nome": "Clan Uchiha",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "sannin",
+  "nome": "Sannin",
+  "stat": "energy",
+  "soglie": {
+   "2": 10,
+   "3": 20,
+   "4": 30
+  }
+ },
+ {
+  "id": "akatsuki",
+  "nome": "Akatsuki",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "hyuga",
+  "nome": "Clan Hyuga",
+  "stat": "spd",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "konoha-giovani",
+  "nome": "Giovani di Konoha",
+  "stat": "spd",
+  "soglie": {
+   "2": 6,
+   "3": 10,
+   "4": 14
+  }
+ },
+ {
+  "id": "team-guy",
+  "nome": "Squadra Guy",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "cappello-di-paglia",
+  "nome": "Ciurma di Cappello di Paglia",
+  "stat": "hp",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "fratelli-di-mare",
+  "nome": "Fratelli di Mare",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "spadaccini",
+  "nome": "Spadaccini",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "imperatori",
+  "nome": "Imperatori",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "supernova",
+  "nome": "Supernova",
+  "stat": "spd",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "saiyan",
+  "nome": "Saiyan",
+  "stat": "atk",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "guerrieri-z",
+  "nome": "Guerrieri Z",
+  "stat": "def",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "famiglia-briefs",
+  "nome": "Famiglia Briefs",
+  "stat": "energy",
+  "soglie": {
+   "2": 10,
+   "3": 20,
+   "4": 30
+  }
+ },
+ {
+  "id": "cattivi",
+  "nome": "Cattivi Iconici",
+  "stat": "hp",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "androidi",
+  "nome": "Androidi",
+  "stat": "def",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "dei",
+  "nome": "Divinità",
+  "stat": "atk",
+  "soglie": {
+   "2": 10,
+   "3": 20,
+   "4": 30
+  }
+ },
+ {
+  "id": "pilastri",
+  "nome": "Pilastri",
+  "stat": "atk",
+  "soglie": {
+   "2": 4,
+   "3": 8,
+   "4": 12
+  }
+ },
+ {
+  "id": "corpo-sterminatori",
+  "nome": "Corpo dei Cacciatori",
+  "stat": "spd",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "famiglia-kamado",
+  "nome": "Famiglia Kamado",
+  "stat": "hp",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "demoni",
+  "nome": "Demoni",
+  "stat": "hp",
+  "soglie": {
+   "2": 4,
+   "3": 8,
+   "4": 12
+  }
+ },
+ {
+  "id": "lune-superiori",
+  "nome": "Lune Superiori",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "studenti-tokyo",
+  "nome": "Studenti di Tokyo",
+  "stat": "def",
+  "soglie": {
+   "2": 4,
+   "3": 8,
+   "4": 12
+  }
+ },
+ {
+  "id": "stregoni-forti",
+  "nome": "Stregoni di Grado Speciale",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "maledizioni",
+  "nome": "Maledizioni",
+  "stat": "hp",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "clan-zenin",
+  "nome": "Clan Zenin",
+  "stat": "spd",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ }
+]

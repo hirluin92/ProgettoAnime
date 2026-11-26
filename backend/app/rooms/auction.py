@@ -5,7 +5,7 @@ from collections import deque
 
 from app.engine.models import Character
 from app.engine.roles import ROLES
-from app.engine.scoring import role_fit
+from app.engine.scoring import potenza_ruolo
 from app.rooms.models import AwaitRole, LotView, Player, RoomSettings
 from app.rooms.protocol import (
     AuctionFinished,
@@ -38,7 +38,7 @@ def best_role(player: Player, ch: Character) -> str:
     free = player.free_roles()
     return max(
         free,
-        key=lambda r: (role_fit(ch.tags, r) + (6 if ch.ruolo_firma == r else 0), -ROLES.index(r)),
+        key=lambda r: (potenza_ruolo(ch, r), -ROLES.index(r)),
     )
 
 

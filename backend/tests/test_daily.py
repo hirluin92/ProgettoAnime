@@ -12,7 +12,7 @@ def cheapest_picks(seed: int) -> list[str]:
     opts = build_options(seed)
     picks: list[str] = []
     for role in opts:
-        choice = sorted(opts[role], key=lambda c: (cost_of(c.rating), c.id))
+        choice = sorted(opts[role], key=lambda c: (cost_of(c), c.id))
         picks.append(next(c.id for c in choice if c.id not in picks))
     return picks
 

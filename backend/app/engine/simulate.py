@@ -1,126 +1,478 @@
-from typing import Any
+"""Combattimento a squadre a turni. Funzione pura e deterministica dal seed."""
+
+from dataclasses import dataclass, field
+from typing import Literal
 
 from .models import (
-    Attacco,
-    Breakdown,
-    Combo,
-    Counter,
-    Duello,
+    Azione,
+    Esito,
     Event,
+    Fine,
     Ingresso,
-    Ko,
     MatchResult,
     Ruleset,
     Side,
+    Sinergia,
+    Stato,
     Team,
+    Turno,
+    Unita,
 )
 from .rng import Rng
-from .roles import ROLES
-from .scoring import DUO_BONUS, individual_scores, team_counters, team_duos
+from .roles import FILA, ROLES
+from .scoring import (
+    DUO_ATK,
+    adatto,
+    legami_squadra,
+    potenza_ruolo,
+    sinergie_squadra,
+    statistiche_base,
+)
 
 SIDES: tuple[Side, Side] = ("A", "B")
+MAX_TURNI = 10
+ENERGIA_MAX = 100
+ENERGIA_AZIONE = 40
+ENERGIA_COLPITO = 10
+ENERGIA_INIZIALE = 20
+CRIT_BASE = 0.12
+CRIT_PASSIVA = 0.35
+SCHIVATA = 0.18
+VARIANZA = 0.08
+
+# moltiplicatore di danno dei colpi speciali
+MOLT = {
+    "strike": 2.3,
+    "pierce": 1.9,
+    "aoe": 0.95,
+    "multi": 0.95,
+    "stun": 1.5,
+    "drain": 1.7,
+    "execute": 1.7,
+    "snipe": 2.1,
+    "haste": 1.3,
+    "debuff": 0.7,
+}
+RANGED = {"MAG", "TIR", "EVO"}
 
 
-def _other(s: Side) -> Side:
+def _altro(s: Side) -> Side:
     return "B" if s == "A" else "A"
 
 
-def simulate(team_a: Team, team_b: Team, seed: int, rules: Ruleset) -> MatchResult:
-    """Funzione pura e deterministica: stesso input e seed, stesso risultato."""
-    rng = Rng(seed)
+@dataclass
+class U:
+    lato: Side
+    idx: int
+    arch: str
+    passiva: str
+    mossa_nome: str
+    mossa_eff: str
+    rating: int
+    maxhp: int
+    hp: int
+    atk: float
+    dif: float
+    vel: float
+    fila: int
+    energia: int = ENERGIA_INIZIALE
+    scudo: int = 0
+    stordito: bool = False
+    mod_atk: float = 1.0
+    mod_turni: int = 0
+    laststand_usata: bool = False
+    legati: list[int] = field(default_factory=list)
+    legame_rotto: bool = False
+    primo_turno: bool = True
+
+    @property
+    def vivo(self) -> bool:
+        return self.hp > 0
+
+
+class Battaglia:
+    def __init__(
+        self, squadre: dict[Side, Team], seed: int, regole: Ruleset, registra: bool
+    ) -> None:
+        self.rng = Rng(seed)
+        self.registra = registra
+        self.squadre = squadre
+        self.sinergie: list[Sinergia] = []
+        self.unita: dict[Side, list[U]] = {"A": [], "B": []}
+        self.iniziali: dict[Side, list[Unita]] = {"A": [], "B": []}
+        self.eventi: list[Event] = []
+        self.turno = 0
+        self.energia_bonus: dict[Side, float] = {}
+        for s in SIDES:
+            self._prepara(s, regole)
+
+    # ---------- preparazione ----------
+    def _prepara(self, s: Side, regole: Ruleset) -> None:
+        team = self.squadre[s]
+        sin = sinergie_squadra(s, team, regole.tratti)
+        self.sinergie += sin
+        legami = legami_squadra(team, regole.duos)
+        bonus = {"atk": 0.0, "def": 0.0, "hp": 0.0, "spd": 0.0, "energy": 0.0}
+        for x in sin:
+            if x.stat == "tutto":
+                for k in ("atk", "def", "hp"):
+                    bonus[k] += x.valore / 100
+            else:
+                bonus[x.stat] += x.valore / 100
+        for i, ch in enumerate(team.members):
+            hp, atk, dif, vel = statistiche_base(ch, ROLES[i])
+            hp *= 1 + bonus["hp"]
+            atk *= 1 + bonus["atk"]
+            dif *= 1 + bonus["def"]
+            vel *= 1 + bonus["spd"]
+            if ch.passiva.effetto == "armor":
+                dif *= 1.25
+            u = U(
+                lato=s,
+                idx=i,
+                arch=ch.arch,
+                passiva=ch.passiva.effetto,
+                mossa_nome=ch.mossa.nome,
+                mossa_eff=ch.mossa.effetto,
+                rating=ch.rating,
+                maxhp=round(hp),
+                hp=round(hp),
+                atk=atk,
+                dif=dif,
+                vel=vel,
+                fila=FILA[i],
+                energia=min(ENERGIA_MAX, round(ENERGIA_INIZIALE * (1 + bonus["energy"]))),
+            )
+            u.legati = [b if a == i else a for a, b, _ in legami if i in (a, b)]
+            self.unita[s].append(u)
+            self.iniziali[s].append(
+                Unita(
+                    hp=u.maxhp,
+                    atk=round(atk),
+                    dif=round(dif),
+                    vel=round(vel),
+                    adatto=adatto(ch, ROLES[i]),
+                )
+            )
+        self.energia_bonus[s] = bonus["energy"]
+
+    # ---------- utilità ----------
+    def stato(self) -> Stato:
+        return Stato(
+            hp={s: [u.hp for u in self.unita[s]] for s in SIDES},
+            energia={s: [u.energia for u in self.unita[s]] for s in SIDES},
+            scudo={s: [u.scudo for u in self.unita[s]] for s in SIDES},
+        )
+
+    def vivi(self, s: Side) -> list[U]:
+        return [u for u in self.unita[s] if u.vivo]
+
+    def atk_eff(self, u: U) -> float:
+        m = u.mod_atk
+        if u.passiva == "rage" and u.hp < u.maxhp * 0.5:
+            m *= 1.45
+        alleati = self.vivi(u.lato)
+        if self.unita[u.lato][0].vivo:  # aura del Capitano
+            m *= 1.05
+        m *= 1 + 0.07 * sum(a.passiva == "aura_atk" for a in alleati)
+        if u.legati:
+            m *= 1 + DUO_ATK
+            if u.legame_rotto:
+                m *= 1.12
+        if u.passiva == "firststrike" and self.turno == 1:
+            m *= 1.25
+        return u.atk * m
+
+    def bersaglio(self, att: U, modo: str) -> U | None:
+        nemici = self.vivi(_altro(att.lato))
+        if not nemici:
+            return None
+        if modo == "lowest":
+            return min(nemici, key=lambda u: (u.hp / u.maxhp, u.idx))
+        if modo == "any":
+            return nemici[int(self.rng.random() * len(nemici))]
+        fila = min(u.fila for u in nemici)
+        cand = [u for u in nemici if u.fila == fila]
+        return cand[int(self.rng.random() * len(cand))]
+
+    def modo_base(self, u: U) -> str:
+        if u.arch == "ASS":
+            return "lowest"
+        if u.arch in RANGED:
+            return "any"
+        return "fila"
+
+    # ---------- danni ----------
+    def colpisci(
+        self,
+        att: U,
+        bers: U,
+        mult: float,
+        esiti: dict[tuple[Side, int], Esito],
+        pierce: bool = False,
+    ) -> int:
+        e = self._esito(esiti, bers)
+        if not bers.vivo:
+            return 0
+        base = self.atk_eff(att) * mult * (1 - VARIANZA + 2 * VARIANZA * self.rng.random())
+        if bers.passiva == "dodge" and self.rng.random() < SCHIVATA:
+            e.schivata = True
+            return 0
+        chance = CRIT_PASSIVA if att.passiva == "crit" else CRIT_BASE
+        crit = self.rng.random() < chance
+        dmg = (
+            base * (1.5 if crit else 1.0) * 100 / (100 + bers.dif * 1.6 * (0.4 if pierce else 1.0))
+        )
+        dmg_i = max(1, round(dmg))
+        assorbito = min(bers.scudo, dmg_i)
+        bers.scudo -= assorbito
+        reale = dmg_i - assorbito
+        if reale >= bers.hp and bers.passiva == "laststand" and not bers.laststand_usata:
+            bers.laststand_usata = True
+            reale = bers.hp - 1
+        reale = min(reale, bers.hp)
+        bers.hp -= reale
+        e.delta -= reale
+        e.scudo = bers.scudo
+        e.crit = e.crit or crit
+        if bers.vivo:
+            bers.energia = min(ENERGIA_MAX, bers.energia + ENERGIA_COLPITO)
+        else:
+            e.ko = True
+            self._morto(bers)
+        if reale > 0:
+            if att.passiva == "lifesteal":
+                self._cura(att, round(reale * 0.25), esiti)
+            if bers.passiva == "thorns" and att.vivo:
+                ri = min(att.hp, round(reale * 0.2))
+                att.hp -= ri
+                ea = self._esito(esiti, att)
+                ea.delta -= ri
+                if not att.vivo:
+                    ea.ko = True
+                    self._morto(att)
+        return reale
+
+    def _morto(self, u: U) -> None:
+        for i in u.legati:
+            self.unita[u.lato][i].legame_rotto = True
+
+    def _esito(self, esiti: dict[tuple[Side, int], Esito], u: U) -> Esito:
+        k = (u.lato, u.idx)
+        if k not in esiti:
+            esiti[k] = Esito(
+                lato=u.lato,
+                idx=u.idx,
+                delta=0,
+                scudo=u.scudo,
+                ko=False,
+                schivata=False,
+                crit=False,
+                stordito=False,
+            )
+        return esiti[k]
+
+    def _cura(self, u: U, quanto: int, esiti: dict[tuple[Side, int], Esito]) -> None:
+        if not u.vivo or quanto <= 0:
+            return
+        reale = min(quanto, u.maxhp - u.hp)
+        u.hp += reale
+        self._esito(esiti, u).delta += reale
+
+    # ---------- azioni ----------
+    def agisci(self, u: U) -> None:
+        esiti: dict[tuple[Side, int], Esito] = {}
+        speciale = False
+        mossa = "Attacco"
+        effetto = "base"
+        if u.passiva == "regen":
+            self._cura(u, round(u.maxhp * 0.05), esiti)
+        if u.stordito:
+            u.stordito = False
+            self._esito(esiti, u)
+            mossa, effetto = "Stordito", "stordito"
+        elif u.energia >= ENERGIA_MAX:
+            speciale = True
+            mossa, effetto = u.mossa_nome, u.mossa_eff
+            u.energia = 0
+            self._speciale(u, effetto, esiti)
+        else:
+            guadagno = ENERGIA_AZIONE * (1.6 if u.passiva == "energy" else 1.0)
+            u.energia = min(
+                ENERGIA_MAX, u.energia + round(guadagno * (1 + self.energia_bonus[u.lato]))
+            )
+            b = self.bersaglio(u, self.modo_base(u))
+            if b is not None:
+                self.colpisci(u, b, 0.9 if u.arch in ("GUA", "SUP") else 1.0, esiti)
+        u.primo_turno = False
+        self._emetti(u, mossa, speciale, effetto, esiti)
+
+    def _emetti(
+        self, u: U, mossa: str, speciale: bool, effetto: str, esiti: dict[tuple[Side, int], Esito]
+    ) -> None:
+        if not self.registra:
+            return
+        for (lato, idx), e in esiti.items():
+            e.scudo = self.unita[lato][idx].scudo
+        self.eventi.append(
+            Azione(
+                turno=self.turno,
+                da=u.lato,
+                idx=u.idx,
+                mossa=mossa,
+                speciale=speciale,
+                effetto=effetto,
+                esiti=list(esiti.values()),
+                stato=self.stato(),
+            )
+        )
+
+    def _speciale(self, u: U, eff: str, esiti: dict[tuple[Side, int], Esito]) -> None:
+        mia = self.vivi(u.lato)
+        nem = self.vivi(_altro(u.lato))
+        if eff in ("strike", "pierce", "stun", "drain", "execute", "haste", "debuff"):
+            b = self.bersaglio(u, self.modo_base(u))
+            if b is None:
+                return
+            mult = MOLT[eff]
+            if eff == "execute" and b.hp < b.maxhp * 0.5:
+                mult = 2.6
+            reale = self.colpisci(u, b, mult, esiti, pierce=(eff == "pierce"))
+            if eff == "stun" and b.vivo:
+                b.stordito = True
+                self._esito(esiti, b).stordito = True
+            elif eff == "drain":
+                self._cura(u, round(reale * 0.6), esiti)
+            elif eff == "debuff":
+                for n in self.vivi(_altro(u.lato)):
+                    n.mod_atk, n.mod_turni = 0.75, 2
+                    self._esito(esiti, n)
+            elif eff == "haste":
+                u.vel += 15
+        elif eff == "snipe":
+            b = self.bersaglio(u, "lowest")
+            if b is not None:
+                self.colpisci(u, b, MOLT[eff], esiti)
+        elif eff == "aoe":
+            for n in nem:
+                self.colpisci(u, n, MOLT[eff], esiti)
+        elif eff == "multi":
+            for _ in range(3):
+                b = self.bersaglio(u, "any")
+                if b is not None:
+                    self.colpisci(u, b, MOLT[eff], esiti)
+        elif eff == "barrier":
+            for a in mia:
+                a.scudo += round(a.maxhp * 0.14)
+                self._esito(esiti, a)
+        elif eff == "heal":
+            t = min(mia, key=lambda a: (a.hp / a.maxhp, a.idx))
+            self._cura(t, round(t.maxhp * 0.42), esiti)
+        elif eff == "healall":
+            for a in mia:
+                self._cura(a, round(a.maxhp * 0.19), esiti)
+        elif eff == "revive":
+            caduti = [a for a in self.unita[u.lato] if not a.vivo]
+            if caduti:
+                c = caduti[0]
+                c.hp = round(c.maxhp * 0.4)
+                c.stordito = False
+                self._esito(esiti, c).delta += c.hp
+            else:
+                t = min(mia, key=lambda a: (a.hp / a.maxhp, a.idx))
+                self._cura(t, round(t.maxhp * 0.38), esiti)
+        elif eff == "buff":
+            for a in mia:
+                a.mod_atk, a.mod_turni = 1.25, 2
+                self._esito(esiti, a)
+
+    # ---------- partita ----------
+    def gioca(self) -> tuple[Side, Literal["ko", "tempo"]]:
+        if self.registra:
+            self.eventi.append(Ingresso(stato=self.stato()))
+        for n in range(1, MAX_TURNI + 1):
+            self.turno = n
+            if self.registra:
+                self.eventi.append(Turno(n=n))
+            ordine = sorted(
+                (u for s in SIDES for u in self.unita[s] if u.vivo),
+                key=lambda u: (
+                    -(u.vel + (1000 if u.passiva == "firststrike" and n == 1 else 0)),
+                    u.lato,
+                    u.idx,
+                ),
+            )
+            for u in ordine:
+                if not u.vivo:
+                    continue
+                if not self.vivi("A") or not self.vivi("B"):
+                    break
+                self.agisci(u)
+                if (
+                    u.mossa_eff == "haste"
+                    and u.energia == 0
+                    and u.vivo
+                    and self.vivi(_altro(u.lato))
+                ):
+                    self.agisci_extra(u)
+            for s in SIDES:
+                for x in self.unita[s]:
+                    if x.mod_turni > 0:
+                        x.mod_turni -= 1
+                        if x.mod_turni == 0:
+                            x.mod_atk = 1.0
+            if not self.vivi("A") or not self.vivi("B"):
+                break
+        a, b = self.vivi("A"), self.vivi("B")
+        if a and not b:
+            return "A", "ko"
+        if b and not a:
+            return "B", "ko"
+        return self._ai_punti(), "tempo"
+
+    def agisci_extra(self, u: U) -> None:
+        esiti: dict[tuple[Side, int], Esito] = {}
+        b = self.bersaglio(u, self.modo_base(u))
+        if b is not None:
+            self.colpisci(u, b, 1.0, esiti)
+        self._emetti(u, "Doppio colpo", False, "base", esiti)
+
+    def percento(self, s: Side) -> int:
+        tot = sum(u.maxhp for u in self.unita[s])
+        return round(100 * sum(u.hp for u in self.unita[s]) / tot)
+
+    def _ai_punti(self) -> Side:
+        pa, pb = self.percento("A"), self.percento("B")
+        if pa != pb:
+            return "A" if pa > pb else "B"
+        ra = sum(u.rating for u in self.unita["A"])
+        rb = sum(u.rating for u in self.unita["B"])
+        if ra != rb:
+            return "A" if ra > rb else "B"
+        return "A" if self.rng.random() < 0.5 else "B"
+
+
+def simulate(
+    team_a: Team, team_b: Team, seed: int, rules: Ruleset, registra: bool = True
+) -> MatchResult:
+    """Stesso input e stesso seed, stesso risultato."""
     teams: dict[Side, Team] = {"A": team_a, "B": team_b}
-    powers: dict[Side, list[int]] = {}
-    brk: dict[Side, Breakdown] = {}
-    for s in SIDES:
-        powers[s], brk[s] = individual_scores(teams[s], rng)
-
-    counters = {s: team_counters(teams[s], teams[_other(s)], rules.counters) for s in SIDES}
-    duos = {s: team_duos(teams[s], rules.duos) for s in SIDES}
-    for s in SIDES:
-        brk[s].counter = sum(b for _, b in counters[s])
-        brk[s].duo = DUO_BONUS * len(duos[s])
-
-    tot: dict[Side, int] = {s: brk[s].total() for s in SIDES}
-    rating_sum = {s: sum(m.rating for m in teams[s].members) for s in SIDES}
-    pareggio = tot["A"] == tot["B"]
-    if tot["A"] != tot["B"]:
-        win: Side = "A" if tot["A"] > tot["B"] else "B"
-    elif rating_sum["A"] != rating_sum["B"]:
-        win = "A" if rating_sum["A"] > rating_sum["B"] else "B"
-    else:
-        win = "A" if rng.random() < 0.5 else "B"
-    lose = _other(win)
-
-    remaining = max(8, min(70, round((tot[win] - tot[lose]) / tot[win] * 400)))
-    raw: list[dict[str, Any]] = [{"tipo": "ingresso"}]
-
-    queue: list[dict[str, Any]] = []
-    ca = [{"da": "A", "rel": r, "bonus": b} for r, b in counters["A"]]
-    cb = [{"da": "B", "rel": r, "bonus": b} for r, b in counters["B"]]
-    for i in range(max(len(ca), len(cb))):
-        queue += ca[i : i + 1] + cb[i : i + 1]
-
-    for i, role in enumerate(ROLES):
-        pa, pb = powers["A"][i], powers["B"][i]
-        w: Side = "A" if pa >= pb else "B"
-        d = abs(pa - pb)
-        raw.append({"tipo": "duello", "ruolo": role, "idx": i})
-        if d < 8:
-            raw.append({"tipo": "attacco", "da": _other(w), "idx": i, "peso": 4})
-        raw.append({"tipo": "attacco", "da": w, "idx": i, "peso": 6 + d})
-        if i in (2, 4) and queue:
-            take = (len(queue) + 1) // 2 if i == 2 else len(queue)
-            for c in queue[:take]:
-                raw.append({"tipo": "counter", **c, "peso": c["bonus"]})
-            queue = queue[take:]
-        if i == 5:
-            order = (w, _other(w))
-            for s in order:
-                for (ia, ib), nome in duos[s]:
-                    raw.append(
-                        {
-                            "tipo": "combo",
-                            "da": s,
-                            "duo": [ia, ib],
-                            "nome": nome,
-                            "bonus": DUO_BONUS,
-                            "peso": DUO_BONUS,
-                        }
-                    )
-    if not any(e.get("peso") and e["da"] == lose for e in raw):
-        raw.append({"tipo": "attacco", "da": lose, "idx": 6, "peso": 4})
-    raw.append({"tipo": "ko", "da": win, "peso": 10})
-
-    for s in SIDES:
-        hits = [e for e in raw if e.get("peso") and e["da"] == s]
-        total = 100 if s == win else 100 - remaining
-        weight = sum(e["peso"] for e in hits)
-        cum = prev = 0
-        for e in hits:
-            cum += e["peso"]
-            now = round(cum / weight * total)
-            e["danno"] = now - prev
-            prev = now
-
-    kinds = {
-        "ingresso": Ingresso,
-        "duello": Duello,
-        "attacco": Attacco,
-        "counter": Counter,
-        "combo": Combo,
-        "ko": Ko,
-    }
-    events: list[Event] = []
-    for e in raw:
-        e.pop("peso", None)
-        events.append(kinds[e.pop("tipo")](**e))
+    bt = Battaglia(teams, seed, rules, registra)
+    vincitore, motivo = bt.gioca()
+    tot: dict[Side, int] = {s: bt.percento(s) for s in SIDES}
+    if registra:
+        bt.eventi.append(Fine(vincitore=vincitore, motivo=motivo))
     return MatchResult(
         seed=seed,
         squadre=teams,
-        potenze=powers,
+        unita=bt.iniziali,
+        potenze={
+            s: [potenza_ruolo(m, ROLES[i]) for i, m in enumerate(teams[s].members)] for s in SIDES
+        },
+        sinergie=bt.sinergie,
         totali=tot,
-        dettaglio=brk,
-        vincitore=win,
-        pareggio=pareggio,
-        eventi=events,
+        vincitore=vincitore,
+        pareggio=motivo == "tempo" and tot["A"] == tot["B"],
+        turni=bt.turno,
+        eventi=bt.eventi,
     )

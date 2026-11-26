@@ -2,6 +2,7 @@ import random
 
 from fastapi.testclient import TestClient
 
+from app.data_loader import load_characters
 from app.db.session import configure
 from app.main import app
 from app.quick import BUDGET, build_options, cost_of, cpu_draft
@@ -17,7 +18,8 @@ def test_options_deterministic_and_complete() -> None:
 
 
 def test_cost_scale() -> None:
-    assert cost_of(55) == 1 and cost_of(99) == 8 and cost_of(60) >= 1
+    costi = [cost_of(c) for c in load_characters().values()]
+    assert min(costi) == 1 and max(costi) <= 14 and 5 <= sum(costi) / len(costi) <= 9
 
 
 def test_cpu_respects_budget_for_many_seeds() -> None:
@@ -48,7 +50,7 @@ def test_over_budget_is_rejected() -> None:
     for seed in range(200):
         opts = build_options(seed)
         best = [max(opts[r], key=lambda c: c.rating) for r in opts]
-        if len({c.id for c in best}) == 7 and sum(cost_of(c.rating) for c in best) > BUDGET:
+        if len({c.id for c in best}) == 7 and sum(cost_of(c) for c in best) > BUDGET:
             r = client.post("/api/quick/play", json={"seed": seed, "picks": [c.id for c in best]})
             assert r.status_code == 422 and "budget" in r.text
             return

@@ -71,8 +71,7 @@ def info() -> DailyInfo:
             budget=BUDGET,
             roles=list(ROLES),
             options={
-                r: [Option(character=c, cost=cost_of(c.rating)) for c in cs]
-                for r, cs in opts.items()
+                r: [Option(character=c, cost=cost_of(c)) for c in cs] for r, cs in opts.items()
             },
         ),
         leaderboard=leaderboard(day)[:TOP],
