@@ -186,8 +186,8 @@ export default function CharacterCard({
                 )}
               </div>
               <div className="mt-1 flex items-center justify-between text-[0.62rem] font-bold uppercase tracking-widest opacity-60">
-                <span>{pal.label}</span>
-                <span>{rar.name}</span>
+                <span className="truncate whitespace-nowrap">{pal.label}</span>
+                <span className="ml-1 shrink-0">{rar.name}</span>
               </div>
             </div>
           </div>
