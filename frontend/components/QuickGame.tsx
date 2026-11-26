@@ -84,7 +84,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   if (played)
     return (
       <main className="mx-auto max-w-5xl space-y-3 p-4">
-        <h1 className="text-4xl font-bold">{title}</h1>
+        <h1 className="text-5xl font-black leading-none">{title}</h1>
         <p className="text-sm muted">
           {it.veloce.speso}: {played.spent}/{opts.budget} · CPU: {played.cpu_spent}/{opts.budget} ·{" "}
           <a className="underline hover:text-white" href={`/partita/${played.id}`}>
@@ -102,13 +102,50 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
   const maxCost = opts.budget - spent - (rolesLeft - 1);
   return (
     <main className="mx-auto max-w-5xl space-y-4 p-4">
-      <h1 className="text-4xl font-bold">{title}</h1>
+      <div className="reveal space-y-1">
+        <span className="eyebrow">{it.veloce.draft}</span>
+        <h1 className="text-5xl font-black leading-none sm:text-6xl">{title}</h1>
+      </div>
       {header}
-      <p className="text-xs muted">{it.veloce.passaSopra}</p>
-      <p data-testid="step">
-        {it.veloce.scegli} <b>{role}</b> ({step + 1}/{opts.roles.length}) · {it.stanza.budget}:{" "}
-        <b data-testid="left">{opts.budget - spent}</b>
-      </p>
+      <div className="panel space-y-3 p-4">
+        <ol className="flex flex-wrap gap-1.5" aria-hidden="true">
+          {opts.roles.map((r, i) => (
+            <li
+              key={r}
+              className={`rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wider transition ${
+                i < step
+                  ? "border-transparent bg-gradient-to-r from-pink-500 to-orange-400 text-white"
+                  : i === step
+                    ? "border-cyan-300 bg-cyan-300/15 text-cyan-100 shadow-[0_0_18px_rgb(53_224_255/0.35)]"
+                    : "text-white/40"
+              }`}
+            >
+              {i < step ? "✓ " : ""}
+              {r}
+            </li>
+          ))}
+        </ol>
+        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+          <p data-testid="step" className="text-lg">
+            {it.veloce.scegli} <b className="text-gold">{role}</b> ({step + 1}/{opts.roles.length})
+            · {it.stanza.budget}: <b data-testid="left">{opts.budget - spent}</b>
+          </p>
+          <p className="text-xs muted">{it.veloce.passaSopra}</p>
+        </div>
+        <div
+          className="h-2.5 overflow-hidden rounded-full bg-black/40"
+          role="progressbar"
+          aria-label={it.stanza.budget}
+          aria-valuemin={0}
+          aria-valuemax={opts.budget}
+          aria-valuenow={opts.budget - spent}
+        >
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-pink-500 transition-[width] duration-500"
+            style={{ width: `${((opts.budget - spent) / opts.budget) * 100}%` }}
+          />
+        </div>
+      </div>
       <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
         {opts.options[role].map((o) => {
           const taken = picks.some((p) => p.character.id === o.character.id);
@@ -153,8 +190,19 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
                 ) : (
                   <div className="grid aspect-[3/4.2] w-full max-w-[230px] place-items-center rounded-xl text-xs">
                     <div>
-                      <div className="display text-base font-bold">{r}</div>
-                      <div className="muted">{current ? it.veloce.ora : it.veloce.vuoto}</div>
+                      <div
+                        className={`mx-auto mb-2 grid size-10 place-items-center rounded-full border text-lg ${
+                          current
+                            ? "border-pink-300/70 text-pink-200"
+                            : "border-white/15 text-white/30"
+                        }`}
+                      >
+                        {current ? "◆" : "+"}
+                      </div>
+                      <div className="display text-lg font-extrabold">{r}</div>
+                      <div className={current ? "text-pink-200" : "muted"}>
+                        {current ? it.veloce.ora : it.veloce.vuoto}
+                      </div>
                     </div>
                   </div>
                 )}

@@ -136,7 +136,8 @@
     "squadra": "La tua squadra",
     "vuoto": "Libero",
     "ora": "Ora",
-    "passaSopra": "Passa sopra una carta per ingrandirla"
+    "passaSopra": "Passa sopra una carta per ingrandirla",
+    "draft": "Draft"
   },
   "overlay": {
     "votaInChat": "Scrivi in chat: !offro N",
