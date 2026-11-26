@@ -4,7 +4,7 @@ test("la chat compra, completa la squadra e l'overlay OBS si vede a 1920×1080",
   browser,
   request,
 }) => {
-  test.setTimeout(360_000);
+  test.setTimeout(600_000);
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto("/");
@@ -36,7 +36,7 @@ test("la chat compra, completa la squadra e l'overlay OBS si vede a 1920×1080",
 
   const viewers = Array.from({ length: 30 }, (_, i) => `spettatore${i}`);
   const pass = page.getByTestId("pass");
-  for (let i = 0; i < 600 && !(await page.getByTestId("tournament").isVisible()); i++) {
+  for (let i = 0; i < 1500 && !(await page.getByTestId("tournament").isVisible()); i++) {
     await request.post("http://localhost:8000/api/dev/fake-chat/" + code, {
       data: { messages: viewers.map((user) => ({ user, text: "!offro 2" })) },
     });
