@@ -9,7 +9,53 @@
     "codice": "Codice stanza",
     "entraCodice": "Entra con un codice",
     "partitaVeloce": "Partita veloce: draft da solo contro la CPU",
-    "sfidaGiorno": "Sfida del giorno con classifica"
+    "sfidaGiorno": "Sfida del giorno con classifica",
+    "eyebrow": "Aste live · Draft · Tornei",
+    "titoloHero": "Il colosseo degli anime",
+    "creaTitolo": "Gioca con gli amici",
+    "creaSotto": "2–20 giocatori · sette leggende all'asta · poi il torneo",
+    "modalita": "Da solo, subito",
+    "veloceTitolo": "Partita veloce",
+    "veloceTesto": "Fai il draft da solo contro la CPU e guarda lo scontro 7 contro 7.",
+    "sfidaTitolo": "Sfida del giorno",
+    "sfidaTesto": "Stesse opzioni per tutti, un solo tentativo. Sali in classifica.",
+    "vai": "Gioca",
+    "comeTitolo": "Come si gioca",
+    "passi": [
+      {
+        "n": "01",
+        "t": "All'asta",
+        "d": "Ogni lotto è un personaggio vero. Rilancia, passa o gioca il tutto per tutto: il server decide il timer."
+      },
+      {
+        "n": "02",
+        "t": "Forma la squadra",
+        "d": "Sette ruoli, un budget. Archetipi, sinergie e legami fanno la differenza."
+      },
+      {
+        "n": "03",
+        "t": "Vinci lo scontro",
+        "d": "Combattimento a turni 7 contro 7, mosse speciali e un torneo all'italiana."
+      }
+    ],
+    "caratteristiche": [
+      {
+        "t": "100 personaggi",
+        "d": "Da 5 anime, con schede, mosse e passive."
+      },
+      {
+        "t": "Asta in tempo reale",
+        "d": "Offerte live, timer autorevole dal server."
+      },
+      {
+        "t": "Sinergie e legami",
+        "d": "Le squadre coerenti combattono meglio."
+      },
+      {
+        "t": "Modalità streamer",
+        "d": "La chat di Twitch gioca come squadra."
+      }
+    ]
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -129,5 +175,11 @@
     "punteggio": "Punteggio",
     "posizione": "Posizione"
   },
-  "footerCredito": "Immagini: AniList"
+  "footerCredito": "Immagini: AniList",
+  "nav": {
+    "gioca": "Gioca",
+    "veloce": "Veloce",
+    "sfida": "Sfida",
+    "info": "Info"
+  }
 }
