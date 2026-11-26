@@ -237,7 +237,8 @@
     "info": "Info",
     "profilo": "Profilo",
     "duello": "Duello",
-    "album": "Album"
+    "album": "Album",
+    "negozio": "Negozio"
   },
   "draft": {
     "tono": {
@@ -347,7 +348,8 @@
     "gioca": "Gioca per guadagnare XP",
     "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica.",
     "scala": "Record Scala",
-    "elo": "ELO Duello"
+    "elo": "ELO Duello",
+    "crediti": "crediti"
   },
   "specchio": {
     "titolo": "Draft a specchio",
@@ -530,5 +532,27 @@
     "scegliMazzo": "Scegli il mazzo",
     "nessunoSalvato": "Non hai ancora mazzi salvati: creali nell'Album.",
     "senzaElo": "Con un mazzo personale non cambia l'ELO."
+  },
+  "negozio": {
+    "titolo": "Negozio di pacchetti",
+    "crediti": "{n} crediti",
+    "intro": "I crediti si guadagnano solo giocando. Le probabilità sono qui sotto, per ogni carta del pacchetto.",
+    "senzaProfilo": "Crea un profilo per guadagnare crediti e aprire pacchetti.",
+    "apri": "Apri",
+    "prezzo": "{n} crediti",
+    "carte": "{n} carte",
+    "garantita": "Almeno 1 carta {r}",
+    "nessunaGaranzia": "Nessuna rarità garantita",
+    "probabilita": "Probabilità per carta",
+    "pity": "Leggendaria garantita entro {n} pacchetti (ne mancano {m}).",
+    "pocoCrediti": "Servono più crediti",
+    "tocca": "Tocca le carte per scoprirle",
+    "scopriTutte": "Scopri tutte",
+    "nuova": "Nuova!",
+    "doppione": "Doppione: +{n} crediti",
+    "chiudi": "Continua",
+    "riepilogo": "Carte nuove: {n} · Crediti restituiti: {m}",
+    "vaiAlbum": "Vedi nell'album",
+    "garanziaPity": "Leggendaria garantita!"
   }
 }

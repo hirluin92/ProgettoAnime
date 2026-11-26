@@ -54,6 +54,11 @@ class ProfileRow(Base):
     pw_hash: Mapped[str | None] = mapped_column(String(200), nullable=True)
     recovery_hash: Mapped[str | None] = mapped_column(String(200), nullable=True)
     mazzi: Mapped[list[dict]] = mapped_column(JSON, default=list)  # type: ignore[type-arg]
+    crediti: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    pity: Mapped[int] = mapped_column(
+        Integer, default=0, server_default="0"
+    )  # pacchetti dall'ultima leggendaria
+    pacchetti_aperti: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     collezione: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)

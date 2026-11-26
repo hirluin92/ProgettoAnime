@@ -16,6 +16,7 @@ from app.db.session import init_db
 from app.duello_api import router as duello_router
 from app.engine.models import Character, MatchResult, Team
 from app.engine.simulate import simulate
+from app.pacchetti import router as pacchetti_router
 from app.profilo import router as profilo_router
 from app.quick import router as quick_router
 from app.rooms.manager import RoomError, manager, serve_socket
@@ -45,6 +46,7 @@ app.include_router(scala_router)
 app.include_router(duello_router)
 app.include_router(account_router)
 app.include_router(album_router)
+app.include_router(pacchetti_router)
 
 
 @app.get("/health")
@@ -115,7 +117,8 @@ def regala_carte(profile_id: str) -> dict[str, int]:
         if row is None:
             raise HTTPException(404, "profilo non trovato")
         row.collezione = sorted(set(row.collezione or []) | set(ids[:12]))
-        return {"carte": len(row.collezione)}
+        row.crediti += 1000
+        return {"carte": len(row.collezione), "crediti": row.crediti}
 
 
 @app.get("/api/matches/{match_id}")

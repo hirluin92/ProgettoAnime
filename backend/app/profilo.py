@@ -37,6 +37,11 @@ TITOLI: tuple[tuple[int, str], ...] = (
 
 
 # ---------- regole pure ----------
+def crediti_per(xp: int) -> int:
+    """Crediti guadagnati da una partita: metà degli XP (i crediti non si comprano con denaro)."""
+    return max(1, xp // 2)
+
+
 def xp_per_livello(livello: int) -> int:
     """XP totali necessari per raggiungere un livello (livello 1 = 0)."""
     return 60 * (livello - 1) ** 2
@@ -181,6 +186,8 @@ class ProfileView(Model):
     vittorie: int
     best_scala: int  # gradino più alto raggiunto nella Scala
     elo: int = 1200  # punteggio di abilità nei Duelli
+    crediti: int = 0  # valuta del gioco: si guadagna solo giocando
+    pity: int = 0  # pacchetti aperti dall'ultima leggendaria
     username: str | None = None  # None = profilo anonimo, non ancora protetto da password
     collezione: list[str]
     collezione_totale: int
@@ -197,6 +204,7 @@ class Premio(Model):
     obiettivi_completati: list[ObiettivoView]
     punti_stagione: int
     nuove_carte: int
+    crediti: int = 0  # crediti guadagnati con questa partita
     elo_prima: int | None = None
     elo_dopo: int | None = None
 
@@ -266,6 +274,8 @@ def _view(s, row: ProfileRow, giorno: str) -> ProfileView:  # type: ignore[no-un
         best_scala=row.best_scala,
         elo=row.elo,
         username=row.username,
+        crediti=row.crediti,
+        pity=row.pity,
         collezione=sorted(row.collezione),
         collezione_totale=totale_collezione(),
         obiettivi=[
@@ -304,6 +314,8 @@ def assegna_premio(
         day.fatti = [*day.fatti, *(o.id for o in nuovi)]
         guadagno += XP_OBIETTIVO * len(nuovi)
         row.xp += guadagno
+        cr = crediti_per(guadagno)
+        row.crediti += cr
         row.partite += 1
         row.vittorie += int(partita.vinto)
         prima_coll = set(row.collezione)
@@ -321,6 +333,7 @@ def assegna_premio(
         dopo = livello_per_xp(row.xp)
         return Premio(
             xp=guadagno,
+            crediti=cr,
             xp_totale=row.xp,
             livello_prima=prima,
             livello_dopo=dopo,
@@ -347,6 +360,8 @@ def assegna_premio_scala(
         prima = livello_per_xp(row.xp)
         guadagno = 20 + 15 * gradini
         row.xp += guadagno
+        cr = crediti_per(guadagno)
+        row.crediti += cr
         row.best_scala = max(row.best_scala, gradini)
         prima_coll = set(row.collezione)
         row.collezione = sorted(prima_coll | set(team_ids))
@@ -363,6 +378,7 @@ def assegna_premio_scala(
         dopo = livello_per_xp(row.xp)
         return Premio(
             xp=guadagno,
+            crediti=cr,
             xp_totale=row.xp,
             livello_prima=prima,
             livello_dopo=dopo,
@@ -401,6 +417,8 @@ def assegna_premio_duello(
         bonus = {"facile": 0, "normale": 10, "difficile": 25}.get(livello, 0)
         guadagno = 20 + (30 + bonus if vinto else 0)
         row.xp += guadagno
+        cr = crediti_per(guadagno)
+        row.crediti += cr
         row.partite += 1
         row.vittorie += int(bool(vinto))
         prima_coll = set(row.collezione)
@@ -422,6 +440,7 @@ def assegna_premio_duello(
         dopo = livello_per_xp(row.xp)
         return Premio(
             xp=guadagno,
+            crediti=cr,
             xp_totale=row.xp,
             livello_prima=prima,
             livello_dopo=dopo,
