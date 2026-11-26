@@ -57,7 +57,7 @@
       }
     ],
     "scalaTitolo": "La Scala",
-    "scalaTesto": "Avversari sempre più forti e potenziamenti a ogni vittoria: quanti gradini sali?",
+    "scalaTesto": "Roguelike a duelli: dopo ogni vittoria scegli una carta nuova o un rinforzo. Quanti gradini sali?",
     "raidTitolo": "Raid cooperativo",
     "raidTesto": "2-4 amici costruiscono una squadra e sfidano un boss.",
     "duelloTitolo": "Duello",
@@ -582,5 +582,23 @@
     "piazzamentoFatto": "Partita di piazzamento",
     "torna": "Torna alla classificata",
     "giocaClassificata": "Classificata"
+  },
+  "scalaD": {
+    "titolo": "La Scala",
+    "sottotitolo": "Sali un gradino alla volta: dopo ogni vittoria scegli un premio per migliorare il mazzo. Ogni 4 gradini c'è un boss.",
+    "gradino": "Gradino {n} di {tot}",
+    "boss": "BOSS",
+    "tuoMazzo": "Il tuo mazzo ({n}/{max})",
+    "avversario": "Avversario · livello {liv} · +{b} potenza",
+    "combatti": "Combatti",
+    "scegliPremio": "Scegli il tuo premio",
+    "scegli": "Scegli",
+    "vintoGradino": "Gradino superato!",
+    "fine": "La corsa è finita",
+    "completata": "Hai conquistato la cima!",
+    "gradiniVinti": "Gradini vinti: {n}",
+    "ricomincia": "Nuova corsa",
+    "carta": "Nuova carta",
+    "rinforzo": "Rinforzo"
   }
 }

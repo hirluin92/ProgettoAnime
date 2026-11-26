@@ -1,5 +1,6 @@
 import type { Premio } from "./profile";
 import type { RankedEsito } from "./ranked";
+import type { ScalaEsito } from "./scalaDuelli";
 
 // Tipi dell'API del Duello (specchio di backend/app/duello_api.py).
 export interface CartaView {
@@ -79,6 +80,7 @@ export interface TurnoOut {
   vinto: boolean | null;
   premio: Premio | null;
   ranked?: RankedEsito | null;
+  scala?: ScalaEsito | null;
 }
 export interface PickDuello {
   id: string;

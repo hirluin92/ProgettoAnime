@@ -23,6 +23,7 @@ from app.ranked import router as ranked_router
 from app.rooms.manager import RoomError, manager, serve_socket
 from app.rooms.protocol import ClientMessage, ErrorMsg, Join, Spectate
 from app.scala import router as scala_router
+from app.scala_duelli import router as scala_duelli_router
 
 
 @asynccontextmanager
@@ -49,6 +50,7 @@ app.include_router(account_router)
 app.include_router(album_router)
 app.include_router(pacchetti_router)
 app.include_router(ranked_router)
+app.include_router(scala_duelli_router)
 
 
 @app.get("/health")

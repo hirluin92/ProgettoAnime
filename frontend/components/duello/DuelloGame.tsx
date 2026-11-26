@@ -23,6 +23,7 @@ import {
 } from "@/lib/duello";
 import { getProfileId, useProfile } from "@/lib/profile";
 import { nomeLega, type RankedStart } from "@/lib/ranked";
+import type { RunView } from "@/lib/scalaDuelli";
 import Link from "next/link";
 import DuelloBoard, { fmt } from "./DuelloBoard";
 import DuelloCard, { DuelloTile } from "./DuelloCard";
@@ -81,9 +82,11 @@ function ClassificaGiorno({ righe }: { righe: GiornoRiga[] }) {
 export default function DuelloGame({
   giorno = false,
   ranked = false,
+  scala = false,
 }: {
   giorno?: boolean;
   ranked?: boolean;
+  scala?: boolean;
 }) {
   const [fase, setFase] = useState<Fase>("draft");
   const [draft, setDraft] = useState<DraftDuello | null>(null);
@@ -104,6 +107,7 @@ export default function DuelloGame({
   const [mazzoSel, setMazzoSel] = useState(0);
   const [rk, setRk] = useState<RankedStart | null>(null);
   const caricamento = useRef(0);
+  const [run, setRun] = useState<RunView | null>(null);
   const [info, setInfo] = useState<GiornoInfo | null>(null);
   const [nome, setNome] = useState("");
   const [esitoGiorno, setEsitoGiorno] = useState<GiornoEsito | null>(null);
@@ -117,6 +121,7 @@ export default function DuelloGame({
     setStato(null);
     setEsito(null);
     setEsitoGiorno(null);
+    setRun(null);
     setFase(window.localStorage.getItem(TUTORIAL_KEY) || giorno ? "draft" : "regole");
     if (giorno) {
       setInfo(await api<GiornoInfo>("/api/duello/giorno/info"));
@@ -242,6 +247,65 @@ export default function DuelloGame({
       </main>
     );
   }
+  // ---------- La Scala: tra un duello e l'altro ----------
+  if (scala && run && (!partita || !stato)) {
+    const combatti = async () => {
+      setBusy(true);
+      try {
+        const g = await api<DuelloState>(`/api/scala-duelli/${run.run_id}/gioca`, {
+          method: "POST",
+        });
+        setPartita(g);
+        setStato(g.stato);
+        setEsito(null);
+        setFase("gioco");
+      } catch (e) {
+        err(e);
+      } finally {
+        setBusy(false);
+      }
+    };
+    const av = run.avversario;
+    return (
+      <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="scala-hub">
+        <header className="space-y-1">
+          <span className="eyebrow">{it.scalaD.titolo}</span>
+          <h1 className="display text-4xl font-black" data-testid="scala-gradino">
+            {fmt(it.scalaD.gradino, { n: run.gradino, tot: run.max_gradini })}
+            {av.boss && <span className="ml-3 text-rose-400">{it.scalaD.boss}</span>}
+          </h1>
+          <p className="text-sm muted">
+            {fmt(it.scalaD.avversario, { liv: av.livello, b: av.bonus })}
+          </p>
+        </header>
+        <section className="space-y-2">
+          <h2 className="eyebrow">
+            {fmt(it.scalaD.tuoMazzo, { n: run.mazzo.length, max: run.max_mazzo })}
+          </h2>
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">
+            {run.mazzo.map((c) => (
+              <DuelloTile key={c.id} carta={c} potenza={c.potenza} />
+            ))}
+          </div>
+          <h2 className="eyebrow pt-2">{it.duello.mazzoCpu}</h2>
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+            {av.mazzo.map((c) => (
+              <DuelloTile key={c.id} carta={c} potenza={c.potenza} tinta="cpu" />
+            ))}
+          </div>
+        </section>
+        <button
+          className="btn btn-gold w-full text-lg"
+          disabled={busy}
+          onClick={() => void combatti()}
+          data-testid="scala-combatti"
+        >
+          {it.scalaD.combatti}
+        </button>
+      </main>
+    );
+  }
+
   // ---------- draft ----------
   if (fase === "draft" || !partita || !stato) {
     if (!draft) return null;
@@ -255,6 +319,14 @@ export default function DuelloGame({
     const inizia = async () => {
       setBusy(true);
       try {
+        if (scala) {
+          const r = await api<RunView>("/api/scala-duelli/start", {
+            method: "POST",
+            body: JSON.stringify({ seed: draft.seed, picks, profile_id: getProfileId() }),
+          });
+          setRun(r);
+          return;
+        }
         const g = rk
           ? await api<DuelloState>(`/api/ranked/partita/${rk.ranked_id}/inizia`, {
               method: "POST",
@@ -296,7 +368,7 @@ export default function DuelloGame({
             </p>
           )}
           <div className="flex flex-wrap items-center gap-2 pt-1 text-sm">
-            {!ranked && (
+            {!ranked && !scala && (
               <Link href="/ranked" className="chip text-cyan-200">
                 ⚔ {it.ranked.giocaClassificata}
               </Link>
@@ -311,7 +383,7 @@ export default function DuelloGame({
             )}
           </div>
         </header>
-        {!ranked && mazziProfilo.length > 0 && picks.length === 0 && (
+        {!ranked && !scala && mazziProfilo.length > 0 && picks.length === 0 && (
           <div className="flex flex-wrap gap-2" data-testid="duello-tab">
             <button
               className={`btn ${!usaMazzo ? "btn-primary" : ""}`}
@@ -436,7 +508,7 @@ export default function DuelloGame({
         )}
         {pronto && (
           <section className="panel space-y-4 p-5">
-            <div className={`space-y-2 ${ranked ? "hidden" : ""}`}>
+            <div className={`space-y-2 ${ranked || scala ? "hidden" : ""}`}>
               <span className="eyebrow">{it.duello.livello}</span>
               <div className="flex gap-2">
                 {LIVELLI.map((l) => (
@@ -542,6 +614,61 @@ export default function DuelloGame({
               <ClassificaGiorno righe={esitoGiorno.classifica} />
             </div>
           )}
+          {esito.scala && (
+            <div className="panel space-y-3 p-4 text-left" data-testid="scala-esito">
+              <p className="text-center font-bold">
+                {esito.scala.finita
+                  ? esito.scala.completata
+                    ? it.scalaD.completata
+                    : it.scalaD.fine
+                  : it.scalaD.vintoGradino}{" "}
+                · {fmt(it.scalaD.gradiniVinti, { n: esito.scala.vinti })}
+              </p>
+              {!esito.scala.finita && (
+                <>
+                  <h3 className="eyebrow text-center">{it.scalaD.scegliPremio}</h3>
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    {esito.scala.offerte.map((o, i) => (
+                      <div key={i} className="space-y-2 text-center">
+                        <p className="text-xs font-extrabold uppercase tracking-widest text-cyan-200">
+                          {o.tipo === "carta" ? it.scalaD.carta : it.scalaD.rinforzo}
+                        </p>
+                        <DuelloCard carta={o.carta} />
+                        <p className="text-xs">{o.testo}</p>
+                        <button
+                          className="btn btn-primary w-full"
+                          disabled={busy}
+                          data-testid={`scala-offerta-${i}`}
+                          onClick={async () => {
+                            setBusy(true);
+                            try {
+                              const r = await api<RunView>(
+                                `/api/scala-duelli/${run?.run_id}/scegli`,
+                                { method: "POST", body: JSON.stringify({ indice: i }) },
+                              );
+                              setRun(r);
+                              setPartita(null);
+                              setStato(null);
+                              setEsito(null);
+                            } catch (e) {
+                              err(e);
+                            } finally {
+                              setBusy(false);
+                            }
+                          }}
+                        >
+                          {it.scalaD.scegli}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+              {esito.scala.finita && esito.scala.premio && (
+                <PremioPanel premio={esito.scala.premio} />
+              )}
+            </div>
+          )}
           {esito.ranked && (
             <div className="panel space-y-1 p-4 text-left" data-testid="ranked-esito">
               <p className="font-bold">
@@ -573,7 +700,7 @@ export default function DuelloGame({
           )}
           {esito.premio && <PremioPanel premio={esito.premio} />}
           <button
-            className="btn btn-primary"
+            className={`btn btn-primary ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
             onClick={() =>
               giorno || ranked
                 ? (window.location.href = ranked ? "/ranked" : "/duello")
@@ -581,7 +708,13 @@ export default function DuelloGame({
             }
             data-testid="duello-rigioca"
           >
-            {ranked ? it.ranked.torna : giorno ? it.duello.indietro : it.duello.rigioca}
+            {ranked
+              ? it.ranked.torna
+              : scala
+                ? it.scalaD.ricomincia
+                : giorno
+                  ? it.duello.indietro
+                  : it.duello.rigioca}
           </button>
         </motion.section>
       )}
