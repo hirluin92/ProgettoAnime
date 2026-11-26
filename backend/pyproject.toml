@@ -23,6 +23,9 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+"app/duello/carte.py" = ["E501"]  # testi in italiano, una riga per effetto
+
 [tool.mypy]
 strict = true
 files = ["app"]

@@ -1,0 +1,442 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import PremioPanel from "@/components/PremioPanel";
+import it from "@/i18n/it.json";
+import { ARCH_NOMI } from "@/lib/battle/labels";
+import { api } from "@/lib/api";
+import {
+  LIVELLI,
+  TUTORIAL_KEY,
+  costoIn,
+  postiMax,
+  type CartaView,
+  type DraftDuello,
+  type DuelloState,
+  type EventoDuello,
+  type PickDuello,
+  type StatoView,
+  type TurnoOut,
+} from "@/lib/duello";
+import { getProfileId } from "@/lib/profile";
+import DuelloCard from "./DuelloCard";
+
+type Fase = "regole" | "draft" | "gioco";
+interface Mossa {
+  carta: CartaView;
+  corsia: number;
+}
+
+const fmt = (s: string, v: Record<string, string | number>) =>
+  s.replace(/\{(\w+)\}/g, (_, k: string) => String(v[k] ?? ""));
+
+function Regole({ onOk }: { onOk: () => void }) {
+  return (
+    <section className="panel mx-auto max-w-xl space-y-4 p-6" data-testid="duello-regole">
+      <h2 className="display text-3xl font-black">{it.duello.regole}</h2>
+      <ol className="list-decimal space-y-2 pl-5 text-sm leading-relaxed">
+        {it.duello.regoleLista.map((r) => (
+          <li key={r}>{r}</li>
+        ))}
+      </ol>
+      <button className="btn btn-primary w-full" onClick={onOk} data-testid="duello-capito">
+        {it.duello.capito}
+      </button>
+    </section>
+  );
+}
+
+export default function DuelloGame() {
+  const [fase, setFase] = useState<Fase>("draft");
+  const [draft, setDraft] = useState<DraftDuello | null>(null);
+  const [h, setH] = useState(0);
+  const [rilanci, setRilanci] = useState(0);
+  const [picks, setPicks] = useState<PickDuello[]>([]);
+  const [livello, setLivello] = useState<string>("normale");
+  const [partita, setPartita] = useState<DuelloState | null>(null);
+  const [stato, setStato] = useState<StatoView | null>(null);
+  const [pending, setPending] = useState<Mossa[]>([]);
+  const [sel, setSel] = useState<string | null>(null);
+  const [caption, setCaption] = useState<string | null>(null);
+  const [esito, setEsito] = useState<TurnoOut | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const skip = useRef(false);
+
+  const carica = useCallback(async () => {
+    setError(null);
+    setH(0);
+    setRilanci(0);
+    setPicks([]);
+    setPartita(null);
+    setStato(null);
+    setEsito(null);
+    setPending([]);
+    setSel(null);
+    setFase(window.localStorage.getItem(TUTORIAL_KEY) ? "draft" : "regole");
+    setDraft(await api<DraftDuello>("/api/duello/draft"));
+  }, []);
+  useEffect(() => {
+    carica().catch((e: Error) => setError(e.message));
+  }, [carica]);
+
+  const err = (e: unknown) => setError(e instanceof Error ? e.message : it.duello.errore);
+
+  if (error)
+    return (
+      <main className="mx-auto max-w-md p-6 pt-16">
+        <div role="alert" className="panel space-y-4 p-6 text-center">
+          <p className="text-lg font-bold">{error}</p>
+          <button className="btn btn-primary" onClick={() => carica().catch(err)}>
+            {it.errori.riprova}
+          </button>
+        </div>
+      </main>
+    );
+  if (!draft) return <main className="p-6">{it.stanza.connessione}</main>;
+
+  if (fase === "regole")
+    return (
+      <main className="mx-auto max-w-5xl p-4 pt-8">
+        <Regole
+          onOk={() => {
+            window.localStorage.setItem(TUTORIAL_KEY, "1");
+            setFase("draft");
+          }}
+        />
+      </main>
+    );
+
+  // ---------- draft ----------
+  if (fase === "draft" || !partita || !stato) {
+    const pronto = picks.length === draft.mazzo;
+    const mano = draft.mani[h] ?? [];
+    const scelte = picks.map((p) => draft.mani[p.hand].find((c) => c.id === p.id)!);
+    const prendi = (c: CartaView) => {
+      setPicks([...picks, { id: c.id, hand: h }]);
+      setH(h + 1);
+    };
+    const inizia = async () => {
+      setBusy(true);
+      try {
+        const g = await api<DuelloState>("/api/duello/start", {
+          method: "POST",
+          body: JSON.stringify({
+            seed: draft.seed,
+            picks,
+            livello,
+            profile_id: getProfileId(),
+          }),
+        });
+        setPartita(g);
+        setStato(g.stato);
+        setFase("gioco");
+      } catch (e) {
+        err(e);
+      } finally {
+        setBusy(false);
+      }
+    };
+    return (
+      <main className="mx-auto max-w-5xl space-y-5 p-4 pt-6" data-testid="duello-draft">
+        <header className="space-y-1">
+          <span className="eyebrow">{it.duello.titolo}</span>
+          <h1 className="display text-4xl font-black">
+            {pronto ? it.duello.mazzoPronto : it.duello.scegli}
+          </h1>
+          <p className="text-sm muted">{it.duello.sottotitolo}</p>
+        </header>
+        {!pronto && (
+          <section className="space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-bold" data-testid="duello-conta">
+                {fmt(it.duello.mano, { n: picks.length + 1, tot: draft.mazzo })}
+              </span>
+              <button
+                className="btn"
+                disabled={rilanci >= draft.rilanci}
+                onClick={() => {
+                  setRilanci(rilanci + 1);
+                  setH(h + 1);
+                }}
+                data-testid="duello-rilancia"
+              >
+                {fmt(it.duello.rilancia, { n: draft.rilanci - rilanci })}
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+              {mano.map((c) => (
+                <DuelloCard
+                  key={c.id}
+                  carta={c}
+                  onClick={() => prendi(c)}
+                  testId="duello-offerta"
+                />
+              ))}
+            </div>
+          </section>
+        )}
+        {scelte.length > 0 && (
+          <section className="space-y-2">
+            <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+              {scelte.map((c) => (
+                <DuelloCard key={c.id} carta={c} compact />
+              ))}
+            </div>
+          </section>
+        )}
+        {pronto && (
+          <section className="panel space-y-4 p-5">
+            <div className="space-y-2">
+              <span className="eyebrow">{it.duello.livello}</span>
+              <div className="flex gap-2">
+                {LIVELLI.map((l) => (
+                  <button
+                    key={l}
+                    className={`btn ${livello === l ? "btn-primary" : ""}`}
+                    aria-pressed={livello === l}
+                    onClick={() => setLivello(l)}
+                  >
+                    {it.duello.livelli[l]}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button
+              className="btn btn-gold w-full"
+              disabled={busy}
+              onClick={inizia}
+              data-testid="duello-inizia"
+            >
+              {it.duello.inizia}
+            </button>
+          </section>
+        )}
+      </main>
+    );
+  }
+
+  // ---------- partita ----------
+  const speso = pending.reduce((s, m) => s + costoIn(m.carta, stato.luoghi[m.corsia]), 0);
+  const inMano = stato.mano.filter((c) => !pending.some((m) => m.carta.id === c.id));
+  const selCarta = inMano.find((c) => c.id === sel) ?? null;
+  const posti = (k: number) =>
+    postiMax(stato.luoghi[k]) -
+    stato.corsie[k][0].length -
+    pending.filter((m) => m.corsia === k).length;
+
+  const gioca = (k: number) => {
+    if (!selCarta || busy) return;
+    const costo = costoIn(selCarta, stato.luoghi[k]);
+    if (speso + costo > stato.energia || posti(k) <= 0) return;
+    setPending([...pending, { carta: selCarta, corsia: k }]);
+    setSel(null);
+  };
+
+  const conferma = async () => {
+    if (!partita || busy) return;
+    setBusy(true);
+    skip.current = false;
+    try {
+      const out = await api<TurnoOut>(`/api/duello/${partita.id}/turno`, {
+        method: "POST",
+        body: JSON.stringify({
+          mosse: pending.map((m) => ({ carta: m.carta.id, corsia: m.corsia })),
+        }),
+      });
+      const rivela = out.eventi.filter((e: EventoDuello) => e.t === "rivela" && e.carta_view);
+      for (const e of rivela) {
+        if (skip.current) break;
+        setCaption(
+          fmt(it.duello.rivela, {
+            chi: e.lato === 0 ? it.duello.tu : it.duello.cpu,
+            carta: e.carta_view!.nome,
+            n: (e.corsia ?? 0) + 1,
+          }) + (e.carta_view!.mossa !== "-" ? ` — ${e.carta_view!.testo_mossa}` : ""),
+        );
+        await new Promise((r) => setTimeout(r, 750));
+      }
+      setCaption(null);
+      setPending([]);
+      setSel(null);
+      setStato(out.stato);
+      if (out.finita) setEsito(out);
+    } catch (e) {
+      err(e);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const vinteTu = stato.corsie_vinte[0];
+  const vinteCpu = stato.corsie_vinte[1];
+
+  return (
+    <main className="mx-auto max-w-5xl space-y-4 p-3 pt-5" data-testid="duello-gioco">
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span className="eyebrow">{it.duello.titolo}</span>
+          <h1 className="display text-3xl font-black" data-testid="duello-turno">
+            {fmt(it.duello.turno, { n: Math.min(stato.turno, stato.turni), tot: stato.turni })}
+          </h1>
+        </div>
+        <div className="text-right text-xs muted">
+          <div>{fmt(it.duello.cpuMano, { n: stato.mano_cpu })}</div>
+          <div>{fmt(it.duello.mazzoRimasto, { n: stato.mazzo })}</div>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-3 gap-2">
+        {stato.luoghi.map((l, k) => {
+          const [tu, cpu] = stato.totali[k];
+          const mie = stato.corsie[k][0];
+          const loro = stato.corsie[k][1];
+          const prossime = pending.filter((m) => m.corsia === k);
+          const migliore = tu > cpu ? "tu" : cpu > tu ? "cpu" : "";
+          return (
+            <section
+              key={l.id + k}
+              className={`panel flex flex-col gap-1.5 p-1.5 ${migliore === "tu" ? "ring-1 ring-emerald-400/70" : migliore === "cpu" ? "ring-1 ring-red-400/70" : ""}`}
+              data-testid={`corsia-${k}`}
+            >
+              <div className="text-center">
+                <div className="display text-base font-extrabold leading-none">{l.nome}</div>
+                <p className="mt-0.5 text-[10px] leading-tight muted">{l.regola}</p>
+                {l.favorisce.length > 0 && (
+                  <p className="text-[9px] text-amber-300">
+                    {fmt(it.duello.favorisce, {
+                      a: l.favorisce.map((a) => ARCH_NOMI[a] ?? a).join(", "),
+                    })}
+                  </p>
+                )}
+              </div>
+              <div className="flex min-h-[64px] flex-col gap-1">
+                {loro.map((i) => (
+                  <DuelloCard key={i.uid} carta={i.carta} potenza={i.potenza} compact />
+                ))}
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-black/40 px-2 py-1 text-sm font-black">
+                <span className="text-emerald-300" data-testid={`tot-tu-${k}`}>
+                  {tu}
+                </span>
+                <span className="text-[10px] muted">vs</span>
+                <span className="text-red-300" data-testid={`tot-cpu-${k}`}>
+                  {cpu}
+                </span>
+              </div>
+              <div className="flex min-h-[64px] flex-col gap-1">
+                {mie.map((i) => (
+                  <DuelloCard key={i.uid} carta={i.carta} potenza={i.potenza} compact />
+                ))}
+                <AnimatePresence>
+                  {prossime.map((m) => (
+                    <motion.div
+                      key={m.carta.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="rounded-xl border-2 border-dashed border-amber-300/70 p-0.5"
+                    >
+                      <DuelloCard
+                        carta={m.carta}
+                        compact
+                        onClick={() => setPending(pending.filter((x) => x !== m))}
+                        testId="duello-pending"
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+              <button
+                className={`btn text-xs ${selCarta ? "btn-primary" : ""}`}
+                disabled={
+                  !selCarta || busy || posti(k) <= 0 || speso + costoIn(selCarta, l) > stato.energia
+                }
+                onClick={() => gioca(k)}
+                data-testid={`gioca-${k}`}
+              >
+                {selCarta && speso + costoIn(selCarta, l) > stato.energia
+                  ? it.duello.troppoCara
+                  : posti(k) <= 0
+                    ? it.duello.corsiaPiena
+                    : it.duello.gioca}
+              </button>
+            </section>
+          );
+        })}
+      </div>
+
+      <div
+        className="min-h-6 text-center text-sm font-bold text-amber-200"
+        aria-live="polite"
+        data-testid="duello-caption"
+      >
+        {caption ?? (stato.finita ? "" : selCarta ? it.duello.sceltaCorsia : it.duello.sceltaCarta)}
+      </div>
+
+      {!stato.finita && (
+        <section className="space-y-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-sm font-black" data-testid="duello-energia">
+              ⚡ {it.duello.energia}: {stato.energia - speso}/{stato.energia}
+            </span>
+            <div className="flex gap-2">
+              {busy && (
+                <button className="btn" onClick={() => (skip.current = true)}>
+                  {it.duello.salta}
+                </button>
+              )}
+              <button
+                className="btn btn-primary"
+                disabled={busy}
+                onClick={conferma}
+                data-testid="duello-conferma"
+              >
+                {pending.length ? it.duello.conferma : it.duello.passa}
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-7">
+            {inMano.map((c) => (
+              <DuelloCard
+                key={c.id}
+                carta={c}
+                selected={sel === c.id}
+                dim={c.costo > stato.energia - speso}
+                onClick={() => setSel(sel === c.id ? null : c.id)}
+                testId="duello-mano"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {esito && stato.finita && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="panel space-y-4 p-6 text-center"
+          data-testid="duello-esito"
+        >
+          <h2 className="display text-grad text-5xl font-black">
+            {esito.vinto === null
+              ? it.duello.pareggio
+              : esito.vinto
+                ? it.duello.vittoria
+                : it.duello.sconfitta}
+          </h2>
+          <p className="muted">{fmt(it.duello.corsieVinte, { a: vinteTu, b: vinteCpu })}</p>
+          {esito.premio && <PremioPanel premio={esito.premio} />}
+          <button
+            className="btn btn-primary"
+            onClick={() => carica().catch(err)}
+            data-testid="duello-rigioca"
+          >
+            {it.duello.rigioca}
+          </button>
+        </motion.section>
+      )}
+    </main>
+  );
+}

@@ -1,0 +1,372 @@
+"""API del Duello contro la CPU: draft di 8 carte e partite a sessione (in memoria, 2 ore)."""
+
+import random
+import secrets
+import time
+from dataclasses import dataclass, field
+from functools import lru_cache
+from typing import Any
+
+from fastapi import APIRouter, HTTPException
+from pydantic import Field
+
+from app.data_loader import load_characters, load_forms, load_ruleset
+from app.draft import build_deck, forms_by_base, hand
+from app.duello import ai
+from app.duello.carte import Carta, carta_da, descr_mossa, descr_passiva
+from app.duello.luoghi import LUOGHI
+from app.duello.motore import (
+    CORSIE,
+    MossaNonValida,
+    Stato,
+    corsie_vinte,
+    energia,
+    gioca_turno,
+    nuovo,
+    potenze_corsia,
+    totali,
+)
+from app.engine.models import Character, Model
+from app.profilo import Premio, assegna_premio_duello
+
+router = APIRouter(prefix="/api/duello")
+
+MAZZO = 8
+RILANCI = 2
+MANI = MAZZO + RILANCI
+RUN_TTL = 2 * 3600
+
+
+# ---------- carte e viste ----------
+@lru_cache
+def _tutte() -> dict[str, tuple[Carta, str | None]]:
+    out: dict[str, tuple[Carta, str | None]] = {}
+    for c in [*load_characters().values(), *load_forms().values()]:
+        out[c.id] = (carta_da(c), c.immagine_url)
+    return out
+
+
+def _pool() -> list[Carta]:
+    return [c for c, _ in _tutte().values()]
+
+
+@lru_cache
+def _legami() -> tuple[frozenset[frozenset[str]], frozenset[frozenset[str]]]:
+    r = load_ruleset()
+    return (
+        frozenset(frozenset({d.a, d.b}) for d in r.duos),
+        frozenset(frozenset({d.a, d.b}) for d in r.rivalita),
+    )
+
+
+class CartaView(Model):
+    id: str
+    nome: str
+    anime: str
+    arch: str
+    potenza: int
+    costo: int
+    mossa: str
+    passiva: str
+    testo_mossa: str
+    testo_passiva: str
+    forma: str | None
+    rating: int
+    immagine_url: str | None
+
+
+class LuogoView(Model):
+    id: str
+    nome: str
+    regola: str
+    favorisce: list[str]
+
+
+class IstanzaView(Model):
+    uid: int
+    carta: CartaView
+    lato: int
+    corsia: int
+    potenza: int
+    mod: int
+
+
+class StatoView(Model):
+    turno: int
+    turni: int
+    energia: int  # del giocatore in questo turno
+    energia_cpu: int
+    mano: list[CartaView]
+    mano_cpu: int
+    mazzo: int
+    mazzo_cpu: int
+    luoghi: list[LuogoView]
+    corsie: list[list[list[IstanzaView]]]  # [corsia][lato] (lato 0 = giocatore, 1 = CPU)
+    totali: list[list[int]]
+    corsie_vinte: list[int]
+    finita: bool
+    vincitore: int | None
+
+
+def vista_carta(c: Carta) -> CartaView:
+    return CartaView(
+        id=c.id,
+        nome=c.nome,
+        anime=c.anime,
+        arch=c.arch,
+        potenza=c.potenza,
+        costo=c.costo,
+        mossa=c.mossa,
+        passiva=c.passiva,
+        testo_mossa=descr_mossa(c.mossa, c.magnitudo),
+        testo_passiva=descr_passiva(c.passiva, c.magnitudo),
+        forma=c.forma,
+        rating=c.rating,
+        immagine_url=_tutte()[c.id][1],
+    )
+
+
+def vista_stato(stato: Stato) -> StatoView:
+    corsie: list[list[list[IstanzaView]]] = []
+    for c in range(CORSIE):
+        eff, _ = potenze_corsia(stato, c)
+        corsie.append(
+            [
+                [
+                    IstanzaView(
+                        uid=i.uid,
+                        carta=vista_carta(i.carta),
+                        lato=i.lato,
+                        corsia=i.corsia,
+                        potenza=eff[i.uid],
+                        mod=i.mod,
+                    )
+                    for i in stato.corsie[c][lato]
+                ]
+                for lato in (0, 1)
+            ]
+        )
+    return StatoView(
+        turno=stato.turno,
+        turni=6,
+        energia=energia(stato, 0),
+        energia_cpu=energia(stato, 1),
+        mano=[vista_carta(c) for c in stato.lati[0].mano],
+        mano_cpu=len(stato.lati[1].mano),
+        mazzo=len(stato.lati[0].mazzo),
+        mazzo_cpu=len(stato.lati[1].mazzo),
+        luoghi=[
+            LuogoView(
+                id=LUOGHI[i].id,
+                nome=LUOGHI[i].nome,
+                regola=LUOGHI[i].regola,
+                favorisce=sorted(LUOGHI[i].favorisce),
+            )
+            for i in stato.luoghi
+        ],
+        corsie=corsie,
+        totali=totali(stato),
+        corsie_vinte=corsie_vinte(stato),
+        finita=stato.finita,
+        vincitore=stato.vincitore,
+    )
+
+
+# ---------- draft ----------
+class DraftDuello(Model):
+    seed: int
+    mazzo: int
+    rilanci: int
+    mani: list[list[CartaView]]
+
+
+class PickIn(Model):
+    id: str
+    hand: int = Field(ge=0)
+
+
+def _deck_ch(seed: int) -> list[Character]:
+    chars = list(load_characters().values())
+    return build_deck(seed, chars, forms_by_base(load_forms()))
+
+
+def _deck(seed: int) -> list[Carta]:
+    return [_tutte()[c.id][0] for c in _deck_ch(seed)]
+
+
+def _mano(seed: int, h: int) -> list[Carta]:
+    return [_tutte()[c.id][0] for c in hand(_deck_ch(seed), h)]
+
+
+@router.get("/draft")
+def draft(seed: int | None = None) -> DraftDuello:
+    seed = seed if seed is not None else random.randint(1, 2**31 - 1)
+    return DraftDuello(
+        seed=seed,
+        mazzo=MAZZO,
+        rilanci=RILANCI,
+        mani=[[vista_carta(c) for c in _mano(seed, h)] for h in range(MANI)],
+    )
+
+
+def _valida_draft(seed: int, picks: list[PickIn]) -> list[Carta]:
+    if len(picks) != MAZZO:
+        raise HTTPException(422, f"servono {MAZZO} carte")
+    out: list[Carta] = []
+    prev = -1
+    for pk in picks:
+        if pk.hand <= prev or pk.hand >= MANI:
+            raise HTTPException(422, "mano non valida")
+        card = next((c for c in _mano(seed, pk.hand) if c.id == pk.id), None)
+        if card is None:
+            raise HTTPException(422, f"{pk.id} non è nella mano {pk.hand}")
+        out.append(card)
+        prev = pk.hand
+    if prev - (MAZZO - 1) > RILANCI:
+        raise HTTPException(422, f"troppi rilanci (massimo {RILANCI})")
+    return out
+
+
+def mazzo_cpu(seed: int) -> list[Carta]:
+    """Il mazzo della CPU: pesca dal proprio mazzo cercando una buona curva di costi."""
+    deck = _deck(seed + 1)[:40]
+    obiettivo = {1: 1, 2: 2, 3: 2, 4: 2, 5: 1}
+    scelte: list[Carta] = []
+    for costo, n in obiettivo.items():
+        candidate = sorted(
+            (c for c in deck if c.costo == costo and c not in scelte),
+            key=lambda c: (-c.potenza, c.id),
+        )
+        scelte += candidate[:n]
+    for c in sorted(deck, key=lambda c: (-c.potenza, c.id)):
+        if len(scelte) >= MAZZO:
+            break
+        if c not in scelte:
+            scelte.append(c)
+    return scelte[:MAZZO]
+
+
+# ---------- partite ----------
+@dataclass
+class Partita:
+    id: str
+    stato: Stato
+    livello: str
+    rng: random.Random
+    mazzo: list[Carta]
+    profile_id: str | None
+    premio: Premio | None = None
+    creata: float = field(default_factory=time.time)
+
+
+PARTITE: dict[str, Partita] = {}
+
+
+def _pulisci() -> None:
+    t = time.time()
+    for k in [k for k, p in PARTITE.items() if t - p.creata > RUN_TTL]:
+        PARTITE.pop(k, None)
+
+
+class StartIn(Model):
+    seed: int
+    picks: list[PickIn] = Field(min_length=MAZZO, max_length=MAZZO)
+    livello: str = "normale"
+    profile_id: str | None = None
+
+
+class MossaIn(Model):
+    carta: str
+    corsia: int
+
+
+class TurnoIn(Model):
+    mosse: list[MossaIn] = Field(default_factory=list, max_length=12)
+
+
+class DuelloState(Model):
+    id: str
+    livello: str
+    stato: StatoView
+
+
+class TurnoOut(Model):
+    id: str
+    eventi: list[dict[str, Any]]
+    stato: StatoView
+    mosse_cpu: list[MossaIn]
+    finita: bool
+    vinto: bool | None
+    premio: Premio | None = None
+
+
+@router.post("/start")
+def start(body: StartIn) -> DuelloState:
+    _pulisci()
+    if body.livello not in ai.LIVELLI:
+        raise HTTPException(422, "livello non valido")
+    mazzo = _valida_draft(body.seed, body.picks)
+    leg, riv = _legami()
+    stato = nuovo(body.seed, mazzo, mazzo_cpu(body.seed), leg, riv)
+    p = Partita(
+        id=secrets.token_urlsafe(9),
+        stato=stato,
+        livello=body.livello,
+        rng=random.Random(f"cpu:{body.seed}"),
+        mazzo=mazzo,
+        profile_id=body.profile_id,
+    )
+    PARTITE[p.id] = p
+    return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
+
+
+@router.get("/{partita_id}")
+def leggi(partita_id: str) -> DuelloState:
+    p = PARTITE.get(partita_id)
+    if p is None:
+        raise HTTPException(404, "partita non trovata o scaduta")
+    return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(p.stato))
+
+
+def _eventi_con_carte(stato: Stato, eventi: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Aggiunge ai 'rivela' i dati della carta: la vista li usa per l'animazione."""
+    out = []
+    for e in eventi:
+        e = dict(e)
+        if e.get("t") == "rivela":
+            c = _tutte()[e["carta"]][0]
+            e["carta_view"] = vista_carta(c).model_dump()
+        out.append(e)
+    return out
+
+
+@router.post("/{partita_id}/turno")
+def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
+    p = PARTITE.get(partita_id)
+    if p is None:
+        raise HTTPException(404, "partita non trovata o scaduta")
+    s = p.stato
+    if s.finita:
+        raise HTTPException(409, "la partita è finita")
+    mie = [(m.carta, m.corsia) for m in body.mosse]
+    cpu = ai.scegli(s, 1, p.livello, p.rng, _pool())
+    try:
+        eventi = gioca_turno(s, mie, cpu)
+    except MossaNonValida as e:
+        raise HTTPException(422, str(e)) from e
+    vinto: bool | None = None
+    if s.finita:
+        vinto = None if s.vincitore is None else s.vincitore == 0
+        if p.premio is None:
+            p.premio = assegna_premio_duello(
+                p.profile_id, bool(vinto), p.livello, [c.id for c in p.mazzo]
+            )
+    return TurnoOut(
+        id=p.id,
+        eventi=_eventi_con_carte(s, eventi),
+        stato=vista_stato(s),
+        mosse_cpu=[MossaIn(carta=c, corsia=k) for c, k in cpu],
+        finita=s.finita,
+        vinto=vinto,
+        premio=p.premio,
+    )
