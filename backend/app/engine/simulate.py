@@ -174,7 +174,10 @@ class Battaglia:
         alleati = self.vivi(u.lato)
         if self.unita[u.lato][0].vivo:  # aura del Capitano
             m *= 1.05
-        m *= 1 + 0.07 * sum(a.passiva == "aura_atk" for a in alleati)
+        # abilità di ruolo: l'aura rende il doppio se chi la porta guida (Capitano o Vice)
+        m *= 1 + sum(
+            (0.07 if a.idx in (0, 1) else 0.035) for a in alleati if a.passiva == "aura_atk"
+        )
         if u.legati:
             m *= 1 + DUO_ATK
             if u.legame_rotto:
@@ -286,7 +289,8 @@ class Battaglia:
         mossa = "Attacco"
         effetto = "base"
         if u.passiva == "regen":
-            self._cura(u, round(u.maxhp * 0.05), esiti)
+            # abilità di ruolo: la rigenerazione rende di più nello slot del Guaritore
+            self._cura(u, round(u.maxhp * (0.08 if u.idx == 6 else 0.05)), esiti)
         if u.stordito:
             u.stordito = False
             self._esito(esiti, u)

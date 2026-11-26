@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CharacterCard from "@/components/battle/CharacterCard";
-import type { Options } from "@/components/QuickGame";
+import type { DraftOptions } from "@/lib/draft";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { APP_NAME } from "@/lib/constants";
@@ -37,9 +37,9 @@ const HERO: Hero[] = [
   },
 ];
 
-function pickHeroes(o: Options): Hero[] {
-  const all = Object.values(o.options)
-    .flat()
+function pickHeroes(o: DraftOptions): Hero[] {
+  const all = o.hands
+    .flatMap((h) => h.cards)
     .map((x) => x.character)
     .filter((c) => !!c.immagine_url && c.rating >= 84);
   const seen = new Set<string>();
@@ -132,7 +132,7 @@ export default function Home() {
 
   useEffect(() => {
     let alive = true;
-    api<Options>("/api/quick/options")
+    api<DraftOptions>("/api/quick/draft")
       .then((o) => alive && setHeroes(pickHeroes(o)))
       .catch(() => undefined);
     return () => {

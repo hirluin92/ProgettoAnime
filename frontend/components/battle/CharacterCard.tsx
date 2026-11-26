@@ -13,6 +13,7 @@ interface Props {
     arch?: string;
     mossa?: { nome: string };
     immagine_url?: string | null;
+    forma?: string | null;
   };
   role?: string;
   power?: number;
@@ -153,6 +154,11 @@ export default function CharacterCard({
               </div>
             </div>
             <div className="tcg-art">
+              {character.forma && (
+                <span className="absolute bottom-1 left-1 z-[3] max-w-[92%] truncate rounded bg-black/70 px-1.5 py-0.5 text-[0.55rem] font-extrabold uppercase tracking-wider text-amber-200">
+                  {character.forma}
+                </span>
+              )}
               {showImg ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

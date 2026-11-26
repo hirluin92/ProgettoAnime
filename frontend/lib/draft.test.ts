@@ -1,55 +1,51 @@
 import { describe, expect, it } from "vitest";
-import { canPick, minCompletion, type DraftOption } from "./draft";
+import { allowed, bestRoles, potenza, signed, toneOf } from "./draft";
 
-const o = (id: string, cost: number): DraftOption => ({ id, cost });
-
-describe("draft: nessun vicolo cieco", () => {
-  // Tre ruoli; il secondo e il terzo hanno solo carte care.
-  const options = [
-    [o("a1", 1), o("a2", 9)],
-    [o("b1", 8), o("b2", 9)],
-    [o("c1", 7), o("c2", 12)],
-  ];
-
-  it("calcola il costo minimo per completare", () => {
-    expect(minCompletion(options, 0, new Set())).toBe(1 + 8 + 7);
-    expect(minCompletion(options, 1, new Set())).toBe(8 + 7);
-    expect(minCompletion(options, 3, new Set())).toBe(0);
+describe("draft v3", () => {
+  it("l'affinità diventa un colore", () => {
+    expect(toneOf(34)).toBe("ottimo");
+    expect(toneOf(12)).toBe("buono");
+    expect(toneOf(0)).toBe("neutro");
+    expect(toneOf(-3)).toBe("debole");
   });
 
-  it("vieta la carta che lascerebbe i ruoli restanti senza budget", () => {
-    // budget 20: prendere a2 (9) lascia 11, ma servono almeno 15
-    expect(canPick(options, 0, [], options[0][1], 0, 20)).toBe(false);
-    expect(canPick(options, 0, [], options[0][0], 0, 20)).toBe(true);
+  it("la potenza segue l'affinità come nel motore", () => {
+    expect(potenza(90, 30)).toBe(117);
+    expect(potenza(90, -10)).toBe(81);
+    expect(potenza(70, 0)).toBe(70);
   });
 
-  it("lascia sempre almeno una scelta se si parte da una squadra completabile", () => {
-    const budget = 20;
-    const picked: string[] = [];
+  it("mostra il segno", () => {
+    expect(signed(12)).toBe("+12%");
+    expect(signed(-5)).toBe("-5%");
+    expect(signed(0)).toBe("0%");
+  });
+
+  it("regola anti-blocco: dopo la carta resta il minimo per finire", () => {
+    // budget 56, 7 giri, minimo 6 per giro
+    expect(allowed(0, 20, 6, 56, 6)).toBe(true); // 20 + 36 = 56
+    expect(allowed(0, 21, 6, 56, 6)).toBe(false);
+    expect(allowed(48, 8, 0, 56, 6)).toBe(true); // ultimo giro
+    expect(allowed(49, 8, 0, 56, 6)).toBe(false);
+  });
+
+  it("nel caso peggiore si arriva sempre in fondo scegliendo la carta più cara consentita", () => {
+    // mani con una carta economica (<= 6) e una cara: la regola non lascia mai senza scelte
+    const budget = 56;
+    const cheap = 6;
     let spent = 0;
-    for (let step = 0; step < options.length; step++) {
-      const ok = options[step].filter((c) => canPick(options, step, picked, c, spent, budget));
-      expect(ok.length).toBeGreaterThan(0);
-      // sceglie la più cara consentita: il caso peggiore per restare senza mosse
-      const pick = ok.sort((x, y) => y.cost - x.cost)[0];
-      picked.push(pick.id);
-      spent += pick.cost;
+    for (let r = 0; r < 7; r++) {
+      const options = [3, 6, 9, 12, 14].filter((c) => allowed(spent, c, 6 - r, budget, cheap));
+      expect(options.length).toBeGreaterThan(0);
+      spent += Math.max(...options);
     }
     expect(spent).toBeLessThanOrEqual(budget);
   });
 
-  it("non conta due volte lo stesso personaggio in ruoli diversi", () => {
-    const dup = [
-      [o("x", 1), o("y", 9)],
-      [o("x", 1), o("z", 9)],
-    ];
-    // con x preso nel primo ruolo, il secondo costa 9
-    expect(minCompletion(dup, 1, new Set(["x"]))).toBe(9);
-    expect(canPick(dup, 0, [], dup[0][0], 0, 5)).toBe(false);
-    expect(canPick(dup, 0, [], dup[0][0], 0, 10)).toBe(true);
-  });
-
-  it("senza completamento possibile restituisce Infinity", () => {
-    expect(minCompletion([[o("x", 1)], [o("x", 1)]], 0, new Set())).toBe(Infinity);
+  it("ordina gli slot migliori", () => {
+    expect(bestRoles({ Capitano: 34, Vice: 17, Tank: 10, Danno: -5 }, 2)).toEqual([
+      ["Capitano", 34],
+      ["Vice", 17],
+    ]);
   });
 });

@@ -1,32 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
+import { AffinityLegend } from "@/components/draft/Affinity";
+import { CardDetail, DetailSheet } from "@/components/draft/CardDetail";
+import SlotBoard from "@/components/draft/SlotBoard";
 import it from "@/i18n/it.json";
-import { canPick, type DraftOption } from "@/lib/draft";
-import { MOSSE_EFFETTO, PASSIVA_EFFETTO } from "@/lib/battle/effetti";
-import { paletteFor } from "@/lib/animePalette";
-import { ARCH_NOMI } from "@/lib/battle/labels";
-import { GRUPPI_NOMI, TRATTI_NOMI } from "@/lib/battle/tratti";
+import {
+  allowed as canAfford,
+  type DraftOptions,
+  type Option,
+  type PickIn,
+  type Placed,
+} from "@/lib/draft";
 import type { MatchResult } from "@/lib/types/match";
 
-export interface Detail {
-  mossa?: { nome: string; effetto?: string };
-  passiva?: { nome: string; effetto?: string };
-  tags?: string[];
-  gruppi?: string[];
-}
-export interface Option {
-  character: Parameters<typeof CharacterCard>[0]["character"] & { id: string } & Detail;
-  cost: number;
-}
-export interface Options {
-  seed: number;
-  budget: number;
-  roles: string[];
-  options: Record<string, Option[]>;
-}
 export interface Played {
   id: string;
   result: MatchResult;
@@ -36,52 +25,58 @@ export interface Played {
 
 interface Props {
   title: string;
-  load: () => Promise<Options>;
-  play: (opts: Options, ids: string[]) => Promise<Played>;
+  load: () => Promise<DraftOptions>;
+  play: (d: DraftOptions, picks: PickIn[], swap: string[] | null) => Promise<Played>;
   after?: ReactNode;
   header?: ReactNode;
 }
 
 export default function QuickGame({ title, load, play, after, header }: Props) {
-  const [opts, setOpts] = useState<Options | null>(null);
-  const [picks, setPicks] = useState<Option[]>([]);
-  const [played, setPlayed] = useState<Played | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [d, setD] = useState<DraftOptions | null>(null);
+  const [placed, setPlaced] = useState<Placed[]>([]);
+  const [h, setH] = useState(0); // indice della mano corrente
+  const [rerolls, setRerolls] = useState(0);
+  const [sel, setSel] = useState<Option | null>(null);
+  const [revealed, setRevealed] = useState(false);
   const [focus, setFocus] = useState<Option | null>(null);
   const [sheet, setSheet] = useState<Option | null>(null);
+  const [swap, setSwap] = useState<[string, string] | null>(null);
+  const [swapFirst, setSwapFirst] = useState<string | null>(null);
+  const [played, setPlayed] = useState<Played | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const start = useCallback(async () => {
-    setPicks([]);
+    setPlaced([]);
+    setH(0);
+    setRerolls(0);
+    setSel(null);
+    setRevealed(false);
+    setFocus(null);
+    setSheet(null);
+    setSwap(null);
+    setSwapFirst(null);
     setPlayed(null);
     setError(null);
-    setOpts(await load());
+    setD(await load());
   }, [load]);
   useEffect(() => {
     start().catch((e: Error) => setError(e.message));
   }, [start]);
 
-  const spent = picks.reduce((s, p) => s + p.cost, 0);
-  const step = picks.length;
+  const round = placed.length;
+  const spent = placed.reduce((s, p) => s + p.cost, 0);
 
-  const choose = async (o: Option) => {
-    if (!opts) return;
-    const next = [...picks, o];
-    setFocus(null);
-    setSheet(null);
-    setPicks(next);
-    if (next.length === opts.roles.length) {
-      try {
-        setPlayed(
-          await play(
-            opts,
-            next.map((p) => p.character.id),
-          ),
-        );
-      } catch (e) {
-        setError((e as Error).message);
-      }
+  // carte finali per ruolo, con lo scambio già applicato (il server riceve le scelte originali + lo scambio)
+  const byRole = useMemo(() => {
+    const m: Record<string, Placed | undefined> = {};
+    for (const p of placed) m[p.role] = p;
+    if (swap) {
+      const [a, b] = swap;
+      [m[a], m[b]] = [m[b], m[a]];
     }
-  };
+    return m;
+  }, [placed, swap]);
 
   if (error)
     return (
@@ -94,14 +89,64 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
         </div>
       </main>
     );
-  if (!opts) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (!d) return <main className="p-6">{it.stanza.connessione}</main>;
+
+  const total = d.roles.length;
+  const drafting = round < total;
+  const isMystery = drafting && round === d.mystery_round;
+  const hand = d.hands[Math.min(h, d.hands.length - 1)];
+  const roundsLeftAfter = total - round - 1;
+  const costOf = (o: Option) => (isMystery ? hand.mystery_cost : o.cost);
+  const ok = (o: Option) => canAfford(spent, costOf(o), roundsLeftAfter, d.budget, d.cheap);
+  const blocked = drafting && !isMystery && hand.cards.every((o) => !ok(o));
+  const canReroll = drafting && !isMystery && rerolls < d.rerolls && h + 1 < d.hands.length;
+
+  const choose = (o: Option) => {
+    setSel(o);
+    setSheet(null);
+  };
+  const place = (role: string) => {
+    if (!sel) return;
+    const cost = costOf(sel);
+    setPlaced([...placed, { option: sel, role, hand: h, cost }]);
+    setH(h + 1);
+    setSel(null);
+    setRevealed(false);
+    setFocus(null);
+  };
+  const reroll = () => {
+    setH(h + 1);
+    setRerolls(rerolls + 1);
+    setSel(null);
+    setFocus(null);
+  };
+  const onSwapSlot = (role: string) => {
+    if (swap) return;
+    if (!swapFirst) setSwapFirst(role);
+    else if (swapFirst === role) setSwapFirst(null);
+    else {
+      setSwap([swapFirst, role]);
+      setSwapFirst(null);
+    }
+  };
+  const fight = async () => {
+    setBusy(true);
+    try {
+      const picks = placed.map((p) => ({ id: p.option.character.id, role: p.role, hand: p.hand }));
+      setPlayed(await play(d, picks, swap));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   if (played)
     return (
       <main className="mx-auto max-w-5xl space-y-3 p-4">
         <h1 className="text-5xl font-black leading-none">{title}</h1>
         <p className="text-sm muted">
-          {it.veloce.speso}: {played.spent}/{opts.budget} · CPU: {played.cpu_spent}/{opts.budget} ·{" "}
+          {it.veloce.speso}: {played.spent}/{d.budget} · CPU: {played.cpu_spent}/{d.budget} ·{" "}
           <a className="underline hover:text-white" href={`/partita/${played.id}`}>
             {it.battle.linkPartita}
           </a>
@@ -111,16 +156,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
       </main>
     );
 
-  if (step >= opts.roles.length) return <main className="p-6">{it.veloce.calcolo}</main>;
-  const role = opts.roles[step];
-  // Una carta è scegliibile solo se la squadra si può ancora completare entro il budget.
-  const grid: DraftOption[][] = opts.roles.map((r) =>
-    opts.options[r].map((x) => ({ id: x.character.id, cost: x.cost })),
-  );
-  const pickedIds = picks.map((p) => p.character.id);
-  const allowed = (o: Option) =>
-    canPick(grid, step, pickedIds, { id: o.character.id, cost: o.cost }, spent, opts.budget);
-  const blocked = opts.options[role].every((o) => !allowed(o));
+  const swapping = !drafting;
   return (
     <main className="mx-auto max-w-5xl space-y-4 p-4">
       <div className="reveal space-y-1">
@@ -128,28 +164,39 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
         <h1 className="text-5xl font-black leading-none sm:text-6xl">{title}</h1>
       </div>
       {header}
+
       <div className="panel space-y-3 p-4">
         <ol className="flex flex-wrap gap-1.5" aria-hidden="true">
-          {opts.roles.map((r, i) => (
+          {d.roles.map((r, i) => (
             <li
               key={r}
               className={`rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wider transition ${
-                i < step
+                i < round
                   ? "border-transparent bg-gradient-to-r from-pink-500 to-orange-400 text-white"
-                  : i === step
+                  : i === round
                     ? "border-cyan-300 bg-cyan-300/15 text-cyan-100 shadow-[0_0_18px_rgb(53_224_255/0.35)]"
                     : "text-white/40"
               }`}
             >
-              {i < step ? "✓ " : ""}
-              {r}
+              {i < round ? "✓ " : ""}
+              {i === d.mystery_round && i >= round ? "? " : ""}
+              {it.draft.giro} {i + 1}
             </li>
           ))}
         </ol>
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <p data-testid="step" className="text-lg">
-            {it.veloce.scegli} <b className="text-gold">{role}</b> ({step + 1}/{opts.roles.length})
-            · {it.stanza.budget}: <b data-testid="left">{opts.budget - spent}</b>
+            {drafting ? (
+              <>
+                {isMystery ? it.draft.misteriosa : it.draft.scegli} ({round + 1}/{total}) ·{" "}
+              </>
+            ) : (
+              <>{it.draft.scambio} · </>
+            )}
+            {it.stanza.budget}: <b data-testid="left">{d.budget - spent}</b>
+          </p>
+          <p className="text-xs muted" data-testid="rerolls">
+            {it.draft.rilanci}: <b>{d.rerolls - rerolls}</b>/{d.rerolls}
           </p>
         </div>
         <div
@@ -157,226 +204,183 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           role="progressbar"
           aria-label={it.stanza.budget}
           aria-valuemin={0}
-          aria-valuemax={opts.budget}
-          aria-valuenow={opts.budget - spent}
+          aria-valuemax={d.budget}
+          aria-valuenow={d.budget - spent}
         >
           <div
             className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-pink-500 transition-[width] duration-500"
-            style={{ width: `${((opts.budget - spent) / opts.budget) * 100}%` }}
+            style={{ width: `${((d.budget - spent) / d.budget) * 100}%` }}
           />
         </div>
       </div>
-      <CardDetail o={focus} />
-      <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
-        {opts.options[role].map((o) => {
-          const taken = picks.some((p) => p.character.id === o.character.id);
-          return (
-            <li key={o.character.id} className="relative w-full min-w-0">
-              <button
-                type="button"
-                aria-label={`${it.veloce.dettagli}: ${o.character.nome}`}
-                className="absolute right-2 top-2 z-30 grid size-7 place-items-center rounded-full border border-white/40 bg-black/70 text-xs font-black text-white backdrop-blur transition hover:scale-110 hover:bg-black/90"
-                onClick={() => setSheet(o)}
-              >
-                i
-              </button>
-              <button
-                data-testid="option"
-                disabled={!allowed(o) || taken}
-                onClick={() => void choose(o)}
-                onMouseEnter={() => setFocus(o)}
-                onFocus={() => setFocus(o)}
-                className="relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 hover:scale-110 focus-visible:z-20 focus-visible:scale-110 disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:scale-100"
-                aria-label={`${o.character.nome}, costo ${o.cost}`}
-              >
-                <CharacterCard character={o.character} role={role} fluid />
-                <span className="chip text-gold">
-                  {it.veloce.costo} {o.cost}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      {blocked ? (
-        <div role="alert" className="panel space-y-3 p-4 text-center" data-testid="draft-blocked">
-          <p className="font-bold">{it.veloce.bloccato}</p>
-          <button className="btn btn-primary" onClick={() => void start()}>
-            {it.veloce.ricomincia}
-          </button>
-        </div>
-      ) : (
-        opts.options[role].some((o) => !allowed(o) && !pickedIds.includes(o.character.id)) && (
-          <p className="text-center text-xs muted" data-testid="draft-hint">
-            {it.veloce.noteBudget}
-          </p>
-        )
-      )}
-      <section aria-label={it.veloce.squadra} data-testid="recap" className="panel p-4">
-        <h2 className="mb-3 text-xl font-bold">{it.veloce.squadra}</h2>
-        <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {opts.roles.map((r, i) => {
-            const pick = picks[i];
-            const current = i === step;
-            return (
-              <li
-                key={r}
-                data-testid={pick ? "recap-filled" : "recap-empty"}
-                className={`grid min-w-0 grid-cols-[minmax(0,1fr)] justify-items-center gap-1 rounded-xl p-2 text-center ${
-                  pick
-                    ? ""
-                    : current
-                      ? "border-2 border-dashed border-pink-400 bg-pink-500/10"
-                      : "border border-dashed border-white/20"
-                }`}
-              >
-                {pick ? (
-                  <CharacterCard character={pick.character} role={r} fluid />
+
+      {drafting && (
+        <>
+          <section className="space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-2xl font-extrabold">
+                {isMystery ? it.draft.cartaMisteriosa : it.draft.laTuaMano}
+              </h2>
+              {!isMystery && (
+                <button
+                  className="btn"
+                  data-testid="reroll"
+                  disabled={!canReroll}
+                  onClick={reroll}
+                  title={it.draft.rilancioHint}
+                >
+                  ↻ {it.draft.rilancia}
+                </button>
+              )}
+            </div>
+
+            {isMystery ? (
+              <div className="grid place-items-center gap-3 py-2">
+                {!revealed ? (
+                  <button
+                    data-testid="mystery-card"
+                    onClick={() => {
+                      setRevealed(true);
+                      setSel(hand.cards[0]);
+                    }}
+                    className="panel panel-hover grid aspect-[3/4.2] w-44 place-items-center gap-1 text-center"
+                  >
+                    <span className="display text-grad text-7xl font-black">?</span>
+                    <span className="eyebrow justify-center">{it.draft.scopri}</span>
+                    <span className="text-xs muted">
+                      {it.veloce.costo} {hand.mystery_cost}
+                    </span>
+                  </button>
                 ) : (
-                  <div className="grid aspect-[3/4.2] w-full max-w-[230px] place-items-center rounded-xl text-xs">
-                    <div>
-                      <div
-                        className={`mx-auto mb-2 grid size-10 place-items-center rounded-full border text-lg ${
-                          current
-                            ? "border-pink-300/70 text-pink-200"
-                            : "border-white/15 text-white/30"
-                        }`}
-                      >
-                        {current ? "◆" : "+"}
-                      </div>
-                      <div className="display text-lg font-extrabold">{r}</div>
-                      <div className={current ? "text-pink-200" : "muted"}>
-                        {current ? it.veloce.ora : it.veloce.vuoto}
-                      </div>
+                  <div className="reveal grid justify-items-center gap-2">
+                    <div className="w-44 sm:w-52">
+                      <CharacterCard character={hand.cards[0].character} fluid />
                     </div>
+                    <span className="chip text-gold">
+                      {it.veloce.costo} {hand.mystery_cost}
+                    </span>
                   </div>
                 )}
-              </li>
-            );
-          })}
-        </ol>
+              </div>
+            ) : (
+              <>
+                <CardDetail o={focus ?? sel} />
+                <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
+                  {hand.cards.map((o) => {
+                    const good = ok(o);
+                    const picked = sel?.character.id === o.character.id;
+                    return (
+                      <li key={o.character.id} className="relative w-full min-w-0">
+                        <button
+                          type="button"
+                          aria-label={`${it.veloce.dettagli}: ${o.character.nome}`}
+                          className="absolute right-2 top-2 z-30 grid size-7 place-items-center rounded-full border border-white/40 bg-black/70 text-xs font-black text-white backdrop-blur transition hover:scale-110 hover:bg-black/90"
+                          onClick={() => setSheet(o)}
+                        >
+                          i
+                        </button>
+                        <button
+                          data-testid="option"
+                          disabled={!good}
+                          aria-pressed={picked}
+                          onClick={() => choose(o)}
+                          onMouseEnter={() => setFocus(o)}
+                          onFocus={() => setFocus(o)}
+                          onMouseLeave={() => setFocus(null)}
+                          aria-label={`${o.character.nome}, costo ${o.cost}`}
+                          className={`relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 focus-visible:z-20 disabled:opacity-40 disabled:hover:translate-y-0 ${
+                            picked ? "z-20 -translate-y-3 scale-105 ring-2 ring-cyan-300" : ""
+                          }`}
+                        >
+                          <CharacterCard character={o.character} fluid />
+                          <span className="chip text-gold">
+                            {it.veloce.costo} {o.cost}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {hand.cards.some((o) => !ok(o)) && !blocked && (
+                  <p className="text-center text-xs muted" data-testid="draft-hint">
+                    {it.draft.noteBudget}
+                  </p>
+                )}
+              </>
+            )}
+          </section>
+
+          {blocked && (
+            <div
+              role="alert"
+              className="panel space-y-3 p-4 text-center"
+              data-testid="draft-blocked"
+            >
+              <p className="font-bold">{it.veloce.bloccato}</p>
+              <button className="btn btn-primary" onClick={() => void start()}>
+                {it.veloce.ricomincia}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      <section aria-label={it.veloce.squadra} data-testid="recap" className="panel space-y-3 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-2xl font-extrabold">{it.veloce.squadra}</h2>
+          {drafting && sel && (
+            <p className="text-sm text-cyan-100" data-testid="place-hint">
+              {it.draft.scegliSlot.replace("{nome}", sel.character.nome)}
+            </p>
+          )}
+          {swapping && (
+            <p className="text-sm text-cyan-100" data-testid="swap-hint">
+              {swap ? it.draft.scambiato : it.draft.scambiaHint}
+            </p>
+          )}
+        </div>
+        <AffinityLegend />
+        <SlotBoard
+          roles={d.roles}
+          byRole={byRole}
+          selected={sel}
+          mode={drafting ? "place" : swapping && !swap ? "swap" : "idle"}
+          swapFirst={swapFirst}
+          onSlot={drafting ? place : onSwapSlot}
+        />
+        {swapping && (
+          <div className="flex flex-wrap gap-2 pt-1">
+            <button
+              className="btn btn-primary flex-1 text-lg"
+              data-testid="fight"
+              disabled={busy}
+              onClick={() => void fight()}
+            >
+              {it.draft.combatti}
+            </button>
+            {swap && (
+              <button
+                className="btn"
+                onClick={() => {
+                  setSwap(null);
+                  setSwapFirst(null);
+                }}
+              >
+                {it.draft.annullaScambio}
+              </button>
+            )}
+          </div>
+        )}
       </section>
+
       {sheet && (
         <DetailSheet
           o={sheet}
-          canPick={allowed(sheet)}
+          canPick={ok(sheet)}
           onClose={() => setSheet(null)}
-          onPick={() => void choose(sheet)}
+          onPick={() => choose(sheet)}
         />
       )}
     </main>
-  );
-}
-
-function DetailSheet({
-  o,
-  canPick,
-  onClose,
-  onPick,
-}: {
-  o: Option;
-  canPick: boolean;
-  onClose: () => void;
-  onPick: () => void;
-}) {
-  useEffect(() => {
-    const k = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", k);
-    return () => window.removeEventListener("keydown", k);
-  }, [onClose]);
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={o.character.nome}
-      className="fixed inset-0 z-50 grid place-items-end bg-black/70 p-3 backdrop-blur-sm sm:place-items-center"
-      onClick={onClose}
-    >
-      <div
-        className="panel reveal grid max-h-[92vh] w-full max-w-2xl gap-4 overflow-auto p-4 sm:grid-cols-[220px_1fr] sm:p-6"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mx-auto w-[200px] sm:w-[220px]">
-          <CharacterCard character={o.character} fluid />
-        </div>
-        <div className="flex min-w-0 flex-col gap-3">
-          <CardDetail o={o} bare />
-          <div className="mt-auto flex gap-2">
-            <button className="btn flex-1" onClick={onClose}>
-              {it.veloce.chiudi}
-            </button>
-            <button className="btn btn-primary flex-1" disabled={!canPick} onClick={onPick}>
-              {it.veloce.scegliCarta} ({o.cost})
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CardDetail({ o, bare }: { o: Option | null; bare?: boolean }) {
-  const c = o?.character;
-  return (
-    <div
-      className={`grid gap-3 text-sm ${bare ? "" : "panel min-h-[7.5rem] p-4 sm:grid-cols-[1fr_1fr_auto]"}`}
-      aria-live="polite"
-      data-testid="card-detail"
-    >
-      {!c ? (
-        <p className="muted sm:col-span-3">{it.veloce.passaSopra}</p>
-      ) : (
-        <>
-          <div className="min-w-0">
-            <div className="display truncate text-2xl font-black leading-none">{c.nome}</div>
-            <div className="mt-1 text-xs muted">
-              {ARCH_NOMI[c.arch ?? ""] ?? c.arch} · {paletteFor(c.anime).label}
-            </div>
-            <div className="mt-2 flex flex-wrap gap-1">
-              {(c.tags ?? []).map((t) => (
-                <span key={t} className="chip">
-                  {TRATTI_NOMI[t] ?? t}
-                </span>
-              ))}
-              {(c.gruppi ?? []).map((g) => (
-                <span key={g} className="chip text-cyan-200">
-                  {GRUPPI_NOMI[g] ?? g}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="min-w-0 space-y-1.5">
-            {c.mossa && (
-              <p>
-                <b className="text-amber-200">⚡ {c.mossa.nome}</b>
-                {c.mossa.effetto && (
-                  <span className="muted">
-                    {" "}
-                    — {MOSSE_EFFETTO[c.mossa.effetto] ?? c.mossa.effetto}
-                  </span>
-                )}
-              </p>
-            )}
-            {c.passiva && (
-              <p>
-                <b className="text-cyan-200">◆ {c.passiva.nome}</b>
-                {c.passiva.effetto && (
-                  <span className="muted">
-                    {" "}
-                    — {PASSIVA_EFFETTO[c.passiva.effetto] ?? c.passiva.effetto}
-                  </span>
-                )}
-              </p>
-            )}
-          </div>
-          <div className="text-right">
-            <div className="display text-4xl font-black text-gold">{c.rating}</div>
-            <div className="text-xs muted">
-              {it.veloce.costo} {o?.cost}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
   );
 }

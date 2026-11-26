@@ -125,6 +125,30 @@
           "minimum": 1,
           "title": "Costo",
           "type": "integer"
+        },
+        "forma": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Forma"
+        },
+        "base_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Id"
         }
       },
       "required": [
@@ -139,7 +163,9 @@
         "mossa",
         "passiva",
         "gruppi",
-        "costo"
+        "costo",
+        "forma",
+        "base_id"
       ],
       "title": "Character",
       "type": "object"

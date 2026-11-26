@@ -29,3 +29,61 @@ export async function joinRoom(browser: Browser, code: string, name: string): Pr
   await expect(page.getByTestId("room-code")).toHaveText(code);
   return { ctx, page, name };
 }
+
+/** Gioca un draft v3 completo: carta più economica consentita di ogni mano, slot con l'affinità migliore. */
+export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boolean } = {}) {
+  const placeBest = async () => {
+    const free = page.getByTestId("slot-free");
+    await expect(free.first()).toBeEnabled();
+    const idx = await free.evaluateAll((els) => {
+      let best = 0;
+      let bestV = -999;
+      els.forEach((e, i) => {
+        const m = (e.textContent ?? "").match(/([+-]?\d+)%/);
+        const v = m ? Number(m[1]) : -99;
+        if (!(e as HTMLButtonElement).disabled && v > bestV) {
+          bestV = v;
+          best = i;
+        }
+      });
+      return best;
+    });
+    await free.nth(idx).click();
+  };
+  let rerolled = false;
+  for (let r = 0; r < 7; r++) {
+    const mystery = page.getByTestId("mystery-card");
+    const options = page.getByTestId("option");
+    await expect(mystery.or(options.first())).toBeVisible();
+    if (await mystery.isVisible()) {
+      await mystery.click();
+      await placeBest();
+      continue;
+    }
+    if (opts.reroll && !rerolled && r > 0) {
+      const reroll = page.getByTestId("reroll");
+      if (await reroll.isEnabled()) {
+        await reroll.click();
+        rerolled = true;
+      }
+    }
+    await expect(options.first()).toBeVisible();
+    const labels = await options.evaluateAll((els) =>
+      els.map((e, idx) => ({
+        idx,
+        off: (e as HTMLButtonElement).disabled,
+        c: Number((e.getAttribute("aria-label") ?? "").split("costo ")[1]),
+      })),
+    );
+    const pick = labels.filter((l) => !l.off).sort((a, b) => a.c - b.c)[0];
+    await options.nth(pick.idx).click();
+    await placeBest();
+  }
+  if (opts.swap) {
+    const slots = page.getByTestId("slot-filled");
+    await slots.nth(0).click();
+    await slots.nth(6).click();
+    await expect(page.getByTestId("swap-hint")).toContainText("Scambio fatto");
+  }
+  await page.getByTestId("fight").click();
+}

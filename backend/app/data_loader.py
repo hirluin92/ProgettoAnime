@@ -5,7 +5,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from app.engine.models import Character, Duo, Ruleset, Tratto
-from app.engine.roles import ARCH_ADATTI, ROLES, VALID_TAGS
+from app.engine.roles import ARCH_NOMI, ROLES, VALID_TAGS
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MAX_ABOVE_95 = 10
@@ -33,6 +33,29 @@ def load_characters() -> dict[str, Character]:
             d = {**d, "arch": sc["arch"], "mossa": sc["mossa"], "passiva": sc["passiva"],
                  "gruppi": sc["tratti"], "costo": sc.get("costo", 6)}  # fmt: skip
         c = Character.model_validate(d)
+        out[c.id] = c
+    return out
+
+
+@lru_cache
+def load_forms() -> dict[str, Character]:
+    """Forme alternative (V3): stesso personaggio, scheda e prezzo diversi. Id: <base>--<forma>."""
+    base = load_characters()
+    out: dict[str, Character] = {}
+    for d in _read("forme.json"):
+        b = base[str(d["base"])]
+        upd: dict[str, object] = {
+            "id": f"{b.id}--{d['slug']}",
+            "forma": d["forma"],
+            "base_id": b.id,
+            "rating": min(99, b.rating + int(d["rating_delta"])),  # type: ignore[call-overload]
+            "mossa": d["mossa"],
+            "passiva": d["passiva"],
+            "costo": max(1, min(14, b.costo + int(d["costo_delta"]))),  # type: ignore[call-overload]
+        }
+        if "arch" in d:
+            upd["arch"] = d["arch"]
+        c = Character.model_validate({**b.model_dump(), **upd})
         out[c.id] = c
     return out
 
@@ -71,8 +94,11 @@ def validate() -> list[str]:
         if sc is None:
             errors.append(f"{cid}: scheda di combattimento mancante")
             continue
-        if sc["arch"] not in {a for adatti in ARCH_ADATTI.values() for a in adatti}:
+        if sc["arch"] not in ARCH_NOMI:
             errors.append(f"{cid}: archetipo non valido {sc['arch']}")
+    for fd in _read("forme.json"):
+        if str(fd["base"]) not in chars:
+            errors.append(f"forma {fd['slug']}: personaggio base inesistente {fd['base']}")
     ids_tratti = {t.id for t in rules.tratti}
     for c in chars.values():
         for g in c.gruppi:
