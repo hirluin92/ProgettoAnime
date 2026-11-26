@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
 import it from "@/i18n/it.json";
+import { canPick, type DraftOption } from "@/lib/draft";
 import { MOSSE_EFFETTO, PASSIVA_EFFETTO } from "@/lib/battle/effetti";
 import { paletteFor } from "@/lib/animePalette";
 import { ARCH_NOMI } from "@/lib/battle/labels";
@@ -112,8 +113,14 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
 
   if (step >= opts.roles.length) return <main className="p-6">{it.veloce.calcolo}</main>;
   const role = opts.roles[step];
-  const rolesLeft = opts.roles.length - step;
-  const maxCost = opts.budget - spent - (rolesLeft - 1);
+  // Una carta è scegliibile solo se la squadra si può ancora completare entro il budget.
+  const grid: DraftOption[][] = opts.roles.map((r) =>
+    opts.options[r].map((x) => ({ id: x.character.id, cost: x.cost })),
+  );
+  const pickedIds = picks.map((p) => p.character.id);
+  const allowed = (o: Option) =>
+    canPick(grid, step, pickedIds, { id: o.character.id, cost: o.cost }, spent, opts.budget);
+  const blocked = opts.options[role].every((o) => !allowed(o));
   return (
     <main className="mx-auto max-w-5xl space-y-4 p-4">
       <div className="reveal space-y-1">
@@ -175,7 +182,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
               </button>
               <button
                 data-testid="option"
-                disabled={o.cost > maxCost || taken}
+                disabled={!allowed(o) || taken}
                 onClick={() => void choose(o)}
                 onMouseEnter={() => setFocus(o)}
                 onFocus={() => setFocus(o)}
@@ -191,6 +198,20 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
           );
         })}
       </ul>
+      {blocked ? (
+        <div role="alert" className="panel space-y-3 p-4 text-center" data-testid="draft-blocked">
+          <p className="font-bold">{it.veloce.bloccato}</p>
+          <button className="btn btn-primary" onClick={() => void start()}>
+            {it.veloce.ricomincia}
+          </button>
+        </div>
+      ) : (
+        opts.options[role].some((o) => !allowed(o) && !pickedIds.includes(o.character.id)) && (
+          <p className="text-center text-xs muted" data-testid="draft-hint">
+            {it.veloce.noteBudget}
+          </p>
+        )
+      )}
       <section aria-label={it.veloce.squadra} data-testid="recap" className="panel p-4">
         <h2 className="mb-3 text-xl font-bold">{it.veloce.squadra}</h2>
         <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -238,9 +259,7 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
       {sheet && (
         <DetailSheet
           o={sheet}
-          canPick={
-            sheet.cost <= maxCost && !picks.some((p) => p.character.id === sheet.character.id)
-          }
+          canPick={allowed(sheet)}
           onClose={() => setSheet(null)}
           onPick={() => void choose(sheet)}
         />

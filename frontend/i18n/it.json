@@ -152,7 +152,10 @@
     "draft": "Draft",
     "dettagli": "Dettagli",
     "chiudi": "Chiudi",
-    "scegliCarta": "Scegli"
+    "scegliCarta": "Scegli",
+    "noteBudget": "Le carte spente costano troppo: ti lascerebbero senza budget per i ruoli ancora liberi.",
+    "bloccato": "Con il budget rimasto non si può completare la squadra. Ricomincia il draft.",
+    "ricomincia": "Ricomincia"
   },
   "overlay": {
     "votaInChat": "Scrivi in chat: !offro N",
