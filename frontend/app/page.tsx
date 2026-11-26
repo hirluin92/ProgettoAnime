@@ -257,6 +257,13 @@ export default function Home() {
         <h2 className="eyebrow">{it.home.modalita}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           <ModeCard
+            href="/duello"
+            icon="⚔️"
+            title={it.home.duelloTitolo}
+            text={it.home.duelloTesto}
+            accent="#ff3d81"
+          />
+          <ModeCard
             href="/veloce"
             icon="⚡"
             title={it.home.veloceTitolo}

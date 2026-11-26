@@ -8,6 +8,7 @@ import { useProfile } from "@/lib/profile";
 
 const LINKS = [
   { href: "/", label: it.nav.gioca },
+  { href: "/duello", label: it.nav.duello },
   { href: "/veloce", label: it.nav.veloce },
   { href: "/sfida", label: it.nav.sfida },
   { href: "/profilo", label: it.nav.profilo },

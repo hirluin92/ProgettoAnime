@@ -26,7 +26,10 @@
           "type": "object"
         }
       },
-      "required": ["type", "teams"],
+      "required": [
+        "type",
+        "teams"
+      ],
       "title": "AuctionFinished",
       "type": "object"
     },
@@ -45,7 +48,11 @@
           "type": "number"
         }
       },
-      "required": ["player_id", "amount", "deadline"],
+      "required": [
+        "player_id",
+        "amount",
+        "deadline"
+      ],
       "title": "AwaitRole",
       "type": "object"
     },
@@ -74,7 +81,13 @@
           "type": "number"
         }
       },
-      "required": ["type", "player_id", "amount", "deadline", "now"],
+      "required": [
+        "type",
+        "player_id",
+        "amount",
+        "deadline",
+        "now"
+      ],
       "title": "BidPlaced",
       "type": "object"
     },
@@ -217,7 +230,11 @@
           "type": "string"
         }
       },
-      "required": ["type", "code", "message"],
+      "required": [
+        "type",
+        "code",
+        "message"
+      ],
       "title": "ErrorMsg",
       "type": "object"
     },
@@ -238,7 +255,11 @@
           "type": "string"
         }
       },
-      "required": ["type", "player_id", "token"],
+      "required": [
+        "type",
+        "player_id",
+        "token"
+      ],
       "title": "Joined",
       "type": "object"
     },
@@ -266,7 +287,13 @@
           "type": "integer"
         }
       },
-      "required": ["type", "player_id", "character", "role", "amount"],
+      "required": [
+        "type",
+        "player_id",
+        "character",
+        "role",
+        "amount"
+      ],
       "title": "LotAssigned",
       "type": "object"
     },
@@ -282,7 +309,10 @@
           "$ref": "#/$defs/Character"
         }
       },
-      "required": ["type", "character"],
+      "required": [
+        "type",
+        "character"
+      ],
       "title": "LotSkipped",
       "type": "object"
     },
@@ -317,7 +347,14 @@
           "type": "object"
         }
       },
-      "required": ["type", "number", "character", "deadline", "now", "affinita"],
+      "required": [
+        "type",
+        "number",
+        "character",
+        "deadline",
+        "now",
+        "affinita"
+      ],
       "title": "LotStarted",
       "type": "object"
     },
@@ -415,7 +452,12 @@
           "title": "Role Deadline"
         }
       },
-      "required": ["type", "player_id", "amount", "role_deadline"],
+      "required": [
+        "type",
+        "player_id",
+        "amount",
+        "role_deadline"
+      ],
       "title": "LotWon",
       "type": "object"
     },
@@ -458,7 +500,15 @@
           "type": "boolean"
         }
       },
-      "required": ["match_id", "a", "b", "winner", "total_a", "total_b", "bye"],
+      "required": [
+        "match_id",
+        "a",
+        "b",
+        "winner",
+        "total_a",
+        "total_b",
+        "bye"
+      ],
       "title": "MatchRef",
       "type": "object"
     },
@@ -484,7 +534,12 @@
           "type": "string"
         }
       },
-      "required": ["type", "id", "nome", "descrizione"],
+      "required": [
+        "type",
+        "id",
+        "nome",
+        "descrizione"
+      ],
       "title": "Mission",
       "type": "object"
     },
@@ -512,7 +567,13 @@
           "type": "boolean"
         }
       },
-      "required": ["player_id", "id", "nome", "descrizione", "riuscita"],
+      "required": [
+        "player_id",
+        "id",
+        "nome",
+        "descrizione",
+        "riuscita"
+      ],
       "title": "MissionResult",
       "type": "object"
     },
@@ -527,7 +588,10 @@
           "type": "string"
         }
       },
-      "required": ["nome", "effetto"],
+      "required": [
+        "nome",
+        "effetto"
+      ],
       "title": "Mossa",
       "type": "object"
     },
@@ -542,7 +606,10 @@
           "type": "string"
         }
       },
-      "required": ["nome", "effetto"],
+      "required": [
+        "nome",
+        "effetto"
+      ],
       "title": "Passiva",
       "type": "object"
     },
@@ -559,7 +626,10 @@
           "type": "string"
         }
       },
-      "required": ["type", "player_id"],
+      "required": [
+        "type",
+        "player_id"
+      ],
       "title": "PlayerPassed",
       "type": "object"
     },
@@ -696,7 +766,11 @@
           "type": "string"
         }
       },
-      "required": ["id", "nome", "descrizione"],
+      "required": [
+        "id",
+        "nome",
+        "descrizione"
+      ],
       "title": "RoomArena",
       "type": "object"
     },
@@ -754,13 +828,20 @@
         },
         "formato": {
           "default": "girone",
-          "enum": ["girone", "eliminazione"],
+          "enum": [
+            "girone",
+            "eliminazione"
+          ],
           "title": "Formato",
           "type": "string"
         },
         "modalita": {
           "default": "asta",
-          "enum": ["asta", "specchio", "raid"],
+          "enum": [
+            "asta",
+            "specchio",
+            "raid"
+          ],
           "title": "Modalita",
           "type": "string"
         },
@@ -778,7 +859,11 @@
         },
         "difficolta": {
           "default": "normale",
-          "enum": ["normale", "difficile", "epico"],
+          "enum": [
+            "normale",
+            "difficile",
+            "epico"
+          ],
           "title": "Difficolta",
           "type": "string"
         }
@@ -812,7 +897,10 @@
           "$ref": "#/$defs/RoomView"
         }
       },
-      "required": ["type", "room"],
+      "required": [
+        "type",
+        "room"
+      ],
       "title": "RoomState",
       "type": "object"
     },
@@ -823,7 +911,15 @@
           "type": "string"
         },
         "phase": {
-          "enum": ["lobby", "ban", "auction", "draft", "plan", "tournament", "raid_result"],
+          "enum": [
+            "lobby",
+            "ban",
+            "auction",
+            "draft",
+            "plan",
+            "tournament",
+            "raid_result"
+          ],
           "title": "Phase",
           "type": "string"
         },
@@ -1006,7 +1102,11 @@
           "title": "Taken By"
         }
       },
-      "required": ["character", "affinita", "taken_by"],
+      "required": [
+        "character",
+        "affinita",
+        "taken_by"
+      ],
       "title": "SpecchioCard",
       "type": "object"
     },
@@ -1047,7 +1147,14 @@
           "type": "array"
         }
       },
-      "required": ["round", "rounds", "turn_player_id", "first_player_id", "deadline", "hand"],
+      "required": [
+        "round",
+        "rounds",
+        "turn_player_id",
+        "first_player_id",
+        "deadline",
+        "hand"
+      ],
       "title": "SpecchioView",
       "type": "object"
     },
@@ -1078,7 +1185,14 @@
           "type": "integer"
         }
       },
-      "required": ["player_id", "punti", "vittorie", "pareggi", "sconfitte", "totale"],
+      "required": [
+        "player_id",
+        "punti",
+        "vittorie",
+        "pareggi",
+        "sconfitte",
+        "totale"
+      ],
       "title": "StandingRow",
       "type": "object"
     },
@@ -1094,7 +1208,10 @@
           "$ref": "#/$defs/TournamentView"
         }
       },
-      "required": ["type", "tournament"],
+      "required": [
+        "type",
+        "tournament"
+      ],
       "title": "TournamentResult",
       "type": "object"
     },
@@ -1126,7 +1243,10 @@
         },
         "formato": {
           "default": "girone",
-          "enum": ["girone", "eliminazione"],
+          "enum": [
+            "girone",
+            "eliminazione"
+          ],
           "title": "Formato",
           "type": "string"
         },
@@ -1143,7 +1263,13 @@
           "title": "Campione"
         }
       },
-      "required": ["giornate", "classifica", "missioni", "formato", "campione"],
+      "required": [
+        "giornate",
+        "classifica",
+        "missioni",
+        "formato",
+        "campione"
+      ],
       "title": "TournamentView",
       "type": "object"
     }

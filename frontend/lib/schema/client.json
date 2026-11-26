@@ -13,7 +13,10 @@
           "type": "string"
         }
       },
-      "required": ["type", "role"],
+      "required": [
+        "type",
+        "role"
+      ],
       "title": "AssignRole",
       "type": "object"
     },
@@ -30,7 +33,10 @@
           "type": "string"
         }
       },
-      "required": ["type", "character_id"],
+      "required": [
+        "type",
+        "character_id"
+      ],
       "title": "Ban",
       "type": "object"
     },
@@ -47,7 +53,10 @@
           "type": "integer"
         }
       },
-      "required": ["type", "amount"],
+      "required": [
+        "type",
+        "amount"
+      ],
       "title": "Bid",
       "type": "object"
     },
@@ -78,7 +87,11 @@
           "title": "Token"
         }
       },
-      "required": ["type", "name", "token"],
+      "required": [
+        "type",
+        "name",
+        "token"
+      ],
       "title": "Join",
       "type": "object"
     },
@@ -91,7 +104,9 @@
           "type": "string"
         }
       },
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "title": "Pass",
       "type": "object"
     },
@@ -113,7 +128,11 @@
           "type": "string"
         }
       },
-      "required": ["type", "character_id", "role"],
+      "required": [
+        "type",
+        "character_id",
+        "role"
+      ],
       "title": "Pick",
       "type": "object"
     },
@@ -145,7 +164,10 @@
         },
         "carica": {
           "default": "subito",
-          "enum": ["subito", "carica"],
+          "enum": [
+            "subito",
+            "carica"
+          ],
           "title": "Carica",
           "type": "string"
         },
@@ -155,7 +177,12 @@
           "type": "string"
         }
       },
-      "required": ["type", "tattiche", "carica", "formazione"],
+      "required": [
+        "type",
+        "tattiche",
+        "carica",
+        "formazione"
+      ],
       "title": "Plan",
       "type": "object"
     },
@@ -213,13 +240,20 @@
         },
         "formato": {
           "default": "girone",
-          "enum": ["girone", "eliminazione"],
+          "enum": [
+            "girone",
+            "eliminazione"
+          ],
           "title": "Formato",
           "type": "string"
         },
         "modalita": {
           "default": "asta",
-          "enum": ["asta", "specchio", "raid"],
+          "enum": [
+            "asta",
+            "specchio",
+            "raid"
+          ],
           "title": "Modalita",
           "type": "string"
         },
@@ -237,7 +271,11 @@
         },
         "difficolta": {
           "default": "normale",
-          "enum": ["normale", "difficile", "epico"],
+          "enum": [
+            "normale",
+            "difficile",
+            "epico"
+          ],
           "title": "Difficolta",
           "type": "string"
         }
@@ -268,7 +306,9 @@
           "type": "string"
         }
       },
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "title": "Spectate",
       "type": "object"
     },
@@ -281,7 +321,9 @@
           "type": "string"
         }
       },
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "title": "Start",
       "type": "object"
     },
@@ -297,7 +339,10 @@
           "$ref": "#/$defs/RoomSettings"
         }
       },
-      "required": ["type", "settings"],
+      "required": [
+        "type",
+        "settings"
+      ],
       "title": "UpdateSettings",
       "type": "object"
     }

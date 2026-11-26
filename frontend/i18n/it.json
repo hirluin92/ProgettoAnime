@@ -59,7 +59,9 @@
     "scalaTitolo": "La Scala",
     "scalaTesto": "Avversari sempre più forti e potenziamenti a ogni vittoria: quanti gradini sali?",
     "raidTitolo": "Raid cooperativo",
-    "raidTesto": "2-4 amici costruiscono una squadra e sfidano un boss."
+    "raidTesto": "2-4 amici costruiscono una squadra e sfidano un boss.",
+    "duelloTitolo": "Duello",
+    "duelloTesto": "Nuovo! 6 turni, 3 corsie, carte in segreto: vince chi gioca meglio, non chi ha le carte più forti."
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -218,7 +220,8 @@
     "veloce": "Veloce",
     "sfida": "Sfida",
     "info": "Info",
-    "profilo": "Profilo"
+    "profilo": "Profilo",
+    "duello": "Duello"
   },
   "draft": {
     "tono": {
@@ -374,5 +377,59 @@
     "difficoltaTitolo": "Difficoltà",
     "modRaid": "Raid cooperativo (2-4 giocatori)",
     "pianoGruppo": "Il piano del gruppo: per ogni scelta vince quella più votata."
+  },
+  "duello": {
+    "titolo": "Duello a corsie",
+    "sottotitolo": "3 corsie, 6 turni, 3 minuti. Vince chi conquista 2 corsie su 3.",
+    "regole": "Come si gioca",
+    "regoleLista": [
+      "Hai un mazzo di 8 carte e ne peschi 1 a ogni turno.",
+      "Al turno N hai N energia: ogni carta costa energia. L'energia non si accumula.",
+      "Scegli in segreto dove giocare le carte (3 corsie). Poi si girano tutte insieme.",
+      "Chi è in vantaggio gira per primo. Gli effetti «Al rivelarsi» scattano in ordine.",
+      "Dopo il turno 6 vince ogni corsia chi ha più potenza. 2 corsie su 3 e vinci."
+    ],
+    "capito": "Ho capito, si gioca!",
+    "scegli": "Scegli le tue 8 carte",
+    "mano": "Mano {n} di {tot}",
+    "rilancia": "Cambia mano ({n})",
+    "mazzoPronto": "Mazzo pronto",
+    "livello": "Livello CPU",
+    "livelli": {
+      "facile": "Facile",
+      "normale": "Normale",
+      "difficile": "Difficile"
+    },
+    "inizia": "Inizia il duello",
+    "turno": "Turno {n} di {tot}",
+    "energia": "Energia",
+    "tu": "Tu",
+    "cpu": "CPU",
+    "corsia": "Corsia",
+    "gioca": "Gioca qui",
+    "conferma": "Conferma il turno",
+    "passa": "Passa il turno",
+    "sceltaCarta": "Tocca una carta, poi la corsia dove giocarla",
+    "sceltaCorsia": "Ora tocca una corsia",
+    "annulla": "Togli",
+    "inAttesa": "Svelo le carte…",
+    "rivela": "{chi} gioca {carta} in corsia {n}",
+    "costo": "Costo",
+    "potenza": "Potenza",
+    "alRivelarsi": "Al rivelarsi",
+    "continuo": "Continuo",
+    "mazzoRimasto": "Mazzo: {n}",
+    "cpuMano": "CPU: {n} carte in mano",
+    "vittoria": "Hai vinto!",
+    "sconfitta": "Hai perso",
+    "pareggio": "Pareggio",
+    "corsieVinte": "Corsie vinte: tu {a} · CPU {b}",
+    "rigioca": "Rigioca",
+    "altroMazzo": "Nuovo mazzo",
+    "troppoCara": "Energia insufficiente",
+    "corsiaPiena": "Corsia piena",
+    "errore": "Qualcosa non ha funzionato",
+    "favorisce": "Favorisce: {a}",
+    "salta": "Salta"
   }
 }

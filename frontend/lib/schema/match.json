@@ -13,7 +13,10 @@
           "type": "integer"
         },
         "da": {
-          "enum": ["A", "B"],
+          "enum": [
+            "A",
+            "B"
+          ],
           "title": "Da",
           "type": "string"
         },
@@ -44,7 +47,17 @@
           "$ref": "#/$defs/Stato"
         }
       },
-      "required": ["tipo", "turno", "da", "idx", "mossa", "speciale", "effetto", "esiti", "stato"],
+      "required": [
+        "tipo",
+        "turno",
+        "da",
+        "idx",
+        "mossa",
+        "speciale",
+        "effetto",
+        "esiti",
+        "stato"
+      ],
       "title": "Azione",
       "type": "object"
     },
@@ -194,14 +207,22 @@
           "$ref": "#/$defs/Stato"
         }
       },
-      "required": ["tipo", "turno", "esiti", "stato"],
+      "required": [
+        "tipo",
+        "turno",
+        "esiti",
+        "stato"
+      ],
       "title": "Effetti",
       "type": "object"
     },
     "Esito": {
       "properties": {
         "lato": {
-          "enum": ["A", "B"],
+          "enum": [
+            "A",
+            "B"
+          ],
           "title": "Lato",
           "type": "string"
         },
@@ -282,18 +303,31 @@
             "type": "string"
           },
           "propertyNames": {
-            "enum": ["A", "B"]
+            "enum": [
+              "A",
+              "B"
+            ]
           },
           "title": "Tattica",
           "type": "object"
         },
         "esito": {
-          "enum": ["A", "B", "pari"],
+          "enum": [
+            "A",
+            "B",
+            "pari"
+          ],
           "title": "Esito",
           "type": "string"
         }
       },
-      "required": ["tipo", "turno", "fase", "tattica", "esito"],
+      "required": [
+        "tipo",
+        "turno",
+        "fase",
+        "tattica",
+        "esito"
+      ],
       "title": "Fase",
       "type": "object"
     },
@@ -306,17 +340,27 @@
           "type": "string"
         },
         "vincitore": {
-          "enum": ["A", "B"],
+          "enum": [
+            "A",
+            "B"
+          ],
           "title": "Vincitore",
           "type": "string"
         },
         "motivo": {
-          "enum": ["ko", "tempo"],
+          "enum": [
+            "ko",
+            "tempo"
+          ],
           "title": "Motivo",
           "type": "string"
         }
       },
-      "required": ["tipo", "vincitore", "motivo"],
+      "required": [
+        "tipo",
+        "vincitore",
+        "motivo"
+      ],
       "title": "Fine",
       "type": "object"
     },
@@ -332,7 +376,10 @@
           "$ref": "#/$defs/Stato"
         }
       },
-      "required": ["tipo", "stato"],
+      "required": [
+        "tipo",
+        "stato"
+      ],
       "title": "Ingresso",
       "type": "object"
     },
@@ -347,7 +394,10 @@
           "type": "string"
         }
       },
-      "required": ["nome", "effetto"],
+      "required": [
+        "nome",
+        "effetto"
+      ],
       "title": "Mossa",
       "type": "object"
     },
@@ -362,7 +412,10 @@
           "type": "string"
         }
       },
-      "required": ["nome", "effetto"],
+      "required": [
+        "nome",
+        "effetto"
+      ],
       "title": "Passiva",
       "type": "object"
     },
@@ -380,7 +433,10 @@
           "type": "integer"
         },
         "lato": {
-          "enum": ["A", "B"],
+          "enum": [
+            "A",
+            "B"
+          ],
           "title": "Lato",
           "type": "string"
         },
@@ -392,7 +448,13 @@
           "$ref": "#/$defs/Stato"
         }
       },
-      "required": ["tipo", "turno", "lato", "idx", "stato"],
+      "required": [
+        "tipo",
+        "turno",
+        "lato",
+        "idx",
+        "stato"
+      ],
       "title": "Respiro",
       "type": "object"
     },
@@ -412,14 +474,21 @@
           "type": "integer"
         }
       },
-      "required": ["nome", "a", "b"],
+      "required": [
+        "nome",
+        "a",
+        "b"
+      ],
       "title": "RivalitaAttiva",
       "type": "object"
     },
     "Sinergia": {
       "properties": {
         "lato": {
-          "enum": ["A", "B"],
+          "enum": [
+            "A",
+            "B"
+          ],
           "title": "Lato",
           "type": "string"
         },
@@ -440,7 +509,13 @@
           "type": "integer"
         }
       },
-      "required": ["lato", "nome", "stat", "valore", "membri"],
+      "required": [
+        "lato",
+        "nome",
+        "stat",
+        "valore",
+        "membri"
+      ],
       "title": "Sinergia",
       "type": "object"
     },
@@ -455,7 +530,10 @@
             "type": "array"
           },
           "propertyNames": {
-            "enum": ["A", "B"]
+            "enum": [
+              "A",
+              "B"
+            ]
           },
           "title": "Hp",
           "type": "object"
@@ -468,7 +546,10 @@
             "type": "array"
           },
           "propertyNames": {
-            "enum": ["A", "B"]
+            "enum": [
+              "A",
+              "B"
+            ]
           },
           "title": "Energia",
           "type": "object"
@@ -481,7 +562,10 @@
             "type": "array"
           },
           "propertyNames": {
-            "enum": ["A", "B"]
+            "enum": [
+              "A",
+              "B"
+            ]
           },
           "title": "Scudo",
           "type": "object"
@@ -491,13 +575,21 @@
             "type": "integer"
           },
           "propertyNames": {
-            "enum": ["A", "B"]
+            "enum": [
+              "A",
+              "B"
+            ]
           },
           "title": "Hype",
           "type": "object"
         }
       },
-      "required": ["hp", "energia", "scudo", "hype"],
+      "required": [
+        "hp",
+        "energia",
+        "scudo",
+        "hype"
+      ],
       "title": "Stato",
       "type": "object"
     },
@@ -585,7 +677,10 @@
           "type": "integer"
         }
       },
-      "required": ["tipo", "n"],
+      "required": [
+        "tipo",
+        "n"
+      ],
       "title": "Turno",
       "type": "object"
     },
@@ -613,7 +708,13 @@
           "type": "boolean"
         }
       },
-      "required": ["hp", "atk", "dif", "vel", "adatto"],
+      "required": [
+        "hp",
+        "atk",
+        "dif",
+        "vel",
+        "adatto"
+      ],
       "title": "Unita",
       "type": "object"
     }
@@ -633,7 +734,10 @@
         "$ref": "#/$defs/Team"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Squadre",
       "type": "object"
@@ -646,7 +750,10 @@
         "type": "array"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Unita",
       "type": "object"
@@ -659,7 +766,10 @@
         "type": "array"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Potenze",
       "type": "object"
@@ -676,13 +786,19 @@
         "type": "integer"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Totali",
       "type": "object"
     },
     "vincitore": {
-      "enum": ["A", "B"],
+      "enum": [
+        "A",
+        "B"
+      ],
       "title": "Vincitore",
       "type": "string"
     },
@@ -702,7 +818,10 @@
         "type": "array"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Tattiche",
       "type": "object"
@@ -724,7 +843,10 @@
         "type": "string"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Formazione",
       "type": "object"
@@ -741,7 +863,10 @@
         "type": "string"
       },
       "propertyNames": {
-        "enum": ["A", "B"]
+        "enum": [
+          "A",
+          "B"
+        ]
       },
       "title": "Carica",
       "type": "object"
