@@ -92,3 +92,19 @@ I 15 effetti delle mosse e gli 11 delle passive diventano **26 modelli di effett
 - **Equilibrio:** si tara con i simulatori prima di toccare l'interfaccia.
 - **Tempo reale e AFK:** ogni turno ha un limite (25 s) e, se scade, si gioca la mossa predefinita.
 - **Nuovi giocatori:** il tutorial è obbligatorio la prima volta (1 minuto); il resto si spiega giocando.
+
+## 9. Aggiornamento roadmap (dopo M20)
+
+Decisioni: **Veloce resta** come modalità «spettacolo» e si migliora; il ranked è a leghe; si aggiungono account, album, crediti e pacchetti.
+
+**Ordine:** (a) migliorie Veloce, (b) torneo di duelli dopo l'asta + voto chat, (c) registrazione, (d) album e mazzi personali, (e) crediti e pacchetti, (f) ranked a leghe asincrono (poi 1 contro 1 dal vivo), (g) Scala roguelike e Raid a corsie, (h) pulizia (rimozione di ciò che non serve, suoni, mobile).
+
+**Migliorie Veloce (5):** 1) tattica scelta a ogni fase vedendo la fase precedente (lo scontro è deterministico: si simula con le tattiche già scelte e ci si ferma a fine fase); 2) una riga di spiegazione per evento e riepilogo «perché hai vinto/perso» coi 3 fattori principali; 3) scontro di 15-20 s, risultato prima e replay opzionale; 4) misura della bravura con simulatori a più livelli di abilità; 5) condivisione del risultato (immagine/link).
+
+**Registrazione:** link via email e accesso con Google, senza password; il profilo anonimo attuale si collega senza perdere nulla. Servono un servizio email e un client Google: account da creare dall'utente, chiavi mai in chat né nel codice (`.env`).
+
+**Album e mazzi:** 123 carte con filtri (anime, archetipo, rarità), mazzi salvati. Equilibrio: ranked sempre con draft fresco; il mazzo personale vale solo nelle modalità libere e nella Scala, con tetti (es. max 2 leggendarie, costo totale limitato). I doppioni danno crediti o cornici, mai potenza.
+
+**Crediti e pacchetti:** crediti SOLO guadagnati giocando (vittorie, rompicapo, obiettivi, stagioni), mai acquistabili con denaro (AniList è gratuito solo per uso non commerciale; le probabilità casuali a pagamento sono rischiose per i minori). Pacchetti: Base 100 (3 carte), Argento 250 (4, ≥1 Rara), Oro 600 (5, ≥1 Epica), Leggendario 1500 (5, ≥1 Leggendaria). Probabilità calcolate sul numero reale di carte per rarità e mostrate in chiaro; garanzia di una leggendaria ogni ~30 pacchetti; doppioni convertiti in crediti.
+
+**Ranked:** Bronzo → Campione con divisioni, 5 partite di piazzamento, stagioni con reset morbido, obiettivi settimanali. Prima asincrono (mazzo di un altro giocatore comandato dalla CPU), poi 1 contro 1 dal vivo con le stanze esistenti.
