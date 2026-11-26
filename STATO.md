@@ -28,7 +28,7 @@ Commit con identità `-c user.name=hirluin92 -c user.email=hirluin92@users.norep
 
 ## Da fare (in ordine di valore)
 1. **L'utente gioca e riporta:** una partita veloce, un'asta con amici, la sfida del giorno. Poi correggere schede/mosse/prezzi in base a cosa gli sembra sbagliato e rilanciare `balance_v2.py --scrivi`.
-2. **Non rivisti dal vivo dopo il redesign** (coperti solo dai test): asta in stanza multi-giocatore, sfida del giorno, overlay OBS, mobile (360 px mai provato su un telefono vero). Guardarli nel browser e sistemare l'aspetto.
+2. **Revisione grafica (2026-11-26, in parte fatta):** rivisti nel browser sfida del giorno, partita veloce, lobby e asta in stanza (con 2 giocatori) e simulato 360 px; corretti recap squadra, home mobile, badge del voto fuori bordo, errori del server invisibili nella stanza. **Ancora da vedere:** overlay OBS, torneo/riepilogo finale dell'asta, fase di ban, schermo di un telefono vero.
 3. **Grafica rimandata:** suoni migliori (oggi solo beep Web Audio), home con statistiche live (stanze attive, ultimi scontri), rifinitura asta e mobile, mostrare le statistiche/mossa/passiva leggibili nella carta o in un dettaglio.
 4. **Asta v2:** mostrare sinergie e fila nell'asta e nel recap della squadra; il costo misurato oggi vale solo per partita veloce/sfida, l'asta in stanza resta a offerte libere.
 5. **Revisione dei dati** (decisione dell'utente): le 100 schede e i rating sono miei, inventati. Obito e Gotenks senza immagine.
@@ -50,6 +50,7 @@ Commit con identità `-c user.name=hirluin92 -c user.email=hirluin92@users.norep
 - Le password/stringhe di connessione non vanno mai in file o commit.
 - Lo script e2e di Playwright avvia da solo backend e frontend: fermare prima i server locali sulle porte 3000/8000.
 - I test automatici non vedono i problemi grafici: guardare sempre le schermate nel browser.
+- Layout: dentro un `grid` senza colonne esplicite il contenuto largo allarga la colonna e fa traboccare le carte: usare `grid-cols-[minmax(0,1fr)]`. Per provare 360 px la finestra di Chrome non si restringe: incorporare la pagina in un `<iframe>` largo 360 px (`flex:none`); gli screenshot sono ridotti in scala.
 
 ## Comandi utili
 - Dev: `docker compose up -d db`, poi backend `cd backend && uv run uvicorn app.main:app --port 8000` (con `DEV_TOOLS=1 TWITCH_READER=0`) e frontend `cd frontend && NEXT_PUBLIC_API_URL=http://127.0.0.1:8000 npm run dev`.

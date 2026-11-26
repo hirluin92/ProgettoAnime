@@ -44,6 +44,12 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
     }
   }, [errorCode, code]);
 
+  useEffect(() => {
+    if (!error || !room) return;
+    const t = setTimeout(() => useRoom.getState().clearError(), 5000);
+    return () => clearTimeout(t);
+  }, [error, room]);
+
   if (errorCode === "room_not_found")
     return (
       <main className="mx-auto max-w-xl p-6" role="alert">
@@ -92,6 +98,14 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
           className="mb-3 rounded-xl bg-amber-300 p-2 text-center text-sm font-bold text-stone-900"
         >
           {it.stanza.riconnessione}
+        </p>
+      )}
+      {error && (
+        <p
+          role="alert"
+          className="mb-3 rounded-xl bg-rose-500/20 p-2 text-center text-sm font-bold text-rose-200"
+        >
+          {error}
         </p>
       )}
       {room.phase === "lobby" && <Lobby room={room} me={me} socket={socket} />}
