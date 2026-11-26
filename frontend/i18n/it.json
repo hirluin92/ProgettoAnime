@@ -170,7 +170,9 @@
     "altriDuelli": "Gli altri duelli",
     "aspettoAltri": "Hai finito: aspetto gli altri duelli…",
     "scontroContro": "Contro {nome}",
-    "giornataN": "Giornata {n}"
+    "giornataN": "Giornata {n}",
+    "chatVota": "La chat vota le mosse: scrivi !a, !b o !c",
+    "chatTurno": "Turno {n}"
   },
   "veloce": {
     "titolo": "Partita veloce",

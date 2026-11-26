@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import ChatDuelloVoti from "@/components/ChatDuelloVoti";
 import DuelloBoard, { fmt } from "@/components/duello/DuelloBoard";
 import it from "@/i18n/it.json";
 import type { DuelloAggiornamento, RoomView } from "@/lib/messages";
@@ -103,6 +104,8 @@ export default function DuelliView({ room, socket }: { room: RoomView; socket: R
       ) : (
         <p className="panel p-4 text-center">{it.stanza.aspettoAltri}</p>
       )}
+
+      {room.chat_duello && <ChatDuelloVoti voto={room.chat_duello} />}
 
       {room.duelli && (
         <div className="panel space-y-2 p-4">

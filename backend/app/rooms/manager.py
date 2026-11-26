@@ -31,10 +31,12 @@ from app.rooms.models import (
     COLORS,
     MAX_PLAYERS,
     MIN_PLAYERS,
+    ChatDuelloView,
     DuelliView,
     DuelloPubblico,
     MatchRef,
     MissionResult,
+    OpzioneChat,
     Player,
     RaidView,
     RoomArena,
@@ -135,9 +137,31 @@ class Room:
             arena=_arena_info(self.seed, self.settings), raid=self.raid,
             tournament=self.tournament,
             duelli=self._duelli_view(),
+            chat_duello=self._chat_duello_view(),
             streamer_channel=self.streamer_channel,
             server_time=now(),
         )  # fmt: skip
+
+    def _chat_duello_view(self) -> ChatDuelloView | None:
+        t: TorneoDuelli | None = self.extras.get("duelli")
+        if t is None or self.phase != "duelli":
+            return None
+        trovato = t.duello_chat()
+        if trovato is None:
+            return None
+        d, lato = trovato
+        assert d.stato is not None
+        conta = t.conteggio_voti()
+        altro = d.b if lato == 0 else d.a
+        return ChatDuelloView(
+            turno=min(d.stato.turno, 6),
+            avversario=altro.id if altro else None,
+            opzioni=[
+                OpzioneChat(id=k, testo=testo, voti=conta[k])
+                for k, (testo, _) in zip("abc", t.piani_chat(d, lato), strict=True)
+            ],
+            scadenza=d.scadenza,
+        )
 
     def _duelli_view(self) -> DuelliView | None:
         t: TorneoDuelli | None = self.extras.get("duelli")
@@ -548,7 +572,10 @@ class RoomManager:
         room.plan_deadline = None
         players = [p for p in room.players.values() if p.complete]
         leg, riv = _legami()
-        giocatori = [Giocatore(p.id, p.name, self._mazzo_di(p), bot=p.is_chat) for p in players]
+        giocatori = [
+            Giocatore(p.id, p.name, self._mazzo_di(p), bot=p.is_chat, chat=p.is_chat)
+            for p in players
+        ]
         t = TorneoDuelli(
             room.seed, giocatori, room.settings.formato, room.settings.turno_duello,
             leg, riv, _pool(),
@@ -609,7 +636,13 @@ class RoomManager:
             room.phase = "tournament"
             room.extras.pop("duelli", None)
             return [RoomState(room=room.view()), TournamentResult(tournament=room.tournament)]
-        if any(ev for _, _, ev, _ in agg) or len(t.rounds) != round_prima:
+        voti_dopo = tuple(t.conteggio_voti().items())
+        if (
+            any(ev for _, _, ev, _ in agg)
+            or len(t.rounds) != round_prima
+            or room.extras.get("voti_visti") != voti_dopo
+        ):
+            room.extras["voti_visti"] = voti_dopo
             return [RoomState(room=room.view())]
         return []
 

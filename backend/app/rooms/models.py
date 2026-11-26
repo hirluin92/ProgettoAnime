@@ -149,6 +149,21 @@ class DuelloPubblico(Model):
     vincitore: str | None
 
 
+class OpzioneChat(Model):
+    id: str  # a, b, c
+    testo: str
+    voti: int
+
+
+class ChatDuelloView(Model):
+    """Il voto della chat sulle mosse del suo duello: opzioni e voti, aggiornati a ogni voto."""
+
+    turno: int
+    avversario: str | None  # id del giocatore contro cui gioca la chat
+    opzioni: list[OpzioneChat]
+    scadenza: float
+
+
 class DuelliView(Model):
     giornata: int  # 1-based
     giornate: int  # totali (0 se eliminazione: dipende dai vincitori)
@@ -174,6 +189,7 @@ class RoomView(Model):
     arena: RoomArena | None
     tournament: TournamentView | None
     duelli: DuelliView | None = None
+    chat_duello: ChatDuelloView | None = None
     streamer_channel: str | None
     server_time: float
 
