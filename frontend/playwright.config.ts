@@ -6,7 +6,9 @@ export default defineConfig({
   workers: 1,
   webServer: [
     {
-      command: "uv run uvicorn app.main:app --port 8000",
+      // parte sempre da un database pulito (create_all non aggiorna le tabelle già esistenti)
+      command:
+        "uv run python -c \"import pathlib; pathlib.Path('e2e.db').unlink(missing_ok=True)\" && uv run uvicorn app.main:app --port 8000",
       cwd: "../backend",
       url: "http://localhost:8000/health",
       reuseExistingServer: true,

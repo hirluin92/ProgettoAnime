@@ -28,7 +28,7 @@ export interface Played {
   result: MatchResult;
   spent: number;
   cpu_spent: number;
-  missione: MissioneEsito;
+  missione: MissioneEsito | null;
   premio: Premio | null;
 }
 
@@ -45,9 +45,10 @@ interface Props {
   ) => Promise<Played>;
   after?: ReactNode;
   header?: ReactNode;
+  senzaMissione?: boolean; // per la Scala: niente missione né spese mostrate
 }
 
-export default function QuickGame({ title, load, play, after, header }: Props) {
+export default function QuickGame({ title, load, play, after, header, senzaMissione }: Props) {
   const [d, setD] = useState<DraftOptions | null>(null);
   const [placed, setPlaced] = useState<Placed[]>([]);
   const [h, setH] = useState(0); // indice della mano corrente
@@ -169,27 +170,31 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
     return (
       <main className="mx-auto max-w-5xl space-y-3 p-4">
         <h1 className="text-5xl font-black leading-none">{title}</h1>
-        <p className="text-sm muted">
-          {it.veloce.speso}: {played.spent}/{d.budget} · CPU: {played.cpu_spent}/{d.budget} ·{" "}
-          <a className="underline hover:text-white" href={`/partita/${played.id}`}>
-            {it.battle.linkPartita}
-          </a>
-        </p>
+        {!senzaMissione && (
+          <p className="text-sm muted">
+            {it.veloce.speso}: {played.spent}/{d.budget} · CPU: {played.cpu_spent}/{d.budget} ·{" "}
+            <a className="underline hover:text-white" href={`/partita/${played.id}`}>
+              {it.battle.linkPartita}
+            </a>
+          </p>
+        )}
         <BattleScene result={played.result} autoplay onDone={() => setBattleDone(true)} />
         {battleDone && (
           <>
-            <div className="grid gap-3 md:grid-cols-2" data-testid="mission-result">
-              <MissionCard
-                titolo={it.missione.tua}
-                nome={played.missione.nome}
-                descrizione={played.missione.descrizione}
-                esito={played.missione.riuscita}
-              />
-              <p className="text-sm muted">
-                {it.missione.cpu}:{" "}
-                {played.missione.cpu_riuscita ? it.missione.riuscita : it.missione.fallita}
-              </p>
-            </div>
+            {played.missione && (
+              <div className="grid gap-3 md:grid-cols-2" data-testid="mission-result">
+                <MissionCard
+                  titolo={it.missione.tua}
+                  nome={played.missione.nome}
+                  descrizione={played.missione.descrizione}
+                  esito={played.missione.riuscita}
+                />
+                <p className="text-sm muted">
+                  {it.missione.cpu}:{" "}
+                  {played.missione.cpu_riuscita ? it.missione.riuscita : it.missione.fallita}
+                </p>
+              </div>
+            )}
             {played.premio && <PremioPanel premio={played.premio} />}
           </>
         )}
@@ -206,7 +211,9 @@ export default function QuickGame({ title, load, play, after, header }: Props) {
       </div>
       {header}
       <ArenaBanner {...d.arena} />
-      <MissionCard nome={d.missione.nome} descrizione={d.missione.descrizione} />
+      {!senzaMissione && (
+        <MissionCard nome={d.missione.nome} descrizione={d.missione.descrizione} />
+      )}
 
       <div className="panel space-y-3 p-4">
         <ol className="flex flex-wrap gap-1.5" aria-hidden="true">

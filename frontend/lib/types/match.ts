@@ -34,6 +34,13 @@ export type Costo = number;
 export type Forma = string | null;
 export type BaseId = string | null;
 export type BonusMissione = number;
+export type BonusAtk = number;
+export type BonusHp = number;
+export type BonusDif = number;
+export type EnergiaIniziale = number;
+export type ScudoIniziale = number;
+export type BossHp = number;
+export type BossAtk = number;
 export type Hp = number;
 export type Atk = number;
 export type Dif = number;
@@ -114,6 +121,13 @@ export interface Team {
   nome: Nome;
   members: Members;
   bonus_missione: BonusMissione;
+  bonus_atk: BonusAtk;
+  bonus_hp: BonusHp;
+  bonus_dif: BonusDif;
+  energia_iniziale: EnergiaIniziale;
+  scudo_iniziale: ScudoIniziale;
+  boss_hp: BossHp;
+  boss_atk: BossAtk;
 }
 export interface Character {
   id: Id;

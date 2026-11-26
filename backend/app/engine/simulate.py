@@ -164,9 +164,9 @@ class Battaglia:
         self.sinergie += sin
         legami = legami_squadra(team, regole.duos)
         bonus = {
-            "atk": team.bonus_missione,
-            "def": 0.0,
-            "hp": team.bonus_missione,
+            "atk": team.bonus_missione + team.bonus_atk,
+            "def": team.bonus_dif,
+            "hp": team.bonus_missione + team.bonus_hp,
             "spd": 0.0,
             "energy": 0.0,
         }
@@ -181,6 +181,9 @@ class Battaglia:
             hp, atk, dif, vel = statistiche_base(ch, ROLES[i])
             hp *= 1 + bonus["hp"]
             atk *= 1 + bonus["atk"]
+            if i == 0:  # boss dei raid: vita e attacco del Capitano
+                hp *= team.boss_hp
+                atk *= team.boss_atk
             dif *= 1 + bonus["def"]
             vel *= 1 + bonus["spd"]
             if ch.passiva.effetto == "armor":
@@ -202,7 +205,11 @@ class Battaglia:
                 dif=dif,
                 vel=vel,
                 fila=fila[i],
-                energia=min(ENERGIA_MAX, round(ENERGIA_INIZIALE * (1 + bonus["energy"]))),
+                energia=min(
+                    ENERGIA_MAX,
+                    round(ENERGIA_INIZIALE * (1 + bonus["energy"])) + team.energia_iniziale,
+                ),
+                scudo=round(round(hp) * team.scudo_iniziale),
                 tags=frozenset(ch.tags),
                 bid=ch.base_id or ch.id,
             )

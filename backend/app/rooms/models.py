@@ -30,8 +30,10 @@ class RoomSettings(Model):
         default=45, ge=0, le=180
     )  # secondi per il piano di battaglia; 0 = salta
     formato: Literal["girone", "eliminazione"] = "girone"  # formato del torneo
-    modalita: Literal["asta", "specchio"] = "asta"  # asta con gli amici o draft a specchio (2)
-    pick_timeout: int = Field(default=20, ge=5, le=120)  # secondi per scelta (specchio)
+    modalita: Literal["asta", "specchio", "raid"] = "asta"  # asta, draft a specchio (2) o raid
+    pick_timeout: int = Field(default=20, ge=5, le=120)  # secondi per scelta (specchio, raid)
+    boss: str = "kaido"  # boss del raid
+    difficolta: Literal["normale", "difficile", "epico"] = "normale"
 
 
 class PlayerView(Model):
@@ -122,9 +124,21 @@ class SpecchioView(Model):
     hand: list[SpecchioCard]
 
 
+class RaidView(Model):
+    """Esito del raid: il boss affrontato e lo scontro (rivedibile)."""
+
+    boss_id: str
+    boss_nome: str
+    boss_descrizione: str
+    difficolta: str
+    match_id: str
+    vinto: bool
+    boss: list[Character]  # la squadra del boss (il Capitano è il boss)
+
+
 class RoomView(Model):
     code: str
-    phase: Literal["lobby", "ban", "auction", "draft", "plan", "tournament"]
+    phase: Literal["lobby", "ban", "auction", "draft", "plan", "tournament", "raid_result"]
     host_id: str
     settings: RoomSettings
     players: list[PlayerView]
@@ -135,6 +149,7 @@ class RoomView(Model):
     plan_deadline: float | None
     draft: SpecchioView | None
     chat_plan: dict[str, dict[str, int]] | None  # voti della chat sul piano (fase piano)
+    raid: "RaidView | None"
     arena: RoomArena | None
     tournament: TournamentView | None
     streamer_channel: str | None

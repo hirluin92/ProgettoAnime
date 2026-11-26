@@ -219,7 +219,7 @@
         },
         "modalita": {
           "default": "asta",
-          "enum": ["asta", "specchio"],
+          "enum": ["asta", "specchio", "raid"],
           "title": "Modalita",
           "type": "string"
         },
@@ -229,6 +229,17 @@
           "minimum": 5,
           "title": "Pick Timeout",
           "type": "integer"
+        },
+        "boss": {
+          "default": "kaido",
+          "title": "Boss",
+          "type": "string"
+        },
+        "difficolta": {
+          "default": "normale",
+          "enum": ["normale", "difficile", "epico"],
+          "title": "Difficolta",
+          "type": "string"
         }
       },
       "required": [
@@ -241,7 +252,9 @@
         "plan_timeout",
         "formato",
         "modalita",
-        "pick_timeout"
+        "pick_timeout",
+        "boss",
+        "difficolta"
       ],
       "title": "RoomSettings",
       "type": "object"

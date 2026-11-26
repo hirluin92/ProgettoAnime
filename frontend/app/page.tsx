@@ -255,13 +255,20 @@ export default function Home() {
 
       <section className="mt-16 space-y-4">
         <h2 className="eyebrow">{it.home.modalita}</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <ModeCard
             href="/veloce"
             icon="⚡"
             title={it.home.veloceTitolo}
             text={it.home.veloceTesto}
             accent="#ff8a3d"
+          />
+          <ModeCard
+            href="/scala"
+            icon="🪜"
+            title={it.home.scalaTitolo}
+            text={it.home.scalaTesto}
+            accent="#35e0ff"
           />
           <ModeCard
             href="/sfida"

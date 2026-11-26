@@ -1,0 +1,98 @@
+[
+ {
+  "id": "kaido",
+  "nome": "Kaido, l'Invincibile",
+  "descrizione": "L'Imperatore dei Mari porta con sé la sua ciurma più feroce.",
+  "arena": "gravita",
+  "squadra": [
+   "kaido",
+   "charlotte-katakuri",
+   "marshall-d-teach",
+   "dracule-mihawk",
+   "trafalgar-law",
+   "portgas-d-ace",
+   "jinbe"
+  ],
+  "fattore": 0.5
+ },
+ {
+  "id": "freezer",
+  "nome": "Freezer e i suoi mostri",
+  "descrizione": "L'imperatore dell'universo non è venuto da solo.",
+  "arena": "torneo",
+  "squadra": [
+   "freezer",
+   "cell",
+   "majin-bu",
+   "broly",
+   "numero-18",
+   "gotenks",
+   "tenshinhan"
+  ],
+  "fattore": 1.0
+ },
+ {
+  "id": "madara",
+  "nome": "Madara e l'Alba",
+  "descrizione": "Il piano Occhio della Luna è a un passo dal compiersi.",
+  "arena": "luna",
+  "squadra": [
+   "madara-uchiha",
+   "obito-uchiha",
+   "pain",
+   "orochimaru",
+   "kisame-hoshigaki",
+   "itachi-uchiha",
+   "killer-bee"
+  ],
+  "fattore": 0.75
+ },
+ {
+  "id": "muzan",
+  "nome": "Muzan e le Lune",
+  "descrizione": "Il re dei demoni attende il sorgere del sole.",
+  "arena": "nebbia",
+  "squadra": [
+   "muzan-kibutsuji",
+   "kokushibo",
+   "akaza",
+   "douma",
+   "daki",
+   "nezuko-kamado",
+   "genya-shinazugawa"
+  ],
+  "fattore": 1.0
+ },
+ {
+  "id": "sukuna",
+  "nome": "Sukuna, il Re delle Maledizioni",
+  "descrizione": "Il più forte stregone maledetto è tornato.",
+  "arena": "vulcano",
+  "squadra": [
+   "ryomen-sukuna",
+   "kenjaku",
+   "mahito",
+   "jogo",
+   "hanami",
+   "toji-fushiguro",
+   "kinji-hakari"
+  ],
+  "fattore": 0.9
+ },
+ {
+  "id": "beerus",
+  "nome": "Beerus, il Distruttore",
+  "descrizione": "Il dio della distruzione si è svegliato affamato.",
+  "arena": "ghiaccio",
+  "squadra": [
+   "beerus",
+   "whis",
+   "jiren",
+   "majin-bu",
+   "cell",
+   "broly",
+   "freezer"
+  ],
+  "fattore": 0.95
+ }
+]

@@ -23,7 +23,7 @@ export type PlayerId = string;
 export type Token = string;
 export type Type1 = "room_state";
 export type Code = string;
-export type Phase = "lobby" | "ban" | "auction" | "draft" | "plan" | "tournament";
+export type Phase = "lobby" | "ban" | "auction" | "draft" | "plan" | "tournament" | "raid_result";
 export type HostId = string;
 export type Budget = number;
 export type Timer = number;
@@ -33,8 +33,10 @@ export type ChatThreshold = number;
 export type BansPerPlayer = number;
 export type PlanTimeout = number;
 export type Formato = "girone" | "eliminazione";
-export type Modalita = "asta" | "specchio";
+export type Modalita = "asta" | "specchio" | "raid";
 export type PickTimeout = number;
+export type Boss = string;
+export type Difficolta = "normale" | "difficile" | "epico";
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -87,10 +89,17 @@ export type ChatPlan = {
     [k: string]: number;
   };
 } | null;
+export type BossId = string;
+export type BossNome = string;
+export type BossDescrizione = string;
+export type Difficolta1 = string;
+export type MatchId = string;
+export type Vinto = boolean;
+export type Boss1 = Character[];
 export type Id2 = string;
 export type Nome3 = string;
 export type Descrizione = string;
-export type MatchId = string;
+export type MatchId1 = string;
 export type A = string;
 export type B = string;
 export type Winner = string | null;
@@ -167,6 +176,7 @@ export interface RoomView {
   plan_deadline: PlanDeadline;
   draft: SpecchioView | null;
   chat_plan: ChatPlan;
+  raid: RaidView | null;
   arena: RoomArena | null;
   tournament: TournamentView | null;
   streamer_channel: StreamerChannel;
@@ -183,6 +193,8 @@ export interface RoomSettings {
   formato: Formato;
   modalita: Modalita;
   pick_timeout: PickTimeout;
+  boss: Boss;
+  difficolta: Difficolta;
 }
 export interface PlayerView {
   id: Id;
@@ -263,6 +275,18 @@ export interface SpecchioCard {
 export interface Affinita1 {
   [k: string]: number;
 }
+/**
+ * Esito del raid: il boss affrontato e lo scontro (rivedibile).
+ */
+export interface RaidView {
+  boss_id: BossId;
+  boss_nome: BossNome;
+  boss_descrizione: BossDescrizione;
+  difficolta: Difficolta1;
+  match_id: MatchId;
+  vinto: Vinto;
+  boss: Boss1;
+}
 export interface RoomArena {
   id: Id2;
   nome: Nome3;
@@ -276,7 +300,7 @@ export interface TournamentView {
   campione: Campione;
 }
 export interface MatchRef {
-  match_id: MatchId;
+  match_id: MatchId1;
   a: A;
   b: B;
   winner: Winner;

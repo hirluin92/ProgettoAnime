@@ -520,9 +520,55 @@
           "default": 0.0,
           "title": "Bonus Missione",
           "type": "number"
+        },
+        "bonus_atk": {
+          "default": 0.0,
+          "title": "Bonus Atk",
+          "type": "number"
+        },
+        "bonus_hp": {
+          "default": 0.0,
+          "title": "Bonus Hp",
+          "type": "number"
+        },
+        "bonus_dif": {
+          "default": 0.0,
+          "title": "Bonus Dif",
+          "type": "number"
+        },
+        "energia_iniziale": {
+          "default": 0,
+          "title": "Energia Iniziale",
+          "type": "integer"
+        },
+        "scudo_iniziale": {
+          "default": 0.0,
+          "title": "Scudo Iniziale",
+          "type": "number"
+        },
+        "boss_hp": {
+          "default": 1.0,
+          "title": "Boss Hp",
+          "type": "number"
+        },
+        "boss_atk": {
+          "default": 1.0,
+          "title": "Boss Atk",
+          "type": "number"
         }
       },
-      "required": ["nome", "members", "bonus_missione"],
+      "required": [
+        "nome",
+        "members",
+        "bonus_missione",
+        "bonus_atk",
+        "bonus_hp",
+        "bonus_dif",
+        "energia_iniziale",
+        "scudo_iniziale",
+        "boss_hp",
+        "boss_atk"
+      ],
       "title": "Team",
       "type": "object"
     },

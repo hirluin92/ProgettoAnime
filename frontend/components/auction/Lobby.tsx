@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import it from "@/i18n/it.json";
+import { BOSSES } from "@/lib/raid";
 import type { RoomSettings, RoomView } from "@/lib/messages";
 import type { RoomSocket } from "@/lib/ws";
 
@@ -143,6 +144,7 @@ export default function Lobby({
             >
               <option value="asta">{it.stanza.modAsta}</option>
               <option value="specchio">{it.stanza.modSpecchio}</option>
+              <option value="raid">{it.raid.modRaid}</option>
             </select>
           </label>
           <label className="grid gap-1 text-sm font-bold">
@@ -157,7 +159,43 @@ export default function Lobby({
               <option value="eliminazione">{it.stanza.fmtElim}</option>
             </select>
           </label>
-          {s.modalita === "specchio" && (
+          {s.modalita === "raid" && (
+            <>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.raid.boss}
+                <select
+                  aria-label={it.raid.boss}
+                  className="field"
+                  value={s.boss}
+                  onChange={(e) => upd({ boss: e.target.value })}
+                >
+                  {BOSSES.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.nome}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.raid.difficoltaTitolo}
+                <select
+                  aria-label={it.raid.difficoltaTitolo}
+                  className="field"
+                  value={s.difficolta}
+                  onChange={(e) =>
+                    upd({ difficolta: e.target.value as RoomSettings["difficolta"] })
+                  }
+                >
+                  {(["normale", "difficile", "epico"] as const).map((d) => (
+                    <option key={d} value={d}>
+                      {it.raid.difficolta[d]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
+          )}
+          {s.modalita !== "asta" && (
             <label className="grid gap-1 text-sm font-bold">
               {it.stanza.tempoScelta}
               <input

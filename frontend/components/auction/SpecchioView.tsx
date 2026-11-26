@@ -26,7 +26,8 @@ export default function SpecchioView({
   const mission = useRoom((s) => s.mission);
   const [sel, setSel] = useState<string | null>(null);
   const mine = room.players.find((p) => p.id === me);
-  const other = room.players.find((p) => !p.is_chat && p.id !== me);
+  const raid = room.settings.modalita === "raid";
+  const other = raid ? undefined : room.players.find((p) => !p.is_chat && p.id !== me);
   if (!d || !mine) return <p className="p-6">{it.stanza.inAttesa}</p>;
   const myTurn = d.turn_player_id === me;
   const turnName = room.players.find((p) => p.id === d.turn_player_id)?.name ?? "";
@@ -43,8 +44,10 @@ export default function SpecchioView({
           <span className="eyebrow">
             {it.specchio.giro} {d.round + 1}/{d.rounds}
           </span>
-          <h2 className="text-5xl font-black leading-none">{it.specchio.titolo}</h2>
-          <p className="text-sm muted">{it.specchio.descrizione}</p>
+          <h2 className="text-5xl font-black leading-none">
+            {raid ? it.raid.titolo : it.specchio.titolo}
+          </h2>
+          <p className="text-sm muted">{raid ? it.raid.descrizione : it.specchio.descrizione}</p>
         </div>
         <div className="flex items-center gap-3">
           <div
@@ -99,7 +102,9 @@ export default function SpecchioView({
 
       <section className="panel space-y-3 p-4" data-testid="spec-team">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-2xl font-extrabold">{it.stanza.laTuaSquadra}</h3>
+          <h3 className="text-2xl font-extrabold">
+            {raid ? it.specchio.squadraComune : it.stanza.laTuaSquadra}
+          </h3>
           {myTurn && card && (
             <p className="text-sm text-cyan-100">
               {it.specchio.scegliSlot.replace("{nome}", card.character.nome)}
