@@ -53,17 +53,28 @@ export default function Sfida() {
   );
 
   const leaderboard = (
-    <section aria-label={it.sfida.classifica} data-testid="daily-board" className="panel p-4">
-      <h2 className="text-xl font-bold">
-        {it.sfida.classifica} · {day}
-      </h2>
-      <ol className="mt-1 text-sm">
+    <section
+      aria-label={it.sfida.classifica}
+      data-testid="daily-board"
+      className="panel p-4 sm:p-5"
+    >
+      <div className="flex items-baseline justify-between">
+        <h2 className="text-2xl font-extrabold">{it.sfida.classifica}</h2>
+        <span className="chip">{day}</span>
+      </div>
+      <ol className="mt-3 grid gap-1.5 text-sm">
         {board.map((r, i) => (
-          <li key={r.match_id} className="flex justify-between">
-            <span>
-              {i + 1}. {r.name}
+          <li
+            key={r.match_id}
+            className={`flex items-center gap-3 rounded-xl border px-3 py-2 ${
+              i === 0 ? "border-amber-300/50 bg-amber-300/10" : "bg-white/[0.03]"
+            }`}
+          >
+            <span className="display w-7 text-xl font-black text-gold">
+              {["🥇", "🥈", "🥉"][i] ?? `${i + 1}.`}
             </span>
-            <span className="font-bold">{r.score}</span>
+            <span className="min-w-0 flex-1 truncate font-bold">{r.name}</span>
+            <span className="display text-xl font-black tabular-nums">{r.score}</span>
           </li>
         ))}
         {board.length === 0 && <li className="opacity-70">{it.sfida.vuota}</li>}
@@ -73,8 +84,9 @@ export default function Sfida() {
 
   if (!started)
     return (
-      <main className="mx-auto max-w-md space-y-4 p-6">
-        <h1 className="text-4xl font-bold">{it.sfida.titolo}</h1>
+      <main className="mx-auto max-w-md space-y-4 px-5 pt-10">
+        <span className="eyebrow">{it.sfida.eyebrow}</span>
+        <h1 className="text-5xl font-black leading-none sm:text-6xl">{it.sfida.titolo}</h1>
         <p className="text-sm muted">{it.sfida.descrizione}</p>
         <input
           aria-label={it.home.tuoNome}

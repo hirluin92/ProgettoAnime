@@ -26,9 +26,13 @@ Commit con identità `-c user.name=hirluin92 -c user.email=hirluin92@users.norep
 - **Scena di combattimento v2:** `components/battle/{BattleScene,Fighter}.tsx`, `lib/battle/{usePlayer,schedule,commentary,labels}.ts`; taglio di scena per le mosse speciali; riepilogo con sinergie e migliore in campo.
 - Test: 57 pytest, 5 Vitest, 11 Playwright. `make lint`/`make test` puliti.
 
+## Milestone 10 — Grafica v3 (branch `milestone/10-grafica-v3`, pubblicato su GitHub, NON ancora unito a `main` né online)
+Fatto: sistema di stile in `globals.css` (aurora animata, grana, pannelli con bordo luminoso, pulsanti con riflesso, `.reveal`/`.float`), font Big Shoulders + Plus Jakarta Sans, `SiteNav` e footer, home riprogettata (hero con carte vere da `/api/quick/options`), draft con barra dei passi e budget, scheda dettagli della carta (pannello al mouse + finestra con pulsante "i" anche su mobile; mosse/passive in italiano da `lib/battle/effetti.ts`, tratti/gruppi da `lib/battle/tratti.ts`), asta come palcoscenico (`TimerRing`, tabellone giocatori), lobby con copia-link, ingresso, 404, torneo con podio, sfida con classifica a medaglie, scontro con introduzione "VS" (Salta la interrompe), banner "Vittoria", suoni (whoosh e fanfara in `lib/battle/sound.ts`). Controllato a 390 px: nessuno scorrimento orizzontale.
+Da fare: provare su un telefono vero; suoni ancora sintetici (Web Audio); se l'anteprima Vercel piace, unire a `main` e ridistribuire; vedere l'overlay OBS con il nuovo stile durante un'asta reale.
+
 ## Da fare (in ordine di valore)
 1. **L'utente gioca e riporta:** una partita veloce, un'asta con amici, la sfida del giorno. Poi correggere schede/mosse/prezzi in base a cosa gli sembra sbagliato e rilanciare `balance_v2.py --scrivi`.
-2. **Non rivisti dal vivo dopo il redesign** (coperti solo dai test): asta in stanza multi-giocatore, sfida del giorno, overlay OBS, mobile (360 px mai provato su un telefono vero). Guardarli nel browser e sistemare l'aspetto.
+2. **Revisione grafica (2026-11-26, fatta):** rivisti nel browser sfida, partita veloce, lobby, ban, asta con 2 giocatori, torneo, replay e overlay OBS; simulato 360 px. Corretti: recap squadra, home mobile, badge voto fuori bordo, errori del server invisibili nella stanza, testo doppio "sta scegliendo il ruolo". **Resta:** provare su un telefono vero; la fase di ban dura sempre 30 s anche se tutti hanno già bannato solo se i ban non sono finiti (da verificare con 2 umani); torneo e classifica sono molto spartani (nessuna squadra visibile, solo i link alle partite).
 3. **Grafica rimandata:** suoni migliori (oggi solo beep Web Audio), home con statistiche live (stanze attive, ultimi scontri), rifinitura asta e mobile, mostrare le statistiche/mossa/passiva leggibili nella carta o in un dettaglio.
 4. **Asta v2:** mostrare sinergie e fila nell'asta e nel recap della squadra; il costo misurato oggi vale solo per partita veloce/sfida, l'asta in stanza resta a offerte libere.
 5. **Revisione dei dati** (decisione dell'utente): le 100 schede e i rating sono miei, inventati. Obito e Gotenks senza immagine.
@@ -50,6 +54,7 @@ Commit con identità `-c user.name=hirluin92 -c user.email=hirluin92@users.norep
 - Le password/stringhe di connessione non vanno mai in file o commit.
 - Lo script e2e di Playwright avvia da solo backend e frontend: fermare prima i server locali sulle porte 3000/8000.
 - I test automatici non vedono i problemi grafici: guardare sempre le schermate nel browser.
+- Layout: dentro un `grid` senza colonne esplicite il contenuto largo allarga la colonna e fa traboccare le carte: usare `grid-cols-[minmax(0,1fr)]`. Per provare 360 px la finestra di Chrome non si restringe: incorporare la pagina in un `<iframe>` largo 360 px (`flex:none`); gli screenshot sono ridotti in scala.
 
 ## Comandi utili
 - Dev: `docker compose up -d db`, poi backend `cd backend && uv run uvicorn app.main:app --port 8000` (con `DEV_TOOLS=1 TWITCH_READER=0`) e frontend `cd frontend && NEXT_PUBLIC_API_URL=http://127.0.0.1:8000 npm run dev`.

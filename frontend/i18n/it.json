@@ -9,7 +9,53 @@
     "codice": "Codice stanza",
     "entraCodice": "Entra con un codice",
     "partitaVeloce": "Partita veloce: draft da solo contro la CPU",
-    "sfidaGiorno": "Sfida del giorno con classifica"
+    "sfidaGiorno": "Sfida del giorno con classifica",
+    "eyebrow": "Aste live · Draft · Tornei",
+    "titoloHero": "Il colosseo degli anime",
+    "creaTitolo": "Gioca con gli amici",
+    "creaSotto": "2–20 giocatori · sette leggende all'asta · poi il torneo",
+    "modalita": "Da solo, subito",
+    "veloceTitolo": "Partita veloce",
+    "veloceTesto": "Fai il draft da solo contro la CPU e guarda lo scontro 7 contro 7.",
+    "sfidaTitolo": "Sfida del giorno",
+    "sfidaTesto": "Stesse opzioni per tutti, un solo tentativo. Sali in classifica.",
+    "vai": "Gioca",
+    "comeTitolo": "Come si gioca",
+    "passi": [
+      {
+        "n": "01",
+        "t": "All'asta",
+        "d": "Ogni lotto è un personaggio vero. Rilancia, passa o gioca il tutto per tutto: il server decide il timer."
+      },
+      {
+        "n": "02",
+        "t": "Forma la squadra",
+        "d": "Sette ruoli, un budget. Archetipi, sinergie e legami fanno la differenza."
+      },
+      {
+        "n": "03",
+        "t": "Vinci lo scontro",
+        "d": "Combattimento a turni 7 contro 7, mosse speciali e un torneo all'italiana."
+      }
+    ],
+    "caratteristiche": [
+      {
+        "t": "100 personaggi",
+        "d": "Da 5 anime, con schede, mosse e passive."
+      },
+      {
+        "t": "Asta in tempo reale",
+        "d": "Offerte live, timer autorevole dal server."
+      },
+      {
+        "t": "Sinergie e legami",
+        "d": "Le squadre coerenti combattono meglio."
+      },
+      {
+        "t": "Modalità streamer",
+        "d": "La chat di Twitch gioca come squadra."
+      }
+    ]
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -31,7 +77,9 @@
     "turni": "turni",
     "migliore": "Migliore in campo",
     "sinergie": "Sinergie",
-    "nessunaSinergia": "Nessuna sinergia attiva"
+    "nessunaSinergia": "Nessuna sinergia attiva",
+    "eyebrow": "Scontro 7 contro 7",
+    "vittoria": "Vittoria"
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
@@ -78,7 +126,17 @@
     "banRimasti": "Ban rimasti",
     "bannati": "Bannati",
     "cerca": "Cerca un personaggio",
-    "bannaBtn": "Banna"
+    "bannaBtn": "Banna",
+    "asta": "Asta live",
+    "offertaAttuale": "Offerta attuale",
+    "copiaLink": "Copia il link d'invito",
+    "copiato": "Link copiato!",
+    "postoLibero": "Posto libero",
+    "regole": "Regole della partita",
+    "entraTitolo": "Entra nella partita",
+    "torneo": "Torneo",
+    "guardaScontro": "Guarda lo scontro",
+    "squadre": "Le squadre"
   },
   "veloce": {
     "titolo": "Partita veloce",
@@ -90,7 +148,11 @@
     "squadra": "La tua squadra",
     "vuoto": "Libero",
     "ora": "Ora",
-    "passaSopra": "Passa sopra una carta per ingrandirla"
+    "passaSopra": "Passa sopra una carta per ingrandirla",
+    "draft": "Draft",
+    "dettagli": "Dettagli",
+    "chiudi": "Chiudi",
+    "scegliCarta": "Scegli"
   },
   "overlay": {
     "votaInChat": "Scrivi in chat: !offro N",
@@ -127,7 +189,14 @@
     "classifica": "Classifica di oggi",
     "vuota": "Nessuno ha ancora giocato oggi.",
     "punteggio": "Punteggio",
-    "posizione": "Posizione"
+    "posizione": "Posizione",
+    "eyebrow": "Una sola prova al giorno"
   },
-  "footerCredito": "Immagini: AniList"
+  "footerCredito": "Immagini: AniList",
+  "nav": {
+    "gioca": "Gioca",
+    "veloce": "Veloce",
+    "sfida": "Sfida",
+    "info": "Info"
+  }
 }

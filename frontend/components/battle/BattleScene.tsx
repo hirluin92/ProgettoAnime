@@ -1,11 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SHOW_IMAGES } from "@/lib/api";
 import it from "@/i18n/it.json";
 import { paletteFor } from "@/lib/animePalette";
 import { FILE, ROLES, STAT_NOMI } from "@/lib/battle/labels";
+import { fanfare, sweep } from "@/lib/battle/sound";
 import { useBattlePlayer, type Side } from "@/lib/battle/usePlayer";
 import type { MatchResult } from "@/lib/types/match";
 import CardArt from "./CardArt";
@@ -28,18 +29,28 @@ function TeamBar({ side, name, pct }: { side: Side; name: string; pct: number })
     side === "A"
       ? "linear-gradient(90deg,#35e0ff,#2f6bff)"
       : "linear-gradient(90deg,#ff8a3d,#ff3d81)";
+  const glow = side === "A" ? "rgb(53 224 255 / 0.55)" : "rgb(255 61 129 / 0.55)";
   return (
     <div className={`grid gap-1 ${side === "B" ? "text-right" : ""}`}>
-      <div className="display truncate text-base font-bold">{name}</div>
+      <div className={`flex items-baseline gap-2 ${side === "B" ? "flex-row-reverse" : ""}`}>
+        <span className="display truncate text-xl font-black">{name}</span>
+        <span className="display text-sm font-bold tabular-nums opacity-70">
+          {Math.round(pct)}%
+        </span>
+      </div>
       <div
-        className="relative h-4 overflow-hidden rounded-full border border-white/30 bg-black/50"
+        className="relative h-5 overflow-hidden rounded-full border border-white/25 bg-black/60"
         role="progressbar"
         aria-valuenow={Math.round(pct)}
         aria-label={name}
       >
         <motion.i
           className="absolute inset-0 rounded-full"
-          style={{ background: color, transformOrigin: side === "A" ? "left" : "right" }}
+          style={{
+            background: color,
+            transformOrigin: side === "A" ? "left" : "right",
+            boxShadow: `0 0 16px ${glow}`,
+          }}
           animate={{ scaleX: pct / 100 }}
           transition={{ duration: 0.35 }}
         />
@@ -65,9 +76,34 @@ export default function BattleScene({
   const { state: s, play, skip } = useBattlePlayer(result, { speed, sound, reduced });
   const { A, B } = result.squadre;
 
+  // Introduzione "VS" di circa 2 secondi prima dello scontro; "Salta" la interrompe senza riavviare.
+  const [intro, setIntro] = useState(false);
+  const cancelled = useRef(false);
   useEffect(() => {
-    if (autoplay) void play();
-  }, [autoplay, play]);
+    if (!autoplay) return;
+    cancelled.current = false;
+    if (reduced) {
+      void play();
+      return;
+    }
+    setIntro(true);
+    if (sound) sweep(180, 900, 0.6);
+    const t = setTimeout(() => {
+      setIntro(false);
+      if (!cancelled.current) void play();
+    }, 2000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoplay, play, reduced]);
+  const doSkip = () => {
+    cancelled.current = true;
+    setIntro(false);
+    skip();
+  };
+  useEffect(() => {
+    if (s.phase === "done" && sound && !cancelled.current) fanfare();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.phase]);
 
   useEffect(() => {
     if (s.phase === "done") onDone?.();
@@ -134,7 +170,9 @@ export default function BattleScene({
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-4">
           <TeamBar side="A" name={A.nome} pct={pct("A")} />
           <div className="text-center">
-            <div className="display text-3xl font-bold text-gold">VS</div>
+            <div className="display text-5xl font-black text-gold drop-shadow-[0_0_18px_rgb(255_212_90/0.6)]">
+              VS
+            </div>
             <small className="block text-xs font-bold opacity-70" data-testid="round">
               {s.turno ? `${it.battle.turno} ${s.turno}` : it.battle.pronto}
             </small>
@@ -142,6 +180,18 @@ export default function BattleScene({
           <TeamBar side="B" name={B.nome} pct={pct("B")} />
         </div>
 
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-[6%] bottom-3 h-16 rounded-[50%] bg-[radial-gradient(ellipse,rgb(139_92_255/0.45),transparent_70%)] blur-md"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-10 left-[12%] h-56 w-40 -rotate-12 bg-gradient-to-b from-cyan-300/25 to-transparent blur-xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-10 right-[12%] h-56 w-40 rotate-12 bg-gradient-to-b from-pink-400/25 to-transparent blur-xl"
+        />
         <div className="flex items-stretch justify-center gap-[clamp(6px,2vw,28px)] px-3 pb-8 pt-2">
           <div className="flex gap-[clamp(4px,1vw,14px)]">
             {[...FILE].reverse().map((f) => column("A", f))}
@@ -231,6 +281,68 @@ export default function BattleScene({
             </motion.div>
           )}
         </AnimatePresence>
+
+        <AnimatePresence>
+          {intro && (
+            <motion.div
+              key="intro"
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-[#07060f]/85 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.35 } }}
+            >
+              <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-6">
+                <motion.div
+                  className="display truncate text-right text-[clamp(1.6rem,6vw,4rem)] font-black text-cyan-200"
+                  initial={{ x: -160, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 140, damping: 16 }}
+                >
+                  {A.nome}
+                </motion.div>
+                <motion.div
+                  className="display text-grad text-[clamp(2.4rem,9vw,6rem)] font-black"
+                  initial={{ scale: 3, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.35, type: "spring", stiffness: 200, damping: 12 }}
+                >
+                  VS
+                </motion.div>
+                <motion.div
+                  className="display truncate text-[clamp(1.6rem,6vw,4rem)] font-black text-pink-300"
+                  initial={{ x: 160, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 140, damping: 16 }}
+                >
+                  {B.nome}
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {s.phase === "done" && !reduced && (
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-black/45"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 1, 0] }}
+            transition={{ duration: 3, times: [0, 0.12, 0.8, 1] }}
+          >
+            <motion.div
+              className="text-center"
+              initial={{ scale: 0.6, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ type: "spring", stiffness: 160, damping: 12 }}
+            >
+              <div className="eyebrow justify-center">{it.battle.vittoria}</div>
+              <div className="display text-grad text-[clamp(2.4rem,8vw,5.5rem)] font-black leading-none">
+                {result.squadre[result.vincitore].nome}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
       </motion.div>
 
       {s.caption && (
@@ -249,7 +361,7 @@ export default function BattleScene({
             <button className="btn btn-primary" onClick={() => void play()}>
               {s.phase === "idle" ? it.battle.combatti : it.battle.rigioca}
             </button>
-            <button className="btn" onClick={skip}>
+            <button className="btn" onClick={doSkip}>
               {it.battle.salta}
             </button>
             <button
@@ -267,10 +379,15 @@ export default function BattleScene({
 
           {s.phase === "done" && (
             <div data-testid="result" className="panel mt-4 space-y-4 p-5">
-              <h2 className="text-3xl font-bold text-gold">
-                {it.battle.vince} {result.squadre[result.vincitore].nome} · {result.totali.A}% a{" "}
-                {result.totali.B}%
-              </h2>
+              <div>
+                <span className="eyebrow">{it.battle.vince}</span>
+                <h2 className="text-5xl font-black leading-none">
+                  <span className="text-grad">{result.squadre[result.vincitore].nome}</span>
+                </h2>
+                <p className="display mt-1 text-2xl font-bold tabular-nums muted">
+                  {result.totali.A}% – {result.totali.B}%
+                </p>
+              </div>
               <p className="text-sm muted">
                 {result.turni} {it.battle.turni}
                 {mvp && ` · ${it.battle.migliore}: ${mvp.nome} (${mvp.danno})`}
