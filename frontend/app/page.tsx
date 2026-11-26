@@ -264,6 +264,13 @@ export default function Home() {
             accent="#ff3d81"
           />
           <ModeCard
+            href="/ranked"
+            icon="👑"
+            title={it.home.rankedTitolo}
+            text={it.home.rankedTesto}
+            accent="#7a5cff"
+          />
+          <ModeCard
             href="/veloce"
             icon="⚡"
             title={it.home.veloceTitolo}
@@ -278,11 +285,18 @@ export default function Home() {
             accent="#35e0ff"
           />
           <ModeCard
-            href="/sfida"
+            href="/duello/giorno"
             icon="🏆"
             title={it.home.sfidaTitolo}
             text={it.home.sfidaTesto}
             accent="#ffd45a"
+          />
+          <ModeCard
+            href="/album"
+            icon="🃏"
+            title={it.home.albumTitolo}
+            text={it.home.albumTesto}
+            accent="#3ddc97"
           />
         </div>
       </section>

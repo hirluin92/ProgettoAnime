@@ -10,7 +10,7 @@ const LINKS = [
   { href: "/", label: it.nav.gioca },
   { href: "/duello", label: it.nav.duello },
   { href: "/veloce", label: it.nav.veloce },
-  { href: "/sfida", label: it.nav.sfida },
+  { href: "/duello/giorno", label: it.nav.sfida },
   { href: "/ranked", label: it.nav.ranked },
   { href: "/album", label: it.nav.album },
   { href: "/negozio", label: it.nav.negozio },
@@ -37,7 +37,8 @@ export function Logo({ size = 34 }: { size?: number }) {
 export default function SiteNav() {
   const path = usePathname();
   const { profile } = useProfile();
-  const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+  const active = (href: string) =>
+    href === "/" || href === "/duello" ? path === href : path.startsWith(href);
   return (
     <header className="site-chrome sticky top-0 z-40">
       <div className="border-b bg-[#05040c]/70 backdrop-blur-xl">
@@ -56,7 +57,7 @@ export default function SiteNav() {
               <li
                 key={l.href}
                 className={
-                  ["/info", "/veloce", "/sfida", "/negozio", "/ranked"].includes(l.href)
+                  ["/info", "/veloce", "/duello/giorno", "/negozio", "/ranked"].includes(l.href)
                     ? "hidden sm:block"
                     : ""
                 }
