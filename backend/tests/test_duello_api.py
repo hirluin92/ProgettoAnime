@@ -158,3 +158,57 @@ def test_prize_for_profile_after_a_game(tmp_path) -> None:  # type: ignore[no-un
     for _ in range(6):
         out2 = client.post(f"/api/duello/{g2['id']}/turno", json={"mosse": []}).json()
     assert out2["premio"] is None
+
+
+# ---------- rompicapo del giorno ed ELO ----------
+def _gioca_tutto(pid: str, rnd: random.Random, stato: dict) -> dict:  # type: ignore[type-arg]
+    out: dict = {}  # type: ignore[type-arg]
+    for _ in range(6):
+        out = client.post(
+            f"/api/duello/{pid}/turno", json={"mosse": mosse_valide(stato, rnd)}
+        ).json()
+        stato = out["stato"]
+    return out
+
+
+def test_daily_puzzle_same_for_everyone_and_one_try_per_name(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'du5.db'}")
+    info = client.get("/api/duello/giorno/info").json()
+    assert info["mazzo"] == client.get("/api/duello/giorno/info").json()["mazzo"]
+    assert (
+        len(info["mazzo"]) == MAZZO and len(info["mazzo_cpu"]) == MAZZO and info["classifica"] == []
+    )
+    g1 = client.post("/api/duello/giorno/start", json={"name": "Anna"}).json()
+    g2 = client.post("/api/duello/giorno/start", json={"name": "Bruno"}).json()
+    assert [c["id"] for c in g1["stato"]["mano"]] == [c["id"] for c in g2["stato"]["mano"]]
+    assert {c["id"] for c in g1["stato"]["mano"]} <= {c["id"] for c in info["mazzo"]}
+    rnd = random.Random(1)
+    out = _gioca_tutto(g1["id"], rnd, g1["stato"])
+    assert out["finita"]
+    esito = client.get(f"/api/duello/giorno/{g1['id']}/esito").json()
+    assert 0 <= esito["stelle"] <= 3 and esito["posizione"] == 1
+    assert client.get(f"/api/duello/giorno/{g2['id']}/esito").status_code == 409
+    # un solo tentativo a nome (anche con maiuscole diverse)
+    assert client.post("/api/duello/giorno/start", json={"name": "anna"}).status_code == 409
+    assert client.post("/api/duello/giorno/start", json={"name": "  "}).status_code == 422
+    _gioca_tutto(g2["id"], rnd, g2["stato"])
+    board = client.get("/api/duello/giorno/info").json()["classifica"]
+    assert {r["nome"] for r in board} == {"Anna", "Bruno"}
+    assert board == sorted(board, key=lambda r: (-r["stelle"], -r["punteggio"]))
+    assert client.get("/api/duello/giorno/nope/esito").status_code == 404
+
+
+def test_elo_updates_with_results(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from app.profilo import ELO_CPU, nuovo_elo
+
+    assert nuovo_elo(1200, 1200, 1.0) == 1212 and nuovo_elo(1200, 1200, 0.0) == 1188
+    assert nuovo_elo(1200, 1200, 0.5) == 1200
+    assert nuovo_elo(1200, ELO_CPU["difficile"], 1.0) > nuovo_elo(1200, ELO_CPU["facile"], 1.0)
+    configure(f"sqlite:///{tmp_path / 'du6.db'}")
+    pid = client.post("/api/profile", json={"name": "Elena"}).json()["id"]
+    assert client.get(f"/api/profile/{pid}").json()["elo"] == 1200
+    g = avvia(21, "facile", pid)
+    out = _gioca_tutto(g["id"], random.Random(5), g["stato"])
+    pr = out["premio"]
+    assert pr["elo_prima"] == 1200 and pr["elo_dopo"] != 1200 or out["vinto"] is None
+    assert client.get(f"/api/profile/{pid}").json()["elo"] == pr["elo_dopo"]

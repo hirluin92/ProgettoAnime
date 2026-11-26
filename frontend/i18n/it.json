@@ -322,7 +322,8 @@
     "esci": "Dimentica questo profilo",
     "gioca": "Gioca per guadagnare XP",
     "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica.",
-    "scala": "Record Scala"
+    "scala": "Record Scala",
+    "elo": "ELO Duello"
   },
   "specchio": {
     "titolo": "Draft a specchio",
@@ -431,6 +432,23 @@
     "errore": "Qualcosa non ha funzionato",
     "favorisce": "Favorisce: {a}",
     "salta": "Salta",
-    "chiudi": "Chiudi"
+    "chiudi": "Chiudi",
+    "giornoTitolo": "Rompicapo del giorno",
+    "giornoTesto": "Stesso mazzo per tutti e stessa CPU: vince chi gioca meglio. Un tentativo al giorno.",
+    "giornoLink": "Rompicapo del giorno",
+    "latuoMazzo": "Il tuo mazzo di oggi",
+    "mazzoCpu": "Il mazzo della CPU",
+    "tuoNome": "Il tuo nome",
+    "giocaGiorno": "Gioca il rompicapo",
+    "classifica": "Classifica di oggi",
+    "stelle": "Stelle",
+    "stelleSpiega": "0 sconfitta · 1 pareggio · 2 vittoria · 3 vittoria con tutte e 3 le corsie",
+    "posizione": "Sei in posizione {n}",
+    "giaGiocato": "Hai già giocato oggi con questo nome",
+    "nessunoOggi": "Nessun risultato ancora: sii il primo!",
+    "tuoElo": "Il tuo ELO: {n}",
+    "costoMazzo": "Costo totale del mazzo: {n} · energia in 6 turni: {tot}",
+    "consiglioCosto": "Con mazzi più economici giochi più carte per partita: la CPU ne usa 7-8.",
+    "indietro": "Torna al Duello"
   }
 }

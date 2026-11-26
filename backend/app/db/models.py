@@ -49,10 +49,25 @@ class ProfileRow(Base):
     partite: Mapped[int] = mapped_column(Integer, default=0)
     vittorie: Mapped[int] = mapped_column(Integer, default=0)
     best_scala: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    elo: Mapped[int] = mapped_column(Integer, default=1200, server_default="1200")
     collezione: Mapped[list[str]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )
+
+
+class DuelloGiorno(Base):
+    """Risultato del rompicapo del giorno del Duello: un tentativo a nome."""
+
+    __tablename__ = "duello_giorno"
+    __table_args__ = (UniqueConstraint("day", "name_key", name="uq_duello_giorno_name"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    day: Mapped[str] = mapped_column(String(10), index=True)
+    name: Mapped[str] = mapped_column(String(24))
+    name_key: Mapped[str] = mapped_column(String(24))
+    stelle: Mapped[int] = mapped_column(Integer)
+    punteggio: Mapped[int] = mapped_column(Integer)
 
 
 class ProfileDay(Base):

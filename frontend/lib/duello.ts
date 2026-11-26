@@ -96,3 +96,24 @@ export function postiMax(l: LuogoView): number {
 }
 
 export const TUTORIAL_KEY = "arena.duello.regole";
+
+export interface GiornoRiga {
+  nome: string;
+  stelle: number;
+  punteggio: number;
+}
+export interface GiornoInfo {
+  day: string;
+  mazzo: CartaView[];
+  mazzo_cpu: CartaView[];
+  classifica: GiornoRiga[];
+}
+export interface GiornoEsito {
+  stelle: number;
+  punteggio: number;
+  posizione: number;
+  classifica: GiornoRiga[];
+}
+
+/** Energia totale disponibile in una partita: 1+2+…+6. */
+export const ENERGIA_TOTALE = 21;

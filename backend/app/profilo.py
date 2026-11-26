@@ -180,6 +180,7 @@ class ProfileView(Model):
     partite: int
     vittorie: int
     best_scala: int  # gradino più alto raggiunto nella Scala
+    elo: int = 1200  # punteggio di abilità nei Duelli
     collezione: list[str]
     collezione_totale: int
     obiettivi: list[ObiettivoView]
@@ -195,6 +196,8 @@ class Premio(Model):
     obiettivi_completati: list[ObiettivoView]
     punti_stagione: int
     nuove_carte: int
+    elo_prima: int | None = None
+    elo_dopo: int | None = None
 
 
 class ProfileIn(Model):
@@ -260,6 +263,7 @@ def _view(s, row: ProfileRow, giorno: str) -> ProfileView:  # type: ignore[no-un
         partite=row.partite,
         vittorie=row.vittorie,
         best_scala=row.best_scala,
+        elo=row.elo,
         collezione=sorted(row.collezione),
         collezione_totale=totale_collezione(),
         obiettivi=[
@@ -367,8 +371,18 @@ def assegna_premio_scala(
         )
 
 
+ELO_CPU = {"facile": 1000, "normale": 1250, "difficile": 1500}
+ELO_K = 24
+
+
+def nuovo_elo(mio: int, avversario: int, esito: float) -> int:
+    """ELO classico: `esito` 1 = vittoria, 0,5 = pareggio, 0 = sconfitta."""
+    atteso = 1 / (1 + 10 ** ((avversario - mio) / 400))
+    return max(100, round(mio + ELO_K * (esito - atteso)))
+
+
 def assegna_premio_duello(
-    profile_id: str | None, vinto: bool, livello: str, team_ids: list[str]
+    profile_id: str | None, vinto: bool | None, livello: str, team_ids: list[str]
 ) -> Premio | None:
     """Fine di un duello: XP, punti stagione e collezione."""
     if not profile_id or not UUID_RE.match(profile_id):
@@ -382,9 +396,13 @@ def assegna_premio_duello(
         guadagno = 20 + (30 + bonus if vinto else 0)
         row.xp += guadagno
         row.partite += 1
-        row.vittorie += int(vinto)
+        row.vittorie += int(bool(vinto))
         prima_coll = set(row.collezione)
         row.collezione = sorted(prima_coll | set(team_ids))
+        elo_prima = row.elo
+        row.elo = nuovo_elo(
+            row.elo, ELO_CPU.get(livello, 1200), 0.5 if vinto is None else (1.0 if vinto else 0.0)
+        )
         pts = (3 if vinto else 1) + (2 if vinto and livello == "difficile" else 0)
         stag = stagione_di(oggi())
         sc = s.scalar(
@@ -405,6 +423,8 @@ def assegna_premio_duello(
             obiettivi_completati=[],
             punti_stagione=pts,
             nuove_carte=len(set(team_ids) - prima_coll),
+            elo_prima=elo_prima,
+            elo_dopo=row.elo,
         )
 
 
