@@ -1,7 +1,7 @@
 # CLAUDE.md
 
-Gioco web d'asta e draft a tema anime. La specifica completa è in `PIANO_MVP.md`:
-leggila sempre prima di iniziare un lavoro nuovo.
+Gioco web d'asta e draft a tema anime. **Leggi prima `STATO.md`** (cosa è fatto, cosa resta da fare, trappole note, dove è online).
+La specifica completa è in `PIANO_MVP.md`; il piano V2 in `PROPOSTA_V2.md`.
 
 ## Regole di lavoro
 
