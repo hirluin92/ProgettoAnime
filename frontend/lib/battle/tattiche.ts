@@ -9,8 +9,8 @@ export const TATTICA_INFO: Record<Tattica, { nome: string; icona: string; batte:
 };
 
 export const FASI = 3;
-export const BONUS = 15;
-export const MALUS = 10;
+export const BONUS = 25;
+export const MALUS = 15;
 
 export function nomeTattica(t: string): string {
   return TATTICA_INFO[t as Tattica]?.nome ?? t;

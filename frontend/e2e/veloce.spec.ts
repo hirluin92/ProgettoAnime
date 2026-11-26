@@ -12,6 +12,7 @@ test("una partita veloce si completa in meno di 3 minuti", async ({ page }) => {
   await page.getByRole("button", { name: "Salta" }).click();
   await expect(page.getByTestId("result")).toBeVisible();
   await expect(page.getByTestId("momenti")).toBeVisible();
+  await expect(page.getByTestId("perche")).toBeVisible();
   await expect(page.getByTestId("arena-info")).toBeVisible();
   expect(Date.now() - t0).toBeLessThan(180_000);
 });

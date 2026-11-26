@@ -98,7 +98,7 @@ export default function BattleScene({
   hideChrome?: boolean;
 }) {
   const reduced = useReducedMotion();
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(2); // scontro breve di default: ×1 per rivederlo con calma
   const [sound, setSound] = useState(true);
   const { state: s, play, skip } = useBattlePlayer(result, { speed, sound, reduced });
   const { A, B } = result.squadre;

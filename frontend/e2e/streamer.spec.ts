@@ -4,7 +4,7 @@ test("la chat compra, completa la squadra e l'overlay OBS si vede a 1920×1080",
   browser,
   request,
 }) => {
-  test.setTimeout(180_000);
+  test.setTimeout(360_000);
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto("/");

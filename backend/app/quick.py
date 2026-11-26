@@ -27,10 +27,11 @@ from app.engine.arene import arena_per_seme
 from app.engine.formazioni import FORMAZIONI
 from app.engine.formazioni import ORDINE as FORM_ORDINE
 from app.engine.missioni import BONUS, completata, missione_per_seme
-from app.engine.models import Character, MatchResult, Model, Team
+from app.engine.models import Character, MatchResult, Model, Side, Team
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
-from app.engine.simulate import simulate
+from app.engine.simulate import simulate, simulate_fino_a
+from app.engine.spiega import esito_fase, perche, righe_fase
 from app.profilo import Partita, Premio, assegna_premio
 
 router = APIRouter(prefix="/api/quick")
@@ -108,6 +109,7 @@ class PlayResponse(Model):
     cpu_spent: int
     missione: MissioneEsito
     premio: Premio | None = None
+    perche: list[str] = Field(default_factory=list)  # i motivi del risultato, in italiano
 
 
 @lru_cache(maxsize=256)
@@ -253,6 +255,21 @@ def cpu_formazione(seed: int) -> str:
     return random.Random(f"formazione:{seed}").choice(FORM_ORDINE)
 
 
+def _squadre(seed: int, members: list[Character], spent: int):  # type: ignore[no-untyped-def]
+    """Le due squadre (con il bonus missione) e gli esiti delle missioni."""
+    cpu, cpu_spent = cpu_draft(seed)
+    regole = load_ruleset()
+    mia = missione_per_seme(seed, "tu")
+    sua = missione_per_seme(seed, "cpu")
+    team_a = Team(nome="Tu", members=members)
+    team_b = Team(nome="CPU", members=cpu)
+    ok_a = completata(mia.id, team_a, BUDGET - spent, regole)
+    ok_b = completata(sua.id, team_b, BUDGET - cpu_spent, regole)
+    team_a.bonus_missione = BONUS if ok_a else 0.0
+    team_b.bonus_missione = BONUS if ok_b else 0.0
+    return team_a, team_b, cpu_spent, ok_a, ok_b, mia
+
+
 def run_quick(
     seed: int,
     picks: list[PickIn],
@@ -267,16 +284,7 @@ def run_quick(
         raise HTTPException(422, "tattiche non valide")
     if formazione not in FORMAZIONI:
         raise HTTPException(422, "formazione non valida")
-    cpu, cpu_spent = cpu_draft(seed)
-    regole = load_ruleset()
-    mia = missione_per_seme(seed, "tu")
-    sua = missione_per_seme(seed, "cpu")
-    team_a = Team(nome="Tu", members=members)
-    team_b = Team(nome="CPU", members=cpu)
-    ok_a = completata(mia.id, team_a, BUDGET - spent, regole)
-    ok_b = completata(sua.id, team_b, BUDGET - cpu_spent, regole)
-    team_a.bonus_missione = BONUS if ok_a else 0.0
-    team_b.bonus_missione = BONUS if ok_b else 0.0
+    team_a, team_b, cpu_spent, ok_a, ok_b, mia = _squadre(seed, members, spent)
     result = simulate(
         team_a,
         team_b,
@@ -296,5 +304,85 @@ def run_quick(
         cpu_riuscita=ok_b,
     )
     return PlayResponse(
-        id=repo.save_match(result), result=result, spent=spent, cpu_spent=cpu_spent, missione=esito
+        id=repo.save_match(result),
+        result=result,
+        spent=spent,
+        cpu_spent=cpu_spent,
+        missione=esito,
+        perche=perche(result),
+    )
+
+
+# ---------- anteprima di fase (tattiche scelte una fase alla volta) ----------
+class FaseIn(Model):
+    seed: int
+    picks: list[PickIn] = Field(min_length=7, max_length=7)
+    swap: list[str] | None = Field(default=None, min_length=2, max_length=2)
+    tattiche: list[str] = Field(min_length=1, max_length=2)  # quelle già scelte (1 o 2)
+    carica: Literal["subito", "carica"] = "subito"
+    formazione: str = "classica"
+
+
+class MembroFase(Model):
+    nome: str
+    hp_pct: int
+    vivo: bool
+
+
+class FaseOut(Model):
+    fase: int  # fasi già giocate (1 o 2)
+    tue: list[str]
+    cpu: list[str]
+    confronti: list[str]  # una frase per fase giocata
+    membri: dict[str, list[MembroFase]]
+    percento: dict[str, int]
+    righe: list[str]  # i momenti importanti dell'ultima fase
+    finita: bool
+
+
+@router.post("/fase")
+def anteprima_fase(req: FaseIn) -> FaseOut:
+    """Gioca le prime fasi con le tattiche già scelte e mostra come è andata, senza spoiler.
+
+    Le scelte della CPU per le fasi successive non vengono rivelate; il risultato finale
+    resta quello di /play con lo stesso piano completo (la simulazione è deterministica).
+    """
+    members, spent = validate_picks(req.seed, req.picks, req.swap)
+    if any(t not in tat.TATTICHE for t in req.tattiche):
+        raise HTTPException(422, "tattiche non valide")
+    if req.formazione not in FORMAZIONI:
+        raise HTTPException(422, "formazione non valida")
+    fase = len(req.tattiche)
+    team_a, team_b, _, _, _, _ = _squadre(req.seed, members, spent)
+    piano = req.tattiche + ["assalto"] * (tat.FASI - fase)  # le fasi future non influiscono
+    cpu_piano = tat.cpu_tattiche(req.seed, piano)
+    eventi, hp, mx = simulate_fino_a(
+        team_a,
+        team_b,
+        req.seed * 7 + 1,
+        load_ruleset(),
+        {"A": piano, "B": cpu_piano},
+        tat.FASE_INIZIO[fase] - 1,
+        arena=arena_per_seme(req.seed).id,
+        carica={"A": req.carica, "B": tat.cpu_carica(req.seed)},
+        formazione={"A": req.formazione, "B": cpu_formazione(req.seed)},
+    )
+    squadre: dict[Side, Team] = {"A": team_a, "B": team_b}
+    membri = {
+        s: [
+            MembroFase(nome=m.nome, hp_pct=round(100 * h / x) if x else 0, vivo=h > 0)
+            for m, h, x in zip(squadre[s].members, hp[s], mx[s], strict=True)
+        ]
+        for s in ("A", "B")
+    }
+    pct = {s: round(100 * sum(hp[s]) / max(1, sum(mx[s]))) for s in ("A", "B")}
+    return FaseOut(
+        fase=fase,
+        tue=req.tattiche,
+        cpu=cpu_piano[:fase],
+        confronti=[esito_fase(req.tattiche[i], cpu_piano[i]) for i in range(fase)],
+        membri=membri,
+        percento=pct,
+        righe=righe_fase(squadre, eventi, fase),
+        finita=not any(hp["A"]) or not any(hp["B"]),
     )

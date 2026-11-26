@@ -14,8 +14,8 @@ TATTICHE: tuple[str, ...] = ("assalto", "tecnica", "guardia")
 BATTE: dict[str, str] = {"assalto": "tecnica", "tecnica": "guardia", "guardia": "assalto"}
 FASI = 3
 FASE_INIZIO: tuple[int, ...] = (1, 4, 7)  # primo turno di ogni fase
-BONUS_VITTORIA = 1.15
-MALUS_SCONFITTA = 0.90
+BONUS_VITTORIA = 1.25
+MALUS_SCONFITTA = 0.85
 
 Esito = Literal["A", "B", "pari"]
 
