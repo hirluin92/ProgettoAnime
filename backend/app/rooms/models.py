@@ -28,6 +28,7 @@ class RoomSettings(Model):
     plan_timeout: int = Field(
         default=45, ge=0, le=180
     )  # secondi per il piano di battaglia; 0 = salta
+    formato: Literal["girone", "eliminazione"] = "girone"  # formato del torneo
 
 
 class PlayerView(Model):
@@ -66,6 +67,7 @@ class MatchRef(Model):
     winner: str | None  # None = pareggio
     total_a: int
     total_b: int
+    bye: bool = False  # turno saltato (eliminazione): passa il giocatore a
 
 
 class StandingRow(Model):
@@ -97,6 +99,8 @@ class TournamentView(Model):
     giornate: list[list[MatchRef]]
     classifica: list[StandingRow]
     missioni: list[MissionResult] = Field(default_factory=list)
+    formato: Literal["girone", "eliminazione"] = "girone"
+    campione: str | None = None  # id del vincitore (solo eliminazione)
 
 
 class RoomView(Model):

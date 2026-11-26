@@ -17,6 +17,7 @@ from app.engine.formazioni import FORMAZIONI
 from app.engine.missioni import BONUS, MISSIONI, completata, missione_per_seme
 from app.engine.models import Team
 from app.engine.roles import ROLES
+from app.engine.scoring import potenza_ruolo
 from app.engine.simulate import simulate
 from app.rooms import tournament
 from app.rooms.auction import Auction, BidError
@@ -379,31 +380,64 @@ class RoomManager:
                 )
             )
             bonus[p.id] = BONUS if ok else 0.0
-        for rnd in tournament.schedule(len(players)):
-            refs = []
-            for i, j in rnd:
-                pa, pb = players[i], players[j]
-                team_a = Team(nome=pa.name, members=[pa.slots[r] for r in ROLES],  # type: ignore[misc]
-                              bonus_missione=bonus.get(pa.id, 0.0))  # fmt: skip
-                team_b = Team(nome=pb.name, members=[pb.slots[r] for r in ROLES],  # type: ignore[misc]
-                              bonus_missione=bonus.get(pb.id, 0.0))  # fmt: skip
-                plan_a, plan_b = self._plan_of(room, pa), self._plan_of(room, pb)
-                res = simulate(
-                    team_a,
-                    team_b,
-                    tournament.match_seed(room.seed, i, j),
-                    rules,
-                    tattiche={"A": plan_a["tattiche"], "B": plan_b["tattiche"]},
-                    arena=arena,
-                    carica={"A": plan_a["carica"], "B": plan_b["carica"]},
-                    formazione={"A": plan_a["formazione"], "B": plan_b["formazione"]},
-                )
-                mid = await asyncio.to_thread(repo.save_match, res, room.code)
+
+        async def gioca(pa: Player, pb: Player) -> MatchRef:
+            i, j = players.index(pa), players.index(pb)
+            team_a = Team(nome=pa.name, members=[pa.slots[r] for r in ROLES],  # type: ignore[misc]
+                          bonus_missione=bonus.get(pa.id, 0.0))  # fmt: skip
+            team_b = Team(nome=pb.name, members=[pb.slots[r] for r in ROLES],  # type: ignore[misc]
+                          bonus_missione=bonus.get(pb.id, 0.0))  # fmt: skip
+            plan_a, plan_b = self._plan_of(room, pa), self._plan_of(room, pb)
+            res = simulate(
+                team_a,
+                team_b,
+                tournament.match_seed(room.seed, i, j),
+                rules,
+                tattiche={"A": plan_a["tattiche"], "B": plan_b["tattiche"]},
+                arena=arena,
+                carica={"A": plan_a["carica"], "B": plan_b["carica"]},
+                formazione={"A": plan_a["formazione"], "B": plan_b["formazione"]},
+            )
+            mid = await asyncio.to_thread(repo.save_match, res, room.code)
+            if room.settings.formato == "eliminazione":  # niente pareggi: avanza chi ha la meglio
+                winner: str | None = pa.id if res.vincitore == "A" else pb.id
+            else:
                 winner = None if res.pareggio else (pa.id if res.vincitore == "A" else pb.id)
-                refs.append(MatchRef(match_id=mid, a=pa.id, b=pb.id, winner=winner,
-                                     total_a=res.totali["A"], total_b=res.totali["B"]))  # fmt: skip
-            rounds.append(refs)
-        room.tournament = tournament.build(ids, rounds)
+            return MatchRef(match_id=mid, a=pa.id, b=pb.id, winner=winner,
+                            total_a=res.totali["A"], total_b=res.totali["B"])  # fmt: skip
+
+        if room.settings.formato == "eliminazione":
+            # teste di serie: la squadra più forte (somma delle potenze negli slot) è la prima
+            def forza(p: Player) -> int:
+                return sum(potenza_ruolo(c, r) for r in ROLES if (c := p.slots[r]) is not None)
+
+            players.sort(key=lambda p: (-forza(p), p.id))
+            ids = [p.id for p in players]
+            accoppiati = [
+                (players[a], players[b] if b is not None else None)
+                for a, b in tournament.primo_turno(len(players))
+            ]
+            while True:
+                refs: list[MatchRef] = []
+                vincitori: list[Player] = []
+                for pa, pb in accoppiati:
+                    if pb is None:
+                        refs.append(MatchRef(match_id="", a=pa.id, b="", winner=pa.id,
+                                             total_a=0, total_b=0, bye=True))  # fmt: skip
+                        vincitori.append(pa)
+                        continue
+                    ref = await gioca(pa, pb)
+                    refs.append(ref)
+                    vincitori.append(pa if ref.winner == pa.id else pb)
+                rounds.append(refs)
+                if len(vincitori) == 1:
+                    break
+                accoppiati = [(vincitori[i], vincitori[i + 1]) for i in range(0, len(vincitori), 2)]
+            room.tournament = tournament.build_eliminazione(ids, rounds)
+        else:
+            for rnd in tournament.schedule(len(players)):
+                rounds.append([await gioca(players[i], players[j]) for i, j in rnd])
+            room.tournament = tournament.build(ids, rounds)
         room.tournament.missioni = missioni
         await room.broadcast(
             [RoomState(room=room.view()), TournamentResult(tournament=room.tournament)]
