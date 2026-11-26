@@ -11,6 +11,7 @@ test("sfida del giorno: un tentativo a nome e classifica", async ({ browser }) =
   await playDraft(page);
   await expect(page.getByTestId("arena")).toBeVisible();
   await expect(page.getByTestId("commentary")).toBeVisible();
+  await page.getByRole("button", { name: "Salta" }).click();
   await expect(page.getByTestId("daily-result")).toContainText("Posizione");
 
   // secondo tentativo con lo stesso nome: rifiutato

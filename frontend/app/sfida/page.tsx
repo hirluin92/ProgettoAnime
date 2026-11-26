@@ -5,6 +5,7 @@ import QuickGame, { type Played } from "@/components/QuickGame";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import type { DraftOptions, PickIn } from "@/lib/draft";
+import { getProfileId, useProfile } from "@/lib/profile";
 
 interface Row {
   name: string;
@@ -23,11 +24,16 @@ interface Result {
 }
 
 export default function Sfida() {
+  const { profile } = useProfile();
   const [name, setName] = useState("");
   const [started, setStarted] = useState(false);
   const [board, setBoard] = useState<Row[]>([]);
   const [day, setDay] = useState("");
   const [result, setResult] = useState<Result | null>(null);
+
+  useEffect(() => {
+    if (profile) setName((n) => n || profile.name);
+  }, [profile]);
 
   const refresh = useCallback(async () => {
     const d = await api<Daily>("/api/daily");
@@ -51,7 +57,15 @@ export default function Sfida() {
     ) => {
       const r = await api<Result>("/api/daily/play", {
         method: "POST",
-        body: JSON.stringify({ name, picks, swap, tattiche, carica, formazione }),
+        body: JSON.stringify({
+          name,
+          picks,
+          swap,
+          tattiche,
+          carica,
+          formazione,
+          profile_id: getProfileId(),
+        }),
       });
       setResult(r);
       void refresh();
