@@ -45,7 +45,7 @@ def test_battle_log_is_consistent() -> None:
         assert res.eventi[0].tipo == "ingresso" and res.eventi[-1].tipo == "fine"
         hp = {s: [u.hp for u in res.unita[s]] for s in ("A", "B")}
         for e in res.eventi:
-            if e.tipo != "azione":
+            if e.tipo not in ("azione", "effetti"):
                 continue
             for x in e.esiti:
                 hp[x.lato][x.idx] += x.delta

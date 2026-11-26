@@ -12,6 +12,10 @@ export function baseMs(e: Ev): number {
       return 350;
     case "fase":
       return 1500;
+    case "effetti":
+      return 800;
+    case "respiro":
+      return 2200;
     case "azione":
       return e.speciale ? 2200 : 500;
     case "fine":

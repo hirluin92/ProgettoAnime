@@ -47,6 +47,7 @@ export type Sinergie = Sinergia[];
 export type Vincitore = "A" | "B";
 export type Pareggio = boolean;
 export type Turni = number;
+export type Arena = string | null;
 export type Tipo = "ingresso";
 export type Tipo1 = "turno";
 export type N = number;
@@ -69,11 +70,19 @@ export type Ko = boolean;
 export type Schivata = boolean;
 export type Crit = boolean;
 export type Stordito = boolean;
+export type Effetto3 = string | null;
 export type Esiti = Esito1[];
-export type Tipo4 = "fine";
+export type Tipo4 = "effetti";
+export type Turno3 = number;
+export type Esiti1 = Esito1[];
+export type Tipo5 = "respiro";
+export type Turno4 = number;
+export type Lato2 = "A" | "B";
+export type Idx2 = number;
+export type Tipo6 = "fine";
 export type Vincitore1 = "A" | "B";
 export type Motivo = "ko" | "tempo";
-export type Eventi = (Ingresso | Turno | Fase | Azione | Fine)[];
+export type Eventi = (Ingresso | Turno | Fase | Azione | Effetti | Respiro | Fine)[];
 
 export interface MatchResult {
   seed: Seed;
@@ -87,6 +96,8 @@ export interface MatchResult {
   pareggio: Pareggio;
   turni: Turni;
   tattiche: Tattiche;
+  arena: Arena;
+  carica: Carica;
   eventi: Eventi;
 }
 export interface Squadre {
@@ -149,6 +160,9 @@ export interface Totali {
 export interface Tattiche {
   [k: string]: string[];
 }
+export interface Carica {
+  [k: string]: string;
+}
 export interface Ingresso {
   tipo: Tipo;
   stato: Stato;
@@ -160,6 +174,7 @@ export interface Stato {
   hp: Hp1;
   energia: Energia;
   scudo: Scudo;
+  hype: Hype;
 }
 export interface Hp1 {
   [k: string]: number[];
@@ -169,6 +184,9 @@ export interface Energia {
 }
 export interface Scudo {
   [k: string]: number[];
+}
+export interface Hype {
+  [k: string]: number;
 }
 export interface Turno {
   tipo: Tipo1;
@@ -207,9 +225,29 @@ export interface Esito1 {
   schivata: Schivata;
   crit: Crit;
   stordito: Stordito;
+  effetto: Effetto3;
+}
+/**
+ * Danni da stati alterati a fine turno (bruciatura, veleno, corrosione).
+ */
+export interface Effetti {
+  tipo: Tipo4;
+  turno: Turno3;
+  esiti: Esiti1;
+  stato: Stato;
+}
+/**
+ * Ultimo respiro: l'ultimo superstite di una squadra riceve un bonus drammatico.
+ */
+export interface Respiro {
+  tipo: Tipo5;
+  turno: Turno4;
+  lato: Lato2;
+  idx: Idx2;
+  stato: Stato;
 }
 export interface Fine {
-  tipo: Tipo4;
+  tipo: Tipo6;
   vincitore: Vincitore1;
   motivo: Motivo;
 }

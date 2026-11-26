@@ -91,6 +91,8 @@ class Stato(Model):
     hp: dict[Side, list[int]]
     energia: dict[Side, list[int]]
     scudo: dict[Side, list[int]]
+    # barra del pubblico (0-100) per lato
+    hype: dict[Side, int] = Field(default_factory=lambda: {"A": 0, "B": 0})  # type: ignore[arg-type]
 
 
 class Esito(Model):
@@ -102,6 +104,8 @@ class Esito(Model):
     schivata: bool
     crit: bool
     stordito: bool
+    # stato alterato applicato o subito in questo evento: bruciatura, veleno, sigillo, corrosione
+    effetto: str | None = None
 
 
 class Ingresso(Model):
@@ -126,6 +130,25 @@ class Azione(Model):
     stato: Stato
 
 
+class Effetti(Model):
+    """Danni da stati alterati a fine turno (bruciatura, veleno, corrosione)."""
+
+    tipo: Literal["effetti"] = "effetti"
+    turno: int
+    esiti: list[Esito]
+    stato: Stato
+
+
+class Respiro(Model):
+    """Ultimo respiro: l'ultimo superstite di una squadra riceve un bonus drammatico."""
+
+    tipo: Literal["respiro"] = "respiro"
+    turno: int
+    lato: Side
+    idx: int
+    stato: Stato
+
+
 class Fase(Model):
     """Inizio di una fase: le tattiche scelte dai due lati e chi vince il confronto."""
 
@@ -142,7 +165,9 @@ class Fine(Model):
     motivo: Literal["ko", "tempo"]
 
 
-Event = Annotated[Ingresso | Turno | Fase | Azione | Fine, Field(discriminator="tipo")]
+Event = Annotated[
+    Ingresso | Turno | Fase | Azione | Effetti | Respiro | Fine, Field(discriminator="tipo")
+]
 
 
 class MatchResult(Model):
@@ -158,4 +183,6 @@ class MatchResult(Model):
     turni: int
     # tattiche scelte per le 3 fasi (vuoto nelle partite senza tattiche e in quelle vecchie)
     tattiche: dict[Side, list[str]] = Field(default_factory=dict)
+    arena: str | None = None
+    carica: dict[Side, str] = Field(default_factory=dict)  # subito | carica, per lato
     eventi: list[Event]

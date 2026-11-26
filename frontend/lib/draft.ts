@@ -10,8 +10,14 @@ export interface Hand {
   cards: Option[];
   mystery_cost: number;
 }
+export interface ArenaInfo {
+  id: string;
+  nome: string;
+  descrizione: string;
+}
 export interface DraftOptions {
   seed: number;
+  arena: ArenaInfo;
   budget: number;
   roles: string[];
   rerolls: number;

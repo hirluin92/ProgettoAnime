@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MatchResult } from "../types/match";
 import it from "@/i18n/it.json";
+import { STATI_INFO } from "./arene";
 import { nomeTattica } from "./tattiche";
 import { commentary } from "./commentary";
 import { baseMs, timeScale } from "./schedule";
@@ -26,7 +27,7 @@ export interface Float {
   side: Side;
   idx: number;
   text: string;
-  kind: "dmg" | "crit" | "heal" | "miss" | "stun" | "ko";
+  kind: "dmg" | "crit" | "heal" | "miss" | "stun" | "ko" | "burn" | "poison" | "seal";
 }
 export interface PlayerState {
   phase: "idle" | "playing" | "done";
@@ -39,6 +40,10 @@ export interface PlayerState {
   hits: Record<string, number>;
   floats: Float[];
   banner: Banner | null;
+  /** barra del pubblico (0-100) per lato */
+  hype: Record<Side, number>;
+  /** stati alterati attivi per combattente (chiave `${lato}${idx}`) */
+  stati: Record<string, { tipo: string; fino: number }>;
   /** fase in corso: tattiche dei due lati ed esito del confronto */
   fase: { n: number; A: string; B: string; esito: "A" | "B" | "pari" } | null;
   shake: number;
@@ -61,6 +66,8 @@ export function initialState(result: MatchResult): PlayerState {
     hits: {},
     floats: [],
     banner: null,
+    hype: { A: 0, B: 0 },
+    stati: {},
     fase: null,
     shake: 0,
     flash: 0,
@@ -90,131 +97,226 @@ export function useBattlePlayer(result: MatchResult, opts: Options) {
     [],
   );
 
-  const play = useCallback(async () => {
-    const my = ++token.current;
-    const scale = timeScale(result.eventi);
-    const sleep = (ms: number) =>
-      new Promise<void>((r) => setTimeout(r, (ms * scale) / optRef.current.speed));
-    const alive = () => my === token.current;
-    const snd = (f: number, d?: number, t?: OscillatorType, v?: number) => {
-      if (optRef.current.sound) beep(f, d, t, v);
-    };
-    const fx = (name: "shake" | "flash") =>
-      !optRef.current.reduced && patch((s) => ({ [name]: s[name] + 1 }) as Partial<PlayerState>);
+  const play = useCallback(
+    async (from = 0) => {
+      const my = ++token.current;
+      const scale = timeScale(result.eventi);
+      const sleep = (ms: number) =>
+        new Promise<void>((r) => setTimeout(r, (ms * scale) / optRef.current.speed));
+      const alive = () => my === token.current;
+      const snd = (f: number, d?: number, t?: OscillatorType, v?: number) => {
+        if (optRef.current.sound) beep(f, d, t, v);
+      };
+      const fx = (name: "shake" | "flash") =>
+        !optRef.current.reduced && patch((s) => ({ [name]: s[name] + 1 }) as Partial<PlayerState>);
 
-    patch({ ...initialState(result), phase: "playing" });
-    for (const [n, e] of result.eventi.entries()) {
-      if (!alive()) return;
-      const base = baseMs(e);
-      patch({ caption: commentary(result, e, n) });
-      switch (e.tipo) {
-        case "ingresso":
-          snd(330, 0.15);
-          patch({
-            hp: e.stato.hp as Record<Side, number[]>,
-            energia: e.stato.energia as Record<Side, number[]>,
-            scudo: e.stato.scudo as Record<Side, number[]>,
-            banner: {
-              title: "FIGHT!",
-              sub: `${result.squadre.A.nome} vs ${result.squadre.B.nome}`,
-            },
-          });
-          await sleep(base);
-          patch({ banner: null });
-          break;
-        case "turno":
-          patch({ turno: e.n, actor: null });
-          await sleep(base);
-          break;
-        case "fase":
-          snd(e.esito === "pari" ? 440 : e.esito === "A" ? 660 : 220, 0.2, "triangle");
-          patch({
-            fase: { n: e.fase, A: e.tattica.A, B: e.tattica.B, esito: e.esito },
-            banner: {
-              title: `${it.battle.fase} ${e.fase}`,
-              sub: `${nomeTattica(e.tattica.A)} vs ${nomeTattica(e.tattica.B)}`,
-            },
-          });
-          await sleep(base);
-          patch({ banner: null });
-          break;
-        case "azione": {
-          const att = result.squadre[e.da].members[e.idx];
-          const id = ++counter.current;
-          patch({ actor: { side: e.da, idx: e.idx, n: id, special: e.speciale } });
-          if (e.speciale) {
-            snd(520, 0.18, "sawtooth", 0.06);
-            patch({
-              banner: { title: e.mossa, sub: att.nome, side: e.da, idx: e.idx, special: true },
-            });
-            await sleep(base * 0.55);
-            patch({ banner: null });
-            fx("flash");
-          } else {
-            await sleep(base * 0.3);
+      patch({ ...initialState(result), phase: "playing" });
+      if (from > 0) {
+        // "Rivedi": ricostruisce il campo com'era subito prima dell'evento scelto
+        const pre: Partial<PlayerState> = {};
+        const log: Azione[] = [];
+        for (const e of result.eventi.slice(0, from)) {
+          if (e.tipo === "turno") pre.turno = e.n;
+          if (e.tipo === "fase")
+            pre.fase = { n: e.fase, A: e.tattica.A, B: e.tattica.B, esito: e.esito };
+          if (e.tipo === "azione") log.push(e);
+          if (
+            e.tipo === "ingresso" ||
+            e.tipo === "azione" ||
+            e.tipo === "effetti" ||
+            e.tipo === "respiro"
+          ) {
+            pre.hp = e.stato.hp as Record<Side, number[]>;
+            pre.energia = e.stato.energia as Record<Side, number[]>;
+            pre.scudo = e.stato.scudo as Record<Side, number[]>;
+            pre.hype = e.stato.hype as Record<Side, number>;
           }
-          const floats: Float[] = [];
-          const hits: Record<string, number> = {};
-          for (const x of e.esiti) {
-            const fid = ++counter.current;
-            const key = `${x.lato}${x.idx}`;
-            if (x.schivata)
-              floats.push({ id: fid, side: x.lato, idx: x.idx, text: "MISS", kind: "miss" });
-            else if (x.stordito)
-              floats.push({ id: fid, side: x.lato, idx: x.idx, text: "STUN", kind: "stun" });
-            else if (x.delta < 0) {
-              hits[key] = fid;
-              floats.push({
-                id: fid,
-                side: x.lato,
-                idx: x.idx,
-                text: `${-x.delta}`,
-                kind: x.crit ? "crit" : "dmg",
-              });
-            } else if (x.delta > 0)
-              floats.push({ id: fid, side: x.lato, idx: x.idx, text: `+${x.delta}`, kind: "heal" });
-          }
-          const anyKo = e.esiti.some((x) => x.ko);
-          snd(e.da === "A" ? 460 : 380, 0.06);
-          if (anyKo) snd(150, 0.3, "sawtooth", 0.1);
-          if (e.speciale || anyKo || e.esiti.some((x) => x.crit)) fx("shake");
-          patch((s) => ({
-            hp: e.stato.hp as Record<Side, number[]>,
-            energia: e.stato.energia as Record<Side, number[]>,
-            scudo: e.stato.scudo as Record<Side, number[]>,
-            hits: { ...s.hits, ...hits },
-            floats: [...s.floats, ...floats],
-            log: [...s.log, e],
-          }));
-          setTimeout(
-            () =>
-              patch((s) => ({
-                floats: s.floats.filter((f) => !floats.some((g) => g.id === f.id)),
-              })),
-            1100,
-          );
-          await sleep(e.speciale ? base * 0.45 : base * 0.7);
-          break;
         }
-        case "fine":
-          patch({ actor: null, vincitore: e.vincitore });
-          fx("flash");
-          fx("shake");
-          snd(180, 0.5, "sawtooth", 0.12);
-          patch({ banner: { title: e.motivo === "ko" ? "K.O." : "TEMPO", ko: true } });
-          await sleep(base * 0.4);
-          patch({
-            banner: {
-              title: "VINCE",
-              sub: `${result.squadre[e.vincitore].nome} · ${result.totali[e.vincitore]}% contro ${result.totali[other(e.vincitore)]}%`,
-            },
-          });
-          await sleep(base * 0.6);
-          break;
+        patch({ ...pre, log });
       }
-    }
-    if (alive()) patch({ phase: "done", banner: null });
-  }, [result, patch]);
+      for (const [n, e] of result.eventi.entries()) {
+        if (n < from) continue;
+        if (!alive()) return;
+        const base = baseMs(e);
+        patch({ caption: commentary(result, e, n) });
+        switch (e.tipo) {
+          case "ingresso":
+            snd(330, 0.15);
+            patch({
+              hp: e.stato.hp as Record<Side, number[]>,
+              energia: e.stato.energia as Record<Side, number[]>,
+              scudo: e.stato.scudo as Record<Side, number[]>,
+              banner: {
+                title: "FIGHT!",
+                sub: `${result.squadre.A.nome} vs ${result.squadre.B.nome}`,
+              },
+            });
+            await sleep(base);
+            patch({ banner: null });
+            break;
+          case "turno":
+            patch({ turno: e.n, actor: null });
+            await sleep(base);
+            break;
+          case "fase":
+            snd(e.esito === "pari" ? 440 : e.esito === "A" ? 660 : 220, 0.2, "triangle");
+            patch({
+              fase: { n: e.fase, A: e.tattica.A, B: e.tattica.B, esito: e.esito },
+              banner: {
+                title: `${it.battle.fase} ${e.fase}`,
+                sub: `${nomeTattica(e.tattica.A)} vs ${nomeTattica(e.tattica.B)}`,
+              },
+            });
+            await sleep(base);
+            patch({ banner: null });
+            break;
+          case "azione": {
+            const att = result.squadre[e.da].members[e.idx];
+            const id = ++counter.current;
+            patch({ actor: { side: e.da, idx: e.idx, n: id, special: e.speciale } });
+            if (e.effetto === "combo") {
+              snd(700, 0.12, "square", 0.06);
+              patch({ banner: { title: "COMBO!", sub: att.nome } });
+            }
+            if (e.speciale) {
+              snd(520, 0.18, "sawtooth", 0.06);
+              patch({
+                banner: { title: e.mossa, sub: att.nome, side: e.da, idx: e.idx, special: true },
+              });
+              await sleep(base * 0.55);
+              patch({ banner: null });
+              fx("flash");
+            } else {
+              await sleep(base * 0.3);
+            }
+            const floats: Float[] = [];
+            const hits: Record<string, number> = {};
+            const nuoviStati: Record<string, { tipo: string; fino: number }> = {};
+            for (const x of e.esiti) {
+              const fid = ++counter.current;
+              const key = `${x.lato}${x.idx}`;
+              if (x.effetto && x.effetto !== "corrosione" && !x.schivata) {
+                const info = STATI_INFO[x.effetto];
+                if (info) nuoviStati[key] = { tipo: x.effetto, fino: e.turno + info.turni };
+              }
+              if (x.schivata)
+                floats.push({ id: fid, side: x.lato, idx: x.idx, text: "MISS", kind: "miss" });
+              else if (x.stordito)
+                floats.push({ id: fid, side: x.lato, idx: x.idx, text: "STUN", kind: "stun" });
+              else if (x.delta < 0) {
+                hits[key] = fid;
+                floats.push({
+                  id: fid,
+                  side: x.lato,
+                  idx: x.idx,
+                  text: `${-x.delta}`,
+                  kind: x.crit ? "crit" : "dmg",
+                });
+              } else if (x.delta > 0)
+                floats.push({
+                  id: fid,
+                  side: x.lato,
+                  idx: x.idx,
+                  text: `+${x.delta}`,
+                  kind: "heal",
+                });
+            }
+            const anyKo = e.esiti.some((x) => x.ko);
+            snd(e.da === "A" ? 460 : 380, 0.06);
+            if (anyKo) snd(150, 0.3, "sawtooth", 0.1);
+            if (e.speciale || anyKo || e.esiti.some((x) => x.crit)) fx("shake");
+            patch((s) => ({
+              hp: e.stato.hp as Record<Side, number[]>,
+              energia: e.stato.energia as Record<Side, number[]>,
+              scudo: e.stato.scudo as Record<Side, number[]>,
+              hype: e.stato.hype as Record<Side, number>,
+              stati: { ...s.stati, ...nuoviStati },
+              hits: { ...s.hits, ...hits },
+              floats: [...s.floats, ...floats],
+              log: [...s.log, e],
+            }));
+            setTimeout(
+              () =>
+                patch((s) => ({
+                  floats: s.floats.filter((f) => !floats.some((g) => g.id === f.id)),
+                })),
+              1100,
+            );
+            await sleep(e.speciale ? base * 0.45 : base * 0.7);
+            if (e.effetto === "combo") patch({ banner: null });
+            break;
+          }
+          case "effetti": {
+            const floats: Float[] = e.esiti.map((x) => ({
+              id: ++counter.current,
+              side: x.lato,
+              idx: x.idx,
+              text: `${-x.delta}`,
+              kind: x.effetto === "bruciatura" ? "burn" : "poison",
+            }));
+            snd(260, 0.1, "sawtooth", 0.05);
+            if (e.esiti.some((x) => x.ko)) snd(150, 0.3, "sawtooth", 0.1);
+            patch((s) => ({
+              hp: e.stato.hp as Record<Side, number[]>,
+              hype: e.stato.hype as Record<Side, number>,
+              floats: [...s.floats, ...floats],
+            }));
+            setTimeout(
+              () =>
+                patch((s) => ({
+                  floats: s.floats.filter((f) => !floats.some((g) => g.id === f.id)),
+                })),
+              1100,
+            );
+            await sleep(base);
+            break;
+          }
+          case "respiro": {
+            const ch = result.squadre[e.lato].members[e.idx];
+            snd(330, 0.5, "sawtooth", 0.08);
+            fx("flash");
+            fx("shake");
+            patch({
+              banner: {
+                title: "ULTIMO RESPIRO",
+                sub: ch.nome,
+                side: e.lato,
+                idx: e.idx,
+                special: true,
+              },
+            });
+            await sleep(base * 0.7);
+            patch({
+              banner: null,
+              hp: e.stato.hp as Record<Side, number[]>,
+              energia: e.stato.energia as Record<Side, number[]>,
+              scudo: e.stato.scudo as Record<Side, number[]>,
+              hype: e.stato.hype as Record<Side, number>,
+            });
+            await sleep(base * 0.3);
+            break;
+          }
+          case "fine":
+            patch({ actor: null, vincitore: e.vincitore });
+            fx("flash");
+            fx("shake");
+            snd(180, 0.5, "sawtooth", 0.12);
+            patch({ banner: { title: e.motivo === "ko" ? "K.O." : "TEMPO", ko: true } });
+            await sleep(base * 0.4);
+            patch({
+              banner: {
+                title: "VINCE",
+                sub: `${result.squadre[e.vincitore].nome} · ${result.totali[e.vincitore]}% contro ${result.totali[other(e.vincitore)]}%`,
+              },
+            });
+            await sleep(base * 0.6);
+            break;
+        }
+      }
+      if (alive()) patch({ phase: "done", banner: null });
+    },
+    [result, patch],
+  );
 
   const skip = useCallback(() => {
     token.current++;
@@ -227,6 +329,7 @@ export function useBattlePlayer(result: MatchResult, opts: Options) {
       hp: (ultimo?.stato.hp ?? base.hp) as Record<Side, number[]>,
       energia: (ultimo?.stato.energia ?? base.energia) as Record<Side, number[]>,
       scudo: (ultimo?.stato.scudo ?? base.scudo) as Record<Side, number[]>,
+      hype: (ultimo?.stato.hype ?? base.hype) as Record<Side, number>,
       turno: result.turni,
       log: azioni,
       vincitore: result.vincitore,

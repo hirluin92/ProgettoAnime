@@ -6,6 +6,8 @@ import { SHOW_IMAGES } from "@/lib/api";
 import it from "@/i18n/it.json";
 import { paletteFor } from "@/lib/animePalette";
 import { FILE, ROLES, STAT_NOMI } from "@/lib/battle/labels";
+import { ARENE_INFO } from "@/lib/battle/arene";
+import { momentiMigliori } from "@/lib/battle/momenti";
 import { iconaTattica, nomeTattica } from "@/lib/battle/tattiche";
 import { fanfare, sweep } from "@/lib/battle/sound";
 import { useBattlePlayer, type Side } from "@/lib/battle/usePlayer";
@@ -25,7 +27,17 @@ export function useReducedMotion(): boolean {
   return reduced;
 }
 
-function TeamBar({ side, name, pct }: { side: Side; name: string; pct: number }) {
+function TeamBar({
+  side,
+  name,
+  pct,
+  hype,
+}: {
+  side: Side;
+  name: string;
+  pct: number;
+  hype: number;
+}) {
   const color =
     side === "A"
       ? "linear-gradient(90deg,#35e0ff,#2f6bff)"
@@ -56,6 +68,20 @@ function TeamBar({ side, name, pct }: { side: Side; name: string; pct: number })
           transition={{ duration: 0.35 }}
         />
       </div>
+      <div
+        className="relative h-1.5 overflow-hidden rounded-full bg-black/50"
+        role="progressbar"
+        aria-label={`${it.battle.pubblico} ${name}`}
+        aria-valuenow={hype}
+        title={`${it.battle.pubblico}: ${hype}%`}
+      >
+        <motion.i
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-300 to-orange-400"
+          style={{ transformOrigin: side === "A" ? "left" : "right" }}
+          animate={{ scaleX: hype / 100 }}
+          transition={{ duration: 0.4 }}
+        />
+      </div>
     </div>
   );
 }
@@ -76,6 +102,7 @@ export default function BattleScene({
   const [sound, setSound] = useState(true);
   const { state: s, play, skip } = useBattlePlayer(result, { speed, sound, reduced });
   const { A, B } = result.squadre;
+  const arena = result.arena ? ARENE_INFO[result.arena] : null;
 
   // Introduzione "VS" di circa 2 secondi prima dello scontro; "Salta" la interrompe senza riavviare.
   const [intro, setIntro] = useState(false);
@@ -132,6 +159,8 @@ export default function BattleScene({
     return { nome: result.squadre[side].members[Number(best[0].slice(1))].nome, danno: best[1] };
   }, [result]);
 
+  const momenti = useMemo(() => momentiMigliori(result), [result]);
+
   const column = (side: Side, fila: number[]) => (
     <div key={fila.join("-")} className="flex flex-col justify-center gap-[clamp(3px,0.8vw,10px)]">
       {fila.map((idx) => (
@@ -148,6 +177,11 @@ export default function BattleScene({
           special={!!s.actor?.special}
           hitN={s.hits[`${side}${idx}`] ?? 0}
           floats={s.floats.filter((f) => f.side === side && f.idx === idx)}
+          status={
+            s.stati[`${side}${idx}`] && s.turno <= s.stati[`${side}${idx}`].fino
+              ? s.stati[`${side}${idx}`].tipo
+              : null
+          }
         />
       ))}
     </div>
@@ -169,7 +203,7 @@ export default function BattleScene({
         data-testid="arena"
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-4">
-          <TeamBar side="A" name={A.nome} pct={pct("A")} />
+          <TeamBar side="A" name={A.nome} pct={pct("A")} hype={s.hype.A} />
           <div className="text-center">
             <div className="display text-5xl font-black text-gold drop-shadow-[0_0_18px_rgb(255_212_90/0.6)]">
               VS
@@ -208,7 +242,7 @@ export default function BattleScene({
               </div>
             )}
           </div>
-          <TeamBar side="B" name={B.nome} pct={pct("B")} />
+          <TeamBar side="B" name={B.nome} pct={pct("B")} hype={s.hype.B} />
         </div>
 
         <div
@@ -223,6 +257,15 @@ export default function BattleScene({
           aria-hidden="true"
           className="pointer-events-none absolute -top-10 right-[12%] h-56 w-40 rotate-12 bg-gradient-to-b from-pink-400/25 to-transparent blur-xl"
         />
+        {arena && (
+          <p
+            data-testid="arena-info"
+            className="px-4 text-center text-[0.68rem] font-bold uppercase tracking-widest text-cyan-100/80"
+          >
+            {arena.icona} {arena.nome} ·{" "}
+            <span className="normal-case tracking-normal">{arena.descrizione}</span>
+          </p>
+        )}
         <div className="flex items-stretch justify-center gap-[clamp(6px,2vw,28px)] px-3 pb-8 pt-2">
           <div className="flex gap-[clamp(4px,1vw,14px)]">
             {[...FILE].reverse().map((f) => column("A", f))}
@@ -447,6 +490,27 @@ export default function BattleScene({
                 })}
               </div>
             </div>
+          )}
+          {s.phase === "done" && momenti.length > 0 && (
+            <section className="panel mt-4 space-y-2 p-5" data-testid="momenti">
+              <h3 className="text-2xl font-extrabold">{it.battle.momenti}</h3>
+              <ul className="grid gap-2">
+                {momenti.map((m) => (
+                  <li
+                    key={m.da}
+                    className="flex items-center gap-3 rounded-xl border bg-white/[0.03] p-3"
+                  >
+                    <span className="display w-14 shrink-0 text-lg font-black text-gold">
+                      T{m.turno}
+                    </span>
+                    <span className="min-w-0 flex-1 text-sm">{m.testo}</span>
+                    <button className="btn min-h-9 px-3 text-xs" onClick={() => void play(m.da)}>
+                      ↻ {it.battle.rivedi}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
           <ol
             hidden={s.log.length === 0}

@@ -170,6 +170,34 @@
       "title": "Character",
       "type": "object"
     },
+    "Effetti": {
+      "description": "Danni da stati alterati a fine turno (bruciatura, veleno, corrosione).",
+      "properties": {
+        "tipo": {
+          "const": "effetti",
+          "default": "effetti",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
+        },
+        "esiti": {
+          "items": {
+            "$ref": "#/$defs/Esito"
+          },
+          "title": "Esiti",
+          "type": "array"
+        },
+        "stato": {
+          "$ref": "#/$defs/Stato"
+        }
+      },
+      "required": ["tipo", "turno", "esiti", "stato"],
+      "title": "Effetti",
+      "type": "object"
+    },
     "Esito": {
       "properties": {
         "lato": {
@@ -204,9 +232,31 @@
         "stordito": {
           "title": "Stordito",
           "type": "boolean"
+        },
+        "effetto": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effetto"
         }
       },
-      "required": ["lato", "idx", "delta", "scudo", "ko", "schivata", "crit", "stordito"],
+      "required": [
+        "lato",
+        "idx",
+        "delta",
+        "scudo",
+        "ko",
+        "schivata",
+        "crit",
+        "stordito",
+        "effetto"
+      ],
       "title": "Esito",
       "type": "object"
     },
@@ -316,6 +366,36 @@
       "title": "Passiva",
       "type": "object"
     },
+    "Respiro": {
+      "description": "Ultimo respiro: l'ultimo superstite di una squadra riceve un bonus drammatico.",
+      "properties": {
+        "tipo": {
+          "const": "respiro",
+          "default": "respiro",
+          "title": "Tipo",
+          "type": "string"
+        },
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
+        },
+        "lato": {
+          "enum": ["A", "B"],
+          "title": "Lato",
+          "type": "string"
+        },
+        "idx": {
+          "title": "Idx",
+          "type": "integer"
+        },
+        "stato": {
+          "$ref": "#/$defs/Stato"
+        }
+      },
+      "required": ["tipo", "turno", "lato", "idx", "stato"],
+      "title": "Respiro",
+      "type": "object"
+    },
     "Sinergia": {
       "properties": {
         "lato": {
@@ -385,9 +465,19 @@
           },
           "title": "Scudo",
           "type": "object"
+        },
+        "hype": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "propertyNames": {
+            "enum": ["A", "B"]
+          },
+          "title": "Hype",
+          "type": "object"
         }
       },
-      "required": ["hp", "energia", "scudo"],
+      "required": ["hp", "energia", "scudo", "hype"],
       "title": "Stato",
       "type": "object"
     },
@@ -546,14 +636,38 @@
       "title": "Tattiche",
       "type": "object"
     },
+    "arena": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Arena"
+    },
+    "carica": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "propertyNames": {
+        "enum": ["A", "B"]
+      },
+      "title": "Carica",
+      "type": "object"
+    },
     "eventi": {
       "items": {
         "discriminator": {
           "mapping": {
             "azione": "#/$defs/Azione",
+            "effetti": "#/$defs/Effetti",
             "fase": "#/$defs/Fase",
             "fine": "#/$defs/Fine",
             "ingresso": "#/$defs/Ingresso",
+            "respiro": "#/$defs/Respiro",
             "turno": "#/$defs/Turno"
           },
           "propertyName": "tipo"
@@ -570,6 +684,12 @@
           },
           {
             "$ref": "#/$defs/Azione"
+          },
+          {
+            "$ref": "#/$defs/Effetti"
+          },
+          {
+            "$ref": "#/$defs/Respiro"
           },
           {
             "$ref": "#/$defs/Fine"
@@ -592,6 +712,8 @@
     "pareggio",
     "turni",
     "tattiche",
+    "arena",
+    "carica",
     "eventi"
   ],
   "title": "MatchResult",

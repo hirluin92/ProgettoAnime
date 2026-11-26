@@ -24,7 +24,12 @@ const team = (n: string) => ({
     ch(`${n}${i}`),
   ) as MatchResult["squadre"][string]["members"],
 });
-const stato = { hp: { A: [], B: [] }, energia: { A: [], B: [] }, scudo: { A: [], B: [] } };
+const stato = {
+  hp: { A: [], B: [] },
+  energia: { A: [], B: [] },
+  scudo: { A: [], B: [] },
+  hype: { A: 0, B: 0 },
+};
 const result = {
   seed: 7,
   squadre: { A: team("a"), B: team("b") },
@@ -39,6 +44,7 @@ const esito = (lato: "A" | "B", idx: number, delta: number, ko = false) => ({
   schivata: false,
   crit: false,
   stordito: false,
+  effetto: null,
 });
 
 test("ogni tipo di evento ha una frase non vuota e deterministica", () => {
