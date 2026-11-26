@@ -12,17 +12,6 @@ ROLES: tuple[str, ...] = (
 FILA: tuple[int, ...] = (0, 1, 0, 1, 2, 2, 2)
 FILE_NOMI: tuple[str, ...] = ("Prima linea", "Centro", "Retrovia")
 
-# Archetipi adatti a ogni ruolo: il personaggio al posto giusto combatte meglio.
-ARCH_ADATTI: dict[str, frozenset[str]] = {
-    "Capitano": frozenset({"BRU", "MAG", "EVO"}),
-    "Vice": frozenset({"BRU", "ASS"}),
-    "Tank": frozenset({"TAN", "BRU"}),
-    "Danno": frozenset({"MAG", "ASS", "TIR"}),
-    "Supporto": frozenset({"SUP", "EVO", "TIR"}),
-    "Supporto II": frozenset({"SUP", "EVO", "MAG"}),
-    "Guaritore": frozenset({"GUA", "SUP"}),
-}
-
 ARCH_NOMI: dict[str, str] = {
     "BRU": "Lottatore",
     "ASS": "Assassino",

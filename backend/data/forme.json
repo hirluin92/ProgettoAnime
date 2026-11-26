@@ -1,0 +1,355 @@
+[
+ {
+  "base": "son-goku",
+  "slug": "super-saiyan",
+  "forma": "Super Saiyan",
+  "rating_delta": -3,
+  "mossa": {
+   "nome": "Kamehameha Super Saiyan",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Aura Dorata",
+   "effetto": "rage"
+  },
+  "costo_delta": -1
+ },
+ {
+  "base": "son-goku",
+  "slug": "ultra-istinto",
+  "forma": "Ultra Istinto",
+  "rating_delta": 1,
+  "mossa": {
+   "nome": "Colpo Ultra Istinto",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Riflessi Divini",
+   "effetto": "dodge"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "vegeta",
+  "slug": "super-saiyan-blue",
+  "forma": "Super Saiyan Blue",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Final Flash Blue",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Orgoglio Saiyan",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "son-gohan",
+  "slug": "bestia",
+  "forma": "Bestia",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Colpo Bestia",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Furia Latente",
+   "effetto": "rage"
+  },
+  "costo_delta": 1,
+  "arch": "BRU"
+ },
+ {
+  "base": "freezer",
+  "slug": "golden",
+  "forma": "Golden Freezer",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Death Ball Dorata",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Armatura Aurea",
+   "effetto": "armor"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "trunks",
+  "slug": "super-saiyan",
+  "forma": "Super Saiyan",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Spada Ardente",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Furia Ribelle",
+   "effetto": "firststrike"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "naruto-uzumaki",
+  "slug": "modalita-kurama",
+  "forma": "Modalità Kurama",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Rasengan Gigante",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Chakra della Volpe",
+   "effetto": "regen"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "naruto-uzumaki",
+  "slug": "eremita",
+  "forma": "Modalità Eremita",
+  "rating_delta": 1,
+  "mossa": {
+   "nome": "Rasengan Eremitico",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Chakra Naturale",
+   "effetto": "energy"
+  },
+  "costo_delta": 0,
+  "arch": "MAG"
+ },
+ {
+  "base": "sasuke-uchiha",
+  "slug": "rinnegan",
+  "forma": "Rinnegan",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Amaterasu",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Occhi Divini",
+   "effetto": "crit"
+  },
+  "costo_delta": 1,
+  "arch": "MAG"
+ },
+ {
+  "base": "kakashi-hatake",
+  "slug": "mangekyo",
+  "forma": "Mangekyō",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Kamui",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Occhio che Copia",
+   "effetto": "crit"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "itachi-uchiha",
+  "slug": "susanoo",
+  "forma": "Susanoo",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Spada di Totsuka",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Guardia Spirituale",
+   "effetto": "armor"
+  },
+  "costo_delta": 1,
+  "arch": "TAN"
+ },
+ {
+  "base": "madara-uchiha",
+  "slug": "susanoo-perfetto",
+  "forma": "Susanoo Perfetto",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Meteora Totale",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Corpo Eterno",
+   "effetto": "regen"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "monkey-d-luffy",
+  "slug": "gear-5",
+  "forma": "Gear 5",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Bazooka Gigante",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Risata del Sole",
+   "effetto": "lifesteal"
+  },
+  "costo_delta": 2
+ },
+ {
+  "base": "monkey-d-luffy",
+  "slug": "gear-4",
+  "forma": "Gear 4",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Re Cobra",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Muscoli d'Acciaio",
+   "effetto": "armor"
+  },
+  "costo_delta": 1,
+  "arch": "TAN"
+ },
+ {
+  "base": "roronoa-zoro",
+  "slug": "re-degli-inferi",
+  "forma": "Re degli Inferi",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Asura Ichibugin",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Aura del Demone",
+   "effetto": "crit"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "sanji",
+  "slug": "germa",
+  "forma": "Tuta Germa",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Diable Jambe Ardente",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Armatura Germa",
+   "effetto": "armor"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "tanjiro-kamado",
+  "slug": "segno",
+  "forma": "Segno del Cacciatore",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Danza del Sole",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Sangue Ardente",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "zenitsu-agatsuma",
+  "slug": "dio-del-tuono",
+  "forma": "Dio del Tuono",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Fulmine Divino",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Lampo",
+   "effetto": "firststrike"
+  },
+  "costo_delta": 2
+ },
+ {
+  "base": "nezuko-kamado",
+  "slug": "forma-demone",
+  "forma": "Forma Demone",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Sangue Esplosivo Pieno",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Rigenerazione Demoniaca",
+   "effetto": "regen"
+  },
+  "costo_delta": 1,
+  "arch": "BRU"
+ },
+ {
+  "base": "satoru-gojo",
+  "slug": "senza-limiti",
+  "forma": "Senza Limiti Aperto",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Viola Totale",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Infinito",
+   "effetto": "dodge"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "ryomen-sukuna",
+  "slug": "quattro-braccia",
+  "forma": "Quattro Braccia",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Smantellare",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Re delle Maledizioni",
+   "effetto": "crit"
+  },
+  "costo_delta": 1,
+  "arch": "BRU"
+ },
+ {
+  "base": "yuji-itadori",
+  "slug": "ricettacolo",
+  "forma": "Ricettacolo",
+  "rating_delta": 5,
+  "mossa": {
+   "nome": "Santuario Maligno",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Sukuna Interiore",
+   "effetto": "rage"
+  },
+  "costo_delta": 2,
+  "arch": "MAG"
+ },
+ {
+  "base": "yuta-okkotsu",
+  "slug": "rika-liberata",
+  "forma": "Rika Liberata",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Copia Totale",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Rika",
+   "effetto": "laststand"
+  },
+  "costo_delta": 1
+ }
+]

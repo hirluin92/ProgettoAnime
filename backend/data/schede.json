@@ -60,7 +60,7 @@
   "tratti": [
    "squadra-7"
   ],
-  "costo": 5
+  "costo": 7
  },
  "gaara": {
   "arch": "TAN",
@@ -75,7 +75,7 @@
   "tratti": [
    "jinchuriki"
   ],
-  "costo": 8
+  "costo": 10
  },
  "jiraiya": {
   "arch": "EVO",
@@ -90,7 +90,7 @@
   "tratti": [
    "sannin"
   ],
-  "costo": 6
+  "costo": 8
  },
  "monkey-d-luffy": {
   "arch": "BRU",
@@ -106,7 +106,7 @@
    "cappello-di-paglia",
    "fratelli-di-mare"
   ],
-  "costo": 8
+  "costo": 9
  },
  "roronoa-zoro": {
   "arch": "BRU",
@@ -137,7 +137,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 9
+  "costo": 10
  },
  "nami": {
   "arch": "MAG",
@@ -152,7 +152,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 4
+  "costo": 3
  },
  "tony-tony-chopper": {
   "arch": "GUA",
@@ -167,7 +167,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 3
+  "costo": 6
  },
  "jinbe": {
   "arch": "TAN",
@@ -182,7 +182,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 9
+  "costo": 10
  },
  "son-goku": {
   "arch": "BRU",
@@ -230,7 +230,7 @@
   "tratti": [
    "guerrieri-z"
   ],
-  "costo": 8
+  "costo": 9
  },
  "son-gohan": {
   "arch": "MAG",
@@ -246,7 +246,7 @@
    "saiyan",
    "guerrieri-z"
   ],
-  "costo": 7
+  "costo": 8
  },
  "crilin": {
   "arch": "TIR",
@@ -276,7 +276,7 @@
   "tratti": [
    "cattivi"
   ],
-  "costo": 10
+  "costo": 11
  },
  "tanjiro-kamado": {
   "arch": "BRU",
@@ -292,7 +292,7 @@
    "corpo-sterminatori",
    "famiglia-kamado"
   ],
-  "costo": 5
+  "costo": 6
  },
  "zenitsu-agatsuma": {
   "arch": "ASS",
@@ -307,7 +307,7 @@
   "tratti": [
    "corpo-sterminatori"
   ],
-  "costo": 8
+  "costo": 7
  },
  "inosuke-hashibira": {
   "arch": "BRU",
@@ -337,7 +337,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 6
+  "costo": 9
  },
  "gyomei-himejima": {
   "arch": "TAN",
@@ -352,7 +352,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 10
+  "costo": 12
  },
  "tengen-uzui": {
   "arch": "TIR",
@@ -367,7 +367,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 9
+  "costo": 8
  },
  "yuji-itadori": {
   "arch": "BRU",
@@ -382,7 +382,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 6
+  "costo": 7
  },
  "satoru-gojo": {
   "arch": "MAG",
@@ -413,7 +413,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 6
+  "costo": 8
  },
  "nobara-kugisaki": {
   "arch": "TIR",
@@ -428,7 +428,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 5
+  "costo": 4
  },
  "ryomen-sukuna": {
   "arch": "MAG",
@@ -459,7 +459,7 @@
    "studenti-tokyo",
    "clan-zenin"
   ],
-  "costo": 6
+  "costo": 7
  },
  "itachi-uchiha": {
   "arch": "MAG",
@@ -490,7 +490,7 @@
   "tratti": [
    "hokage"
   ],
-  "costo": 10
+  "costo": 11
  },
  "madara-uchiha": {
   "arch": "MAG",
@@ -505,7 +505,7 @@
   "tratti": [
    "uchiha"
   ],
-  "costo": 10
+  "costo": 11
  },
  "hinata-hyuga": {
   "arch": "ASS",
@@ -520,7 +520,7 @@
   "tratti": [
    "hyuga"
   ],
-  "costo": 6
+  "costo": 5
  },
  "shikamaru-nara": {
   "arch": "SUP",
@@ -550,7 +550,7 @@
   "tratti": [
    "team-guy"
   ],
-  "costo": 5
+  "costo": 6
  },
  "neji-hyuga": {
   "arch": "ASS",
@@ -582,7 +582,7 @@
    "sannin",
    "hokage"
   ],
-  "costo": 7
+  "costo": 10
  },
  "orochimaru": {
   "arch": "EVO",
@@ -597,7 +597,7 @@
   "tratti": [
    "sannin"
   ],
-  "costo": 6
+  "costo": 7
  },
  "might-guy": {
   "arch": "BRU",
@@ -612,7 +612,7 @@
   "tratti": [
    "team-guy"
   ],
-  "costo": 7
+  "costo": 8
  },
  "killer-bee": {
   "arch": "TAN",
@@ -627,7 +627,7 @@
   "tratti": [
    "jinchuriki"
   ],
-  "costo": 8
+  "costo": 10
  },
  "pain": {
   "arch": "EVO",
@@ -657,7 +657,7 @@
   "tratti": [
    "akatsuki"
   ],
-  "costo": 8
+  "costo": 9
  },
  "obito-uchiha": {
   "arch": "SUP",
@@ -718,7 +718,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 6
+  "costo": 7
  },
  "usopp": {
   "arch": "TIR",
@@ -733,7 +733,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 2
+  "costo": 3
  },
  "franky": {
   "arch": "TAN",
@@ -748,7 +748,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 5
+  "costo": 8
  },
  "brook": {
   "arch": "ASS",
@@ -763,7 +763,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 5
+  "costo": 4
  },
  "barbabianca": {
   "arch": "TAN",
@@ -778,7 +778,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 9
+  "costo": 11
  },
  "shanks": {
   "arch": "BRU",
@@ -793,7 +793,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 10
+  "costo": 11
  },
  "dracule-mihawk": {
   "arch": "ASS",
@@ -823,7 +823,7 @@
   "tratti": [
    "supernova"
   ],
-  "costo": 7
+  "costo": 8
  },
  "sabo": {
   "arch": "MAG",
@@ -838,7 +838,7 @@
   "tratti": [
    "fratelli-di-mare"
   ],
-  "costo": 5
+  "costo": 7
  },
  "kaido": {
   "arch": "TAN",
@@ -853,7 +853,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 9
+  "costo": 11
  },
  "charlotte-katakuri": {
   "arch": "ASS",
@@ -883,7 +883,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 7
+  "costo": 8
  },
  "trunks": {
   "arch": "BRU",
@@ -899,7 +899,7 @@
    "saiyan",
    "famiglia-briefs"
   ],
-  "costo": 6
+  "costo": 8
  },
  "freezer": {
   "arch": "MAG",
@@ -930,7 +930,7 @@
    "cattivi",
    "androidi"
   ],
-  "costo": 9
+  "costo": 11
  },
  "tenshinhan": {
   "arch": "TIR",
@@ -945,7 +945,7 @@
   "tratti": [
    "guerrieri-z"
   ],
-  "costo": 6
+  "costo": 7
  },
  "yamcha": {
   "arch": "BRU",
@@ -975,7 +975,7 @@
   "tratti": [
    "saiyan"
   ],
-  "costo": 4
+  "costo": 5
  },
  "broly": {
   "arch": "TAN",
@@ -991,7 +991,7 @@
    "saiyan",
    "cattivi"
   ],
-  "costo": 9
+  "costo": 11
  },
  "jiren": {
   "arch": "BRU",
@@ -1004,7 +1004,7 @@
    "effetto": "armor"
   },
   "tratti": [],
-  "costo": 8
+  "costo": 9
  },
  "beerus": {
   "arch": "MAG",
@@ -1019,7 +1019,7 @@
   "tratti": [
    "dei"
   ],
-  "costo": 11
+  "costo": 10
  },
  "whis": {
   "arch": "SUP",
@@ -1034,7 +1034,7 @@
   "tratti": [
    "dei"
   ],
-  "costo": 9
+  "costo": 10
  },
  "numero-18": {
   "arch": "TIR",
@@ -1064,7 +1064,7 @@
   "tratti": [
    "saiyan"
   ],
-  "costo": 7
+  "costo": 8
  },
  "bulma": {
   "arch": "GUA",
@@ -1094,7 +1094,7 @@
   "tratti": [
    "guerrieri-z"
   ],
-  "costo": 1
+  "costo": 2
  },
  "kyojuro-rengoku": {
   "arch": "BRU",
@@ -1154,7 +1154,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 6
+  "costo": 7
  },
  "sanemi-shinazugawa": {
   "arch": "BRU",
@@ -1184,7 +1184,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 8
+  "costo": 7
  },
  "nezuko-kamado": {
   "arch": "TAN",
@@ -1200,7 +1200,7 @@
    "demoni",
    "famiglia-kamado"
   ],
-  "costo": 9
+  "costo": 10
  },
  "kokushibo": {
   "arch": "BRU",
@@ -1231,7 +1231,7 @@
   "tratti": [
    "demoni"
   ],
-  "costo": 8
+  "costo": 9
  },
  "akaza": {
   "arch": "BRU",
@@ -1278,7 +1278,7 @@
   "tratti": [
    "corpo-sterminatori"
   ],
-  "costo": 6
+  "costo": 5
  },
  "genya-shinazugawa": {
   "arch": "TAN",
@@ -1293,7 +1293,7 @@
   "tratti": [
    "corpo-sterminatori"
   ],
-  "costo": 4
+  "costo": 5
  },
  "daki": {
   "arch": "SUP",
@@ -1309,7 +1309,7 @@
    "lune-superiori",
    "demoni"
   ],
-  "costo": 4
+  "costo": 6
  },
  "toji-fushiguro": {
   "arch": "ASS",
@@ -1324,7 +1324,7 @@
   "tratti": [
    "clan-zenin"
   ],
-  "costo": 9
+  "costo": 10
  },
  "kento-nanami": {
   "arch": "BRU",
@@ -1369,7 +1369,7 @@
   "tratti": [
    "stregoni-forti"
   ],
-  "costo": 7
+  "costo": 9
  },
  "panda": {
   "arch": "TAN",
@@ -1384,7 +1384,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 4
+  "costo": 5
  },
  "toge-inumaki": {
   "arch": "SUP",
@@ -1399,7 +1399,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 5
+  "costo": 7
  },
  "kenjaku": {
   "arch": "SUP",
@@ -1414,7 +1414,7 @@
   "tratti": [
    "maledizioni"
   ],
-  "costo": 9
+  "costo": 10
  },
  "mahito": {
   "arch": "SUP",
@@ -1444,7 +1444,7 @@
   "tratti": [
    "maledizioni"
   ],
-  "costo": 8
+  "costo": 9
  },
  "hanami": {
   "arch": "TAN",
@@ -1459,7 +1459,7 @@
   "tratti": [
    "maledizioni"
   ],
-  "costo": 6
+  "costo": 8
  },
  "kinji-hakari": {
   "arch": "TAN",
@@ -1474,7 +1474,7 @@
   "tratti": [
    "stregoni-forti"
   ],
-  "costo": 8
+  "costo": 11
  },
  "hajime-kashimo": {
   "arch": "MAG",
@@ -1502,7 +1502,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 1
+  "costo": 2
  },
  "mai-zenin": {
   "arch": "TIR",

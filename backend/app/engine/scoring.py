@@ -1,7 +1,8 @@
 """Statistiche di combattimento v2: archetipo + rating + ruolo + sinergie. Funzioni pure."""
 
+from .affinita import ADATTO_SOGLIA, affinita, moltiplicatore
 from .models import Character, Duo, Side, Sinergia, Team, Tratto
-from .roles import ANIME_NOMI, ARCH_ADATTI, ROLES
+from .roles import ANIME_NOMI, ROLES
 
 # (vita, attacco, difesa, velocità) per archetipo
 ARCH_PROFILO: dict[str, tuple[float, float, float, float]] = {
@@ -15,9 +16,6 @@ ARCH_PROFILO: dict[str, tuple[float, float, float, float]] = {
     "EVO": (1.00, 1.06, 0.95, 0.95),
 }
 
-ADATTO_BONUS = 0.12
-FUORI_RUOLO = -0.08
-FIRMA_BONUS = 0.04
 ANIME_SOGLIE: tuple[tuple[int, float], ...] = ((7, 0.14), (5, 0.09), (3, 0.04))
 DUO_ATK = 0.08
 
@@ -27,14 +25,11 @@ def forza(rating: int) -> float:
 
 
 def adatto(ch: Character, ruolo: str) -> bool:
-    return ch.arch in ARCH_ADATTI[ruolo]
+    return affinita(ch, ruolo) >= ADATTO_SOGLIA
 
 
 def moltiplicatore_ruolo(ch: Character, ruolo: str) -> float:
-    m = 1.0 + (ADATTO_BONUS if adatto(ch, ruolo) else FUORI_RUOLO)
-    if ch.ruolo_firma == ruolo:
-        m += FIRMA_BONUS
-    return m
+    return moltiplicatore(ch, ruolo)
 
 
 def statistiche_base(ch: Character, ruolo: str) -> tuple[float, float, float, float]:
@@ -83,7 +78,7 @@ def sinergie_squadra(lato: Side, team: Team, tratti: list[Tratto]) -> list[Siner
 
 
 def legami_squadra(team: Team, duos: list[Duo]) -> list[tuple[int, int, str]]:
-    pos = {m.id: i for i, m in enumerate(team.members)}
+    pos = {(m.base_id or m.id): i for i, m in enumerate(team.members)}
     return [(pos[d.a], pos[d.b], d.nome) for d in duos if d.a in pos and d.b in pos][:2]
 
 

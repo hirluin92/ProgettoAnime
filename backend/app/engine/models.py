@@ -36,6 +36,9 @@ class Character(Model):
     passiva: Passiva = Passiva(nome="Tempra", effetto="armor")
     gruppi: list[str] = Field(default_factory=list)
     costo: int = Field(default=6, ge=1, le=14)  # prezzo misurato dal simulatore
+    # Forme alternative (V3): stesso personaggio, scheda diversa
+    forma: str | None = None
+    base_id: str | None = None
 
 
 class Duo(Model):
