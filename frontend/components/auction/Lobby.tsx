@@ -122,6 +122,18 @@ export default function Lobby({
             />
           </label>
           <label className="grid gap-1 text-sm font-bold">
+            {it.stanza.timerPiano}
+            <input
+              aria-label={it.stanza.timerPiano}
+              className="field"
+              type="number"
+              min={0}
+              max={180}
+              value={s.plan_timeout}
+              onChange={(e) => upd({ plan_timeout: num(e.target.value, 45) })}
+            />
+          </label>
+          <label className="grid gap-1 text-sm font-bold">
             {it.stanza.ban}
             <input
               aria-label={it.stanza.ban}

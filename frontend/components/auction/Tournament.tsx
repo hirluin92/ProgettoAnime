@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import MissionCard from "@/components/MissionCard";
 import it from "@/i18n/it.json";
 import { ROLES, type RoomView, type TournamentView } from "@/lib/messages";
 
@@ -125,6 +126,20 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
           </div>
         ))}
       </div>
+
+      {t.missioni.length > 0 && (
+        <section className="space-y-2" data-testid="missioni">
+          <h3 className="eyebrow">{it.missione.svelata}</h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            {t.missioni.map((m) => (
+              <div key={m.player_id} className="space-y-1">
+                <p className="text-sm font-bold">{name(m.player_id)}</p>
+                <MissionCard nome={m.nome} descrizione={m.descrizione} esito={m.riuscita} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <details className="panel p-4">
         <summary className="cursor-pointer text-lg font-extrabold">{it.stanza.squadre}</summary>

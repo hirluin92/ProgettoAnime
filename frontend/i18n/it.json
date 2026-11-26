@@ -140,7 +140,9 @@
     "entraTitolo": "Entra nella partita",
     "torneo": "Torneo",
     "guardaScontro": "Guarda lo scontro",
-    "squadre": "Le squadre"
+    "squadre": "Le squadre",
+    "timerPiano": "Piano di battaglia (s)",
+    "dovRende": "Dove rende"
   },
   "veloce": {
     "titolo": "Partita veloce",
@@ -248,5 +250,31 @@
       "trattieni": "Trattieni",
       "trattieniDesc": "Si lancia dal turno 4, con il +30% di danno."
     }
+  },
+  "formazione": {
+    "titolo": "Formazione",
+    "descrizione": "Chi sta davanti incassa i colpi; chi sta dietro viene colpito per ultimo.",
+    "file": ["Davanti", "Centro", "Dietro"]
+  },
+  "missione": {
+    "titolo": "Missione segreta",
+    "bonus": "Se la completi: +3% attacco e vita.",
+    "svelata": "Missioni svelate",
+    "riuscita": "Riuscita",
+    "fallita": "Non riuscita",
+    "tua": "La tua missione",
+    "cpu": "Missione della CPU"
+  },
+  "rivalita": {
+    "titolo": "Rivalità attive",
+    "testo": "+8% di danno tra i due"
+  },
+  "piano": {
+    "titolo": "Piano di battaglia",
+    "pronto": "Pronto",
+    "modifica": "Cambia il piano",
+    "consegnato": "Piano consegnato: aspetto gli altri giocatori…",
+    "tempo": "Tempo",
+    "giocatori": "Piani consegnati"
   }
 }

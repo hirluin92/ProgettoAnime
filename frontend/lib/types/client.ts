@@ -5,7 +5,8 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type Client = Join | Spectate | Start | Ban | Bid | Pass | AssignRole | UpdateSettings;
+export type Client =
+  Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Plan | UpdateSettings;
 export type Type = "join";
 export type Name = string;
 export type Token = string | null;
@@ -18,13 +19,18 @@ export type Amount = number;
 export type Type5 = "pass";
 export type Type6 = "assign_role";
 export type Role = string;
-export type Type7 = "update_settings";
+export type Type7 = "plan";
+export type Tattiche = [string, string, string] | null;
+export type Carica = "subito" | "carica";
+export type Formazione = string;
+export type Type8 = "update_settings";
 export type Budget = number;
 export type Timer = number;
 export type RoleTimeout = number;
 export type Anime = string[];
 export type ChatThreshold = number;
 export type BansPerPlayer = number;
+export type PlanTimeout = number;
 
 export interface Join {
   type: Type;
@@ -52,8 +58,17 @@ export interface AssignRole {
   type: Type6;
   role: Role;
 }
-export interface UpdateSettings {
+/**
+ * Piano di battaglia: tattiche per le 3 fasi (omesse = a caso), mossa finale, formazione.
+ */
+export interface Plan {
   type: Type7;
+  tattiche: Tattiche;
+  carica: Carica;
+  formazione: Formazione;
+}
+export interface UpdateSettings {
+  type: Type8;
   settings: RoomSettings;
 }
 export interface RoomSettings {
@@ -63,4 +78,5 @@ export interface RoomSettings {
   anime: Anime;
   chat_threshold: ChatThreshold;
   bans_per_player: BansPerPlayer;
+  plan_timeout: PlanTimeout;
 }

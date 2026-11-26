@@ -1,5 +1,6 @@
 "use client";
 
+import FormationPicker from "@/components/draft/FormationPicker";
 import it from "@/i18n/it.json";
 import { BONUS, FASI, MALUS, TATTICA_INFO, TATTICHE, type Tattica } from "@/lib/battle/tattiche";
 
@@ -10,11 +11,15 @@ export default function TacticsPlanner({
   onChange,
   carica,
   onCarica,
+  formazione,
+  onFormazione,
 }: {
   value: (Tattica | null)[];
   onChange: (fase: number, t: Tattica) => void;
   carica: Carica;
   onCarica: (c: Carica) => void;
+  formazione?: string;
+  onFormazione?: (id: string) => void;
 }) {
   return (
     <div className="space-y-3" data-testid="tactics">
@@ -94,6 +99,9 @@ export default function TacticsPlanner({
           ))}
         </div>
       </fieldset>
+      {formazione !== undefined && onFormazione && (
+        <FormationPicker value={formazione} onChange={onFormazione} />
+      )}
     </div>
   );
 }

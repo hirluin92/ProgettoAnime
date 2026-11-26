@@ -3,6 +3,7 @@
 import random
 from collections import deque
 
+from app.engine import affinita
 from app.engine.models import Character
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
@@ -76,6 +77,7 @@ class Auction:
         return LotView(
             number=self.number, character=self.lot, current_bid=self.bid, bidder_id=self.bidder,
             deadline=self.deadline, passed=sorted(self.passed), await_role=self.await_role,
+            affinita=affinita.tutte(self.lot),
         )  # fmt: skip
 
     def teams(self) -> dict[str, dict[str, Character | None]]:
@@ -103,7 +105,15 @@ class Auction:
                 most = max(len(p.free_roles()) for p in active)
                 target = self.rng.choice([p for p in active if len(p.free_roles()) == most])
                 self.number += 1
-                msgs.append(LotStarted(number=self.number, character=lot, deadline=now, now=now))
+                msgs.append(
+                    LotStarted(
+                        number=self.number,
+                        character=lot,
+                        deadline=now,
+                        now=now,
+                        affinita=affinita.tutte(lot),
+                    )
+                )
                 msgs.append(self._place(target, lot, 1, best_role(target, lot)))
                 self.skips = 0
                 continue
@@ -114,7 +124,13 @@ class Auction:
             self.passed = set()
             self.deadline = now + self.settings.timer
             msgs.append(
-                LotStarted(number=self.number, character=lot, deadline=self.deadline, now=now)
+                LotStarted(
+                    number=self.number,
+                    character=lot,
+                    deadline=self.deadline,
+                    now=now,
+                    affinita=affinita.tutte(lot),
+                )
             )
             return msgs
 

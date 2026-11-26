@@ -7,6 +7,7 @@ import type {
   LotSkipped,
   LotStarted,
   LotWon,
+  Mission,
   PlayerPassed,
   RoomState,
   TournamentResult,
@@ -15,6 +16,7 @@ import type {
 export type ServerMsg =
   | Joined
   | RoomState
+  | Mission
   | LotStarted
   | BidPlaced
   | PlayerPassed
@@ -35,6 +37,7 @@ export type ClientMsg =
   | { type: "bid"; amount: number }
   | { type: "pass" }
   | { type: "assign_role"; role: string }
+  | { type: "plan"; tattiche: string[] | null; carica: "subito" | "carica"; formazione: string }
   | { type: "update_settings"; settings: import("./types/server").RoomSettings };
 
 export const ROLES = ["Capitano", "Vice", "Tank", "Danno", "Supporto", "Supporto II", "Guaritore"];

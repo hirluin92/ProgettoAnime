@@ -40,6 +40,8 @@ test("la chat compra, completa la squadra e l'overlay OBS si vede a 1920×1080",
     await request.post("http://localhost:8000/api/dev/fake-chat/" + code, {
       data: { messages: viewers.map((user) => ({ user, text: "!offro 2" })) },
     });
+    const ready = page.getByTestId("plan-ready");
+    if (await ready.isVisible().catch(() => false)) await ready.click().catch(() => {});
     if (await pass.isEnabled({ timeout: 200 }).catch(() => false))
       await pass.click({ timeout: 500 }).catch(() => {});
     await page.waitForTimeout(150);

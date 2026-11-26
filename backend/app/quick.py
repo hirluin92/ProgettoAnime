@@ -1,5 +1,6 @@
 """Partita veloce V3: draft con slot liberi e affinità, rilanci, carta misteriosa, poi scontro."""
 
+import random
 from functools import lru_cache
 from typing import Literal
 
@@ -23,6 +24,9 @@ from app.draft import (
 from app.engine import affinita
 from app.engine import tattiche as tat
 from app.engine.arene import arena_per_seme
+from app.engine.formazioni import FORMAZIONI
+from app.engine.formazioni import ORDINE as FORM_ORDINE
+from app.engine.missioni import BONUS, completata, missione_per_seme
 from app.engine.models import Character, MatchResult, Model, Team
 from app.engine.roles import ROLES
 from app.engine.scoring import potenza_ruolo
@@ -53,8 +57,24 @@ class ArenaInfo(Model):
     descrizione: str
 
 
+class MissioneInfo(Model):
+    id: str
+    nome: str
+    descrizione: str
+
+
+class MissioneEsito(Model):
+    id: str
+    nome: str
+    descrizione: str
+    riuscita: bool
+    bonus: float  # +x% attacco e vita se completata
+    cpu_riuscita: bool
+
+
 class DraftOptions(Model):
     seed: int
+    missione: MissioneInfo  # obiettivo segreto: se lo completi, +3% attacco e vita
     arena: ArenaInfo  # regola della partita, nota prima del draft
     budget: int
     roles: list[str]
@@ -76,6 +96,7 @@ class PlayRequest(Model):
     swap: list[str] | None = Field(default=None, min_length=2, max_length=2)  # scambio finale
     tattiche: list[str] = Field(min_length=tat.FASI, max_length=tat.FASI)  # una per fase
     carica: Literal["subito", "carica"] = "subito"  # quando lanciare la mossa finale
+    formazione: str = "classica"
 
 
 class PlayResponse(Model):
@@ -83,6 +104,7 @@ class PlayResponse(Model):
     result: MatchResult
     spent: int
     cpu_spent: int
+    missione: MissioneEsito
 
 
 @lru_cache(maxsize=256)
@@ -105,8 +127,10 @@ def draft_options(seed: int) -> DraftOptions:
             )
         )
     ar = arena_per_seme(seed)
+    mi = missione_per_seme(seed, "tu")
     return DraftOptions(
         seed=seed,
+        missione=MissioneInfo(id=mi.id, nome=mi.nome, descrizione=mi.descrizione),
         arena=ArenaInfo(id=ar.id, nome=ar.nome, descrizione=ar.descrizione),
         budget=BUDGET,
         roles=list(ROLES),
@@ -155,15 +179,13 @@ def cpu_draft(seed: int) -> tuple[list[Character], int]:
 
 @router.get("/draft")
 def get_draft(seed: int | None = None) -> DraftOptions:
-    import random
-
     seed = seed if seed is not None else random.randint(1, 2**31 - 1)
     return draft_options(seed)
 
 
 @router.post("/play")
 def play(req: PlayRequest) -> PlayResponse:
-    return run_quick(req.seed, req.picks, req.swap, req.tattiche, req.carica)
+    return run_quick(req.seed, req.picks, req.swap, req.tattiche, req.carica, req.formazione)
 
 
 def validate_picks(
@@ -209,25 +231,52 @@ def validate_picks(
     return [chosen[r] for r in ROLES], spent
 
 
+def cpu_formazione(seed: int) -> str:
+    return random.Random(f"formazione:{seed}").choice(FORM_ORDINE)
+
+
 def run_quick(
     seed: int,
     picks: list[PickIn],
     swap: list[str] | None,
     tattiche: list[str],
     carica: str = "subito",
+    formazione: str = "classica",
 ) -> PlayResponse:
     """Valida le scelte, fa il draft della CPU e simula lo scontro (salvato nel database)."""
     members, spent = validate_picks(seed, picks, swap)
     if not tat.valida(tattiche):
         raise HTTPException(422, "tattiche non valide")
+    if formazione not in FORMAZIONI:
+        raise HTTPException(422, "formazione non valida")
     cpu, cpu_spent = cpu_draft(seed)
+    regole = load_ruleset()
+    mia = missione_per_seme(seed, "tu")
+    sua = missione_per_seme(seed, "cpu")
+    team_a = Team(nome="Tu", members=members)
+    team_b = Team(nome="CPU", members=cpu)
+    ok_a = completata(mia.id, team_a, BUDGET - spent, regole)
+    ok_b = completata(sua.id, team_b, BUDGET - cpu_spent, regole)
+    team_a.bonus_missione = BONUS if ok_a else 0.0
+    team_b.bonus_missione = BONUS if ok_b else 0.0
     result = simulate(
-        Team(nome="Tu", members=members),
-        Team(nome="CPU", members=cpu),
+        team_a,
+        team_b,
         seed * 7 + 1,
         load_ruleset(),
         tattiche={"A": tattiche, "B": tat.cpu_tattiche(seed, tattiche)},
         arena=arena_per_seme(seed).id,
         carica={"A": carica, "B": tat.cpu_carica(seed)},
+        formazione={"A": formazione, "B": cpu_formazione(seed)},
     )
-    return PlayResponse(id=repo.save_match(result), result=result, spent=spent, cpu_spent=cpu_spent)
+    esito = MissioneEsito(
+        id=mia.id,
+        nome=mia.nome,
+        descrizione=mia.descrizione,
+        riuscita=ok_a,
+        bonus=BONUS,
+        cpu_riuscita=ok_b,
+    )
+    return PlayResponse(
+        id=repo.save_match(result), result=result, spent=spent, cpu_spent=cpu_spent, missione=esito
+    )

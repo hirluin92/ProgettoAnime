@@ -15,9 +15,20 @@ export interface ArenaInfo {
   nome: string;
   descrizione: string;
 }
+export interface MissioneInfo {
+  id: string;
+  nome: string;
+  descrizione: string;
+}
+export interface MissioneEsito extends MissioneInfo {
+  riuscita: boolean;
+  bonus: number;
+  cpu_riuscita: boolean;
+}
 export interface DraftOptions {
   seed: number;
   arena: ArenaInfo;
+  missione: MissioneInfo;
   budget: number;
   roles: string[];
   rerolls: number;

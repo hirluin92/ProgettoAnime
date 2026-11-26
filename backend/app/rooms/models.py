@@ -1,7 +1,7 @@
 import secrets
 import time
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field
 
@@ -25,6 +25,9 @@ class RoomSettings(Model):
     anime: list[str] = []  # vuoto = tutti
     chat_threshold: int = Field(default=3, ge=1, le=100)
     bans_per_player: int = Field(default=0, ge=0, le=3)  # 0 = nessuna fase di ban
+    plan_timeout: int = Field(
+        default=45, ge=0, le=180
+    )  # secondi per il piano di battaglia; 0 = salta
 
 
 class PlayerView(Model):
@@ -36,6 +39,7 @@ class PlayerView(Model):
     is_chat: bool
     connected: bool
     complete: bool
+    ready: bool  # ha consegnato il piano di battaglia (la chat è sempre pronta)
 
 
 class AwaitRole(Model):
@@ -52,6 +56,7 @@ class LotView(Model):
     deadline: float
     passed: list[str]
     await_role: AwaitRole | None
+    affinita: dict[str, int]  # affinità del personaggio con ogni slot (punti %)
 
 
 class MatchRef(Model):
@@ -72,14 +77,31 @@ class StandingRow(Model):
     totale: int
 
 
+class MissionResult(Model):
+    """La missione segreta di un giocatore, svelata a fine torneo."""
+
+    player_id: str
+    id: str
+    nome: str
+    descrizione: str
+    riuscita: bool
+
+
+class RoomArena(Model):
+    id: str
+    nome: str
+    descrizione: str
+
+
 class TournamentView(Model):
     giornate: list[list[MatchRef]]
     classifica: list[StandingRow]
+    missioni: list[MissionResult] = Field(default_factory=list)
 
 
 class RoomView(Model):
     code: str
-    phase: Literal["lobby", "ban", "auction", "tournament"]
+    phase: Literal["lobby", "ban", "auction", "plan", "tournament"]
     host_id: str
     settings: RoomSettings
     players: list[PlayerView]
@@ -87,6 +109,8 @@ class RoomView(Model):
     lots_left: int
     bans: dict[str, list[Character]]
     ban_deadline: float | None
+    plan_deadline: float | None
+    arena: RoomArena | None
     tournament: TournamentView | None
     streamer_channel: str | None
     server_time: float
@@ -103,6 +127,8 @@ class Player:
     is_chat: bool = False
     connected: bool = False
     left_at: float | None = None
+    missione: str | None = None  # id della missione segreta (privata fino al torneo)
+    plan: dict[str, Any] | None = None  # piano consegnato: tattiche, carica, formazione
 
     def free_roles(self) -> list[str]:
         return [r for r in ROLES if self.slots[r] is None]
@@ -116,6 +142,7 @@ class Player:
             id=self.id, name=self.name, color=self.color, budget=self.budget,
             slots=self.slots, is_chat=self.is_chat,
             connected=self.connected or self.is_chat, complete=self.complete,
+            ready=self.is_chat or self.plan is not None,
         )  # fmt: skip
 
 

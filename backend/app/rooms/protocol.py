@@ -41,13 +41,22 @@ class AssignRole(Model):
     role: str
 
 
+class Plan(Model):
+    """Piano di battaglia: tattiche per le 3 fasi (omesse = a caso), mossa finale, formazione."""
+
+    type: Literal["plan"] = "plan"
+    tattiche: list[str] | None = Field(default=None, min_length=3, max_length=3)
+    carica: Literal["subito", "carica"] = "subito"
+    formazione: str = "classica"
+
+
 class UpdateSettings(Model):
     type: Literal["update_settings"] = "update_settings"
     settings: RoomSettings
 
 
 ClientMessage = Annotated[
-    Join | Spectate | Start | Ban | Bid | Pass | AssignRole | UpdateSettings,
+    Join | Spectate | Start | Ban | Bid | Pass | AssignRole | Plan | UpdateSettings,
     Field(discriminator="type"),
 ]
 
@@ -71,6 +80,16 @@ class LotStarted(Model):
     character: Character
     deadline: float
     now: float
+    affinita: dict[str, int]
+
+
+class Mission(Model):
+    """Missione segreta del giocatore (messaggio privato)."""
+
+    type: Literal["mission"] = "mission"
+    id: str
+    nome: str
+    descrizione: str
 
 
 class BidPlaced(Model):
@@ -123,7 +142,7 @@ class ErrorMsg(Model):
 
 
 ServerMessage = Annotated[
-    Joined | RoomState | LotStarted | BidPlaced | PlayerPassed | LotWon | LotAssigned
+    Joined | RoomState | Mission | LotStarted | BidPlaced | PlayerPassed | LotWon | LotAssigned
     | LotSkipped | AuctionFinished | TournamentResult | ErrorMsg,
     Field(discriminator="type"),
 ]  # fmt: skip

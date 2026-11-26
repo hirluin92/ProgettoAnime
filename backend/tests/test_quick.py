@@ -33,6 +33,7 @@ def cheapest_picks(seed: int, rerolls: int = 0, swap: list[str] | None = None) -
         "swap": swap,
         "tattiche": ["assalto", "tecnica", "guardia"],
         "carica": "carica",
+        "formazione": "classica",
     }
 
 
@@ -43,6 +44,7 @@ def test_draft_endpoint_is_deterministic_and_complete() -> None:
     assert all(len(h["cards"]) == 5 for h in a["hands"])
     card = a["hands"][0]["cards"][0]
     assert a["arena"]["id"] and a["arena"]["nome"] and a["arena"]["descrizione"]
+    assert a["missione"]["id"] and a["missione"]["descrizione"]
     assert set(card["affinita"]) == set(ROLES) and card["cost"] == card["character"]["costo"]
 
 
@@ -65,6 +67,9 @@ def test_play_flow_and_swap(tmp_path) -> None:  # type: ignore[no-untyped-def]
     assert r.status_code == 200, r.text
     res = r.json()
     assert res["result"]["arena"] == a_id(9) and res["result"]["carica"]["A"] == "carica"
+    assert res["missione"]["id"] == client.get("/api/quick/draft?seed=9").json()["missione"]["id"]
+    assert res["result"]["formazione"]["A"] == "classica" and res["result"]["formazione"]["B"]
+    assert isinstance(res["missione"]["riuscita"], bool)
     assert res["spent"] <= BUDGET and client.get(f"/api/matches/{res['id']}").status_code == 200
     first = res["result"]["squadre"]["A"]["members"]
     swapped = client.post("/api/quick/play", json={**body, "swap": ["Capitano", "Guaritore"]})
@@ -125,3 +130,22 @@ def test_over_budget_is_rejected(tmp_path) -> None:  # type: ignore[no-untyped-d
             assert r.status_code == 422 and "budget" in r.text
             return
     raise AssertionError("nessun caso sopra budget trovato")
+
+
+def test_invalid_formation_is_rejected(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'q4.db'}")
+    r = client.post("/api/quick/play", json={**cheapest_picks(9), "formazione": "boh"})
+    assert r.status_code == 422
+
+
+def test_mission_bonus_is_applied_when_completed(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'q5.db'}")
+    visto: set[bool] = set()
+    for seed in range(1, 80):
+        r = client.post("/api/quick/play", json=cheapest_picks(seed)).json()
+        bonus = r["result"]["squadre"]["A"]["bonus_missione"]
+        assert (bonus > 0) == r["missione"]["riuscita"]
+        visto.add(r["missione"]["riuscita"])
+        if visto == {True, False}:
+            return
+    raise AssertionError("missione sempre uguale")

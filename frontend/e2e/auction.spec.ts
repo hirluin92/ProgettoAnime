@@ -4,6 +4,13 @@ import { createRoom, joinRoom } from "./helpers";
 async function bot(page: Page) {
   const done = page.getByTestId("tournament");
   while (!(await done.isVisible().catch(() => false))) {
+    // fase piano: ognuno consegna il piano (tattiche a caso) una sola volta
+    const ready = page.getByTestId("plan-ready");
+    if (await ready.isVisible().catch(() => false)) {
+      await ready.click({ timeout: 1000 }).catch(() => {});
+      await page.waitForTimeout(300);
+      continue;
+    }
     const picker = page.getByTestId("role-picker");
     if (await picker.isVisible().catch(() => false)) {
       await picker
