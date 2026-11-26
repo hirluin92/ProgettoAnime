@@ -299,6 +299,8 @@ class Partita:
     personale: bool = False  # mazzo dell'album o ranked: non vale per l'ELO contro la CPU
     ranked: dict | None = None  # type: ignore[type-arg]  # partita classificata: info avversario
     ranked_esito: Any = None
+    scala: str | None = None  # id della corsa della Scala (roguelike)
+    scala_esito: Any = None
     giorno: str | None = None  # rompicapo del giorno: giorno e nome del giocatore
     nome: str | None = None
     creata: float = field(default_factory=time.time)
@@ -350,6 +352,7 @@ class TurnoOut(Model):
     vinto: bool | None
     premio: Premio | None = None
     ranked: Any = None  # esito classificato (RankedEsito) se è una partita ranked
+    scala: Any = None  # esito del gradino (ScalaEsito) se è una corsa della Scala
 
 
 @router.post("/start")
@@ -440,6 +443,10 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
             )
             if p.giorno and p.nome:
                 _registra_giorno(p, s)
+            if p.scala and p.scala_esito is None:
+                from app.scala_duelli import chiudi as chiudi_scala
+
+                p.scala_esito = chiudi_scala(p.scala, vinto)
             if p.ranked and p.profile_id and p.ranked_esito is None:
                 from app.ranked import chiudi
 
@@ -453,6 +460,7 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
         vinto=vinto,
         premio=p.premio,
         ranked=p.ranked_esito,
+        scala=p.scala_esito,
     )
 
 
