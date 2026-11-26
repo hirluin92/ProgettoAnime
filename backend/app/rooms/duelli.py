@@ -10,7 +10,17 @@ from dataclasses import dataclass, field
 
 from app.duello import ai
 from app.duello.carte import Carta
-from app.duello.motore import MossaNonValida, Stato, corsie_vinte, gioca_turno, nuovo, valida
+from app.duello.motore import (
+    MossaNonValida,
+    Stato,
+    corsie_vinte,
+    costo_in,
+    energia,
+    gioca_turno,
+    nuovo,
+    totali,
+    valida,
+)
 from app.rooms import tournament
 from app.rooms.models import MatchRef
 
@@ -23,6 +33,7 @@ class Giocatore:
     nome: str
     mazzo: list[Carta]
     bot: bool = False  # la chat e chi non c'è più giocano con la CPU
+    chat: bool = False  # le mosse le sceglie la chat (voto) invece della CPU
 
 
 @dataclass
@@ -77,6 +88,7 @@ class TorneoDuelli:
         self._vincitori: list[Giocatore] = []
         self._accoppiati: list[tuple[Giocatore, Giocatore | None]] = []
         self._rng = random.Random(f"torneo:{seed}")
+        self.chat_voti: dict[str, str] = {}  # utente -> lettera (a/b/c), un voto per utente
 
     # ---------- avvio dei round ----------
     def avvia(self, adesso: float) -> list[Aggiornamento]:
@@ -128,12 +140,83 @@ class TorneoDuelli:
         d.mosse[lato] = list(mosse)
         return self._risolvi_se_pronto(d, adesso)
 
+    # ---------- chat ----------
+    def duello_chat(self) -> tuple[Duello, int] | None:
+        """Il duello in corso dove gioca la chat (e il suo lato), se c'è."""
+        for d in self.corrente:
+            if d.finito or d.stato is None:
+                continue
+            for lato in (0, 1):
+                g = d.giocatore(lato)
+                if g is not None and g.chat:
+                    return d, lato
+        return None
+
+    def piani_chat(self, d: Duello, lato: int) -> list[tuple[str, list[Mossa]]]:
+        """Tre piani tra cui la chat vota, tutti validi e deterministici per lo stato."""
+        assert d.stato is not None
+        s = d.stato
+        nomi = {c.id: c.nome.split(" ")[0] for c in s.lati[lato].mano}
+
+        def testo(titolo: str, mosse: list[Mossa]) -> str:
+            if not mosse:
+                return f"{titolo}: non giocare carte"
+            return f"{titolo}: " + ", ".join(f"{nomi[c]} → corsia {k + 1}" for c, k in mosse)
+
+        equilibrato = ai.mosse_euristiche(s, lato)
+        # tutto in una corsia: dove l'avversario ha meno potenza
+        altro = 1 - lato
+        corsia = min(range(3), key=lambda k: (totali(s)[k][altro], k))
+        budget = energia(s, lato)
+        concentrato: list[Mossa] = []
+        posti = 3 if s.luoghi[corsia] == "ghiaccio" else 4
+        posti -= len(s.corsie[corsia][lato])
+        for c in sorted(s.lati[lato].mano, key=lambda x: (-x.potenza, x.id)):
+            costo = costo_in(s, c, corsia)
+            if costo <= budget and posti > 0:
+                concentrato.append((c.id, corsia))
+                budget -= costo
+                posti -= 1
+        # prudente: solo la carta più economica, nella corsia dove si sta perdendo
+        perdente = min(range(3), key=lambda k: (totali(s)[k][lato] - totali(s)[k][altro], k))
+        prudente: list[Mossa] = []
+        for c in sorted(s.lati[lato].mano, key=lambda x: (x.costo, x.id)):
+            if costo_in(s, c, perdente) <= energia(s, lato):
+                prudente = [(c.id, perdente)]
+                break
+        return [
+            (testo("Equilibrato", equilibrato), equilibrato),
+            (testo("Tutto in una corsia", concentrato), concentrato),
+            (testo("Prudente", prudente), prudente),
+        ]
+
+    def registra_voto(self, utente: str, lettera: str) -> bool:
+        if lettera not in ("a", "b", "c") or self.duello_chat() is None:
+            return False
+        self.chat_voti[utente.lower()] = lettera
+        return True
+
+    def conteggio_voti(self) -> dict[str, int]:
+        c = {"a": 0, "b": 0, "c": 0}
+        for v in self.chat_voti.values():
+            c[v] += 1
+        return c
+
+    def _mosse_chat(self, d: Duello, lato: int) -> list[Mossa]:
+        piani = self.piani_chat(d, lato)
+        conta = self.conteggio_voti()
+        top = max(conta.values())
+        if top == 0:
+            return piani[0][1]
+        vincenti = [i for i, k in enumerate("abc") if conta[k] == top]
+        return piani[self._rng.choice(vincenti)][1]
+
     def _pronti(self, d: Duello) -> bool:
-        """Entrambi hanno consegnato (i bot consegnano da soli)."""
+        """Entrambi hanno consegnato (i bot consegnano da soli; la chat solo allo scadere)."""
         assert d.stato is not None
         for lato in (0, 1):
             g = d.giocatore(lato)
-            if d.mosse[lato] is None and g is not None and g.bot:
+            if d.mosse[lato] is None and g is not None and g.bot and not g.chat:
                 d.mosse[lato] = ai.scegli(d.stato, lato, "normale", self._rng, self.pool)
         return d.mosse[0] is not None and d.mosse[1] is not None
 
@@ -144,9 +227,14 @@ class TorneoDuelli:
 
     def _risolvi(self, d: Duello, adesso: float) -> list[Aggiornamento]:
         assert d.stato is not None
-        for lato in (0, 1):  # mosse mancanti (scadenza): le gioca la CPU
+        for lato in (0, 1):  # mosse mancanti (scadenza): la chat vota, altrimenti gioca la CPU
             if d.mosse[lato] is None:
-                d.mosse[lato] = ai.mosse_euristiche(d.stato, lato)
+                g = d.giocatore(lato)
+                if g is not None and g.chat:
+                    d.mosse[lato] = self._mosse_chat(d, lato)
+                    self.chat_voti = {}
+                else:
+                    d.mosse[lato] = ai.mosse_euristiche(d.stato, lato)
         m0, m1 = d.mosse[0], d.mosse[1]
         assert m0 is not None and m1 is not None
         eventi = gioca_turno(d.stato, m0, m1)

@@ -135,10 +135,17 @@ export type CorsieVinte = number[];
 export type Finito = boolean;
 export type Vincitore = string | null;
 export type Duelli = DuelloPubblico[];
+export type Turno1 = number;
+export type Avversario = string | null;
+export type Id4 = string;
+export type Testo = string;
+export type Voti = number;
+export type Opzioni = OpzioneChat[];
+export type Scadenza = number;
 export type StreamerChannel = string | null;
 export type ServerTime = number;
 export type Type2 = "mission";
-export type Id4 = string;
+export type Id5 = string;
 export type Nome5 = string;
 export type Descrizione2 = string;
 export type Type3 = "lot_started";
@@ -164,12 +171,12 @@ export type Type8 = "lot_skipped";
 export type Type9 = "auction_finished";
 export type Type10 = "tournament_result";
 export type Type11 = "duello";
-export type Avversario = string | null;
-export type Turno1 = number;
+export type Avversario1 = string | null;
+export type Turno2 = number;
 export type Turni = number;
 export type Energia = number;
 export type EnergiaCpu = number;
-export type Id5 = string;
+export type Id6 = string;
 export type Nome6 = string;
 export type Anime2 = string;
 export type Arch1 = string;
@@ -186,7 +193,7 @@ export type Mano = CartaView[];
 export type ManoCpu = number;
 export type Mazzo = number;
 export type MazzoCpu = number;
-export type Id6 = string;
+export type Id7 = string;
 export type Nome7 = string;
 export type Regola = string;
 export type Favorisce = string[];
@@ -204,7 +211,7 @@ export type Vincitore1 = number | null;
 export type Eventi = {
   [k: string]: unknown;
 }[];
-export type Scadenza = number;
+export type Scadenza1 = number;
 export type Now2 = number;
 export type Inviate = boolean;
 export type AvversarioPronto = boolean;
@@ -240,6 +247,7 @@ export interface RoomView {
   arena: RoomArena | null;
   tournament: TournamentView | null;
   duelli: DuelliView | null;
+  chat_duello: ChatDuelloView | null;
   streamer_channel: StreamerChannel;
   server_time: ServerTime;
 }
@@ -406,11 +414,25 @@ export interface DuelloPubblico {
   vincitore: Vincitore;
 }
 /**
+ * Il voto della chat sulle mosse del suo duello: opzioni e voti, aggiornati a ogni voto.
+ */
+export interface ChatDuelloView {
+  turno: Turno1;
+  avversario: Avversario;
+  opzioni: Opzioni;
+  scadenza: Scadenza;
+}
+export interface OpzioneChat {
+  id: Id4;
+  testo: Testo;
+  voti: Voti;
+}
+/**
  * Missione segreta del giocatore (messaggio privato).
  */
 export interface Mission {
   type: Type2;
-  id: Id4;
+  id: Id5;
   nome: Nome5;
   descrizione: Descrizione2;
 }
@@ -471,10 +493,10 @@ export interface TournamentResult {
  */
 export interface DuelloAggiornamento {
   type: Type11;
-  avversario: Avversario;
+  avversario: Avversario1;
   vista: StatoView;
   eventi: Eventi;
-  scadenza: Scadenza;
+  scadenza: Scadenza1;
   now: Now2;
   inviate: Inviate;
   avversario_pronto: AvversarioPronto;
@@ -482,7 +504,7 @@ export interface DuelloAggiornamento {
   giornata: Giornata1;
 }
 export interface StatoView {
-  turno: Turno1;
+  turno: Turno2;
   turni: Turni;
   energia: Energia;
   energia_cpu: EnergiaCpu;
@@ -498,7 +520,7 @@ export interface StatoView {
   vincitore: Vincitore1;
 }
 export interface CartaView {
-  id: Id5;
+  id: Id6;
   nome: Nome6;
   anime: Anime2;
   arch: Arch1;
@@ -513,7 +535,7 @@ export interface CartaView {
   immagine_url: ImmagineUrl1;
 }
 export interface LuogoView {
-  id: Id6;
+  id: Id7;
   nome: Nome7;
   regola: Regola;
   favorisce: Favorisce;

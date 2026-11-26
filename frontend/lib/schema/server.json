@@ -287,6 +287,40 @@
       "title": "Character",
       "type": "object"
     },
+    "ChatDuelloView": {
+      "description": "Il voto della chat sulle mosse del suo duello: opzioni e voti, aggiornati a ogni voto.",
+      "properties": {
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
+        },
+        "avversario": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Avversario"
+        },
+        "opzioni": {
+          "items": {
+            "$ref": "#/$defs/OpzioneChat"
+          },
+          "title": "Opzioni",
+          "type": "array"
+        },
+        "scadenza": {
+          "title": "Scadenza",
+          "type": "number"
+        }
+      },
+      "required": ["turno", "avversario", "opzioni", "scadenza"],
+      "title": "ChatDuelloView",
+      "type": "object"
+    },
     "DuelliView": {
       "properties": {
         "giornata": {
@@ -816,6 +850,25 @@
       "title": "Mossa",
       "type": "object"
     },
+    "OpzioneChat": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "testo": {
+          "title": "Testo",
+          "type": "string"
+        },
+        "voti": {
+          "title": "Voti",
+          "type": "integer"
+        }
+      },
+      "required": ["id", "testo", "voti"],
+      "title": "OpzioneChat",
+      "type": "object"
+    },
     "Passiva": {
       "properties": {
         "nome": {
@@ -1264,6 +1317,17 @@
           ],
           "default": null
         },
+        "chat_duello": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ChatDuelloView"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "streamer_channel": {
           "anyOf": [
             {
@@ -1297,6 +1361,7 @@
         "arena",
         "tournament",
         "duelli",
+        "chat_duello",
         "streamer_channel",
         "server_time"
       ],

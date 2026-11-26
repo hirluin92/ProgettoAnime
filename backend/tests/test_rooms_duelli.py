@@ -196,3 +196,61 @@ def test_room_duel_rejects_moves_outside_the_phase(tmp_path) -> None:  # type: i
 
     errori = asyncio.run(go())
     assert errori and errori[-1]["code"] == "bad_moves"
+
+
+# ---------- la chat vota le mosse ----------
+def test_chat_votes_decide_the_chat_plan_at_the_deadline() -> None:
+    g = giocatori(2)
+    g[1].bot = g[1].chat = True
+    t = TorneoDuelli(21, g, "girone", 30, pool=CARTE)
+    t.avvia(0.0)
+    d, lato = t.duello_chat()  # type: ignore[misc]
+    assert lato == 1 and d.giocatore(1).chat  # type: ignore[union-attr]
+    t.invia("p0", [], 5.0)
+    # la chat non risponde da sola: il turno aspetta il voto (e la scadenza)
+    assert d.stato is not None and d.stato.turno == 1
+    t.tick(10.0)
+    assert d.stato.turno == 1
+    piani = t.piani_chat(d, 1)
+    assert [x[0].split(":")[0] for x in piani] == ["Equilibrato", "Tutto in una corsia", "Prudente"]
+    assert t.registra_voto("Anna", "b") and t.registra_voto("anna", "c")  # vale l'ultimo
+    assert t.registra_voto("Bruno", "c") and not t.registra_voto("Carlo", "z")
+    assert t.conteggio_voti() == {"a": 0, "b": 0, "c": 2}
+    t.tick(31.0)
+    assert d.stato.turno == 2 and t.conteggio_voti() == {"a": 0, "b": 0, "c": 0}  # voti azzerati
+
+
+def test_chat_without_votes_plays_the_balanced_plan_and_plans_are_always_valid() -> None:
+    from app.duello.motore import valida
+
+    g = giocatori(2)
+    g[1].bot = g[1].chat = True
+    t = TorneoDuelli(22, g, "girone", 30, pool=CARTE)
+    t.avvia(0.0)
+    d, _ = t.duello_chat()  # type: ignore[misc]
+    assert d.stato is not None
+    for turno in range(6):
+        for _, mosse in t.piani_chat(d, 1):
+            valida(d.stato, 1, mosse)
+        ora = 100.0 * (turno + 1)
+        t.tick(ora)
+    assert d.finito
+
+
+def test_chat_vote_messages_reach_the_tournament_via_feed_message() -> None:
+    from types import SimpleNamespace
+
+    from app.twitch.votes import feed_message
+
+    g = giocatori(2)
+    g[1].bot = g[1].chat = True
+    t = TorneoDuelli(23, g, "girone", 30, pool=CARTE)
+    t.avvia(0.0)
+    room = SimpleNamespace(phase="duelli", extras={"duelli": t}, auction=None)
+    assert feed_message(room, "viewer1", "!a")  # type: ignore[arg-type]
+    assert feed_message(room, "viewer2", " !B ")  # type: ignore[arg-type]
+    assert not feed_message(room, "viewer3", "!d")  # type: ignore[arg-type]
+    assert not feed_message(room, "viewer3", "ciao")  # type: ignore[arg-type]
+    assert t.conteggio_voti() == {"a": 1, "b": 1, "c": 0}
+    room.phase = "auction"
+    assert not feed_message(room, "viewer4", "!a")  # type: ignore[arg-type]

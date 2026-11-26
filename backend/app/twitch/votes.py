@@ -82,8 +82,15 @@ class ChatVotes:
         return max(eligible) if eligible else None
 
 
+DUELLO_RE = re.compile(r"^\s*!([abc])\s*$", re.IGNORECASE)
+
+
 def feed_message(room: "Room", user: str, text: str) -> bool:
     """Registra un messaggio di chat sul lotto corrente. True se era un voto valido."""
+    if room.phase == "duelli":
+        torneo = room.extras.get("duelli")
+        m = DUELLO_RE.match(text)
+        return bool(torneo is not None and m and torneo.registra_voto(user, m.group(1).lower()))
     if room.phase == "plan":
         plan: ChatPlan | None = room.extras.get("chat_plan")
         voto = parse_plan(text)
