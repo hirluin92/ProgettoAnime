@@ -78,6 +78,93 @@
       "title": "BidPlaced",
       "type": "object"
     },
+    "CartaView": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "anime": {
+          "title": "Anime",
+          "type": "string"
+        },
+        "arch": {
+          "title": "Arch",
+          "type": "string"
+        },
+        "potenza": {
+          "title": "Potenza",
+          "type": "integer"
+        },
+        "costo": {
+          "title": "Costo",
+          "type": "integer"
+        },
+        "mossa": {
+          "title": "Mossa",
+          "type": "string"
+        },
+        "passiva": {
+          "title": "Passiva",
+          "type": "string"
+        },
+        "testo_mossa": {
+          "title": "Testo Mossa",
+          "type": "string"
+        },
+        "testo_passiva": {
+          "title": "Testo Passiva",
+          "type": "string"
+        },
+        "forma": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Forma"
+        },
+        "rating": {
+          "title": "Rating",
+          "type": "integer"
+        },
+        "immagine_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Immagine Url"
+        }
+      },
+      "required": [
+        "id",
+        "nome",
+        "anime",
+        "arch",
+        "potenza",
+        "costo",
+        "mossa",
+        "passiva",
+        "testo_mossa",
+        "testo_passiva",
+        "forma",
+        "rating",
+        "immagine_url"
+      ],
+      "title": "CartaView",
+      "type": "object"
+    },
     "Character": {
       "properties": {
         "id": {
@@ -200,6 +287,148 @@
       "title": "Character",
       "type": "object"
     },
+    "DuelliView": {
+      "properties": {
+        "giornata": {
+          "title": "Giornata",
+          "type": "integer"
+        },
+        "giornate": {
+          "title": "Giornate",
+          "type": "integer"
+        },
+        "duelli": {
+          "items": {
+            "$ref": "#/$defs/DuelloPubblico"
+          },
+          "title": "Duelli",
+          "type": "array"
+        }
+      },
+      "required": ["giornata", "giornate", "duelli"],
+      "title": "DuelliView",
+      "type": "object"
+    },
+    "DuelloAggiornamento": {
+      "description": "Il duello del giocatore (messaggio privato): plancia, mano, eventi dell'ultimo turno.",
+      "properties": {
+        "type": {
+          "const": "duello",
+          "default": "duello",
+          "title": "Type",
+          "type": "string"
+        },
+        "avversario": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Avversario"
+        },
+        "vista": {
+          "$ref": "#/$defs/StatoView"
+        },
+        "eventi": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Eventi",
+          "type": "array"
+        },
+        "scadenza": {
+          "title": "Scadenza",
+          "type": "number"
+        },
+        "now": {
+          "title": "Now",
+          "type": "number"
+        },
+        "inviate": {
+          "title": "Inviate",
+          "type": "boolean"
+        },
+        "avversario_pronto": {
+          "title": "Avversario Pronto",
+          "type": "boolean"
+        },
+        "nuovo": {
+          "title": "Nuovo",
+          "type": "boolean"
+        },
+        "giornata": {
+          "title": "Giornata",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "avversario",
+        "vista",
+        "eventi",
+        "scadenza",
+        "now",
+        "inviate",
+        "avversario_pronto",
+        "nuovo",
+        "giornata"
+      ],
+      "title": "DuelloAggiornamento",
+      "type": "object"
+    },
+    "DuelloPubblico": {
+      "description": "Un duello in corso visto da tutti (gli spettatori non vedono mani n\u00e9 mosse).",
+      "properties": {
+        "a": {
+          "title": "A",
+          "type": "string"
+        },
+        "b": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "B"
+        },
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
+        },
+        "corsie_vinte": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Corsie Vinte",
+          "type": "array"
+        },
+        "finito": {
+          "title": "Finito",
+          "type": "boolean"
+        },
+        "vincitore": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vincitore"
+        }
+      },
+      "required": ["a", "b", "turno", "corsie_vinte", "finito", "vincitore"],
+      "title": "DuelloPubblico",
+      "type": "object"
+    },
     "ErrorMsg": {
       "properties": {
         "type": {
@@ -219,6 +448,36 @@
       },
       "required": ["type", "code", "message"],
       "title": "ErrorMsg",
+      "type": "object"
+    },
+    "IstanzaView": {
+      "properties": {
+        "uid": {
+          "title": "Uid",
+          "type": "integer"
+        },
+        "carta": {
+          "$ref": "#/$defs/CartaView"
+        },
+        "lato": {
+          "title": "Lato",
+          "type": "integer"
+        },
+        "corsia": {
+          "title": "Corsia",
+          "type": "integer"
+        },
+        "potenza": {
+          "title": "Potenza",
+          "type": "integer"
+        },
+        "mod": {
+          "title": "Mod",
+          "type": "integer"
+        }
+      },
+      "required": ["uid", "carta", "lato", "corsia", "potenza", "mod"],
+      "title": "IstanzaView",
       "type": "object"
     },
     "Joined": {
@@ -417,6 +676,32 @@
       },
       "required": ["type", "player_id", "amount", "role_deadline"],
       "title": "LotWon",
+      "type": "object"
+    },
+    "LuogoView": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "regola": {
+          "title": "Regola",
+          "type": "string"
+        },
+        "favorisce": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Favorisce",
+          "type": "array"
+        }
+      },
+      "required": ["id", "nome", "regola", "favorisce"],
+      "title": "LuogoView",
       "type": "object"
     },
     "MatchRef": {
@@ -781,6 +1066,19 @@
           "enum": ["normale", "difficile", "epico"],
           "title": "Difficolta",
           "type": "string"
+        },
+        "regole": {
+          "default": "classico",
+          "enum": ["classico", "duello"],
+          "title": "Regole",
+          "type": "string"
+        },
+        "turno_duello": {
+          "default": 30,
+          "maximum": 90,
+          "minimum": 10,
+          "title": "Turno Duello",
+          "type": "integer"
         }
       },
       "required": [
@@ -795,7 +1093,9 @@
         "modalita",
         "pick_timeout",
         "boss",
-        "difficolta"
+        "difficolta",
+        "regole",
+        "turno_duello"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -823,7 +1123,16 @@
           "type": "string"
         },
         "phase": {
-          "enum": ["lobby", "ban", "auction", "draft", "plan", "tournament", "raid_result"],
+          "enum": [
+            "lobby",
+            "ban",
+            "auction",
+            "draft",
+            "plan",
+            "duelli",
+            "tournament",
+            "raid_result"
+          ],
           "title": "Phase",
           "type": "string"
         },
@@ -944,6 +1253,17 @@
             }
           ]
         },
+        "duelli": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DuelliView"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "streamer_channel": {
           "anyOf": [
             {
@@ -976,6 +1296,7 @@
         "raid",
         "arena",
         "tournament",
+        "duelli",
         "streamer_channel",
         "server_time"
       ],
@@ -1082,6 +1403,115 @@
       "title": "StandingRow",
       "type": "object"
     },
+    "StatoView": {
+      "properties": {
+        "turno": {
+          "title": "Turno",
+          "type": "integer"
+        },
+        "turni": {
+          "title": "Turni",
+          "type": "integer"
+        },
+        "energia": {
+          "title": "Energia",
+          "type": "integer"
+        },
+        "energia_cpu": {
+          "title": "Energia Cpu",
+          "type": "integer"
+        },
+        "mano": {
+          "items": {
+            "$ref": "#/$defs/CartaView"
+          },
+          "title": "Mano",
+          "type": "array"
+        },
+        "mano_cpu": {
+          "title": "Mano Cpu",
+          "type": "integer"
+        },
+        "mazzo": {
+          "title": "Mazzo",
+          "type": "integer"
+        },
+        "mazzo_cpu": {
+          "title": "Mazzo Cpu",
+          "type": "integer"
+        },
+        "luoghi": {
+          "items": {
+            "$ref": "#/$defs/LuogoView"
+          },
+          "title": "Luoghi",
+          "type": "array"
+        },
+        "corsie": {
+          "items": {
+            "items": {
+              "items": {
+                "$ref": "#/$defs/IstanzaView"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "title": "Corsie",
+          "type": "array"
+        },
+        "totali": {
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Totali",
+          "type": "array"
+        },
+        "corsie_vinte": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Corsie Vinte",
+          "type": "array"
+        },
+        "finita": {
+          "title": "Finita",
+          "type": "boolean"
+        },
+        "vincitore": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vincitore"
+        }
+      },
+      "required": [
+        "turno",
+        "turni",
+        "energia",
+        "energia_cpu",
+        "mano",
+        "mano_cpu",
+        "mazzo",
+        "mazzo_cpu",
+        "luoghi",
+        "corsie",
+        "totali",
+        "corsie_vinte",
+        "finita",
+        "vincitore"
+      ],
+      "title": "StatoView",
+      "type": "object"
+    },
     "TournamentResult": {
       "properties": {
         "type": {
@@ -1152,6 +1582,7 @@
     "mapping": {
       "auction_finished": "#/$defs/AuctionFinished",
       "bid_placed": "#/$defs/BidPlaced",
+      "duello": "#/$defs/DuelloAggiornamento",
       "error": "#/$defs/ErrorMsg",
       "joined": "#/$defs/Joined",
       "lot_assigned": "#/$defs/LotAssigned",
@@ -1198,6 +1629,9 @@
     },
     {
       "$ref": "#/$defs/TournamentResult"
+    },
+    {
+      "$ref": "#/$defs/DuelloAggiornamento"
     },
     {
       "$ref": "#/$defs/ErrorMsg"

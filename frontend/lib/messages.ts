@@ -1,6 +1,7 @@
 import type {
   AuctionFinished,
   BidPlaced,
+  DuelloAggiornamento,
   ErrorMsg,
   Joined,
   LotAssigned,
@@ -25,8 +26,10 @@ export type ServerMsg =
   | LotSkipped
   | AuctionFinished
   | TournamentResult
+  | DuelloAggiornamento
   | ErrorMsg;
 
+export type { DuelloAggiornamento } from "./types/server";
 export type { RoomView, PlayerView, LotView, TournamentView, RoomSettings } from "./types/server";
 
 export type ClientMsg =
@@ -39,6 +42,7 @@ export type ClientMsg =
   | { type: "assign_role"; role: string }
   | { type: "pick"; character_id: string; role: string }
   | { type: "plan"; tattiche: string[] | null; carica: "subito" | "carica"; formazione: string }
+  | { type: "duello_mosse"; mosse: { carta: string; corsia: number }[] }
   | { type: "update_settings"; settings: import("./types/server").RoomSettings };
 
 export const ROLES = ["Capitano", "Vice", "Tank", "Danno", "Supporto", "Supporto II", "Guaritore"];

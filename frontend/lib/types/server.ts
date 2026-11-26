@@ -17,13 +17,15 @@ export type Server =
   | LotSkipped
   | AuctionFinished
   | TournamentResult
+  | DuelloAggiornamento
   | ErrorMsg;
 export type Type = "joined";
 export type PlayerId = string;
 export type Token = string;
 export type Type1 = "room_state";
 export type Code = string;
-export type Phase = "lobby" | "ban" | "auction" | "draft" | "plan" | "tournament" | "raid_result";
+export type Phase =
+  "lobby" | "ban" | "auction" | "draft" | "plan" | "duelli" | "tournament" | "raid_result";
 export type HostId = string;
 export type Budget = number;
 export type Timer = number;
@@ -37,6 +39,8 @@ export type Modalita = "asta" | "specchio" | "raid";
 export type PickTimeout = number;
 export type Boss = string;
 export type Difficolta = "normale" | "difficile" | "epico";
+export type Regole = "classico" | "duello";
+export type TurnoDuello = number;
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -122,6 +126,15 @@ export type Riuscita = boolean;
 export type Missioni = MissionResult[];
 export type Formato1 = "girone" | "eliminazione";
 export type Campione = string | null;
+export type Giornata = number;
+export type Giornate1 = number;
+export type A1 = string;
+export type B1 = string | null;
+export type Turno = number;
+export type CorsieVinte = number[];
+export type Finito = boolean;
+export type Vincitore = string | null;
+export type Duelli = DuelloPubblico[];
 export type StreamerChannel = string | null;
 export type ServerTime = number;
 export type Type2 = "mission";
@@ -150,7 +163,54 @@ export type Amount3 = number;
 export type Type8 = "lot_skipped";
 export type Type9 = "auction_finished";
 export type Type10 = "tournament_result";
-export type Type11 = "error";
+export type Type11 = "duello";
+export type Avversario = string | null;
+export type Turno1 = number;
+export type Turni = number;
+export type Energia = number;
+export type EnergiaCpu = number;
+export type Id5 = string;
+export type Nome6 = string;
+export type Anime2 = string;
+export type Arch1 = string;
+export type Potenza = number;
+export type Costo1 = number;
+export type Mossa1 = string;
+export type Passiva1 = string;
+export type TestoMossa = string;
+export type TestoPassiva = string;
+export type Forma1 = string | null;
+export type Rating1 = number;
+export type ImmagineUrl1 = string | null;
+export type Mano = CartaView[];
+export type ManoCpu = number;
+export type Mazzo = number;
+export type MazzoCpu = number;
+export type Id6 = string;
+export type Nome7 = string;
+export type Regola = string;
+export type Favorisce = string[];
+export type Luoghi = LuogoView[];
+export type Uid = number;
+export type Lato = number;
+export type Corsia = number;
+export type Potenza1 = number;
+export type Mod = number;
+export type Corsie = IstanzaView[][][];
+export type Totali = number[][];
+export type CorsieVinte1 = number[];
+export type Finita = boolean;
+export type Vincitore1 = number | null;
+export type Eventi = {
+  [k: string]: unknown;
+}[];
+export type Scadenza = number;
+export type Now2 = number;
+export type Inviate = boolean;
+export type AvversarioPronto = boolean;
+export type Nuovo = boolean;
+export type Giornata1 = number;
+export type Type12 = "error";
 export type Code1 = string;
 export type Message = string;
 
@@ -179,6 +239,7 @@ export interface RoomView {
   raid: RaidView | null;
   arena: RoomArena | null;
   tournament: TournamentView | null;
+  duelli: DuelliView | null;
   streamer_channel: StreamerChannel;
   server_time: ServerTime;
 }
@@ -195,6 +256,8 @@ export interface RoomSettings {
   pick_timeout: PickTimeout;
   boss: Boss;
   difficolta: Difficolta;
+  regole: Regole;
+  turno_duello: TurnoDuello;
 }
 export interface PlayerView {
   id: Id;
@@ -326,6 +389,22 @@ export interface MissionResult {
   descrizione: Descrizione1;
   riuscita: Riuscita;
 }
+export interface DuelliView {
+  giornata: Giornata;
+  giornate: Giornate1;
+  duelli: Duelli;
+}
+/**
+ * Un duello in corso visto da tutti (gli spettatori non vedono mani né mosse).
+ */
+export interface DuelloPubblico {
+  a: A1;
+  b: B1;
+  turno: Turno;
+  corsie_vinte: CorsieVinte;
+  finito: Finito;
+  vincitore: Vincitore;
+}
 /**
  * Missione segreta del giocatore (messaggio privato).
  */
@@ -387,8 +466,68 @@ export interface TournamentResult {
   type: Type10;
   tournament: TournamentView;
 }
-export interface ErrorMsg {
+/**
+ * Il duello del giocatore (messaggio privato): plancia, mano, eventi dell'ultimo turno.
+ */
+export interface DuelloAggiornamento {
   type: Type11;
+  avversario: Avversario;
+  vista: StatoView;
+  eventi: Eventi;
+  scadenza: Scadenza;
+  now: Now2;
+  inviate: Inviate;
+  avversario_pronto: AvversarioPronto;
+  nuovo: Nuovo;
+  giornata: Giornata1;
+}
+export interface StatoView {
+  turno: Turno1;
+  turni: Turni;
+  energia: Energia;
+  energia_cpu: EnergiaCpu;
+  mano: Mano;
+  mano_cpu: ManoCpu;
+  mazzo: Mazzo;
+  mazzo_cpu: MazzoCpu;
+  luoghi: Luoghi;
+  corsie: Corsie;
+  totali: Totali;
+  corsie_vinte: CorsieVinte1;
+  finita: Finita;
+  vincitore: Vincitore1;
+}
+export interface CartaView {
+  id: Id5;
+  nome: Nome6;
+  anime: Anime2;
+  arch: Arch1;
+  potenza: Potenza;
+  costo: Costo1;
+  mossa: Mossa1;
+  passiva: Passiva1;
+  testo_mossa: TestoMossa;
+  testo_passiva: TestoPassiva;
+  forma: Forma1;
+  rating: Rating1;
+  immagine_url: ImmagineUrl1;
+}
+export interface LuogoView {
+  id: Id6;
+  nome: Nome7;
+  regola: Regola;
+  favorisce: Favorisce;
+}
+export interface IstanzaView {
+  uid: Uid;
+  carta: CartaView;
+  lato: Lato;
+  corsia: Corsia;
+  potenza: Potenza1;
+  mod: Mod;
+}
+export interface ErrorMsg {
+  type: Type12;
   code: Code1;
   message: Message;
 }

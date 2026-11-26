@@ -162,30 +162,58 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
               </h3>
               <ul className="grid gap-3 md:grid-cols-2">
                 {g.map((m) => (
-                  <li key={m.match_id}>
-                    <Link
-                      className="panel panel-hover block p-4"
-                      data-testid="match-link"
-                      href={`/partita/${m.match_id}`}
-                    >
-                      <span className="sr-only">
-                        {name(m.a)} {m.total_a} – {m.total_b} {name(m.b)}
-                        {m.winner
-                          ? ` (${it.stanza.vince} ${name(m.winner)})`
-                          : ` (${it.stanza.pareggio})`}
-                      </span>
-                      <span className="flex items-center justify-between gap-3" aria-hidden="true">
-                        <Side p={player(m.a)} total={m.total_a} win={m.winner === m.a} />
-                        <span className="display text-xl font-black muted">VS</span>
-                        <Side p={player(m.b)} total={m.total_b} win={m.winner === m.b} right />
-                      </span>
-                      <span
-                        className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
-                        aria-hidden="true"
+                  <li key={m.match_id || `${m.a}-${m.b}`}>
+                    {m.match_id ? (
+                      <Link
+                        className="panel panel-hover block p-4"
+                        data-testid="match-link"
+                        href={`/partita/${m.match_id}`}
                       >
-                        {it.stanza.guardaScontro} →
-                      </span>
-                    </Link>
+                        <span className="sr-only">
+                          {name(m.a)} {m.total_a} – {m.total_b} {name(m.b)}
+                          {m.winner
+                            ? ` (${it.stanza.vince} ${name(m.winner)})`
+                            : ` (${it.stanza.pareggio})`}
+                        </span>
+                        <span
+                          className="flex items-center justify-between gap-3"
+                          aria-hidden="true"
+                        >
+                          <Side p={player(m.a)} total={m.total_a} win={m.winner === m.a} />
+                          <span className="display text-xl font-black muted">VS</span>
+                          <Side p={player(m.b)} total={m.total_b} win={m.winner === m.b} right />
+                        </span>
+                        <span
+                          className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
+                          aria-hidden="true"
+                        >
+                          {it.stanza.guardaScontro} →
+                        </span>
+                      </Link>
+                    ) : (
+                      <div className="panel block p-4" data-testid="match-card">
+                        <span className="sr-only">
+                          {name(m.a)} {m.total_a} – {m.total_b} {name(m.b)}
+                          {m.winner
+                            ? ` (${it.stanza.vince} ${name(m.winner)})`
+                            : ` (${it.stanza.pareggio})`}
+                        </span>
+                        <span
+                          className="flex items-center justify-between gap-3"
+                          aria-hidden="true"
+                        >
+                          <Side p={player(m.a)} total={m.total_a} win={m.winner === m.a} />
+                          <span className="display text-xl font-black muted">VS</span>
+                          <Side p={player(m.b)} total={m.total_b} win={m.winner === m.b} right />
+                        </span>
+                        <span
+                          className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
+                          aria-hidden="true"
+                        >
+                          {it.stanza.guardaScontro} →
+                        </span>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>

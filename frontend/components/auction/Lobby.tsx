@@ -159,6 +159,35 @@ export default function Lobby({
               <option value="eliminazione">{it.stanza.fmtElim}</option>
             </select>
           </label>
+          {s.modalita !== "raid" && (
+            <label className="grid gap-1 text-sm font-bold">
+              {it.stanza.combattimento}
+              <select
+                aria-label={it.stanza.combattimento}
+                className="field"
+                value={s.regole}
+                onChange={(e) => upd({ regole: e.target.value as RoomSettings["regole"] })}
+                data-testid="regole"
+              >
+                <option value="classico">{it.stanza.combClassico}</option>
+                <option value="duello">{it.stanza.combDuello}</option>
+              </select>
+            </label>
+          )}
+          {s.modalita !== "raid" && s.regole === "duello" && (
+            <label className="grid gap-1 text-sm font-bold">
+              {it.stanza.turnoDuello}
+              <input
+                aria-label={it.stanza.turnoDuello}
+                type="number"
+                min={10}
+                max={90}
+                className="field"
+                value={s.turno_duello}
+                onChange={(e) => upd({ turno_duello: num(e.target.value, 30) })}
+              />
+            </label>
+          )}
           {s.modalita === "raid" && (
             <>
               <label className="grid gap-1 text-sm font-bold">

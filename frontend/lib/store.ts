@@ -1,10 +1,18 @@
 import { create } from "zustand";
-import type { PlayerView, RoomView, ServerMsg, TournamentView } from "./messages";
+import type {
+  DuelloAggiornamento,
+  PlayerView,
+  RoomView,
+  ServerMsg,
+  TournamentView,
+} from "./messages";
 
 interface RoomStore {
   room: RoomView | null;
   me: string | null;
   tournament: TournamentView | null;
+  /** il tuo duello in corso (messaggio privato), con gli eventi dell'ultimo turno */
+  duello: DuelloAggiornamento | null;
   /** missione segreta (messaggio privato) */
   mission: { id: string; nome: string; descrizione: string } | null;
   status: "idle" | "connecting" | "open" | "closed";
@@ -27,6 +35,7 @@ export const useRoom = create<RoomStore>((set, get) => ({
   room: null,
   me: null,
   tournament: null,
+  duello: null,
   mission: null,
   status: "idle",
   error: null,
@@ -36,7 +45,15 @@ export const useRoom = create<RoomStore>((set, get) => ({
   setStatus: (status) => set({ status }),
   clearError: () => set({ error: null, errorCode: null }),
   reset: () =>
-    set({ room: null, me: null, tournament: null, mission: null, feed: [], error: null }),
+    set({
+      room: null,
+      me: null,
+      tournament: null,
+      duello: null,
+      mission: null,
+      feed: [],
+      error: null,
+    }),
   apply: (m) => {
     const { room } = get();
     const name = (id: string) => room?.players.find((p) => p.id === id)?.name ?? "?";
@@ -53,6 +70,9 @@ export const useRoom = create<RoomStore>((set, get) => ({
         return;
       case "tournament_result":
         set({ tournament: m.tournament });
+        return;
+      case "duello":
+        set({ duello: m, offset: m.now - Date.now() / 1000 });
         return;
       case "mission":
         set({ mission: { id: m.id, nome: m.nome, descrizione: m.descrizione } });

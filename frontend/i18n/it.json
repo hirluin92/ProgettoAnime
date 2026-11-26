@@ -159,7 +159,18 @@
     "formato": "Formato torneo",
     "fmtGirone": "Girone all'italiana",
     "fmtElim": "Eliminazione diretta",
-    "tempoScelta": "Tempo per scelta (s)"
+    "tempoScelta": "Tempo per scelta (s)",
+    "combattimento": "Combattimento del torneo",
+    "combClassico": "Classico (7 contro 7)",
+    "combDuello": "Duello a corsie",
+    "turnoDuello": "Secondi per turno (duello)",
+    "duelliTitolo": "Duelli del torneo",
+    "tuoDuello": "Il tuo duello",
+    "riposo": "Riposi in questa giornata",
+    "altriDuelli": "Gli altri duelli",
+    "aspettoAltri": "Hai finito: aspetto gli altri duelli…",
+    "scontroContro": "Contro {nome}",
+    "giornataN": "Giornata {n}"
   },
   "veloce": {
     "titolo": "Partita veloce",
@@ -461,6 +472,11 @@
     "tuoElo": "Il tuo ELO: {n}",
     "costoMazzo": "Costo totale del mazzo: {n} · energia in 6 turni: {tot}",
     "consiglioCosto": "Con mazzi più economici giochi più carte per partita: la CPU ne usa 7-8.",
-    "indietro": "Torna al Duello"
+    "indietro": "Torna al Duello",
+    "oppMano": "{nome}: {n} carte in mano",
+    "inAttesaAvv": "Mosse consegnate: aspetto {nome}…",
+    "avvPronto": "{nome} ha già scelto",
+    "tempo": "Tempo: {s}s",
+    "riposo": "Turno di riposo: passi automaticamente"
   }
 }

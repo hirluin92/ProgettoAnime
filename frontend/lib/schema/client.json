@@ -51,6 +51,28 @@
       "title": "Bid",
       "type": "object"
     },
+    "DuelloMosse": {
+      "description": "Le carte giocate in questo turno del duello (segrete fino alla rivelazione).",
+      "properties": {
+        "type": {
+          "const": "duello_mosse",
+          "default": "duello_mosse",
+          "title": "Type",
+          "type": "string"
+        },
+        "mosse": {
+          "items": {
+            "$ref": "#/$defs/MossaIn"
+          },
+          "maxItems": 12,
+          "title": "Mosse",
+          "type": "array"
+        }
+      },
+      "required": ["type", "mosse"],
+      "title": "DuelloMosse",
+      "type": "object"
+    },
     "Join": {
       "properties": {
         "type": {
@@ -80,6 +102,21 @@
       },
       "required": ["type", "name", "token"],
       "title": "Join",
+      "type": "object"
+    },
+    "MossaIn": {
+      "properties": {
+        "carta": {
+          "title": "Carta",
+          "type": "string"
+        },
+        "corsia": {
+          "title": "Corsia",
+          "type": "integer"
+        }
+      },
+      "required": ["carta", "corsia"],
+      "title": "MossaIn",
       "type": "object"
     },
     "Pass": {
@@ -240,6 +277,19 @@
           "enum": ["normale", "difficile", "epico"],
           "title": "Difficolta",
           "type": "string"
+        },
+        "regole": {
+          "default": "classico",
+          "enum": ["classico", "duello"],
+          "title": "Regole",
+          "type": "string"
+        },
+        "turno_duello": {
+          "default": 30,
+          "maximum": 90,
+          "minimum": 10,
+          "title": "Turno Duello",
+          "type": "integer"
         }
       },
       "required": [
@@ -254,7 +304,9 @@
         "modalita",
         "pick_timeout",
         "boss",
-        "difficolta"
+        "difficolta",
+        "regole",
+        "turno_duello"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -307,6 +359,7 @@
       "assign_role": "#/$defs/AssignRole",
       "ban": "#/$defs/Ban",
       "bid": "#/$defs/Bid",
+      "duello_mosse": "#/$defs/DuelloMosse",
       "join": "#/$defs/Join",
       "pass": "#/$defs/Pass",
       "pick": "#/$defs/Pick",
@@ -344,6 +397,9 @@
     },
     {
       "$ref": "#/$defs/Plan"
+    },
+    {
+      "$ref": "#/$defs/DuelloMosse"
     },
     {
       "$ref": "#/$defs/UpdateSettings"
