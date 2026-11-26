@@ -77,7 +77,8 @@
     "turni": "turni",
     "migliore": "Migliore in campo",
     "sinergie": "Sinergie",
-    "nessunaSinergia": "Nessuna sinergia attiva"
+    "nessunaSinergia": "Nessuna sinergia attiva",
+    "eyebrow": "Scontro 7 contro 7"
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
@@ -184,7 +185,8 @@
     "classifica": "Classifica di oggi",
     "vuota": "Nessuno ha ancora giocato oggi.",
     "punteggio": "Punteggio",
-    "posizione": "Posizione"
+    "posizione": "Posizione",
+    "eyebrow": "Una sola prova al giorno"
   },
   "footerCredito": "Immagini: AniList",
   "nav": {

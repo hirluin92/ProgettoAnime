@@ -74,7 +74,8 @@ export default function Sfida() {
   if (!started)
     return (
       <main className="mx-auto max-w-md space-y-4 p-6">
-        <h1 className="text-4xl font-bold">{it.sfida.titolo}</h1>
+        <span className="eyebrow">{it.sfida.eyebrow}</span>
+        <h1 className="text-5xl font-black leading-none sm:text-6xl">{it.sfida.titolo}</h1>
         <p className="text-sm muted">{it.sfida.descrizione}</p>
         <input
           aria-label={it.home.tuoNome}

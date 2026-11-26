@@ -17,7 +17,8 @@ export default function PartitaPage({ params }: { params: Promise<{ id: string }
   }, [id]);
   return (
     <main className="mx-auto max-w-5xl p-4">
-      <h1 className="mb-4 text-4xl font-bold">{it.battle.replay}</h1>
+      <span className="eyebrow">{it.battle.eyebrow}</span>
+      <h1 className="mb-4 text-5xl font-black leading-none">{it.battle.replay}</h1>
       {error && <p role="alert">{it.errori.partitaNonTrovata}</p>}
       {result && <BattleScene result={result} autoplay />}
     </main>
