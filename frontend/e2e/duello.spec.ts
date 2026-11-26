@@ -24,7 +24,7 @@ test("il Duello: regole, draft di 8 carte, 6 turni contro la CPU e risultato", a
     const n = await mano.count();
     for (let i = 0; i < n; i++) {
       const c = mano.nth(i);
-      if (await c.evaluate((el) => el.className.includes("opacity-40"))) continue;
+      if (await c.evaluate((el) => el.className.includes("opacity-45"))) continue;
       await c.click();
       const bottone = page.getByTestId("gioca-1");
       if (await bottone.isEnabled()) {

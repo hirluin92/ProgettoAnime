@@ -99,7 +99,7 @@ export default function DuelloGame() {
 
   if (fase === "regole")
     return (
-      <main className="mx-auto max-w-5xl p-4 pt-8">
+      <main className="mx-auto max-w-7xl p-4 pt-8">
         <Regole
           onOk={() => {
             window.localStorage.setItem(TUTORIAL_KEY, "1");
@@ -140,7 +140,7 @@ export default function DuelloGame() {
       }
     };
     return (
-      <main className="mx-auto max-w-5xl space-y-5 p-4 pt-6" data-testid="duello-draft">
+      <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="duello-draft">
         <header className="space-y-1">
           <span className="eyebrow">{it.duello.titolo}</span>
           <h1 className="display text-4xl font-black">
@@ -166,7 +166,7 @@ export default function DuelloGame() {
                 {fmt(it.duello.rilancia, { n: draft.rilanci - rilanci })}
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {mano.map((c) => (
                 <DuelloCard
                   key={c.id}
@@ -182,7 +182,7 @@ export default function DuelloGame() {
           <section className="space-y-2">
             <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
               {scelte.map((c) => (
-                <DuelloCard key={c.id} carta={c} compact />
+                <DuelloTile key={c.id} carta={c} potenza={c.potenza} />
               ))}
             </div>
           </section>
@@ -274,7 +274,7 @@ export default function DuelloGame() {
   const vinteCpu = stato.corsie_vinte[1];
 
   return (
-    <main className="mx-auto max-w-5xl space-y-4 p-3 pt-5" data-testid="duello-gioco">
+    <main className="mx-auto max-w-7xl space-y-4 p-3 pt-5" data-testid="duello-gioco">
       <header className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <span className="eyebrow">{it.duello.titolo}</span>
@@ -312,7 +312,7 @@ export default function DuelloGame() {
                   </p>
                 )}
               </div>
-              <div className="grid min-h-[84px] grid-cols-4 content-start gap-1.5 md:grid-cols-2">
+              <div className="grid min-h-[92px] grid-cols-4 content-start gap-1.5">
                 {loro.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -332,7 +332,7 @@ export default function DuelloGame() {
                   {cpu}
                 </span>
               </div>
-              <div className="grid min-h-[84px] grid-cols-4 content-start gap-1.5 md:grid-cols-2">
+              <div className="grid min-h-[92px] grid-cols-4 content-start gap-1.5">
                 {mie.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -351,11 +351,11 @@ export default function DuelloGame() {
                       exit={{ opacity: 0 }}
                       className="rounded-xl border-2 border-dashed border-amber-300/70 p-0.5"
                     >
-                      <DuelloCard
+                      <DuelloTile
                         carta={m.carta}
-                        compact
+                        potenza={m.carta.potenza}
+                        tinta="tu"
                         onClick={() => setPending(pending.filter((x) => x !== m))}
-                        testId="duello-pending"
                       />
                     </motion.div>
                   ))}
@@ -412,7 +412,7 @@ export default function DuelloGame() {
           </div>
           <div className="-mx-3 flex snap-x gap-2 overflow-x-auto px-3 pb-2">
             {inMano.map((c) => (
-              <div key={c.id} className="w-40 shrink-0 snap-start">
+              <div key={c.id} className="w-44 shrink-0 snap-start sm:w-52">
                 <DuelloCard
                   carta={c}
                   selected={sel === c.id}
