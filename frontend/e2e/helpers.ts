@@ -119,10 +119,27 @@ export async function impostaCursore(page: Page, testId: string, valore: number)
   }, valore);
 }
 
-/** Il nome esatto, ma senza distinguere l'apostrofo dritto da quello tipografico (nei titoli ce ne sono di entrambi). */
+/**
+ * Il nome esatto, ma senza badare alla punteggiatura (apostrofi dritti o tipografici, due punti,
+ * trattini\u2026): nei titoli compaiono in pi\u00f9 forme e il test non deve dipendere da quale.
+ */
 export function esatto(nome: string): RegExp {
-  const sicuro = nome
-    .replace(/[.*+?^${}()|[\]\\]/g, (m) => `\\${m}`)
-    .replace(/['\u2019]/g, "['\u2019]");
-  return new RegExp(`^${sicuro}$`);
+  const parole = nome
+    .normalize("NFKD")
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+  const sep = String.raw`[^\p{L}\p{N}]*`;
+  return new RegExp(`^${sep}${parole.join(sep)}${sep}$`, "iu");
+}
+
+/** Sceglie nell'elenco dei suggerimenti la voce che corrisponde al nome; se manca dice cosa c'era. */
+export async function scegliVoce(page: Page, nome: string, voci = page.getByTestId("anime-voce")) {
+  try {
+    await voci.getByText(esatto(nome)).first().click({ timeout: 15_000 });
+  } catch (e) {
+    const viste = await voci.allInnerTexts().catch(() => [] as string[]);
+    throw new Error(
+      `Nessuna voce per \u00ab${nome}\u00bb. Suggerimenti: ${JSON.stringify(viste)}\n${e}`,
+    );
+  }
 }
