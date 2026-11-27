@@ -117,13 +117,13 @@ export default function NegozioView() {
           return (
             <li
               key={t.id}
-              className="group relative flex flex-col items-center"
+              className="panel group relative flex flex-col items-center overflow-hidden px-4 pb-4 pt-6"
               data-testid={`pacchetto-${t.id}`}
             >
               {/* riflettore e piedistallo */}
               <span
                 aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-[22rem] rounded-full opacity-60 transition-opacity group-hover:opacity-100"
+                className="absolute inset-x-0 top-0 h-[22rem] opacity-60 transition-opacity group-hover:opacity-100"
                 style={{
                   background: `radial-gradient(ellipse at 50% 42%, ${COLORI[t.id]}55, transparent 68%)`,
                 }}
@@ -135,7 +135,7 @@ export default function NegozioView() {
                 aria-hidden="true"
                 className="relative -mt-1 h-4 w-[70%] rounded-[50%] bg-black/70 blur-md"
               />
-              <div className="panel relative mt-3 flex w-full flex-1 flex-col gap-3 p-4">
+              <div className="relative mt-3 flex w-full flex-1 flex-col gap-3">
                 <p className="text-center text-[0.95rem] font-semibold">
                   {fmt(it.negozio.carte, { n: t.carte })}
                   <span className="muted"> · </span>

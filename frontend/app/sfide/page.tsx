@@ -9,6 +9,16 @@ import { fmt } from "@/components/duello/DuelloBoard";
 import { useProfile } from "@/lib/profile";
 import type { AnimedleStato, ZoomStato } from "@/lib/quiz";
 
+/** Quanto manca alla mezzanotte italiana (quando cambiano le sfide), come «5h 12m». */
+function manca(): string {
+  const [h, m, s] = new Date()
+    .toLocaleTimeString("en-GB", { timeZone: "Europe/Rome", hour12: false })
+    .split(":")
+    .map(Number);
+  const resto = 24 * 3600 - (h * 3600 + m * 60 + s);
+  return `${Math.floor(resto / 3600)}h ${String(Math.floor((resto % 3600) / 60)).padStart(2, "0")}m`;
+}
+
 function Carta({
   href,
   icona,
@@ -123,6 +133,12 @@ export default function SfidePage() {
         }
       : null;
   const statoAnimedle = stato(animedle);
+  const [prossima, setProssima] = useState("");
+  useEffect(() => {
+    setProssima(manca());
+    const t = setInterval(() => setProssima(manca()), 30_000);
+    return () => clearInterval(t);
+  }, []);
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 p-4 pt-8" data-testid="sfide">
@@ -132,6 +148,11 @@ export default function SfidePage() {
         </span>
         <h1 className="display text-5xl font-black">{it.quiz.titolo}</h1>
         <p className="max-w-2xl text-[0.95rem] muted">{it.quiz.intro}</p>
+        {prossima && (
+          <p className="chip mt-2 mr-2" data-testid="sfide-prossima">
+            {fmt(it.quiz.prossima, { t: prossima })}
+          </p>
+        )}
         {animedle && animedle.serie > 0 && (
           <p className="chip mt-2">
             <Icon name="flame" className="size-4 text-orange-400" />

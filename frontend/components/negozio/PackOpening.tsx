@@ -103,7 +103,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 overflow-hidden bg-[#05040c]"
+      className="fixed inset-0 z-50 overflow-hidden bg-[radial-gradient(ellipse_at_50%_28%,#2b1763,#0c0821_72%)]"
       data-testid="apertura"
     >
       {/* alone del colore del pacchetto */}

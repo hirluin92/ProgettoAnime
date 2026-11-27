@@ -1,6 +1,7 @@
 "use client";
 
 import Icon, { Medaglia } from "@/components/Icon";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import it from "@/i18n/it.json";
 import AccountPanel from "@/components/AccountPanel";
@@ -149,16 +150,16 @@ export default function ProfiloPage() {
         </div>
         <dl className="grid w-full grid-cols-3 gap-3 text-center sm:grid-cols-6">
           {[
-            [it.profilo.partite, profile.partite],
-            [it.profilo.vittorie, profile.vittorie],
-            [it.profilo.percentuale, `${pct}%`],
-            [it.profilo.scala, profile.best_scala],
-            [it.profilo.elo, profile.elo],
-            [it.profilo.crediti, profile.crediti],
-          ].map(([k, v]) => (
+            [it.profilo.partite, profile.partite, ""],
+            [it.profilo.vittorie, profile.vittorie, "text-emerald-300"],
+            [it.profilo.percentuale, `${pct}%`, ""],
+            [it.profilo.scala, profile.best_scala, "text-cyan-200"],
+            [it.profilo.elo, profile.elo, "text-violet-300"],
+            [it.profilo.crediti, profile.crediti, "text-amber-300"],
+          ].map(([k, v, colore]) => (
             <div key={String(k)} className="rounded-2xl border bg-white/[0.04] px-4 py-2">
               <dt className="text-[0.6rem] font-extrabold uppercase tracking-widest muted">{k}</dt>
-              <dd className="display text-3xl font-black">{v}</dd>
+              <dd className={`display text-3xl font-black ${colore}`}>{v}</dd>
             </div>
           ))}
         </dl>
@@ -237,30 +238,31 @@ export default function ProfiloPage() {
             {profile.collezione_totale}
           </span>
         </div>
-        {groups.map(([anime, list]) => (
-          <div key={anime}>
-            <h3 className="mb-1.5 text-sm font-extrabold uppercase tracking-widest muted">
-              {paletteFor(anime).label} · {list.filter((c) => owned.has(c.id)).length}/{list.length}
-            </h3>
-            <ul className="flex flex-wrap gap-1.5">
-              {list.map((c) => (
-                <li
-                  key={c.id}
-                  className={`rounded-lg border px-2 py-1 text-xs ${
-                    owned.has(c.id)
-                      ? "border-white/30 bg-white/10 font-bold"
-                      : "border-dashed text-white/30"
-                  }`}
-                  title={owned.has(c.id) ? `${c.nome} · ${c.rating}` : it.profilo.bloccata}
-                >
-                  {owned.has(c.id)
-                    ? `${c.nome}${c.forma ? ` (${c.forma})` : ""}`
-                    : it.profilo.bloccata}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {groups.map(([anime, list]) => {
+            const mie = list.filter((c) => owned.has(c.id)).length;
+            const pal = paletteFor(anime);
+            return (
+              <li key={anime} className="space-y-1.5">
+                <div className="flex items-baseline justify-between text-sm font-extrabold">
+                  <span>{pal.label}</span>
+                  <span className="tabular-nums muted">
+                    {mie}/{list.length}
+                  </span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-black/40">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${(mie / list.length) * 100}%`, background: pal.from }}
+                  />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        <Link href="/album" className="btn btn-primary">
+          {it.profilo.apriAlbum}
+        </Link>
       </section>
 
       <div className="flex flex-wrap items-center gap-3 pb-4">

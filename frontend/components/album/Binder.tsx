@@ -209,7 +209,7 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
         <div
           className="relative mx-auto"
           style={{
-            width: doppia ? "min(100%, 1120px, calc((100vh - 17rem) * 1.33))" : "min(100%, 480px)",
+            width: doppia ? "min(100%, 1280px, calc((100vh - 12rem) * 1.33))" : "min(100%, 480px)",
             perspective: 2600,
           }}
         >
