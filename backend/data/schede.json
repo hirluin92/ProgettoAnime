@@ -14,7 +14,7 @@
    "hokage",
    "jinchuriki"
   ],
-  "costo": 8
+  "costo": 9
  },
  "sasuke-uchiha": {
   "arch": "ASS",
@@ -45,7 +45,7 @@
   "tratti": [
    "squadra-7"
   ],
-  "costo": 8
+  "costo": 9
  },
  "sakura-haruno": {
   "arch": "GUA",
@@ -60,7 +60,7 @@
   "tratti": [
    "squadra-7"
   ],
-  "costo": 5
+  "costo": 6
  },
  "gaara": {
   "arch": "TAN",
@@ -90,7 +90,7 @@
   "tratti": [
    "sannin"
   ],
-  "costo": 7
+  "costo": 8
  },
  "monkey-d-luffy": {
   "arch": "BRU",
@@ -106,7 +106,7 @@
    "cappello-di-paglia",
    "fratelli-di-mare"
   ],
-  "costo": 8
+  "costo": 9
  },
  "roronoa-zoro": {
   "arch": "BRU",
@@ -122,7 +122,7 @@
    "cappello-di-paglia",
    "spadaccini"
   ],
-  "costo": 8
+  "costo": 9
  },
  "sanji": {
   "arch": "ASS",
@@ -137,7 +137,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 9
+  "costo": 10
  },
  "nami": {
   "arch": "MAG",
@@ -152,7 +152,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 3
+  "costo": 4
  },
  "tony-tony-chopper": {
   "arch": "GUA",
@@ -167,7 +167,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 4
+  "costo": 5
  },
  "jinbe": {
   "arch": "TAN",
@@ -182,7 +182,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 10
+  "costo": 9
  },
  "son-goku": {
   "arch": "BRU",
@@ -198,7 +198,7 @@
    "saiyan",
    "guerrieri-z"
   ],
-  "costo": 9
+  "costo": 10
  },
  "vegeta": {
   "arch": "BRU",
@@ -215,7 +215,7 @@
    "guerrieri-z",
    "famiglia-briefs"
   ],
-  "costo": 8
+  "costo": 9
  },
  "piccolo": {
   "arch": "SUP",
@@ -230,7 +230,7 @@
   "tratti": [
    "guerrieri-z"
   ],
-  "costo": 7
+  "costo": 8
  },
  "son-gohan": {
   "arch": "MAG",
@@ -246,7 +246,7 @@
    "saiyan",
    "guerrieri-z"
   ],
-  "costo": 6
+  "costo": 7
  },
  "crilin": {
   "arch": "TIR",
@@ -292,7 +292,7 @@
    "corpo-sterminatori",
    "famiglia-kamado"
   ],
-  "costo": 6
+  "costo": 7
  },
  "zenitsu-agatsuma": {
   "arch": "ASS",
@@ -307,7 +307,7 @@
   "tratti": [
    "corpo-sterminatori"
   ],
-  "costo": 7
+  "costo": 8
  },
  "inosuke-hashibira": {
   "arch": "BRU",
@@ -337,7 +337,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 6
+  "costo": 7
  },
  "gyomei-himejima": {
   "arch": "TAN",
@@ -352,7 +352,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 9
+  "costo": 10
  },
  "tengen-uzui": {
   "arch": "TIR",
@@ -367,7 +367,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 9
+  "costo": 8
  },
  "yuji-itadori": {
   "arch": "BRU",
@@ -382,7 +382,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 6
+  "costo": 8
  },
  "satoru-gojo": {
   "arch": "MAG",
@@ -398,7 +398,7 @@
    "studenti-tokyo",
    "stregoni-forti"
   ],
-  "costo": 11
+  "costo": 12
  },
  "megumi-fushiguro": {
   "arch": "EVO",
@@ -459,7 +459,7 @@
    "studenti-tokyo",
    "clan-zenin"
   ],
-  "costo": 5
+  "costo": 6
  },
  "itachi-uchiha": {
   "arch": "MAG",
@@ -475,7 +475,7 @@
    "akatsuki",
    "uchiha"
   ],
-  "costo": 8
+  "costo": 9
  },
  "minato-namikaze": {
   "arch": "ASS",
@@ -505,7 +505,7 @@
   "tratti": [
    "uchiha"
   ],
-  "costo": 11
+  "costo": 12
  },
  "hinata-hyuga": {
   "arch": "ASS",
@@ -535,7 +535,7 @@
   "tratti": [
    "konoha-giovani"
   ],
-  "costo": 7
+  "costo": 8
  },
  "rock-lee": {
   "arch": "BRU",
@@ -550,7 +550,7 @@
   "tratti": [
    "team-guy"
   ],
-  "costo": 5
+  "costo": 7
  },
  "neji-hyuga": {
   "arch": "ASS",
@@ -582,7 +582,7 @@
    "sannin",
    "hokage"
   ],
-  "costo": 9
+  "costo": 7
  },
  "orochimaru": {
   "arch": "EVO",
@@ -627,7 +627,7 @@
   "tratti": [
    "jinchuriki"
   ],
-  "costo": 8
+  "costo": 9
  },
  "pain": {
   "arch": "EVO",
@@ -642,7 +642,7 @@
   "tratti": [
    "akatsuki"
   ],
-  "costo": 9
+  "costo": 10
  },
  "kisame-hoshigaki": {
   "arch": "TAN",
@@ -673,7 +673,7 @@
    "akatsuki",
    "uchiha"
   ],
-  "costo": 8
+  "costo": 7
  },
  "portgas-d-ace": {
   "arch": "MAG",
@@ -718,7 +718,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 7
+  "costo": 8
  },
  "usopp": {
   "arch": "TIR",
@@ -748,7 +748,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 7
+  "costo": 8
  },
  "brook": {
   "arch": "ASS",
@@ -763,7 +763,7 @@
   "tratti": [
    "cappello-di-paglia"
   ],
-  "costo": 5
+  "costo": 6
  },
  "barbabianca": {
   "arch": "TAN",
@@ -793,7 +793,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 9
+  "costo": 10
  },
  "dracule-mihawk": {
   "arch": "ASS",
@@ -808,7 +808,7 @@
   "tratti": [
    "spadaccini"
   ],
-  "costo": 9
+  "costo": 11
  },
  "boa-hancock": {
   "arch": "SUP",
@@ -823,7 +823,7 @@
   "tratti": [
    "supernova"
   ],
-  "costo": 7
+  "costo": 9
  },
  "sabo": {
   "arch": "MAG",
@@ -838,7 +838,7 @@
   "tratti": [
    "fratelli-di-mare"
   ],
-  "costo": 6
+  "costo": 7
  },
  "kaido": {
   "arch": "TAN",
@@ -853,7 +853,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 11
+  "costo": 12
  },
  "charlotte-katakuri": {
   "arch": "ASS",
@@ -883,7 +883,7 @@
   "tratti": [
    "imperatori"
   ],
-  "costo": 7
+  "costo": 8
  },
  "trunks": {
   "arch": "BRU",
@@ -930,7 +930,7 @@
    "cattivi",
    "androidi"
   ],
-  "costo": 8
+  "costo": 9
  },
  "tenshinhan": {
   "arch": "TIR",
@@ -975,7 +975,7 @@
   "tratti": [
    "saiyan"
   ],
-  "costo": 4
+  "costo": 5
  },
  "broly": {
   "arch": "TAN",
@@ -1004,7 +1004,7 @@
    "effetto": "armor"
   },
   "tratti": [],
-  "costo": 8
+  "costo": 7
  },
  "beerus": {
   "arch": "MAG",
@@ -1019,7 +1019,7 @@
   "tratti": [
    "dei"
   ],
-  "costo": 8
+  "costo": 9
  },
  "whis": {
   "arch": "SUP",
@@ -1034,7 +1034,7 @@
   "tratti": [
    "dei"
   ],
-  "costo": 8
+  "costo": 9
  },
  "numero-18": {
   "arch": "TIR",
@@ -1049,7 +1049,7 @@
   "tratti": [
    "androidi"
   ],
-  "costo": 5
+  "costo": 7
  },
  "gotenks": {
   "arch": "MAG",
@@ -1079,7 +1079,7 @@
   "tratti": [
    "famiglia-briefs"
   ],
-  "costo": 1
+  "costo": 2
  },
  "dende": {
   "arch": "GUA",
@@ -1094,7 +1094,7 @@
   "tratti": [
    "guerrieri-z"
   ],
-  "costo": 1
+  "costo": 2
  },
  "kyojuro-rengoku": {
   "arch": "BRU",
@@ -1139,7 +1139,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 10
+  "costo": 11
  },
  "mitsuri-kanroji": {
   "arch": "BRU",
@@ -1169,7 +1169,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 5
+  "costo": 7
  },
  "obanai-iguro": {
   "arch": "ASS",
@@ -1184,7 +1184,7 @@
   "tratti": [
    "pilastri"
   ],
-  "costo": 8
+  "costo": 7
  },
  "nezuko-kamado": {
   "arch": "TAN",
@@ -1216,7 +1216,7 @@
    "lune-superiori",
    "demoni"
   ],
-  "costo": 8
+  "costo": 10
  },
  "muzan-kibutsuji": {
   "arch": "EVO",
@@ -1231,7 +1231,7 @@
   "tratti": [
    "demoni"
   ],
-  "costo": 7
+  "costo": 8
  },
  "akaza": {
   "arch": "BRU",
@@ -1247,7 +1247,7 @@
    "lune-superiori",
    "demoni"
   ],
-  "costo": 7
+  "costo": 8
  },
  "douma": {
   "arch": "SUP",
@@ -1263,7 +1263,7 @@
    "lune-superiori",
    "demoni"
   ],
-  "costo": 11
+  "costo": 10
  },
  "kanao-tsuyuri": {
   "arch": "ASS",
@@ -1293,7 +1293,7 @@
   "tratti": [
    "corpo-sterminatori"
   ],
-  "costo": 4
+  "costo": 5
  },
  "daki": {
   "arch": "SUP",
@@ -1324,7 +1324,7 @@
   "tratti": [
    "clan-zenin"
   ],
-  "costo": 9
+  "costo": 10
  },
  "kento-nanami": {
   "arch": "BRU",
@@ -1339,7 +1339,7 @@
   "tratti": [
    "stregoni-forti"
   ],
-  "costo": 7
+  "costo": 8
  },
  "yuta-okkotsu": {
   "arch": "EVO",
@@ -1354,7 +1354,7 @@
   "tratti": [
    "stregoni-forti"
   ],
-  "costo": 9
+  "costo": 8
  },
  "aoi-todo": {
   "arch": "TAN",
@@ -1384,7 +1384,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 5
+  "costo": 7
  },
  "toge-inumaki": {
   "arch": "SUP",
@@ -1414,7 +1414,7 @@
   "tratti": [
    "maledizioni"
   ],
-  "costo": 8
+  "costo": 9
  },
  "mahito": {
   "arch": "SUP",
@@ -1429,7 +1429,7 @@
   "tratti": [
    "maledizioni"
   ],
-  "costo": 6
+  "costo": 7
  },
  "jogo": {
   "arch": "MAG",
@@ -1444,7 +1444,7 @@
   "tratti": [
    "maledizioni"
   ],
-  "costo": 9
+  "costo": 8
  },
  "hanami": {
   "arch": "TAN",
@@ -1474,7 +1474,7 @@
   "tratti": [
    "stregoni-forti"
   ],
-  "costo": 10
+  "costo": 11
  },
  "hajime-kashimo": {
   "arch": "MAG",
@@ -1502,7 +1502,7 @@
   "tratti": [
    "studenti-tokyo"
   ],
-  "costo": 2
+  "costo": 3
  },
  "mai-zenin": {
   "arch": "TIR",
@@ -1517,7 +1517,7 @@
   "tratti": [
    "clan-zenin"
   ],
-  "costo": 2
+  "costo": 3
  },
  "izuku-midoriya": {
   "arch": "BRU",
@@ -1532,7 +1532,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 8
+  "costo": 9
  },
  "shoto-todoroki": {
   "arch": "MAG",
@@ -1547,7 +1547,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 10
+  "costo": 11
  },
  "katsuki-bakugo": {
   "arch": "MAG",
@@ -1577,7 +1577,7 @@
   "tratti": [
    "eroi-professionisti"
   ],
-  "costo": 8
+  "costo": 9
  },
  "shota-aizawa": {
   "arch": "ASS",
@@ -1592,7 +1592,7 @@
   "tratti": [
    "eroi-professionisti"
   ],
-  "costo": 8
+  "costo": 9
  },
  "eijiro-kirishima": {
   "arch": "TAN",
@@ -1607,7 +1607,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 9
+  "costo": 8
  },
  "ochako-uraraka": {
   "arch": "SUP",
@@ -1622,7 +1622,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 8
+  "costo": 9
  },
  "tomura-shigaraki": {
   "arch": "EVO",
@@ -1635,7 +1635,7 @@
    "effetto": "lifesteal"
   },
   "tratti": [],
-  "costo": 6
+  "costo": 8
  },
  "denki-kaminari": {
   "arch": "MAG",
@@ -1665,7 +1665,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 5
+  "costo": 6
  },
  "momo-yaoyorozu": {
   "arch": "SUP",
@@ -1680,7 +1680,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 5
+  "costo": 7
  },
  "fumikage-tokoyami": {
   "arch": "EVO",
@@ -1695,7 +1695,7 @@
   "tratti": [
    "classe-1a"
   ],
-  "costo": 5
+  "costo": 7
  },
  "levi-ackerman": {
   "arch": "ASS",
@@ -1710,7 +1710,7 @@
   "tratti": [
    "corpo-di-ricerca"
   ],
-  "costo": 11
+  "costo": 10
  },
  "eren-yeager": {
   "arch": "EVO",
@@ -1758,7 +1758,7 @@
    "cadetti-104",
    "corpo-di-ricerca"
   ],
-  "costo": 7
+  "costo": 8
  },
  "hange-zoe": {
   "arch": "EVO",
@@ -1788,7 +1788,7 @@
   "tratti": [
    "corpo-di-ricerca"
   ],
-  "costo": 8
+  "costo": 7
  },
  "sasha-blouse": {
   "arch": "TIR",
@@ -1803,7 +1803,7 @@
   "tratti": [
    "cadetti-104"
   ],
-  "costo": 3
+  "costo": 5
  },
  "reiner-braun": {
   "arch": "TAN",
@@ -1833,7 +1833,7 @@
   "tratti": [
    "cadetti-104"
   ],
-  "costo": 6
+  "costo": 8
  },
  "annie-leonhart": {
   "arch": "ASS",
@@ -1848,7 +1848,7 @@
   "tratti": [
    "guerrieri-marley"
   ],
-  "costo": 7
+  "costo": 8
  },
  "historia-reiss": {
   "arch": "GUA",
@@ -1863,7 +1863,7 @@
   "tratti": [
    "cadetti-104"
   ],
-  "costo": 5
+  "costo": 6
  },
  "ymir": {
   "arch": "EVO",
@@ -1878,7 +1878,7 @@
   "tratti": [
    "cadetti-104"
   ],
-  "costo": 4
+  "costo": 6
  },
  "edward-elric": {
   "arch": "BRU",
@@ -1894,7 +1894,7 @@
    "fratelli-elric",
    "alchimisti-di-stato"
   ],
-  "costo": 8
+  "costo": 9
  },
  "roy-mustang": {
   "arch": "MAG",
@@ -1939,7 +1939,7 @@
   "tratti": [
    "fratelli-elric"
   ],
-  "costo": 3
+  "costo": 4
  },
  "riza-hawkeye": {
   "arch": "TIR",
@@ -1954,7 +1954,7 @@
   "tratti": [
    "alchimisti-di-stato"
   ],
-  "costo": 7
+  "costo": 8
  },
  "ling-yao": {
   "arch": "ASS",
@@ -1967,7 +1967,7 @@
    "effetto": "regen"
   },
   "tratti": [],
-  "costo": 6
+  "costo": 8
  },
  "greed": {
   "arch": "TAN",
@@ -2025,7 +2025,7 @@
   "tratti": [
    "alchimisti-di-stato"
   ],
-  "costo": 8
+  "costo": 9
  },
  "alex-louis-armstrong": {
   "arch": "BRU",
@@ -2040,7 +2040,7 @@
   "tratti": [
    "alchimisti-di-stato"
   ],
-  "costo": 5
+  "costo": 6
  },
  "envy": {
   "arch": "EVO",
@@ -2055,7 +2055,7 @@
   "tratti": [
    "homunculus"
   ],
-  "costo": 5
+  "costo": 6
  },
  "killua-zoldyck": {
   "arch": "ASS",
@@ -2071,7 +2071,7 @@
    "famiglia-zoldyck",
    "amici-di-gon"
   ],
-  "costo": 10
+  "costo": 11
  },
  "kurapika": {
   "arch": "SUP",
@@ -2086,7 +2086,7 @@
   "tratti": [
    "amici-di-gon"
   ],
-  "costo": 8
+  "costo": 9
  },
  "gon-freecss": {
   "arch": "BRU",
@@ -2144,7 +2144,7 @@
   "tratti": [
    "formiche-chimera"
   ],
-  "costo": 9
+  "costo": 10
  },
  "leorio-paradinight": {
   "arch": "GUA",
@@ -2174,7 +2174,7 @@
   "tratti": [
    "brigata-fantasma"
   ],
-  "costo": 7
+  "costo": 8
  },
  "isaac-netero": {
   "arch": "BRU",
@@ -2202,7 +2202,7 @@
   "tratti": [
    "formiche-chimera"
   ],
-  "costo": 7
+  "costo": 8
  },
  "illumi-zoldyck": {
   "arch": "ASS",
@@ -2217,7 +2217,7 @@
   "tratti": [
    "famiglia-zoldyck"
   ],
-  "costo": 9
+  "costo": 8
  },
  "kite": {
   "arch": "ASS",
@@ -2232,7 +2232,7 @@
   "tratti": [
    "amici-di-gon"
   ],
-  "costo": 5
+  "costo": 6
  },
  "ichigo-kurosaki": {
   "arch": "BRU",
@@ -2278,7 +2278,7 @@
    "gotei-13",
    "amici-di-ichigo"
   ],
-  "costo": 6
+  "costo": 7
  },
  "sousuke-aizen": {
   "arch": "EVO",
@@ -2291,7 +2291,7 @@
    "effetto": "dodge"
   },
   "tratti": [],
-  "costo": 7
+  "costo": 8
  },
  "yoruichi-shihouin": {
   "arch": "ASS",
@@ -2306,7 +2306,7 @@
   "tratti": [
    "amici-di-ichigo"
   ],
-  "costo": 9
+  "costo": 10
  },
  "kenpachi-zaraki": {
   "arch": "BRU",
@@ -2336,7 +2336,7 @@
   "tratti": [
    "arrancar"
   ],
-  "costo": 6
+  "costo": 8
  },
  "grimmjow-jaegerjaquez": {
   "arch": "BRU",
@@ -2396,7 +2396,7 @@
   "tratti": [
    "gotei-13"
   ],
-  "costo": 8
+  "costo": 9
  },
  "shunsui-kyoraku": {
   "arch": "SUP",
@@ -2441,7 +2441,7 @@
   "tratti": [
    "culto-di-kira"
   ],
-  "costo": 6
+  "costo": 8
  },
  "ryuk": {
   "arch": "MAG",
@@ -2456,7 +2456,7 @@
   "tratti": [
    "culto-di-kira"
   ],
-  "costo": 6
+  "costo": 7
  },
  "misa-amane": {
   "arch": "SUP",
@@ -2471,7 +2471,7 @@
   "tratti": [
    "culto-di-kira"
   ],
-  "costo": 5
+  "costo": 7
  },
  "near": {
   "arch": "SUP",
@@ -2486,7 +2486,7 @@
   "tratti": [
    "squadra-investigativa"
   ],
-  "costo": 4
+  "costo": 6
  },
  "mello": {
   "arch": "TIR",
@@ -2501,7 +2501,7 @@
   "tratti": [
    "squadra-investigativa"
   ],
-  "costo": 5
+  "costo": 4
  },
  "touta-matsuda": {
   "arch": "TIR",
@@ -2516,7 +2516,7 @@
   "tratti": [
    "squadra-investigativa"
   ],
-  "costo": 2
+  "costo": 1
  },
  "rem": {
   "arch": "TAN",
@@ -2531,7 +2531,7 @@
   "tratti": [
    "culto-di-kira"
   ],
-  "costo": 9
+  "costo": 8
  },
  "teru-mikami": {
   "arch": "ASS",
@@ -2561,7 +2561,7 @@
   "tratti": [
    "squadra-investigativa"
   ],
-  "costo": 1
+  "costo": 3
  },
  "soichiro-yagami": {
   "arch": "TIR",
@@ -2576,7 +2576,7 @@
   "tratti": [
    "squadra-investigativa"
   ],
-  "costo": 1
+  "costo": 3
  },
  "quillsh-wammy": {
   "arch": "SUP",
@@ -2591,7 +2591,7 @@
   "tratti": [
    "squadra-investigativa"
   ],
-  "costo": 2
+  "costo": 3
  },
  "denji": {
   "arch": "BRU",
@@ -2606,7 +2606,7 @@
   "tratti": [
    "divisione-4"
   ],
-  "costo": 8
+  "costo": 9
  },
  "makima": {
   "arch": "SUP",
@@ -2634,7 +2634,7 @@
   "tratti": [
    "divisione-4"
   ],
-  "costo": 9
+  "costo": 8
  },
  "aki-hayakawa": {
   "arch": "ASS",
@@ -2662,7 +2662,7 @@
    "effetto": "rage"
   },
   "tratti": [],
-  "costo": 9
+  "costo": 10
  },
  "pochita": {
   "arch": "TAN",
@@ -2692,7 +2692,7 @@
   "tratti": [
    "divisione-4"
   ],
-  "costo": 5
+  "costo": 6
  },
  "diavolo-dell-angelo": {
   "arch": "SUP",
@@ -2707,7 +2707,7 @@
   "tratti": [
    "diavoli"
   ],
-  "costo": 6
+  "costo": 7
  },
  "himeno": {
   "arch": "SUP",
@@ -2722,7 +2722,7 @@
   "tratti": [
    "divisione-4"
   ],
-  "costo": 6
+  "costo": 7
  },
  "kishibe": {
   "arch": "TIR",
@@ -2737,7 +2737,7 @@
   "tratti": [
    "divisione-4"
   ],
-  "costo": 5
+  "costo": 7
  },
  "beam": {
   "arch": "BRU",
@@ -2752,7 +2752,7 @@
   "tratti": [
    "diavoli"
   ],
-  "costo": 4
+  "costo": 5
  },
  "saitama": {
   "arch": "BRU",
@@ -2810,7 +2810,7 @@
    "effetto": "rage"
   },
   "tratti": [],
-  "costo": 8
+  "costo": 9
  },
  "fubuki": {
   "arch": "MAG",
@@ -2825,7 +2825,7 @@
   "tratti": [
    "associazione-eroi"
   ],
-  "costo": 6
+  "costo": 7
  },
  "sonic-supersonico": {
   "arch": "ASS",
@@ -2840,7 +2840,7 @@
   "tratti": [
    "associazione-eroi"
   ],
-  "costo": 9
+  "costo": 10
  },
  "bang": {
   "arch": "BRU",
@@ -2858,19 +2858,19 @@
   "costo": 8
  },
  "king": {
-  "arch": "TAN",
+  "arch": "MAG",
   "mossa": {
-   "nome": "Motore del Re",
-   "effetto": "stun"
+   "nome": "Lancia Spirituale",
+   "effetto": "aoe"
   },
   "passiva": {
-   "nome": "Aura del Più Forte",
-   "effetto": "aura_atk"
+   "nome": "Giardino Fatato",
+   "effetto": "dodge"
   },
   "tratti": [
-   "classe-s"
+   "sette-peccati"
   ],
-  "costo": 7
+  "costo": 6
  },
  "zombieman": {
   "arch": "TIR",
@@ -2885,7 +2885,7 @@
   "tratti": [
    "classe-s"
   ],
-  "costo": 3
+  "costo": 4
  },
  "puri-puri-prisoner": {
   "arch": "BRU",
@@ -2900,7 +2900,7 @@
   "tratti": [
    "classe-s"
   ],
-  "costo": 5
+  "costo": 4
  },
  "boros": {
   "arch": "MAG",
@@ -2913,7 +2913,7 @@
    "effetto": "armor"
   },
   "tratti": [],
-  "costo": 8
+  "costo": 9
  },
  "erza-scarlet": {
   "arch": "BRU",
@@ -2943,7 +2943,7 @@
   "tratti": [
    "team-natsu"
   ],
-  "costo": 7
+  "costo": 9
  },
  "lucy-heartfilia": {
   "arch": "EVO",
@@ -2958,7 +2958,7 @@
   "tratti": [
    "team-natsu"
   ],
-  "costo": 6
+  "costo": 7
  },
  "gray-fullbuster": {
   "arch": "MAG",
@@ -2973,7 +2973,7 @@
   "tratti": [
    "team-natsu"
   ],
-  "costo": 8
+  "costo": 7
  },
  "juvia-lockser": {
   "arch": "MAG",
@@ -2988,7 +2988,7 @@
   "tratti": [
    "gilda-fairy-tail"
   ],
-  "costo": 4
+  "costo": 5
  },
  "happy": {
   "arch": "SUP",
@@ -3018,7 +3018,7 @@
   "tratti": [
    "gilda-fairy-tail"
   ],
-  "costo": 9
+  "costo": 10
  },
  "mirajane-strauss": {
   "arch": "MAG",
@@ -3033,7 +3033,7 @@
   "tratti": [
    "gilda-fairy-tail"
   ],
-  "costo": 6
+  "costo": 7
  },
  "jellal-fernandes": {
   "arch": "MAG",
@@ -3046,7 +3046,7 @@
    "effetto": "firststrike"
   },
   "tratti": [],
-  "costo": 5
+  "costo": 6
  },
  "wendy-marvell": {
   "arch": "GUA",
@@ -3061,7 +3061,7 @@
   "tratti": [
    "gilda-fairy-tail"
   ],
-  "costo": 5
+  "costo": 6
  },
  "zeref": {
   "arch": "MAG",
@@ -3074,7 +3074,7 @@
    "effetto": "laststand"
   },
   "tratti": [],
-  "costo": 9
+  "costo": 7
  },
  "laxus-dreyar": {
   "arch": "MAG",
@@ -3089,7 +3089,7 @@
   "tratti": [
    "gilda-fairy-tail"
   ],
-  "costo": 8
+  "costo": 9
  },
  "asta": {
   "arch": "BRU",
@@ -3117,7 +3117,7 @@
    "effetto": "firststrike"
   },
   "tratti": [],
-  "costo": 7
+  "costo": 9
  },
  "yami-sukehiro": {
   "arch": "BRU",
@@ -3162,7 +3162,7 @@
   "tratti": [
    "cavalieri-magici"
   ],
-  "costo": 6
+  "costo": 7
  },
  "julius-novachrono": {
   "arch": "MAG",
@@ -3222,7 +3222,7 @@
   "tratti": [
    "toro-nero"
   ],
-  "costo": 4
+  "costo": 6
  },
  "charmy-pappitson": {
   "arch": "GUA",
@@ -3237,7 +3237,7 @@
   "tratti": [
    "toro-nero"
   ],
-  "costo": 2
+  "costo": 4
  },
  "mimosa-vermillion": {
   "arch": "GUA",
@@ -3252,7 +3252,7 @@
   "tratti": [
    "cavalieri-magici"
   ],
-  "costo": 3
+  "costo": 4
  },
  "finral-roulacase": {
   "arch": "SUP",
@@ -3283,5 +3283,974 @@
    "toro-nero"
   ],
   "costo": 6
+ },
+ "meliodas": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Full Counter",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Marchio del Demone",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "sette-peccati"
+  ],
+  "costo": 8
+ },
+ "ban": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Snatch",
+   "effetto": "drain"
+  },
+  "passiva": {
+   "nome": "Immortalità",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "sette-peccati"
+  ],
+  "costo": 8
+ },
+ "diane": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Pugno del Gigante",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Corpo da Gigante",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "sette-peccati"
+  ],
+  "costo": 9
+ },
+ "gowther": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Bambola dell'Anima",
+   "effetto": "debuff"
+  },
+  "passiva": {
+   "nome": "Mente Sintetica",
+   "effetto": "energy"
+  },
+  "tratti": [
+   "sette-peccati"
+  ],
+  "costo": 8
+ },
+ "merlin": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Infinity",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Maga Eterna",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "sette-peccati"
+  ],
+  "costo": 12
+ },
+ "escanor": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Cruel Sun",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Orgoglio del Leone",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "sette-peccati"
+  ],
+  "costo": 9
+ },
+ "elizabeth-liones": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Sorgente di Vita",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Grazia della Dea",
+   "effetto": "regen"
+  },
+  "tratti": [],
+  "costo": 6
+ },
+ "zeldris": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Lama dei Comandamenti",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Comandamento della Pietà",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "demoni"
+  ],
+  "costo": 10
+ },
+ "gilthunder": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Fulmine Sacro",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Cavaliere Sacro",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "cavalieri-sacri"
+  ],
+  "costo": 3
+ },
+ "arthur-pendragon": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Excalibur",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Re di Camelot",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "cavalieri-sacri"
+  ],
+  "costo": 7
+ },
+ "hawk": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Avanzi Sacri",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Maiale Mannaro",
+   "effetto": "regen"
+  },
+  "tratti": [],
+  "costo": 1
+ },
+ "shinra-kusakabe": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Calcio Infuocato",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Piedi del Diavolo",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "squadra-8"
+  ],
+  "costo": 10
+ },
+ "arthur-boyle": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Excalibur Fiammante",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Cavaliere Pazzo",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "squadra-8"
+  ],
+  "costo": 8
+ },
+ "maki-oze": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Tiro Fiammeggiante",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Mira Perfetta",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "squadra-8"
+  ],
+  "costo": 5
+ },
+ "tamaki-kotatsu": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Fortuna Lasciva",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Gatto Nero",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "squadra-8"
+  ],
+  "costo": 7
+ },
+ "benimaru-shinmon": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Fiamma Cremisi",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Tenente Imperiale",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "pirocinetici"
+  ],
+  "costo": 9
+ },
+ "iris": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Preghiera della Suora",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Dono della Sorella",
+   "effetto": "regen"
+  },
+  "tratti": [],
+  "costo": 6
+ },
+ "joker": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Fuoco Oscuro",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Ombra del Falco",
+   "effetto": "dodge"
+  },
+  "tratti": [],
+  "costo": 7
+ },
+ "princess-hibana": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Scintilla Reale",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Principessa di Fuoco",
+   "effetto": "energy"
+  },
+  "tratti": [],
+  "costo": 4
+ },
+ "akitaru-oubi": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Scudo di Fuoco",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Capitano Instancabile",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "squadra-8"
+  ],
+  "costo": 8
+ },
+ "takehisa-hinawa": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Pistola Fiammante",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Tiratore Scelto",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "squadra-8"
+  ],
+  "costo": 2
+ },
+ "mash-burnedead": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Pugno Muscolare",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Corpo senza Magia",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "accademia-easton"
+  ],
+  "costo": 8
+ },
+ "lance-crown": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Lampo di Magia",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Eleganza Reale",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "accademia-easton"
+  ],
+  "costo": 6
+ },
+ "rain-ames": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Lama di Fulmine",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Mente Calcolatrice",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "accademia-easton"
+  ],
+  "costo": 4
+ },
+ "dot-barrett": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Raggio Distruttivo",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Orgoglio Barrett",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "accademia-easton"
+  ],
+  "costo": 3
+ },
+ "finn-ames": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Magia Ripetuta",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Fratello Devoto",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "accademia-easton"
+  ],
+  "costo": 4
+ },
+ "lemon-irvine": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Cura Gentile",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Cuore Dolce",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "accademia-easton"
+  ],
+  "costo": 3
+ },
+ "abel-walker": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Lamento del Vento",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Principe Magico",
+   "effetto": "dodge"
+  },
+  "tratti": [],
+  "costo": 3
+ },
+ "innocent-zero": {
+  "arch": "EVO",
+  "mossa": {
+   "nome": "Distorsione Magica",
+   "effetto": "debuff"
+  },
+  "passiva": {
+   "nome": "Mago Supremo",
+   "effetto": "laststand"
+  },
+  "tratti": [],
+  "costo": 6
+ },
+ "sung-jinwoo": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Esercito delle Ombre",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Monarca delle Ombre",
+   "effetto": "lifesteal"
+  },
+  "tratti": [
+   "cacciatori",
+   "armata-ombre"
+  ],
+  "costo": 11
+ },
+ "cha-hae-in": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Lama Scintillante",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Fiuto di Cacciatrice",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 9
+ },
+ "igris": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Spada del Cavaliere",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Fedele Soldato d'Ombra",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "armata-ombre"
+  ],
+  "costo": 9
+ },
+ "lee-ju-hee": {
+  "arch": "GUA",
+  "mossa": {
+   "nome": "Magia Curativa",
+   "effetto": "heal"
+  },
+  "passiva": {
+   "nome": "Guaritrice di Classe A",
+   "effetto": "regen"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 3
+ },
+ "sung-jin-ah": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Fuoco Fraterno",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Cuore Sincero",
+   "effetto": "aura_atk"
+  },
+  "tratti": [],
+  "costo": 2
+ },
+ "go-gun-hee": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Comando del Presidente",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Veterano della Associazione",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 6
+ },
+ "yu-jin-ho": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Colpo Corazzato",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Spirito di Gruppo",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 5
+ },
+ "baek-yoon-ho": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Artigli della Tigre",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Cacciatore Selvaggio",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 6
+ },
+ "choi-jong-in": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Fiamma Spirituale",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Mago del Fuoco",
+   "effetto": "energy"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 5
+ },
+ "woo-jin-cheol": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Colpo Ombra",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Cacciatore Ambizioso",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "cacciatori"
+  ],
+  "costo": 3
+ },
+ "iron": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Pugno d'Acciaio",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Soldato d'Ombra",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "armata-ombre"
+  ],
+  "costo": 7
+ },
+ "yoichi-isagi": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Direct Shot",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Occhio Metavisione",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 10
+ },
+ "meguru-bachira": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Dribbling Mostruoso",
+   "effetto": "haste"
+  },
+  "passiva": {
+   "nome": "Mostro Interiore",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 10
+ },
+ "seishiro-nagi": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Trapping Perfetto",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Genio Naturale",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 10
+ },
+ "rin-itoshi": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Tiro Fulmineo",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Genio Assoluto",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 9
+ },
+ "hyoma-chigiri": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Scatto Esplosivo",
+   "effetto": "haste"
+  },
+  "passiva": {
+   "nome": "Velocista",
+   "effetto": "firststrike"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 8
+ },
+ "shoei-barou": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Ego del Re",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Re del Campo",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 7
+ },
+ "rensuke-kunigami": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Tiro Potente",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Cuore Saldo",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 7
+ },
+ "reo-mikage": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Camaleonte",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Talento Copiatore",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 8
+ },
+ "sae-itoshi": {
+  "arch": "MAG",
+  "mossa": {
+   "nome": "Passaggio Magico",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Regista Perfetto",
+   "effetto": "crit"
+  },
+  "tratti": [],
+  "costo": 8
+ },
+ "ryusei-shidou": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Salto Mostruoso",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Istinto Predatore",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 7
+ },
+ "jinpachi-ego": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Piano di Ego",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Allenatore Folle",
+   "effetto": "aura_atk"
+  },
+  "tratti": [],
+  "costo": 5
+ },
+ "gin-gagamaru": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Parata Stoica",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Portiere Gigante",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "blue-lock"
+  ],
+  "costo": 6
+ },
+ "shoyo-hinata": {
+  "arch": "ASS",
+  "mossa": {
+   "nome": "Attacco Veloce",
+   "effetto": "haste"
+  },
+  "passiva": {
+   "nome": "Salto Infinito",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 11
+ },
+ "tobio-kageyama": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Alzata Perfetta",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Re del Campo",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 8
+ },
+ "yu-nishinoya": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Ricezione Sacra",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Guardiano Libero",
+   "effetto": "dodge"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 10
+ },
+ "kenma-kozume": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Cervello di Nekoma",
+   "effetto": "debuff"
+  },
+  "passiva": {
+   "nome": "Stratega Silenzioso",
+   "effetto": "energy"
+  },
+  "tratti": [
+   "nekoma"
+  ],
+  "costo": 7
+ },
+ "tooru-oikawa": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Servizio Micidiale",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Gran Re",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "seijoh"
+  ],
+  "costo": 8
+ },
+ "kei-tsukishima": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Muro di Blocco",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Muro Intelligente",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 10
+ },
+ "tetsuro-kuroo": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Blocco di Nekoma",
+   "effetto": "stun"
+  },
+  "passiva": {
+   "nome": "Capitano Astuto",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "nekoma"
+  ],
+  "costo": 10
+ },
+ "koshi-sugawara": {
+  "arch": "SUP",
+  "mossa": {
+   "nome": "Alzata Gentile",
+   "effetto": "buff"
+  },
+  "passiva": {
+   "nome": "Spirito della Squadra",
+   "effetto": "aura_atk"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 7
+ },
+ "ryunosuke-tanaka": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Schiacciata Selvaggia",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Spirito Combattivo",
+   "effetto": "rage"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 5
+ },
+ "tadashi-yamaguchi": {
+  "arch": "TIR",
+  "mossa": {
+   "nome": "Servizio Flottante",
+   "effetto": "snipe"
+  },
+  "passiva": {
+   "nome": "Cuore Forte",
+   "effetto": "crit"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 2
+ },
+ "asahi-azumane": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Schiacciata Potente",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Asso Fragile",
+   "effetto": "laststand"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 5
+ },
+ "daichi-sawamura": {
+  "arch": "TAN",
+  "mossa": {
+   "nome": "Ricezione del Capitano",
+   "effetto": "barrier"
+  },
+  "passiva": {
+   "nome": "Capitano Solido",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "karasuno"
+  ],
+  "costo": 9
+ },
+ "wakatoshi-ushijima": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Schiacciata Mancina",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Asso Supremo",
+   "effetto": "rage"
+  },
+  "tratti": [],
+  "costo": 8
+ },
+ "hajime-iwaizumi": {
+  "arch": "BRU",
+  "mossa": {
+   "nome": "Schiacciata Diretta",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Spalla Fidata",
+   "effetto": "armor"
+  },
+  "tratti": [
+   "seijoh"
+  ],
+  "costo": 5
  }
 }

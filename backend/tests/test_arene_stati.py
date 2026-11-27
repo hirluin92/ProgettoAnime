@@ -47,7 +47,14 @@ def test_arena_effects_on_stats() -> None:
     base = random_match(3)
     ghiaccio = random_match(3, arena="ghiaccio")
     assert all(g.vel < b.vel for g, b in zip(ghiaccio.unita["A"], base.unita["A"], strict=True))
-    gravita = random_match(3, arena="gravita")
+    # un seme con almeno un Tank nella squadra A (non dipende dalla composizione del mazzo)
+    seme = next(
+        k
+        for k in range(3, 200)
+        if any(m.arch == "TAN" for m in random_match(k, arena="gravita").squadre["A"].members)
+    )
+    gravita = random_match(seme, arena="gravita")
+    base = random_match(seme)
     tank = next(i for i, m in enumerate(gravita.squadre["A"].members) if m.arch == "TAN")
     assert gravita.unita["A"][tank].dif > base.unita["A"][tank].dif
 

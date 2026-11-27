@@ -51,7 +51,7 @@ def test_team_bonuses_are_applied_by_the_engine() -> None:
 
 def test_opponents_get_stronger_step_by_step() -> None:
     medie = [
-        statistics.mean(forza(cpu_team(s, g)) for s in range(1, 40)) for g in (1, 4, 8, 12, 16)
+        statistics.mean(forza(cpu_team(s, g)) for s in range(1, 200)) for g in (1, 4, 8, 12, 16)
     ]
     assert medie == sorted(medie) and medie[-1] > medie[0] * 1.15
     assert cpu_team(3, 5) == cpu_team(3, 5)

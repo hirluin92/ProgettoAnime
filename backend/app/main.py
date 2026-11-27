@@ -3,6 +3,7 @@ import random
 import re
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from itertools import zip_longest
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket
@@ -166,11 +167,12 @@ def regala_carte(profile_id: str) -> dict[str, int]:
     from app.db.session import session_scope
     from app.duello_api import _tutte
 
-    ids = [
-        c.id
-        for c, _ in _tutte().values()
-        if rarita(c.rating) in ("comune", "rara") and c.costo <= 3
-    ]
+    per_anime: dict[str, list[str]] = {}
+    for c, _ in _tutte().values():
+        if rarita(c.rating) in ("comune", "rara") and c.costo <= 3:
+            per_anime.setdefault(c.anime, []).append(c.id)
+    # una carta per anime alla volta, così la collezione di prova è varia e stabile
+    ids = [i for giro in zip_longest(*per_anime.values()) for i in giro if i]
     with session_scope() as s:
         row = s.get(ProfileRow, profile_id)
         if row is None:

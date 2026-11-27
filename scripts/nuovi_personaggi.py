@@ -333,3 +333,23 @@ PERSONAGGI = [
     ["finral-roulacase", "Finral Roulacase", "black-clover", "Supporto II", ["MOBILITY"], 68, "https://s4.anilist.co/file/anilistcdn/character/large/b124433-QyoZrgIUsSpd.png"],
     ["nacht-faust", "Nacht Faust", "black-clover", "Vice", ["STEALTH"], 80, "https://s4.anilist.co/file/anilistcdn/character/large/b187268-vkcrcTvjNSrA.png"],
 ]
+
+
+# sei anime in più (file separato, stesso formato)
+from nuovi_personaggi_2 import (  # noqa: E402
+    ANIME_2,
+    DUOS_2,
+    FORME_2,
+    PERSONAGGI_2,
+    RIGHE_2,
+    RIVALITA_2,
+    TRATTI_2,
+)
+
+RIGHE_SCHEDE += RIGHE_2.strip() + "\n"
+TRATTI_NUOVI.update(TRATTI_2)
+ANIME_NUOVI.update(ANIME_2)
+DUOS_NUOVI += DUOS_2
+RIVALITA_NUOVE += RIVALITA_2
+FORME_NUOVE += FORME_2
+PERSONAGGI += PERSONAGGI_2

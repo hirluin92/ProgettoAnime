@@ -153,5 +153,40 @@
   "a": "natsu-dragneel",
   "b": "zeref",
   "nome": "Fratelli nemici"
+ },
+ {
+  "a": "meliodas",
+  "b": "zeldris",
+  "nome": "Fratelli nemici"
+ },
+ {
+  "a": "shinra-kusakabe",
+  "b": "joker",
+  "nome": "Eroe e ombra"
+ },
+ {
+  "a": "mash-burnedead",
+  "b": "innocent-zero",
+  "nome": "Muscoli contro magia"
+ },
+ {
+  "a": "yoichi-isagi",
+  "b": "rin-itoshi",
+  "nome": "Il rivale da superare"
+ },
+ {
+  "a": "rin-itoshi",
+  "b": "sae-itoshi",
+  "nome": "Fratelli rivali"
+ },
+ {
+  "a": "shoyo-hinata",
+  "b": "kei-tsukishima",
+  "nome": "Amici-rivali"
+ },
+ {
+  "a": "tooru-oikawa",
+  "b": "tobio-kageyama",
+  "nome": "Maestro e genio"
  }
 ]
