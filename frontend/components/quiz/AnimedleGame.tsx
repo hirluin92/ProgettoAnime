@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
 import Icon from "@/components/Icon";
 import AnimeSearch from "@/components/quiz/AnimeSearch";
+import RisultatoPopup from "@/components/quiz/RisultatoPopup";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { useProfile } from "@/lib/profile";
@@ -137,6 +138,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
   const [indizi, setIndizi] = useState<IndizioAnimedle[]>([]);
   const [errore, setErrore] = useState<string | null>(null);
   const [copiato, setCopiato] = useState(false);
+  const [popup, setPopup] = useState(false);
   const massimo = stato?.tentativi_max ?? 8;
 
   const avvia = useCallback(async () => {
@@ -210,6 +212,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
       if (esito.finito) {
         setTimeout(() => {
           setFinito(true);
+          setPopup(true);
           setVinto(esito.giusto);
           setCrediti(esito.crediti);
           setSoluzione(esito.bersaglio);
@@ -239,6 +242,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
       });
       setSoluzione(s);
       setFinito(true);
+      setPopup(true);
     } catch (e) {
       setErrore((e as Error).message);
     }
@@ -293,6 +297,41 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
             </span>
           )}
         </div>
+        {(indizi.length > 0 || (!finito && prossimaSoglia !== null)) && (
+          <div
+            className="space-y-2 rounded-2xl border bg-white/[0.04] p-3"
+            data-testid="animedle-indizi"
+          >
+            {indizi.length > 0 && (
+              <ul className="flex flex-wrap items-center gap-2">
+                {indizi.map((i) =>
+                  i.k === "copertina" ? (
+                    <li key={i.k} className="flex items-center gap-2">
+                      <b className="text-sm text-cyan-200">{ETICHETTE[i.k]}:</b>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={i.v}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        className="h-24 rounded-lg border border-white/20 object-cover"
+                        style={{ filter: `blur(${finito ? 0 : 7}px)` }}
+                      />
+                    </li>
+                  ) : (
+                    <li key={i.k} className="chip px-3 py-1 text-[0.9rem]">
+                      <b className="text-cyan-200">{ETICHETTE[i.k] ?? i.k}:</b> {i.v}
+                    </li>
+                  ),
+                )}
+              </ul>
+            )}
+            {!finito && prossimaSoglia !== null && (
+              <p className="text-xs muted">
+                {fmt(it.quiz.prossimoIndizio, { n: prossimaSoglia - righe.length })}
+              </p>
+            )}
+          </div>
+        )}
         {!finito && (
           <AnimeSearch onScegli={(a) => void prova(a)} esclusi={provati} testId="animedle-cerca" />
         )}
@@ -331,41 +370,6 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
             <Icon name="arrowup" className="size-3.5" /> {it.quiz.animedle.legendaFreccia}
           </li>
         </ul>
-        {(indizi.length > 0 || (!finito && prossimaSoglia !== null)) && (
-          <div
-            className="space-y-2 rounded-2xl border bg-white/[0.04] p-3"
-            data-testid="animedle-indizi"
-          >
-            {indizi.length > 0 && (
-              <ul className="flex flex-wrap items-center gap-2">
-                {indizi.map((i) =>
-                  i.k === "copertina" ? (
-                    <li key={i.k} className="flex items-center gap-2">
-                      <b className="text-sm text-cyan-200">{ETICHETTE[i.k]}:</b>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={i.v}
-                        alt=""
-                        referrerPolicy="no-referrer"
-                        className="h-24 rounded-lg border border-white/20 object-cover"
-                        style={{ filter: `blur(${finito ? 0 : 7}px)` }}
-                      />
-                    </li>
-                  ) : (
-                    <li key={i.k} className="chip px-3 py-1 text-[0.9rem]">
-                      <b className="text-cyan-200">{ETICHETTE[i.k] ?? i.k}:</b> {i.v}
-                    </li>
-                  ),
-                )}
-              </ul>
-            )}
-            {!finito && prossimaSoglia !== null && (
-              <p className="text-xs muted">
-                {fmt(it.quiz.prossimoIndizio, { n: prossimaSoglia - righe.length })}
-              </p>
-            )}
-          </div>
-        )}
         {!finito && righe.length > 0 && (
           <button className="text-sm underline muted" onClick={() => void arrenditi()}>
             {it.quiz.arrenditi}
@@ -373,54 +377,26 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
         )}
       </section>
 
-      {finito && soluzione && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="panel flex flex-wrap items-center gap-5 p-5"
-          data-testid="animedle-fine"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={soluzione.cover}
-            alt=""
-            referrerPolicy="no-referrer"
-            className="h-40 rounded-xl border-2 border-white/30 shadow-xl"
-          />
-          <div className="min-w-0 flex-1 space-y-2">
-            <h2
-              className={`display text-4xl font-black ${vinto ? "text-emerald-300" : "text-rose-300"}`}
-            >
-              {vinto ? it.quiz.indovinato : it.quiz.eraQuesto}
-            </h2>
-            <p className="text-2xl font-extrabold">{soluzione.titolo_en || soluzione.titolo}</p>
-            <p className="muted">
-              {soluzione.titolo} · {soluzione.anno}
-            </p>
-            {vinto && crediti > 0 && (
-              <p
-                className="inline-flex items-center gap-2 font-bold text-amber-300"
-                data-testid="animedle-crediti"
-              >
-                <Icon name="coin" /> {fmt(it.quiz.guadagnati, { n: crediti })}
-              </p>
-            )}
-            <div className="flex flex-wrap gap-2 pt-1">
-              <button className="btn btn-primary" onClick={() => void condividi()}>
-                {copiato ? it.quiz.copiato : it.quiz.condividi}
-              </button>
-              {libero ? (
-                <button className="btn" onClick={() => void avvia()}>
-                  {it.quiz.nuova}
-                </button>
-              ) : (
-                <Link href="/sfide" className="btn">
-                  {it.quiz.altreSfide}
-                </Link>
-              )}
-            </div>
-          </div>
-        </motion.section>
+      {soluzione && (
+        <RisultatoPopup
+          finito={finito}
+          aperto={popup}
+          onApri={() => setPopup(true)}
+          onChiudi={() => setPopup(false)}
+          vinto={vinto}
+          nome={soluzione.titolo_en || soluzione.titolo}
+          dettaglio={`${soluzione.titolo} · ${soluzione.anno}`}
+          immagine={soluzione.cover}
+          crediti={crediti}
+          copiato={copiato}
+          onCondividi={() => void condividi()}
+          libero={libero}
+          onNuova={() => {
+            setPopup(false);
+            void avvia();
+          }}
+          testId="animedle"
+        />
       )}
     </main>
   );

@@ -7,6 +7,7 @@ import { fmt } from "@/components/duello/DuelloBoard";
 import Icon from "@/components/Icon";
 import AnimeSearch from "@/components/quiz/AnimeSearch";
 import Ascolto from "@/components/quiz/Ascolto";
+import RisultatoPopup from "@/components/quiz/RisultatoPopup";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { useProfile } from "@/lib/profile";
@@ -58,6 +59,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
   const [audio, setAudio] = useState<string | null>(null);
   const [messaggio, setMessaggio] = useState<string | null>(null);
   const [copiato, setCopiato] = useState(false);
+  const [popup, setPopup] = useState(false);
   const massimo = stato?.tentativi_max ?? 6;
 
   const avvia = useCallback(async () => {
@@ -149,6 +151,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         window.localStorage.setItem(chiave(gioco, stato.giorno), JSON.stringify(nuovi));
       if (e.finito) {
         setFinito(true);
+        setPopup(true);
         setVinto(e.giusto);
         setCrediti(e.crediti);
         setSoluzione(e.bersaglio);
@@ -171,6 +174,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         }),
       );
       setFinito(true);
+      setPopup(true);
     } catch (e) {
       setMessaggio((e as Error).message);
     }
@@ -229,6 +233,21 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
           )}
         </div>
 
+        {indizi.length > 0 && (
+          <ul className="flex flex-wrap justify-center gap-2" data-testid="zoom-indizi">
+            {indizi.map((i) => (
+              <motion.li
+                key={i.k}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="chip px-3 py-1 text-[0.85rem]"
+              >
+                <b className="text-cyan-200">{ETICHETTE[i.k] ?? i.k}:</b> {valoreIndizio(i)}
+              </motion.li>
+            ))}
+          </ul>
+        )}
+
         {gioco === "sigla" ? (
           audio && <Ascolto src={audio} livello={livello} intero={finito} />
         ) : (
@@ -236,7 +255,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
             {/* l'immagine si scopre a ogni errore */}
             <div
               className={`relative mx-auto overflow-hidden rounded-2xl border-2 border-white/25 bg-black shadow-2xl ${
-                ritratto ? "aspect-[3/4] max-w-sm" : "aspect-[19/6] w-full"
+                ritratto ? "aspect-[3/4] max-w-[14rem]" : "aspect-[19/6] w-full"
               }`}
               data-testid="zoom-immagine"
               data-zoom={zoom}
@@ -258,21 +277,6 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
               <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_60px_rgb(0_0_0/0.55)]" />
             </div>
           </>
-        )}
-
-        {indizi.length > 0 && (
-          <ul className="flex flex-wrap justify-center gap-2" data-testid="zoom-indizi">
-            {indizi.map((i) => (
-              <motion.li
-                key={i.k}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="chip px-3 py-1 text-[0.85rem]"
-              >
-                <b className="text-cyan-200">{ETICHETTE[i.k] ?? i.k}:</b> {valoreIndizio(i)}
-              </motion.li>
-            ))}
-          </ul>
         )}
 
         {!finito && (
@@ -325,43 +329,26 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         )}
       </section>
 
-      {finito && soluzione && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="panel space-y-2 p-5 text-center"
-          data-testid="zoom-fine"
-        >
-          <h2
-            className={`display text-4xl font-black ${vinto ? "text-emerald-300" : "text-rose-300"}`}
-          >
-            {vinto ? it.quiz.indovinato : it.quiz.eraQuesto}
-          </h2>
-          <p className="text-2xl font-extrabold">{soluzione.nome}</p>
-          <p className="muted">{soluzione.dettaglio}</p>
-          {vinto && crediti > 0 && (
-            <p
-              className="inline-flex items-center gap-2 font-bold text-amber-300"
-              data-testid="zoom-crediti"
-            >
-              <Icon name="coin" /> {fmt(it.quiz.guadagnati, { n: crediti })}
-            </p>
-          )}
-          <div className="flex flex-wrap justify-center gap-2 pt-2">
-            <button className="btn btn-primary" onClick={() => void condividi()}>
-              {copiato ? it.quiz.copiato : it.quiz.condividi}
-            </button>
-            {libero ? (
-              <button className="btn" onClick={() => void avvia()}>
-                {it.quiz.nuova}
-              </button>
-            ) : (
-              <Link href="/sfide" className="btn">
-                {it.quiz.altreSfide}
-              </Link>
-            )}
-          </div>
-        </motion.section>
+      {soluzione && (
+        <RisultatoPopup
+          finito={finito}
+          aperto={popup}
+          onApri={() => setPopup(true)}
+          onChiudi={() => setPopup(false)}
+          vinto={vinto}
+          nome={soluzione.nome}
+          dettaglio={soluzione.dettaglio}
+          immagine={soluzione.immagine}
+          crediti={crediti}
+          copiato={copiato}
+          onCondividi={() => void condividi()}
+          libero={libero}
+          onNuova={() => {
+            setPopup(false);
+            void avvia();
+          }}
+          testId="zoom"
+        />
       )}
     </main>
   );

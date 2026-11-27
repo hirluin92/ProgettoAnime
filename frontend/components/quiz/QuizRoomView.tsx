@@ -104,6 +104,29 @@ export default function QuizRoomView({
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
         <div className="space-y-3">
+          <AnimatePresence>
+            {q.fase === "rivelazione" && q.soluzione && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="panel flex flex-wrap items-center gap-4 p-4"
+                data-testid="quiz-soluzione"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={q.soluzione.immagine}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                  className="h-28 rounded-xl border-2 border-white/30"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="eyebrow">{it.quiz.stanza.eraQuesto}</p>
+                  <p className="text-2xl font-extrabold">{q.soluzione.nome}</p>
+                  <p className="muted">{q.soluzione.dettaglio}</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           {q.fase !== "fine" && (
             <div className="panel space-y-3 p-4">
               {q.immagine ? (
@@ -178,30 +201,6 @@ export default function QuizRoomView({
               )}
             </div>
           )}
-
-          <AnimatePresence>
-            {q.fase === "rivelazione" && q.soluzione && (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="panel flex flex-wrap items-center gap-4 p-4"
-                data-testid="quiz-soluzione"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={q.soluzione.immagine}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="h-28 rounded-xl border-2 border-white/30"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="eyebrow">{it.quiz.stanza.eraQuesto}</p>
-                  <p className="text-2xl font-extrabold">{q.soluzione.nome}</p>
-                  <p className="muted">{q.soluzione.dettaglio}</p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {q.fase === "fine" && (
             <div className="panel space-y-4 p-6 text-center" data-testid="quiz-podio">
