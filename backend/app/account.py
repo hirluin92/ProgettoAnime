@@ -97,6 +97,9 @@ class RecuperaIn(Model):
     nuova_password: str = Field(min_length=MIN_PASSWORD, max_length=128)
 
 
+BONUS_REGISTRAZIONE = 100  # crediti regalati una sola volta alla creazione dell'account
+
+
 class AccountOut(Model):
     profile: ProfileView
     codice_recupero: str | None = None  # mostrato una sola volta
@@ -122,6 +125,7 @@ def registra(body: RegistraIn) -> AccountOut:
         row.username = nome
         row.pw_hash = hash_segreto(body.password)
         row.recovery_hash = hash_segreto(_normalizza_codice(codice))
+        row.crediti += BONUS_REGISTRAZIONE
         try:
             s.flush()
         except IntegrityError as e:

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app import account
-from app.account import hash_segreto, nuovo_codice_recupero, verifica_segreto
+from app.account import BONUS_REGISTRAZIONE, hash_segreto, nuovo_codice_recupero, verifica_segreto
 from app.db.session import configure
 from app.main import app
 
@@ -68,6 +68,8 @@ def test_register_validation_and_conflicts(tmp_path) -> None:  # type: ignore[no
     assert reg(a, "anna").status_code == 200
     assert reg(b, "ANNA").status_code == 409  # nome già preso, anche con maiuscole
     assert reg(a, "altro").status_code == 409  # il profilo ha già un account
+    # il bonus di registrazione è dato una volta sola
+    assert client.get(f"/api/profile/{a}").json()["crediti"] == BONUS_REGISTRAZIONE
     assert reg("00000000-0000-4000-8000-000000000000", "terzo").status_code == 404
     assert reg("non-un-uuid", "quarto").status_code == 422
 
