@@ -120,3 +120,33 @@ test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, 
   await rispondi(ospite.page, sol.artista!, "Artista");
   await expect(host.page.getByTestId("quiz-soluzione")).toBeVisible({ timeout: 10_000 });
 });
+
+test("quiz sulle sigle: se l'audio viene fermato da fuori (telefonata, altra app) riparte da solo", async ({
+  browser,
+}) => {
+  test.setTimeout(90_000);
+  const { host, code } = await createRoom(browser, "Anna");
+  await joinRoom(browser, code, "Bruno");
+  await host.page.getByLabel("Modalità").selectOption("quiz");
+  await host.page.getByTestId("quiz-tipo-sigla").click();
+  await host.page.getByTestId("quiz-impostazioni-fatto").click();
+  await host.page.getByRole("button", { name: "Avvia" }).click();
+  const posizione = () =>
+    host.page.evaluate(() => document.querySelector("audio")?.currentTime ?? -1);
+  await expect.poll(posizione, { timeout: 20_000 }).toBeGreaterThan(0.5);
+  // il sistema mette in pausa l'audio (non lo fa l'utente)
+  await host.page.evaluate(() => document.querySelector("audio")!.pause());
+  await expect
+    .poll(() => host.page.evaluate(() => document.querySelector("audio")?.paused ?? true), {
+      timeout: 5000,
+    })
+    .toBe(false);
+  const dopo = await posizione();
+  await expect.poll(posizione, { timeout: 5000 }).toBeGreaterThan(dopo + 0.5);
+  // se invece è l'utente a fermarlo, resta fermo
+  await host.page.getByTestId("ascolto-play").click();
+  await host.page.waitForTimeout(1500);
+  expect(await host.page.evaluate(() => document.querySelector("audio")?.paused ?? true)).toBe(
+    true,
+  );
+});

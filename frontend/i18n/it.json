@@ -765,6 +765,7 @@
       "secondi": "Ascolti i primi {n} secondi",
       "secondo": "Ascolti il primo secondo",
       "tutta": "Ora puoi ascoltarla tutta",
+      "carico": "Carico la canzone…",
       "noAudio": "Il browser ha bloccato l'audio: premi il pulsante per ascoltare.",
       "intera": "Ascolti {n} secondi, una volta sola",
       "interaLoop": "Ascolti {n} secondi, in loop",
