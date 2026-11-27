@@ -16,7 +16,7 @@ export default function PremioPanel({ premio }: { premio: Premio }) {
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 12 }}
-            className="display text-grad text-5xl font-black leading-none"
+            className="onoma text-5xl"
             data-testid="premio-xp"
           >
             +{premio.xp} XP
@@ -27,10 +27,10 @@ export default function PremioPanel({ premio }: { premio: Premio }) {
             initial={{ y: 12, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="rounded-2xl border border-amber-300/60 bg-amber-300/15 px-4 py-2 text-center"
+            className="border-2 border-black bg-[#ffd21f] px-4 py-2 text-center text-black shadow-[3px_3px_0_#000]"
             data-testid="premio-livello"
           >
-            <div className="text-xs font-extrabold uppercase tracking-widest text-amber-200">
+            <div className="text-xs font-black uppercase tracking-widest">
               {it.profilo.nuovoLivello}
             </div>
             <div className="display text-3xl font-black">

@@ -53,14 +53,14 @@ export function TimerRing({
           cy="40"
           r={R}
           fill="none"
-          stroke={urgent ? "#ff4d6d" : "#35e0ff"}
+          stroke={urgent ? "#ff4d6d" : "#3fd0f0"}
           strokeWidth="6"
           strokeLinecap="round"
           strokeDasharray={C}
           strokeDashoffset={C * (1 - frac)}
           style={{
             transition: "stroke-dashoffset 0.12s linear, stroke 0.3s",
-            filter: `drop-shadow(0 0 6px ${urgent ? "#ff4d6d" : "#35e0ff"})`,
+            filter: `drop-shadow(0 0 6px ${urgent ? "#ff4d6d" : "#3fd0f0"})`,
           }}
         />
       </svg>

@@ -63,7 +63,9 @@ export function CardDetail({ o, cost, bare }: { o: Option | null; cost?: number;
             )}
             {c.passiva && (
               <p>
-                <b className="text-cyan-200">◆ {c.passiva.nome}</b>
+                <b className="text-cyan-200">
+                  <Icon name="diamond" className="size-[0.8em]" /> {c.passiva.nome}
+                </b>
                 {c.passiva.effetto && (
                   <span className="muted">
                     {" "}

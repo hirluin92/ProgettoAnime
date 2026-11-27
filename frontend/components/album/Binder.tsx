@@ -1,5 +1,7 @@
 "use client";
 
+import { APP_NAME } from "@/lib/constants";
+import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -14,10 +16,10 @@ import type { AlbumCarta } from "@/lib/album";
 const PER_PAGINA = 9;
 const NOMI_RARITA = it.album.rarita as Record<string, string>;
 const COL_RARITA: Record<string, string> = {
-  comune: "#9aa7c7",
-  rara: "#4aa8ff",
-  epica: "#b36bff",
-  leggendaria: "#ffc23d",
+  comune: "#8f8c96",
+  rara: "#58d6f5",
+  epica: "#ff7cc4",
+  leggendaria: "#ffd21f",
 };
 
 type Pagina =
@@ -155,8 +157,10 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
         <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
           <li className="shrink-0">
             <button
-              className={`w-full rounded-xl border px-3 py-2 text-left text-sm font-bold transition ${
-                base === 0 ? "border-white/50 bg-white/10" : "bg-white/[0.03] hover:bg-white/10"
+              className={`min-h-11 w-full border-2 px-3 py-2 text-left text-sm font-black uppercase tracking-wide transition-colors ${
+                base === 0
+                  ? "border-black bg-carta text-nero"
+                  : "border-[rgb(243_236_221/0.2)] bg-[#17161b] hover:border-carta"
               }`}
               onClick={() => vai(0)}
             >
@@ -169,32 +173,33 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
             return (
               <li key={cap.anime} className="shrink-0 lg:shrink">
                 <button
-                  className={`relative w-full min-w-[9.5rem] overflow-hidden rounded-xl border px-3 py-2 text-left transition ${
-                    att ? "bg-white/10" : "bg-white/[0.03] hover:bg-white/10"
+                  className={`relative w-full min-w-[9.5rem] overflow-hidden border-2 px-3 py-2 text-left transition-colors ${
+                    att
+                      ? "border-black bg-carta text-nero"
+                      : "border-[rgb(243_236_221/0.2)] bg-[#17161b] hover:border-carta"
                   }`}
-                  style={att ? { borderColor: pal.from } : undefined}
                   onClick={() => vai(primaPagina(cap.anime))}
                   data-testid={`capitolo-${cap.anime}`}
                 >
                   <span
                     aria-hidden="true"
-                    className="absolute inset-y-0 left-0 w-1.5"
-                    style={{ background: `linear-gradient(${pal.from}, ${pal.to})` }}
+                    className="absolute inset-y-0 left-0 w-2"
+                    style={{ background: pal.from }}
                   />
-                  <span className="block pl-1.5 text-sm font-extrabold leading-tight">
+                  <span className="display block pl-2 text-lg leading-tight tracking-wide">
                     {pal.label !== "Anime" ? pal.label : cap.anime}
                   </span>
-                  <span className="mt-1 flex items-center gap-2 pl-1.5">
-                    <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/40">
+                  <span className="mt-1 flex items-center gap-2 pl-2">
+                    <span className="h-2 flex-1 overflow-hidden border border-black bg-black/60">
                       <span
-                        className="block h-full rounded-full"
+                        className="block h-full"
                         style={{
                           width: `${(cap.possedute / cap.lista.length) * 100}%`,
                           background: pal.from,
                         }}
                       />
                     </span>
-                    <span className="text-xs tabular-nums muted">
+                    <span className="num text-[0.7rem]">
                       {cap.possedute}/{cap.lista.length}
                     </span>
                   </span>
@@ -215,10 +220,10 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
         >
           {/* copertina in pelle */}
           <div
-            className="relative rounded-[1.6rem] p-[2.2%] shadow-[0_40px_90px_-20px_rgb(0_0_0/0.85)]"
+            className="relative rounded-[10px] border-2 border-black p-[1.8%]"
             style={{
-              background: `linear-gradient(145deg, #1c1740, #0a0818 55%, #19113a)`,
-              boxShadow: `0 40px 90px -20px rgb(0 0 0 / 0.85), inset 0 0 0 1.5px ${accento}66, inset 0 0 40px ${accento}22`,
+              background: "#0a090c",
+              boxShadow: `0 0 0 2px ${accento}, 9px 9px 0 2px #000`,
             }}
           >
             <div className="relative flex" style={{ transformStyle: "preserve-3d" }}>
@@ -306,16 +311,19 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-2 pr-1 sm:gap-4">
           <button
             className="btn"
             disabled={base <= 0 || !!giro}
             onClick={() => vai(base - passo)}
             data-testid="pagina-indietro"
           >
-            ◀ {it.album.indietro}
+            <Icon name="arrowleft" /> {it.album.indietro}
           </button>
-          <span className="min-w-36 text-center text-sm tabular-nums muted" data-testid="pagina-n">
+          <span
+            className="min-w-0 flex-1 text-center text-sm font-bold tabular-nums muted sm:min-w-36 sm:flex-none"
+            data-testid="pagina-n"
+          >
             {etichetta}
           </span>
           <button
@@ -324,7 +332,7 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
             onClick={() => vai(base + passo)}
             data-testid="pagina-avanti"
           >
-            {it.album.avanti} ▶
+            {it.album.avanti} <Icon name="arrowright" />
           </button>
         </div>
         <p className="text-center text-xs muted">{it.album.sfogliaAiuto}</p>
@@ -352,14 +360,19 @@ function PaginaView({
 }) {
   const ombra =
     lato === "sx"
-      ? "linear-gradient(90deg, transparent 88%, rgb(0 0 0 / 0.4))"
-      : "linear-gradient(270deg, transparent 88%, rgb(0 0 0 / 0.4))";
+      ? "linear-gradient(90deg, transparent 90%, rgb(0 0 0 / 0.28))"
+      : "linear-gradient(270deg, transparent 90%, rgb(0 0 0 / 0.28))";
   return (
     <div
-      className="@container relative aspect-[1/1.5] overflow-hidden"
+      className={`@container relative aspect-[1/1.5] overflow-hidden ${
+        p.tipo === "copertina" ? "text-carta" : "su-carta text-nero"
+      }`}
       style={{
-        background: "linear-gradient(160deg, #1a1638, #100d26 60%, #0c0a1c)",
-        borderRadius: lato === "sx" ? "1rem 0 0 1rem" : "0 1rem 1rem 0",
+        background:
+          p.tipo === "copertina"
+            ? "#121115"
+            : "radial-gradient(rgb(14 13 16 / 0.13) 1px, transparent 1.4px) 0 0 / 9px 9px, #f3ecdd",
+        borderRadius: lato === "sx" ? "5px 0 0 5px" : "0 5px 5px 0",
       }}
     >
       <span
@@ -370,19 +383,20 @@ function PaginaView({
       <div className="relative flex h-full flex-col p-[4.5cqw]">
         {p.tipo === "anime" && (
           <>
-            <header className="mb-[2.6cqw] flex items-end justify-between gap-2">
+            <header className="mb-[2.6cqw] flex items-end justify-between gap-2 border-b-[0.5cqw] border-black pb-[1.2cqw]">
               <div className="min-w-0">
-                <span
-                  className="block text-[2.2cqw] font-extrabold uppercase tracking-[0.25em]"
-                  style={{ color: paletteFor(p.anime).from }}
-                >
+                <span className="block text-[2.2cqw] font-black uppercase tracking-[0.25em]">
+                  <i
+                    className="mr-[1cqw] inline-block size-[1.8cqw] rotate-45 border border-black"
+                    style={{ background: paletteFor(p.anime).from }}
+                  />
                   {it.album.capitolo}
                 </span>
-                <h3 className="display truncate text-[6.4cqw] font-black leading-none">
+                <h3 className="truncate text-[7cqw] italic leading-none">
                   {paletteFor(p.anime).label !== "Anime" ? paletteFor(p.anime).label : p.anime}
                 </h3>
               </div>
-              <span className="shrink-0 text-[2.6cqw] font-bold tabular-nums text-white/60">
+              <span className="num shrink-0 text-[2.6cqw]">
                 {p.pag}/{p.tot}
               </span>
             </header>
@@ -404,8 +418,10 @@ function PaginaView({
         {p.tipo === "fine" && (
           <div className="grid flex-1 place-items-center text-center">
             <div className="space-y-[2cqw]">
-              <p className="display text-[7cqw] font-black">{it.album.fine}</p>
-              <p className="mx-auto max-w-[60cqw] text-[3cqw] muted">{it.album.fineTesto}</p>
+              <p className="display text-[8cqw] italic leading-none">{it.album.fine}</p>
+              <p className="mx-auto max-w-[60cqw] text-[3cqw] font-bold muted">
+                {it.album.fineTesto}
+              </p>
               <Link href="/negozio" className="btn btn-primary mt-[2cqw] text-[3cqw]">
                 {it.negozio.titolo}
               </Link>
@@ -432,7 +448,7 @@ function Copertina({
     <div className="flex h-full flex-col items-center justify-center gap-[4cqw] text-center">
       <div>
         <p className="eyebrow justify-center text-[2.4cqw]">{it.album.copertina}</p>
-        <h3 className="display text-grad text-[13cqw] font-black leading-[0.85]">ARENA ANIME</h3>
+        <h3 className="text-grad text-[15cqw] italic leading-[0.85]">{APP_NAME}</h3>
       </div>
       <div className="relative w-[44cqw]">
         <svg viewBox="0 0 160 160" className="w-full -rotate-90" aria-hidden="true">
@@ -441,32 +457,23 @@ function Copertina({
             cy="80"
             r={R}
             fill="none"
-            stroke="rgb(255 255 255 / 0.1)"
-            strokeWidth="10"
+            stroke="rgb(243 236 221 / 0.14)"
+            strokeWidth="12"
           />
           <circle
             cx="80"
             cy="80"
             r={R}
             fill="none"
-            stroke="url(#anello)"
-            strokeWidth="10"
-            strokeLinecap="round"
+            stroke="#e0301f"
+            strokeWidth="12"
             strokeDasharray={circ}
             strokeDashoffset={circ * (1 - pct)}
           />
-          <defs>
-            <linearGradient id="anello" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#ffd45a" />
-              <stop offset="1" stopColor="#ff3d81" />
-            </linearGradient>
-          </defs>
         </svg>
         <div className="absolute inset-0 grid place-items-center">
           <div>
-            <div className="display text-[10cqw] font-black leading-none">
-              {Math.round(pct * 100)}%
-            </div>
+            <div className="num text-[8.5cqw] leading-none">{Math.round(pct * 100)}%</div>
             <div className="text-[2.6cqw] muted">
               {fmt(it.album.completamento, { n: possedute, tot: carte.length })}
             </div>
@@ -480,7 +487,7 @@ function Copertina({
             <li key={r} className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-[1.2cqw]">
                 <i
-                  className="inline-block size-[2.2cqw] rounded-full"
+                  className="inline-block size-[2.2cqw] rotate-45"
                   style={{ background: COL_RARITA[r] }}
                 />
                 {NOMI_RARITA[r]}

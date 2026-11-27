@@ -1,22 +1,42 @@
 "use client";
 
 import { useId } from "react";
+import { SEGNO_TAGLIO } from "@/components/Logo";
+import { APP_NAME } from "@/lib/constants";
 
-// Bustina disegnata in SVG: foglio metallico con puntini, bordi a coste, cornice olografica.
+// Bustina disegnata in SVG come una copertina a stampa: tinta piatta, retino, linee cinetiche,
+// fascia nera col nome del gioco, lo stemma dentro un'esplosione. Ogni livello ha la sua tinta:
+// Base carta e inchiostro, Argento grigio e ciano, Oro giallo, Leggendario vermiglio e oro.
 // Si può mostrare intera, o divisa in «cima» e «corpo» lungo la linea di strappo.
 
 export interface TemaPacchetto {
-  a: string;
-  b: string;
-  accento: string;
+  a: string; // tinta della bustina
+  b: string; // tinta scura (fondi)
+  accento: string; // tinta dei titoli fuori dalla bustina
   stelle: number;
+  spot: string; // secondo colore di stampa (esplosione)
+  linee: number; // quante linee cinetiche
 }
 
 export const TEMI_PACCHETTO: Record<string, TemaPacchetto> = {
-  base: { a: "#6f7dff", b: "#1d2275", accento: "#c3ccff", stelle: 1 },
-  argento: { a: "#e9eef7", b: "#5c6985", accento: "#ffffff", stelle: 2 },
-  oro: { a: "#ffd966", b: "#8f4f06", accento: "#fff1bd", stelle: 3 },
-  leggendario: { a: "#ff5fa8", b: "#4a0fa8", accento: "#ffd0ea", stelle: 4 },
+  base: { a: "#f3ecdd", b: "#8d8676", accento: "#f3ecdd", stelle: 1, spot: "#e0301f", linee: 14 },
+  argento: {
+    a: "#bfd3dc",
+    b: "#2f6f86",
+    accento: "#8fe4f7",
+    stelle: 2,
+    spot: "#1fb4d8",
+    linee: 20,
+  },
+  oro: { a: "#ffd21f", b: "#a37f00", accento: "#ffd21f", stelle: 3, spot: "#e0301f", linee: 28 },
+  leggendario: {
+    a: "#e0301f",
+    b: "#8c1a10",
+    accento: "#ff5a45",
+    stelle: 4,
+    spot: "#ffd21f",
+    linee: 40,
+  },
 };
 
 export const W = 240;
@@ -37,14 +57,13 @@ const lineaStrappo = ZIGZAG.map(
 const CLIP_CIMA = `polygon(0 0, 100% 0, ${[...lineaStrappo].reverse().join(", ")})`;
 const CLIP_CORPO = `polygon(${lineaStrappo.join(", ")}, 100% 100%, 0 100%)`;
 
-const STELLINE = [
-  [30, 140, 0.9],
-  [212, 160, 0.7],
-  [24, 250, 0.6],
-  [216, 300, 0.9],
-  [40, 340, 0.7],
-  [200, 120, 0.6],
-];
+const r1 = (n: number) => Math.round(n * 10) / 10;
+// esplosione a punte dietro lo stemma
+const ESPLOSIONE = Array.from({ length: 28 }, (_, i) => {
+  const a = (i / 28) * Math.PI * 2;
+  const r = i % 2 ? 62 : 86 + (i % 4 === 0 ? 10 : 0);
+  return `${r1(120 + Math.cos(a) * r)},${r1(222 + Math.sin(a) * r)}`;
+}).join(" ");
 
 interface Props {
   tipo: string;
@@ -68,200 +87,117 @@ export default function PackArt({ tipo, nome, carte, parte = "intero", className
       aria-label={nome}
     >
       <defs>
-        <linearGradient id={`g${id}`} x1="0" y1="0" x2="0.6" y2="1">
-          <stop offset="0" stopColor={t.a} />
-          <stop offset="0.5" stopColor={t.b} />
-          <stop offset="1" stopColor={t.a} stopOpacity="0.8" />
-        </linearGradient>
-        <radialGradient id={`v${id}`} cx="0.5" cy="0.45" r="0.75">
-          <stop offset="0.55" stopColor="#000" stopOpacity="0" />
-          <stop offset="1" stopColor="#000" stopOpacity="0.55" />
-        </radialGradient>
-        <linearGradient id={`h${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff5f6d" />
-          <stop offset="0.25" stopColor="#ffc371" />
-          <stop offset="0.5" stopColor="#7df9ff" />
-          <stop offset="0.75" stopColor="#a98bff" />
-          <stop offset="1" stopColor="#ff5f6d" />
-        </linearGradient>
-        <linearGradient id={`m${id}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#fff" />
-          <stop offset="0.5" stopColor="#c7cfdd" />
-          <stop offset="1" stopColor="#7d879b" />
-        </linearGradient>
         <linearGradient id={`s${id}`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#fff" stopOpacity="0" />
-          <stop offset="0.5" stopColor="#fff" stopOpacity="0.5" />
+          <stop offset="0.5" stopColor="#fff" stopOpacity="0.55" />
           <stop offset="1" stopColor="#fff" stopOpacity="0" />
         </linearGradient>
-        <radialGradient id={`e${id}`} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor={t.accento} stopOpacity="0.6" />
-          <stop offset="1" stopColor={t.accento} stopOpacity="0" />
-        </radialGradient>
-        <pattern id={`p${id}`} width="7" height="7" patternUnits="userSpaceOnUse">
-          <circle cx="3.5" cy="3.5" r="1" fill="#fff" opacity="0.2" />
+        <pattern id={`p${id}`} width="8" height="8" patternUnits="userSpaceOnUse">
+          <circle cx="4" cy="4" r="1.7" fill="#0e0d10" opacity="0.3" />
         </pattern>
-        <pattern id={`c${id}`} width="4" height="10" patternUnits="userSpaceOnUse">
-          <rect width="1.6" height="10" fill="#fff" opacity="0.32" />
-          <rect x="1.6" width="2.4" height="10" fill="#000" opacity="0.2" />
+        <pattern id={`c${id}`} width="5" height="10" patternUnits="userSpaceOnUse">
+          <rect width="2" height="10" fill="#0e0d10" opacity="0.55" />
         </pattern>
       </defs>
-      <rect width={W} height={H} fill={`url(#g${id})`} />
-      <rect width={W} height={H} fill={`url(#p${id})`} />
-      <rect width={W} height={H} fill={`url(#v${id})`} />
-      {/* raggi di luce */}
-      <g opacity="0.12" fill="#fff">
-        {Array.from({ length: 9 }, (_, i) => (
-          <polygon
-            key={i}
-            points={`${W / 2},215 ${-60 + i * 45},0 ${-30 + i * 45},0`}
-            opacity={i % 2 ? 0.5 : 1}
-          />
-        ))}
+      <rect width={W} height={H} fill={t.a} />
+      {/* linee cinetiche dal centro */}
+      <g fill="#0e0d10" opacity="0.2">
+        {Array.from({ length: t.linee }, (_, i) => {
+          const a = (i / t.linee) * Math.PI * 2;
+          const l = 0.035 + (i % 3) * 0.012;
+          return (
+            <polygon
+              key={i}
+              points={`120,222 ${r1(120 + Math.cos(a - l) * 420)},${r1(222 + Math.sin(a - l) * 420)} ${r1(120 + Math.cos(a + l) * 420)},${r1(222 + Math.sin(a + l) * 420)}`}
+            />
+          );
+        })}
       </g>
+      {/* retino in diagonale */}
+      <polygon points={`0,${H} 0,250 ${W},330 ${W},${H}`} fill={`url(#p${id})`} />
+      <polygon points={`0,0 ${W},0 ${W},110 0,170`} fill={`url(#p${id})`} opacity="0.6" />
       {/* bordi a coste */}
-      <rect width={W} height="30" fill={`url(#c${id})`} />
-      <rect y={H - 30} width={W} height="30" fill={`url(#c${id})`} />
-      <rect y="30" width={W} height="2" fill="#000" opacity="0.3" />
-      <rect y={H - 32} width={W} height="2" fill="#000" opacity="0.3" />
-      <rect y="29" width={W} height="1.5" fill="#fff" opacity="0.5" />
-      <rect y={H - 31} width={W} height="1.5" fill="#fff" opacity="0.5" />
-      {/* stelline */}
-      {STELLINE.map(([x, y, o], i) => (
-        <path
-          key={i}
-          transform={`translate(${x} ${y}) scale(0.45)`}
-          d="M0 -8 L2.4 -2.4 L8 0 L2.4 2.4 L0 8 L-2.4 2.4 L-8 0 L-2.4 -2.4 Z"
-          fill="#fff"
-          opacity={o}
-        />
-      ))}
-      {/* marchio in alto */}
+      <rect width={W} height="28" fill={t.b} />
+      <rect width={W} height="28" fill={`url(#c${id})`} />
+      <rect y={H - 28} width={W} height="28" fill={t.b} />
+      <rect y={H - 28} width={W} height="28" fill={`url(#c${id})`} />
+      <rect y="28" width={W} height="3" fill="#0e0d10" />
+      <rect y={H - 31} width={W} height="3" fill="#0e0d10" />
+      {/* fascia nera con il nome del gioco */}
+      <polygon points={`0,66 ${W},56 ${W},104 0,114`} fill="#0e0d10" />
+      <polygon points={`0,114 ${W},104 ${W},109 0,119`} fill={t.spot} />
       <text
         x={W / 2}
-        y="74"
+        y="98"
         textAnchor="middle"
+        transform={`rotate(-2.4 ${W / 2} 86)`}
         fontFamily="var(--font-display), Impact, sans-serif"
-        fontSize="34"
-        fontWeight="900"
-        letterSpacing="1.5"
-        fill={`url(#m${id})`}
-        stroke="#000"
-        strokeOpacity="0.45"
-        strokeWidth="3"
-        paintOrder="stroke"
-      >
-        ARENA ANIME
-      </text>
-      <rect
-        x="62"
-        y="86"
-        width="116"
-        height="24"
-        rx="7"
-        fill="#0b0a18"
-        fillOpacity="0.75"
-        stroke="#fff"
-        strokeOpacity="0.45"
-      />
-      <text
-        x={W / 2}
-        y="104"
-        textAnchor="middle"
-        fontFamily="var(--font-display), Impact, sans-serif"
-        fontSize="16"
-        fontWeight="800"
-        letterSpacing="3"
-        fill="#fff"
-      >
-        {titolo}
-      </text>
-      {/* cornice olografica */}
-      <circle cx={W / 2} cy="232" r="105" fill={`url(#e${id})`} />
-      <rect x="40" y="130" width="160" height="206" rx="14" fill="#0b0a18" fillOpacity="0.72" />
-      <rect
-        x="40"
-        y="130"
-        width="160"
-        height="206"
-        rx="14"
-        fill="none"
-        stroke={`url(#h${id})`}
-        strokeWidth="5"
-      />
-      <rect
-        x="47"
-        y="137"
-        width="146"
-        height="192"
-        rx="9"
-        fill="none"
-        stroke="#fff"
-        strokeOpacity="0.18"
-      />
-      <path
-        transform={`translate(${W / 2 - 34} 150) scale(2.8)`}
-        d="M13.5 2 4.5 14H11l-1 8 9-12.5h-6.5z"
-        fill={`url(#m${id})`}
-        stroke="#fff"
-        strokeOpacity="0.6"
-        strokeWidth="0.5"
-      />
-      <text
-        x={W / 2}
-        y="262"
-        textAnchor="middle"
-        fontFamily="var(--font-display), Impact, sans-serif"
-        fontSize={titolo.length > 8 ? 25 : titolo.length > 5 ? 36 : 44}
-        fontWeight="900"
+        fontStyle="italic"
+        fontSize={APP_NAME.length > 9 ? 28 : 36}
         letterSpacing="2"
-        fill={`url(#h${id})`}
-        stroke="#000"
-        strokeOpacity="0.4"
-        strokeWidth="2"
+        fill="#f3ecdd"
+      >
+        {APP_NAME.toUpperCase()}
+      </text>
+      {/* esplosione e stemma */}
+      <polygon points={ESPLOSIONE} fill="#0e0d10" transform="translate(5 6)" />
+      <polygon
+        points={ESPLOSIONE}
+        fill={t.spot}
+        stroke="#0e0d10"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      <g transform="translate(120 222) rotate(-6) scale(2) translate(-24 -24)">
+        <rect x="5" y="5" width="38" height="38" rx="6" fill="#0e0d10" />
+        <path d={SEGNO_TAGLIO} fill="#f3ecdd" />
+      </g>
+      {/* nome del livello */}
+      <text
+        x={W / 2}
+        y="338"
+        textAnchor="middle"
+        transform={`rotate(-4 ${W / 2} 330)`}
+        fontFamily="var(--font-num), var(--font-display), Impact, sans-serif"
+        fontSize={titolo.length > 8 ? 24 : titolo.length > 5 ? 32 : 42}
+        fill="#f3ecdd"
+        stroke="#0e0d10"
+        strokeWidth="7"
+        strokeLinejoin="round"
         paintOrder="stroke"
       >
         {titolo}
       </text>
-      <g transform={`translate(${W / 2 - (t.stelle * 22) / 2 + 3} 280)`}>
+      <g transform={`translate(${W / 2 - ((t.stelle - 1) * 20) / 2} 356)`}>
         {Array.from({ length: t.stelle }, (_, i) => (
-          <path
+          <rect
             key={i}
-            transform={`translate(${i * 22} 0) scale(0.8)`}
-            d="M12 1 L15.2 8.3 L23 9 L17 14.2 L18.8 22 L12 18 L5.2 22 L7 14.2 L1 9 L8.8 8.3 Z"
-            fill={t.accento}
-            stroke="#fff"
-            strokeOpacity="0.8"
+            x={i * 20 - 6}
+            y="-6"
+            width="12"
+            height="12"
+            transform={`rotate(45 ${i * 20} 0)`}
+            fill="#f3ecdd"
+            stroke="#0e0d10"
+            strokeWidth="2.5"
           />
         ))}
       </g>
       {carte && (
-        <>
+        <g>
+          <polygon points="74,372 170,372 164,390 68,390" fill="#0e0d10" />
           <text
-            x={W / 2}
-            y="372"
+            x={W / 2 - 1}
+            y="386.5"
             textAnchor="middle"
             fontFamily="var(--font-display), Impact, sans-serif"
-            fontSize="22"
-            fontWeight="800"
-            letterSpacing="2"
-            fill="#fff"
-            fillOpacity="0.9"
+            fontSize="15"
+            letterSpacing="2.5"
+            fill="#f3ecdd"
           >
             {carte} CARTE
           </text>
-          <text
-            x={W / 2}
-            y="386"
-            textAnchor="middle"
-            fontSize="7"
-            letterSpacing="2.5"
-            fill="#fff"
-            fillOpacity="0.6"
-          >
-            DA COLLEZIONE
-          </text>
-        </>
+        </g>
       )}
       {/* riflesso che scorre */}
       <rect
@@ -272,6 +208,7 @@ export default function PackArt({ tipo, nome, carte, parte = "intero", className
         fill={`url(#s${id})`}
         transform="skewX(-18)"
       />
+      <rect width={W} height={H} fill="none" stroke="#0e0d10" strokeWidth="4" />
     </svg>
   );
 }

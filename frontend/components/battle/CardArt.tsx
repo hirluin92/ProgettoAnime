@@ -44,8 +44,8 @@ function accessory(role: string, from: string, to: string) {
     case "Tank":
       return (
         <>
-          <ellipse cx="22" cy="80" rx="15" ry="9" fill="#0b0a18" stroke={from} strokeWidth="2" />
-          <ellipse cx="78" cy="80" rx="15" ry="9" fill="#0b0a18" stroke={from} strokeWidth="2" />
+          <ellipse cx="22" cy="80" rx="15" ry="9" fill="#121115" stroke={from} strokeWidth="2" />
+          <ellipse cx="78" cy="80" rx="15" ry="9" fill="#121115" stroke={from} strokeWidth="2" />
         </>
       );
     case "Guaritore":
@@ -107,7 +107,7 @@ export default function CardArt({
         </radialGradient>
         <linearGradient id={b} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#241f3f" />
-          <stop offset="1" stopColor="#07060f" />
+          <stop offset="1" stopColor="#0b0a0d" />
         </linearGradient>
       </defs>
       <rect width="100" height="100" fill={`url(#${g})`} />
@@ -128,7 +128,7 @@ export default function CardArt({
       />
       <rect x="43" y="58" width="14" height="14" rx="4" fill="#15122b" />
       <ellipse cx="50" cy="46" rx="19" ry="22" fill="#1c1838" stroke={pal.from} strokeWidth="1.6" />
-      <path d={hair} fill="#0b0a18" stroke={pal.from} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d={hair} fill="#121115" stroke={pal.from} strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M38 48 L46 50" stroke={eye} strokeWidth="2.6" strokeLinecap="round" />
       <path d="M62 48 L54 50" stroke={eye} strokeWidth="2.6" strokeLinecap="round" />
       <ellipse cx="50" cy="100" rx="46" ry="10" fill={pal.from} opacity=".25" />

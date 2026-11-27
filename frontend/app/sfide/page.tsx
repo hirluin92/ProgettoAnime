@@ -85,7 +85,7 @@ function Carta({
           <span />
         )}
         <span className="btn btn-primary min-h-10 px-4 text-sm">
-          {stato?.fatto ? it.quiz.rivedi : it.quiz.gioca} →
+          {stato?.fatto ? it.quiz.rivedi : it.quiz.gioca} <Icon name="arrowright" />
         </span>
       </div>
     </Link>
@@ -166,7 +166,7 @@ export default function SfidePage() {
           icona="sparkles"
           titolo={it.quiz.animedle.titolo}
           testo={it.quiz.animedleTesto}
-          accento="#35e0ff"
+          accento="#3fd0f0"
           stato={statoAnimedle}
           testId="sfida-animedle"
         />
@@ -184,7 +184,7 @@ export default function SfidePage() {
           icona="shield"
           titolo={it.quiz.personaggio.titolo}
           testo={it.quiz.personaggioTesto}
-          accento="#3ddc97"
+          accento="#35d68a"
           stato={stato(personaggio)}
           testId="sfida-personaggio"
         />
@@ -193,7 +193,7 @@ export default function SfidePage() {
           icona="music"
           titolo={it.quiz.sigla.titolo}
           testo={it.quiz.siglaTesto}
-          accento="#ff8a3d"
+          accento="#ff9238"
           stato={stato(sigla)}
           testId="sfida-sigla"
         />
@@ -202,7 +202,7 @@ export default function SfidePage() {
           icona="trophy"
           titolo={it.quiz.rompicapo}
           testo={it.quiz.rompicapoTesto}
-          accento="#ffd45a"
+          accento="#ffd21f"
           testId="sfida-rompicapo"
         />
       </div>

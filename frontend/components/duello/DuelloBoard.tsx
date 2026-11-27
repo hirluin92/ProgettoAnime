@@ -6,14 +6,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import it from "@/i18n/it.json";
 import { ARCH_NOMI } from "@/lib/battle/labels";
 import { temaLuogo } from "@/lib/luoghiTema";
-import {
-  costoIn,
-  postiMax,
-  type CartaView,
-  type LuogoView,
-  type MossaIn,
-  type StatoView,
-} from "@/lib/duello";
+import { costoIn, postiMax, type CartaView, type MossaIn, type StatoView } from "@/lib/duello";
+import { CartaRetro } from "@/components/carta/Carta";
 import DuelloCard, { DuelloTile } from "./DuelloCard";
 
 interface Mossa {
@@ -21,18 +15,30 @@ interface Mossa {
   corsia: number;
 }
 
-const griglia = (l: LuogoView) => ({
-  gridTemplateColumns: `repeat(${postiMax(l)}, minmax(0, 1fr))`,
-});
-
 function Vuoto({ attivo }: { attivo?: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className={`aspect-square rounded-xl border-2 border-dashed ${
-        attivo ? "border-amber-300/50 bg-amber-300/[0.06]" : "border-white/15 bg-white/[0.03]"
+      className={`aspect-[1/1.2] rounded-[3px] border-[1.5px] border-dashed ${
+        attivo ? "border-[#ffd21f] bg-[#ffd21f]/10" : "border-white/20 bg-black/25"
       }`}
     />
+  );
+}
+
+/** Gemme a rombo: piene quelle disponibili, vuote quelle spese. */
+function Gemme({ tot, piene, piccolo }: { tot: number; piene: number; piccolo?: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-[0.45em] px-1" aria-hidden="true">
+      {Array.from({ length: tot }, (_, i) => (
+        <i
+          key={i}
+          className={`${piccolo ? "size-2" : "size-3"} rotate-45 border-[1.5px] border-black outline outline-1 outline-[#ffd21f]/60 ${
+            i < piene ? "bg-[#ffd21f]" : "bg-transparent"
+          }`}
+        />
+      ))}
+    </span>
   );
 }
 
@@ -60,6 +66,7 @@ export default function DuelloBoard({
   const [pending, setPending] = useState<Mossa[]>([]);
   const [sel, setSel] = useState<string | null>(null);
   const [dettaglio, setDettaglio] = useState<CartaView | null>(null);
+  const [infoLuogo, setInfoLuogo] = useState<number | null>(null);
   useEffect(() => {
     setPending([]);
     setSel(null);
@@ -81,46 +88,59 @@ export default function DuelloBoard({
     setSel(null);
   };
 
+  const pulisci = (t: string) => t.replace(/^(Al rivelarsi|Continuo):\s*/i, "");
+  const luogoInfo = infoLuogo !== null ? stato.luoghi[infoLuogo] : null;
+  const didascalia =
+    caption ??
+    (stato.finita
+      ? ""
+      : selCarta
+        ? `${selCarta.nome}: ${pulisci(selCarta.testo_mossa)} · ${pulisci(selCarta.testo_passiva)} — ${it.duello.sceltaCorsia}`
+        : luogoInfo
+          ? `${luogoInfo.nome}: ${luogoInfo.regola}${
+              luogoInfo.favorisce.length
+                ? ` (${luogoInfo.favorisce.map((a) => `+1 ${ARCH_NOMI[a] ?? a}`).join(", ")})`
+                : ""
+            }`
+          : it.duello.sceltaCarta);
+
   return (
-    <div className="space-y-4" data-testid="duello-gioco">
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <span className="eyebrow">{it.duello.titolo}</span>
-          <h1 className="display text-3xl font-black" data-testid="duello-turno">
+    <div className="space-y-2.5 md:space-y-4" data-testid="duello-gioco">
+      <header className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-[1.7rem] leading-none sm:text-4xl" data-testid="duello-turno">
             {fmt(it.duello.turno, { n: Math.min(stato.turno, stato.turni), tot: stato.turni })}
           </h1>
+          <span className="mt-1.5 flex gap-1" aria-hidden="true">
+            {Array.from({ length: stato.turni }, (_, i) => (
+              <i
+                key={i}
+                className={`h-1.5 w-5 -skew-x-[20deg] sm:w-8 ${
+                  i < Math.min(stato.turno, stato.turni) ? "bg-[var(--accent)]" : "bg-white/15"
+                }`}
+              />
+            ))}
+          </span>
         </div>
-        <div className="text-right text-xs muted">
-          <div>{fmt(it.duello.oppMano, { nome: avversario, n: stato.mano_cpu })}</div>
-          <div>{fmt(it.duello.mazzoRimasto, { n: stato.mazzo })}</div>
+        <div className="flex items-center gap-2.5 text-right text-xs font-bold leading-tight">
+          <div>
+            <div className="text-carta">
+              {fmt(it.duello.oppMano, { nome: avversario, n: stato.mano_cpu })}
+            </div>
+            <div className="muted">{fmt(it.duello.mazzoRimasto, { n: stato.mazzo })}</div>
+          </div>
+          <div className="flex pl-2" aria-hidden="true">
+            {Array.from({ length: Math.min(5, stato.mano_cpu) }, (_, i) => (
+              <span key={i} className="-ml-2 w-6 sm:w-7" style={{ rotate: `${(i - 2) * 5}deg` }}>
+                <CartaRetro />
+              </span>
+            ))}
+          </div>
         </div>
       </header>
 
-      <div
-        className="sticky top-14 z-30 -mx-1 grid grid-cols-3 gap-1.5 rounded-xl bg-[#05040c]/90 p-1.5 backdrop-blur md:hidden"
-        data-testid="duello-striscia"
-      >
-        {stato.luoghi.map((l, k) => {
-          const [tu, cpu] = stato.totali[k];
-          return (
-            <div
-              key={l.id + k}
-              className={`rounded-lg px-2 py-1 text-center text-xs ${
-                tu > cpu ? "bg-emerald-500/15" : cpu > tu ? "bg-red-500/15" : "bg-white/5"
-              }`}
-            >
-              <div className="truncate font-bold">{l.nome}</div>
-              <div className="text-base font-black">
-                <span className="text-emerald-300">{tu}</span>
-                <span className="mx-1 muted">–</span>
-                <span className="text-red-300">{cpu}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="grid gap-3 md:grid-cols-3">
+      {/* le tre corsie stanno sempre affiancate, anche su telefono: tutta la partita in uno schermo */}
+      <div className="grid grid-cols-3 gap-1.5 md:gap-4">
         {stato.luoghi.map((l, k) => {
           const [tu, cpu] = stato.totali[k];
           const mie = stato.corsie[k][0];
@@ -128,41 +148,59 @@ export default function DuelloBoard({
           const prossime = pending.filter((m) => m.corsia === k);
           const tema = temaLuogo(l.id);
           const migliore = tu > cpu ? "tu" : cpu > tu ? "cpu" : "";
+          const bordo = migliore === "tu" ? "#35d68a" : migliore === "cpu" ? "#ff5a45" : "#3a3842";
+          const griglia = {
+            ["--posti" as string]: postiMax(l),
+          };
+          const clsGriglia =
+            "relative grid grid-cols-2 content-start gap-1 md:gap-1.5 md:[grid-template-columns:repeat(var(--posti),minmax(0,1fr))]";
           return (
             <section
               key={l.id + k}
-              className={`panel relative flex flex-col gap-2 overflow-hidden p-2.5 ${migliore === "tu" ? "ring-2 ring-emerald-400/70" : migliore === "cpu" ? "ring-2 ring-red-400/70" : ""}`}
+              className="relative isolate flex min-w-0 flex-col gap-1.5 overflow-hidden rounded-[5px] border-2 p-1.5 md:gap-2 md:p-3"
+              style={{
+                borderColor: bordo,
+                boxShadow: `3px 3px 0 ${migliore ? bordo : "#000"}`,
+                background: `linear-gradient(180deg, ${tema.da}, ${tema.a})`,
+              }}
               data-testid={`corsia-${k}`}
             >
-              <div
+              <i
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0"
+                className="retino pointer-events-none absolute inset-x-0 top-0 -z-10 h-1/2 opacity-35"
                 style={{
-                  background: `radial-gradient(ellipse at 50% 0%, ${tema.accento}33, transparent 60%), linear-gradient(180deg, ${tema.da}, ${tema.a})`,
+                  ["--accent" as string]: tema.accento,
+                  WebkitMaskImage: "linear-gradient(#000, transparent)",
+                  maskImage: "linear-gradient(#000, transparent)",
                 }}
               />
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.09]"
+                className="pointer-events-none absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 opacity-[0.1]"
                 style={{ color: tema.accento }}
               >
-                <Icon name={tema.simbolo} className="size-48" />
+                <Icon name={tema.simbolo} className="size-24 md:size-48" />
               </span>
-              <div className="relative text-center">
-                <div
-                  className="display flex items-center justify-center gap-2 text-xl font-black leading-none"
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => setInfoLuogo(infoLuogo === k ? null : k)}
+                  aria-expanded={infoLuogo === k}
+                  className="display flex min-h-8 w-full items-center justify-center gap-1 text-[0.95rem] leading-none md:pointer-events-none md:gap-2 md:text-2xl"
                   style={{ color: tema.accento }}
                 >
-                  <Icon name={tema.simbolo} className="size-[1.1em]" />
-                  {l.nome}
-                </div>
-                <p className="mt-1 text-xs leading-snug text-white/80">{l.regola}</p>
+                  <Icon name={tema.simbolo} className="size-[1em] shrink-0" />
+                  <span className="truncate">{l.nome}</span>
+                </button>
+                <p className="mt-1 hidden text-xs font-medium leading-snug text-white/85 md:block">
+                  {l.regola}
+                </p>
                 {l.favorisce.length > 0 && (
-                  <p className="mt-1 flex flex-wrap justify-center gap-1">
+                  <p className="mt-1.5 hidden flex-wrap justify-center gap-1 md:flex">
                     {l.favorisce.map((a) => (
                       <span
                         key={a}
-                        className="rounded-full px-2 py-0.5 text-[0.7rem] font-bold text-black"
+                        className="px-1.5 py-0.5 text-[0.68rem] font-black uppercase tracking-wide text-black"
                         style={{ background: tema.accento }}
                       >
                         +1 {ARCH_NOMI[a] ?? a}
@@ -171,10 +209,7 @@ export default function DuelloBoard({
                   </p>
                 )}
               </div>
-              <div
-                className="relative grid min-h-[56px] content-start gap-1.5 md:min-h-[92px]"
-                style={griglia(l)}
-              >
+              <div className={clsGriglia} style={griglia}>
                 {loro.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -188,27 +223,37 @@ export default function DuelloBoard({
                   <Vuoto key={`vl${n}`} />
                 ))}
               </div>
-              <div className="relative flex items-center justify-between rounded-xl border border-white/10 bg-black/65 px-4 py-1.5 text-2xl font-black shadow-inner">
-                <span className="grid leading-none text-emerald-300">
-                  <small className="text-[0.55rem] font-extrabold tracking-[0.2em] opacity-70">
+              {/* il punteggio della corsia: chi è avanti ha il numero su fondo pieno */}
+              <div className="grid grid-cols-[1fr_auto_1fr] items-stretch border-2 border-black bg-black text-center">
+                <span
+                  className={`grid place-items-center px-1 py-0.5 leading-none ${
+                    migliore === "tu" ? "bg-[#35d68a] text-black" : "text-[#6fe6ad]"
+                  }`}
+                >
+                  <small className="text-[0.5rem] font-black uppercase tracking-[0.18em] opacity-80">
                     {it.duello.tu}
                   </small>
-                  <span data-testid={`tot-tu-${k}`}>{tu}</span>
+                  <span className="num text-lg md:text-3xl" data-testid={`tot-tu-${k}`}>
+                    {tu}
+                  </span>
                 </span>
-                <span className="display text-sm tracking-widest muted">
+                <span className="display hidden items-center px-2 text-sm tracking-widest text-carta md:flex">
                   {tu > cpu ? it.duello.inVantaggio : cpu > tu ? it.duello.inSvantaggio : "PARI"}
                 </span>
-                <span className="grid text-right leading-none text-red-300">
-                  <small className="text-[0.55rem] font-extrabold tracking-[0.2em] opacity-70">
+                <span
+                  className={`col-start-3 grid place-items-center px-1 py-0.5 leading-none ${
+                    migliore === "cpu" ? "bg-[#e0301f] text-white" : "text-[#ff9c8f]"
+                  }`}
+                >
+                  <small className="max-w-full truncate text-[0.5rem] font-black uppercase tracking-[0.18em] opacity-80">
                     {it.duello.cpu}
                   </small>
-                  <span data-testid={`tot-cpu-${k}`}>{cpu}</span>
+                  <span className="num text-lg md:text-3xl" data-testid={`tot-cpu-${k}`}>
+                    {cpu}
+                  </span>
                 </span>
               </div>
-              <div
-                className="relative grid min-h-[56px] content-start gap-1.5 md:min-h-[92px]"
-                style={griglia(l)}
-              >
+              <div className={clsGriglia} style={griglia}>
                 {mie.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -222,10 +267,11 @@ export default function DuelloBoard({
                   {prossime.map((m) => (
                     <motion.div
                       key={m.carta.id}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, y: 16, scale: 1.25, rotate: -6 }}
+                      animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
                       exit={{ opacity: 0 }}
-                      className="rounded-xl border-2 border-dashed border-amber-300/70 p-0.5"
+                      transition={{ duration: 0.22 }}
+                      className="relative outline-dashed outline-2 outline-offset-1 outline-[#ffd21f]"
                     >
                       <DuelloTile
                         carta={m.carta}
@@ -241,7 +287,7 @@ export default function DuelloBoard({
                 ))}
               </div>
               <button
-                className={`btn relative text-xs ${selCarta ? "btn-primary" : ""} ${stato.finita ? "hidden" : ""}`}
+                className={`btn mt-auto min-h-11 px-1 text-[0.8rem] md:text-base ${selCarta ? "btn-primary" : ""} ${stato.finita ? "hidden" : ""}`}
                 disabled={
                   !selCarta ||
                   occupato ||
@@ -262,34 +308,36 @@ export default function DuelloBoard({
         })}
       </div>
 
-      <div
-        className="min-h-6 text-center text-sm font-bold leading-snug text-amber-200"
-        aria-live="polite"
-        data-testid="duello-caption"
-      >
-        {caption ??
-          (stato.finita
-            ? ""
-            : selCarta
-              ? `${selCarta.nome}: ${selCarta.testo_mossa.replace(/^(Al rivelarsi|Continuo):\s*/i, "")} · ${selCarta.testo_passiva.replace(/^(Al rivelarsi|Continuo):\s*/i, "")} — ${it.duello.sceltaCorsia}`
-              : it.duello.sceltaCarta)}
-      </div>
+      {stato.finita && (
+        <div
+          className="min-h-6 text-center text-sm font-bold leading-snug text-amber-200"
+          aria-live="polite"
+          data-testid="duello-caption"
+        >
+          {didascalia}
+        </div>
+      )}
 
       {!stato.finita && (
-        <section className="sticky bottom-[3.75rem] z-30 -mx-1 space-y-2 rounded-2xl border bg-[#0a0818] p-2 shadow-[0_-12px_30px_rgb(0_0_0/0.6)] sm:bottom-2">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-sm font-black" data-testid="duello-energia">
-              <Icon name="bolt" className="size-[1em] text-amber-300" /> {it.duello.energia}:{" "}
-              {stato.energia - speso}/{stato.energia}
-              <span className="ml-2 inline-flex gap-0.5 align-middle" aria-hidden="true">
-                {Array.from({ length: Math.min(8, stato.energia) }, (_, i) => (
-                  <i
-                    key={i}
-                    className={`size-2.5 rotate-45 rounded-[2px] ${
-                      i < stato.energia - speso ? "bg-amber-300" : "bg-white/15"
-                    }`}
-                  />
-                ))}
+        <section className="sticky bottom-[3.75rem] z-30 space-y-1.5 rounded-[5px] border-2 border-carta bg-[#131217] p-2 shadow-[0_-5px_0_#000] sm:bottom-2 md:p-3">
+          <div
+            className={`line-clamp-2 min-h-[2.4em] text-[0.8rem] font-bold leading-[1.2] sm:text-sm ${
+              caption ? "text-[#ffd21f]" : "text-[#dcd5c5]"
+            }`}
+            aria-live="polite"
+            data-testid="duello-caption"
+          >
+            {didascalia}
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="flex items-center text-sm font-black" data-testid="duello-energia">
+              <Icon name="bolt" className="size-[1.2em] text-amber-300" />
+              <span className="sr-only sm:not-sr-only sm:ml-1">{it.duello.energia}:</span>
+              <span className="num ml-1.5 text-base text-[#ffd21f]">
+                {stato.energia - speso}/{stato.energia}
+              </span>
+              <span className="ml-1.5">
+                <Gemme tot={Math.min(8, stato.energia)} piene={stato.energia - speso} />
               </span>
             </span>
             <div className="flex gap-2">
@@ -299,7 +347,7 @@ export default function DuelloBoard({
                 </button>
               )}
               <button
-                className="btn btn-primary"
+                className="btn btn-primary px-4"
                 disabled={occupato}
                 onClick={() =>
                   onConferma(pending.map((m) => ({ carta: m.carta.id, corsia: m.corsia })))
@@ -310,9 +358,9 @@ export default function DuelloBoard({
               </button>
             </div>
           </div>
-          <div className="flex snap-x gap-2 overflow-x-auto px-1 pb-1 pt-2">
+          <div className="flex snap-x gap-2.5 overflow-x-auto px-1 pb-1.5 pt-2.5">
             {inMano.map((c) => (
-              <div key={c.id} className="w-28 shrink-0 snap-start sm:w-32 lg:w-36">
+              <div key={c.id} className="w-[5.4rem] shrink-0 snap-start sm:w-32 lg:w-36">
                 <DuelloCard
                   mano
                   carta={c}
@@ -329,13 +377,13 @@ export default function DuelloBoard({
       {attesa}
       {dettaglio && (
         <div
-          className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4"
+          className="fixed inset-0 z-[60] grid place-items-center bg-black/85 p-4"
           onClick={() => setDettaglio(null)}
           data-testid="duello-dettaglio"
         >
-          <div className="w-64" onClick={(e) => e.stopPropagation()}>
+          <div className="w-64 max-w-full" onClick={(e) => e.stopPropagation()}>
             <DuelloCard carta={dettaglio} />
-            <button className="btn mt-3 w-full" onClick={() => setDettaglio(null)}>
+            <button className="btn mt-5 w-full" onClick={() => setDettaglio(null)}>
               {it.duello.chiudi}
             </button>
           </div>

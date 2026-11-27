@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Compra all'asta i personaggi anime con gli amici e vinci il torneo.",
     start_url: "/",
     display: "standalone",
-    background_color: "#05040c",
-    theme_color: "#05040c",
+    background_color: "#0e0d10",
+    theme_color: "#0e0d10",
     lang: "it",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

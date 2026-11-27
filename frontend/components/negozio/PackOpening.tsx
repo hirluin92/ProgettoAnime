@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
+import { CartaRetro } from "@/components/carta/Carta";
 import DuelloCard from "@/components/duello/DuelloCard";
 import Icon from "@/components/Icon";
 import PackArt, { H, STRAPPO, TEMI_PACCHETTO } from "@/components/negozio/PackArt";
@@ -11,10 +12,10 @@ import it from "@/i18n/it.json";
 import type { AperturaOut } from "@/lib/negozio";
 
 const GLOW: Record<string, string> = {
-  comune: "#9aa7c7",
-  rara: "#4aa8ff",
-  epica: "#b36bff",
-  leggendaria: "#ffc23d",
+  comune: "#b3b0ba",
+  rara: "#58d6f5",
+  epica: "#ff7cc4",
+  leggendaria: "#ffd21f",
 };
 const NOMI_RARITA = it.album.rarita as Record<string, string>;
 const SOGLIA = 0.9; // quanta linea va percorsa per strappare la busta
@@ -103,7 +104,8 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 overflow-hidden bg-[radial-gradient(ellipse_at_50%_28%,#2b1763,#0c0821_72%)]"
+      className="esplosione fixed inset-0 z-50 overflow-hidden"
+      style={{ ["--tinta" as string]: tema.accento }}
       data-testid="apertura"
     >
       {/* alone del colore del pacchetto */}
@@ -111,11 +113,11 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
-          background: `radial-gradient(ellipse at 50% 45%, ${tema.a}40, transparent 62%)`,
+          background: "radial-gradient(ellipse at 50% 42%, #0b0a0d 0 30%, transparent 70%)",
         }}
       />
       <button
-        className="absolute right-4 top-4 z-30 rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-bold uppercase tracking-widest hover:bg-white/15"
+        className="btn absolute right-3 top-3 z-30 min-h-11 px-4 text-sm"
         onClick={() => {
           setFase("carosello");
           setRivelate(carte.map((_, i) => i));
@@ -129,9 +131,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
       <div className="relative mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-3 px-4 py-6 text-center">
         {fase === "chiuso" && (
           <>
-            <h2 className="display text-3xl font-black sm:text-4xl" style={{ color: tema.accento }}>
-              {nome}
-            </h2>
+            <h2 className="text-grad text-4xl sm:text-5xl">{nome}</h2>
             <div
               className="relative w-[min(72vw,360px,46vh)] select-none"
               style={{ aspectRatio: "240 / 420" }}
@@ -183,33 +183,31 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 <div
                   className="absolute inset-x-6 top-1/2 -translate-y-1/2"
                   style={{
-                    borderTop: "3px dashed rgb(15 23 42 / 0.8)",
-                    boxShadow: "0 1px 0 rgb(255 255 255 / 0.9)",
+                    borderTop: "3px dashed #0e0d10",
+                    boxShadow: "0 2px 0 rgb(243 236 221 / 0.9)",
                   }}
                 />
                 <div
-                  className="absolute left-6 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-amber-300 shadow-[0_0_14px_4px_rgb(255_200_60/0.9)]"
+                  className="absolute left-6 top-1/2 h-[5px] -translate-y-1/2 bg-[#0e0d10] outline outline-2 outline-[#ffd21f]"
                   style={{ width: `calc((100% - 3rem) * ${taglio})` }}
                 />
                 <span
-                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_2px_6px_rgb(0_0_0/0.8)]"
+                  className="absolute top-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-2 border-black bg-[#ffd21f] text-black shadow-[3px_3px_0_#000]"
                   style={{ left: `calc(1.5rem + (100% - 3rem) * ${taglio})` }}
                   aria-hidden="true"
                 >
-                  <Icon name="scissors" className="size-9 text-white" />
+                  <Icon name="scissors" className="size-7" />
                 </span>
               </div>
             </div>
-            <p className="max-w-md text-sm font-bold uppercase tracking-wider text-white/80">
-              {it.negozio.taglia}
-            </p>
+            <p className="balloon max-w-md text-sm uppercase tracking-wide">{it.negozio.taglia}</p>
             <p className="text-xs muted">{it.negozio.tagliaAiuto}</p>
           </>
         )}
 
         {fase === "carosello" && (
           <>
-            <p className="display text-sm tracking-[0.3em] text-white/70" aria-live="polite">
+            <p className="num text-sm tracking-[0.2em] text-carta" aria-live="polite">
               {fmt(it.negozio.cartaN, { n: indice + 1, tot: n })}
             </p>
             <motion.div
@@ -253,7 +251,6 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 const segno = Math.sign(d);
                 const aperta = rivelate.includes(i);
                 const attiva = d === 0;
-                const colore = GLOW[c.rarita] ?? GLOW.comune;
                 return (
                   <motion.div
                     key={i}
@@ -283,21 +280,11 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                       style={{ transformStyle: "preserve-3d" }}
                     >
                       <div style={{ backfaceVisibility: "hidden" }}>
-                        <div
-                          className="rounded-2xl"
-                          style={{
-                            boxShadow:
-                              aperta && attiva
-                                ? `0 0 70px 8px ${colore}`
-                                : "0 18px 40px rgb(0 0 0 / 0.6)",
-                          }}
-                        >
-                          <DuelloCard mano carta={c.carta} />
-                        </div>
+                        <DuelloCard mano carta={c.carta} />
                         {aperta && (
                           <span
-                            className={`absolute -right-2 top-16 z-10 rotate-6 rounded-md px-2 py-0.5 text-xs font-black uppercase shadow-lg ${
-                              c.nuova ? "bg-amber-300 text-black" : "bg-white/90 text-black"
+                            className={`absolute -right-3 top-[22%] z-10 rotate-6 border-2 border-black px-2 py-0.5 text-xs font-black uppercase shadow-[3px_3px_0_#000] ${
+                              c.nuova ? "bg-[#ffd21f] text-black" : "bg-carta text-black"
                             }`}
                           >
                             {c.nuova ? it.negozio.nuova : it.negozio.doppioneBreve}
@@ -306,33 +293,10 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                       </div>
                       {/* dorso */}
                       <div
-                        className="absolute inset-0 grid place-items-center overflow-hidden rounded-2xl border-[3px] border-white/70"
-                        style={{
-                          transform: "rotateY(180deg)",
-                          backfaceVisibility: "hidden",
-                          background: `radial-gradient(circle at 50% 38%, ${tema.a}, ${tema.b} 78%)`,
-                          boxShadow: "0 18px 40px rgb(0 0 0 / 0.6)",
-                        }}
+                        className="absolute inset-0"
+                        style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
                       >
-                        <span
-                          aria-hidden="true"
-                          className="absolute inset-0 opacity-30"
-                          style={{
-                            backgroundImage:
-                              "radial-gradient(circle, #fff 1.2px, transparent 1.6px)",
-                            backgroundSize: "14px 14px",
-                          }}
-                        />
-                        <span className="relative grid aspect-square w-[58%] place-items-center rounded-full border-4 border-white/80 bg-black/55 text-center shadow-[0_0_30px_rgb(0_0_0/0.5)]">
-                          <span>
-                            <Icon name="bolt" className="size-[2.4rem] text-white" />
-                            <span className="display block text-xl font-black leading-none">
-                              ARENA
-                              <br />
-                              ANIME
-                            </span>
-                          </span>
-                        </span>
+                        <CartaRetro className="h-full [&>div]:aspect-auto [&>div]:h-full" />
                       </div>
                     </motion.div>
                   </motion.div>
@@ -342,23 +306,29 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 <motion.span
                   key={`flash${indice}`}
                   aria-hidden="true"
-                  className="pointer-events-none absolute left-1/2 top-[40%] z-[60] size-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${GLOW[corrente.rarita]}aa, transparent 65%)`,
-                  }}
-                  initial={{ opacity: 0.9, scale: 0.3 }}
-                  animate={{ opacity: 0, scale: 1.6 }}
-                  transition={{ duration: 0.9 }}
+                  className="cinetiche pointer-events-none absolute left-1/2 top-[40%] z-[60] size-[90vh] -translate-x-1/2 -translate-y-1/2"
+                  style={{ ["--tinta" as string]: GLOW[corrente.rarita] }}
+                  initial={{ opacity: 1, scale: 0.4, rotate: 0 }}
+                  animate={{ opacity: 0, scale: 1.5, rotate: 12 }}
+                  transition={{ duration: 0.8 }}
                 />
               )}
             </motion.div>
 
-            <div className="h-8 text-sm font-bold" aria-live="polite">
+            <div className="flex h-10 items-center gap-3 text-sm font-bold" aria-live="polite">
               {girata && (
                 <>
-                  <span style={{ color: GLOW[corrente.rarita] }} className="display text-2xl">
+                  <motion.span
+                    key={`r${indice}`}
+                    initial={{ scale: 2, rotate: -12, opacity: 0 }}
+                    animate={{ scale: 1, rotate: -4, opacity: 1 }}
+                    transition={{ duration: 0.3, ease: [0.3, 1.6, 0.5, 1] }}
+                    style={{ color: GLOW[corrente.rarita] }}
+                    className="onoma text-3xl"
+                  >
                     {NOMI_RARITA[corrente.rarita]}
-                  </span>{" "}
+                    {rara ? "!" : ""}
+                  </motion.span>{" "}
                   {corrente.nuova ? (
                     <span className="text-emerald-300">{it.negozio.nuova}</span>
                   ) : (
@@ -376,23 +346,26 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 return (
                   <li
                     key={i}
-                    className="size-2.5 rounded-full transition-all"
+                    className="size-3 border-2 border-black transition-transform"
                     style={{
                       background:
                         i === indice
-                          ? "#fff"
+                          ? "#f3ecdd"
                           : speciale && i < indice
                             ? GLOW[c.rarita]
-                            : "rgb(255 255 255 / 0.22)",
-                      transform: i === indice ? "scale(1.5)" : undefined,
-                      boxShadow: speciale && i <= indice ? `0 0 8px ${GLOW[c.rarita]}` : undefined,
+                            : "#4a4850",
+                      transform: `rotate(45deg) scale(${i === indice ? 1.4 : 1})`,
                     }}
                   />
                 );
               })}
             </ul>
             <div className="flex items-center gap-2">
-              <button className="btn btn-primary" onClick={avanti} data-testid="avanti">
+              <button
+                className="btn btn-primary min-h-14 px-8 text-xl"
+                onClick={avanti}
+                data-testid="avanti"
+              >
                 {indice + 1 >= n ? it.negozio.fine : it.negozio.prossima}
               </button>
             </div>
@@ -405,17 +378,17 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="absolute inset-0 z-40 grid place-items-center overflow-y-auto bg-black/80 p-4"
+          className="absolute inset-0 z-40 grid place-items-center overflow-y-auto bg-black/85 p-4"
         >
           <div className="panel panel-solido w-full max-w-4xl space-y-4 p-5 text-center sm:p-7">
             <p className="eyebrow justify-center">{nome}</p>
-            <h3 className="display text-3xl font-black" data-testid="riepilogo-apertura">
+            <h3 className="text-3xl italic sm:text-4xl" data-testid="riepilogo-apertura">
               {fmt(it.negozio.riepilogo, {
                 n: carte.filter((c) => c.nuova).length,
                 m: apertura.rimborsati,
               })}
             </h3>
-            <ul className="flex flex-wrap justify-center gap-3">
+            <ul className="flex flex-wrap justify-center gap-x-4 gap-y-5">
               {carte.map((c, i) => (
                 <motion.li
                   key={i}
@@ -425,12 +398,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                   transition={{ delay: i * 0.08 }}
                   data-testid="carta-pacchetto"
                 >
-                  <div
-                    className="rounded-2xl"
-                    style={{ boxShadow: `0 0 24px ${GLOW[c.rarita]}88` }}
-                  >
-                    <DuelloCard carta={c.carta} />
-                  </div>
+                  <DuelloCard carta={c.carta} />
                   <p className="mt-1 text-xs font-bold">
                     {c.nuova ? (
                       <span className="text-emerald-300">{it.negozio.nuova}</span>
@@ -443,7 +411,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 </motion.li>
               ))}
             </ul>
-            <div className="flex justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-3 pb-1">
               <button className="btn btn-primary" onClick={onChiudi}>
                 {it.negozio.chiudi}
               </button>

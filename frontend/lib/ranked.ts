@@ -53,10 +53,10 @@ export const nomeLega = (lega: string, div: string | null) => (div ? `${lega} ${
 export const COLORI_LEGA: Record<string, string> = {
   Bronzo: "#c9824a",
   Argento: "#cfd8e6",
-  Oro: "#ffd45a",
+  Oro: "#ffd21f",
   Platino: "#5fe0d0",
   Diamante: "#7ab8ff",
-  Campione: "#ff3d81",
+  Campione: "#ff5a45",
 };
 /** Punti MMR dall'inizio del gradino attuale (0-49) e gradino di 50 punti. */
 export const progressoGradino = (mmr: number) => Math.max(0, Math.min(49, (mmr - 700) % 50));

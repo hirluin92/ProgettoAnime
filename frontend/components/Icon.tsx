@@ -104,6 +104,33 @@ const LINEA: Record<string, ReactNode> = {
   arrowup: <path d="M12 20V5M5 12l7-7 7 7" />,
   arrowdown: <path d="M12 4v15M5 12l7 7 7-7" />,
   dots: <path d="M6 12h.01M12 12h.01M18 12h.01" strokeWidth="3" />,
+  arrowright: <path d="M4 12h15M13 5l7 7-7 7" />,
+  arrowleft: <path d="M20 12H5M11 5l-7 7 7 7" />,
+  refresh: (
+    <>
+      <path d="M20 12a8 8 0 1 1-2.6-5.9" />
+      <path d="M20 4v5h-5" />
+    </>
+  ),
+  plus: <path d="M12 5v14M5 12h14" />,
+  link: (
+    <>
+      <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1" />
+      <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />
+    </>
+  ),
+  user: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c1-4.5 4-6.5 8-6.5s7 2 8 6.5" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5.5l3.5 2" />
+    </>
+  ),
 };
 
 const PIENE: Record<string, ReactNode> = {
@@ -115,6 +142,7 @@ const PIENE: Record<string, ReactNode> = {
       <rect x="13.5" y="4.5" width="4.5" height="15" rx="1.2" />
     </>
   ),
+  diamond: <path d="M12 2.5 21.5 12 12 21.5 2.5 12z" />,
   crown: <path d="M2.5 8.5 7 12l5-7.5L17 12l4.5-3.5L19.5 20h-15z" />,
   star: <path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.3l-6.1 3.6 1.5-6.8L2.2 9.8l6.9-.7z" />,
   flame: (

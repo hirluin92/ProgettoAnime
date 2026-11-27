@@ -3,6 +3,7 @@
 import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import Caricamento from "@/components/Caricamento";
 import PremioPanel from "@/components/PremioPanel";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
@@ -32,14 +33,26 @@ import DuelloCard, { DuelloTile } from "./DuelloCard";
 type Fase = "regole" | "draft" | "gioco";
 function Regole({ onOk }: { onOk: () => void }) {
   return (
-    <section className="panel mx-auto max-w-xl space-y-4 p-6" data-testid="duello-regole">
-      <h2 className="display text-3xl font-black">{it.duello.regole}</h2>
-      <ol className="list-decimal space-y-2 pl-5 text-sm leading-relaxed">
+    <section
+      className="panel-vivo mx-auto max-w-xl space-y-5 p-5 sm:p-7"
+      data-testid="duello-regole"
+    >
+      <div className="testata">
+        <span className="eyebrow">{it.duello.titolo}</span>
+        <h1 className="striscia text-4xl">{it.duello.regole}</h1>
+      </div>
+      <ol className="passi text-[0.95rem] font-medium">
         {it.duello.regoleLista.map((r) => (
-          <li key={r}>{r}</li>
+          <li key={r}>
+            <span>{r}</span>
+          </li>
         ))}
       </ol>
-      <button className="btn btn-primary w-full" onClick={onOk} data-testid="duello-capito">
+      <button
+        className="btn btn-primary min-h-14 w-full text-xl"
+        onClick={onOk}
+        data-testid="duello-capito"
+      >
         {it.duello.capito}
       </button>
     </section>
@@ -63,11 +76,12 @@ function ClassificaGiorno({ righe }: { righe: GiornoRiga[] }) {
       {righe.length === 0 ? (
         <p className="text-sm muted">{it.duello.nessunoOggi}</p>
       ) : (
-        <ol className="space-y-1 text-sm">
+        <ol className="text-sm">
           {righe.map((r, i) => (
-            <li key={r.nome} className="flex items-center justify-between gap-3">
+            <li key={r.nome} className="riga">
               <span>
-                {i + 1}. {r.nome}
+                <span className="num mr-2">{i + 1}.</span>
+                {r.nome}
               </span>
               <span>
                 <Stelle n={r.stelle} /> <span className="muted">({r.punteggio})</span>
@@ -169,7 +183,7 @@ export default function DuelloGame({
         </div>
       </main>
     );
-  if (giorno ? !info : !draft) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (giorno ? !info : !draft) return <Caricamento />;
 
   if (fase === "regole")
     return (
@@ -207,10 +221,10 @@ export default function DuelloGame({
     };
     return (
       <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="duello-giorno">
-        <header className="space-y-1">
+        <header className="testata space-y-1">
           <span className="eyebrow">{it.duello.titolo}</span>
-          <h1 className="display text-4xl font-black">{it.duello.giornoTitolo}</h1>
-          <p className="text-sm muted">{it.duello.giornoTesto}</p>
+          <h1 className="text-4xl sm:text-5xl">{it.duello.giornoTitolo}</h1>
+          <p className="max-w-2xl text-[0.95rem] font-medium muted">{it.duello.giornoTesto}</p>
         </header>
         <section className="space-y-2">
           <h2 className="eyebrow">{it.duello.latuoMazzo}</h2>
@@ -226,8 +240,8 @@ export default function DuelloGame({
             ))}
           </div>
         </section>
-        <section className="panel flex flex-wrap items-end gap-3 p-5">
-          <label className="flex-1 space-y-1 text-sm">
+        <section className="panel-vivo flex flex-wrap items-end gap-4 p-5">
+          <label className="min-w-[12rem] flex-1 space-y-1 text-sm">
             <span className="eyebrow">{it.duello.tuoNome}</span>
             <input
               className="field w-full"
@@ -238,7 +252,7 @@ export default function DuelloGame({
             />
           </label>
           <button
-            className="btn btn-gold"
+            className="btn btn-primary min-h-12 px-8 text-lg"
             disabled={busy || !nomeFinale || gia}
             onClick={via}
             data-testid="giorno-via"
@@ -247,7 +261,10 @@ export default function DuelloGame({
           </button>
         </section>
         <ClassificaGiorno righe={info.classifica} />
-        <Link href="/duello" className="text-sm underline muted">
+        <Link
+          href="/duello"
+          className="inline-flex min-h-11 items-center text-sm font-bold underline muted"
+        >
           {it.duello.indietro}
         </Link>
       </main>
@@ -274,11 +291,11 @@ export default function DuelloGame({
     const av = run.avversario;
     return (
       <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="scala-hub">
-        <header className="space-y-1">
+        <header className="testata space-y-1">
           <span className="eyebrow">{it.scalaD.titolo}</span>
-          <h1 className="display text-4xl font-black" data-testid="scala-gradino">
+          <h1 className="text-4xl sm:text-5xl" data-testid="scala-gradino">
             {fmt(it.scalaD.gradino, { n: run.gradino, tot: run.max_gradini })}
-            {av.boss && <span className="ml-3 text-rose-400">{it.scalaD.boss}</span>}
+            {av.boss && <span className="ml-3 text-[#c22417]">{it.scalaD.boss}</span>}
           </h1>
           <p className="text-sm muted">
             {fmt(it.scalaD.avversario, { liv: av.livello, b: av.bonus })}
@@ -301,7 +318,7 @@ export default function DuelloGame({
           </div>
         </section>
         <button
-          className="btn btn-gold w-full text-lg"
+          className="btn btn-primary min-h-14 w-full text-xl"
           disabled={busy}
           onClick={() => void combatti()}
           data-testid="scala-combatti"
@@ -358,14 +375,16 @@ export default function DuelloGame({
     };
     return (
       <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="duello-draft">
-        <header className="space-y-1">
-          <span className="eyebrow">{it.duello.titolo}</span>
-          <h1 className="display text-4xl font-black">
+        <header className="testata space-y-1">
+          <span className="eyebrow">
+            {scala ? it.scalaD.titolo : ranked ? it.ranked.titolo : it.duello.titolo}
+          </span>
+          <h1 className="text-4xl sm:text-5xl">
             {pronto ? it.duello.mazzoPronto : it.duello.scegli}
           </h1>
-          <p className="text-sm muted">{it.duello.sottotitolo}</p>
+          <p className="text-[0.95rem] font-medium muted">{it.duello.sottotitolo}</p>
           {rk && (
-            <p className="chip text-cyan-100" data-testid="ranked-avversario">
+            <p className="chip border-black bg-carta text-nero" data-testid="ranked-avversario">
               {fmt(it.ranked.avversario, {
                 nome: rk.avversario.nome,
                 lega: nomeLega(rk.avversario.lega, rk.avversario.divisione),
@@ -391,14 +410,12 @@ export default function DuelloGame({
         </header>
         {!ranked && !scala && mazziProfilo.length > 0 && picks.length === 0 && (
           <div className="flex flex-wrap gap-2" data-testid="duello-tab">
-            <button
-              className={`btn ${!usaMazzo ? "btn-primary" : ""}`}
-              onClick={() => setUsaMazzo(false)}
-            >
+            <button className="btn" aria-pressed={!usaMazzo} onClick={() => setUsaMazzo(false)}>
               {it.album.draftTab}
             </button>
             <button
-              className={`btn ${usaMazzo ? "btn-primary" : ""}`}
+              className="btn"
+              aria-pressed={usaMazzo}
               onClick={() => setUsaMazzo(true)}
               data-testid="tab-mazzo"
             >
@@ -407,14 +424,15 @@ export default function DuelloGame({
           </div>
         )}
         {usaMazzo && picks.length === 0 && (
-          <section className="panel space-y-4 p-5" data-testid="mazzo-personale">
+          <section className="panel-vivo space-y-4 p-5" data-testid="mazzo-personale">
             <div className="space-y-2">
               <span className="eyebrow">{it.album.scegliMazzo}</span>
               <div className="flex flex-wrap gap-2">
                 {mazziProfilo.map((n, i) => (
                   <button
                     key={n + i}
-                    className={`btn ${mazzoSel === i ? "btn-primary" : ""}`}
+                    className="btn"
+                    aria-pressed={mazzoSel === i}
                     onClick={() => setMazzoSel(i)}
                   >
                     {n}
@@ -428,7 +446,8 @@ export default function DuelloGame({
                 {LIVELLI.map((l) => (
                   <button
                     key={l}
-                    className={`btn ${livello === l ? "btn-primary" : ""}`}
+                    className="btn"
+                    aria-pressed={livello === l}
                     onClick={() => setLivello(l)}
                   >
                     {it.duello.livelli[l]}
@@ -438,7 +457,7 @@ export default function DuelloGame({
             </div>
             <p className="text-xs muted">{it.album.senzaElo}</p>
             <button
-              className="btn btn-gold w-full"
+              className="btn btn-primary min-h-14 w-full text-xl"
               disabled={busy}
               onClick={async () => {
                 setBusy(true);
@@ -469,7 +488,7 @@ export default function DuelloGame({
         {!pronto && !usaMazzo && (
           <section className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-sm font-bold" data-testid="duello-conta">
+              <span className="display text-2xl tracking-wide" data-testid="duello-conta">
                 {fmt(it.duello.mano, { n: picks.length + 1, tot: draft.mazzo })}
               </span>
               <button
@@ -484,7 +503,7 @@ export default function DuelloGame({
                 {fmt(it.duello.rilancia, { n: draft.rilanci - rilanci })}
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
               {mano.map((c) => (
                 <DuelloCard
                   key={c.id}
@@ -497,8 +516,9 @@ export default function DuelloGame({
           </section>
         )}
         {scelte.length > 0 && (
-          <section className="space-y-2">
-            <p className="text-sm" data-testid="duello-costo">
+          <section className="panel space-y-2 p-4">
+            <span className="eyebrow">{it.duello.latuoMazzo}</span>
+            <p className="text-sm font-bold" data-testid="duello-costo">
               {fmt(it.duello.costoMazzo, {
                 n: scelte.reduce((t, c) => t + c.costo, 0),
                 tot: ENERGIA_TOTALE,
@@ -507,7 +527,7 @@ export default function DuelloGame({
             <p className="text-xs muted">{it.duello.consiglioCosto}</p>
             {scelte.length >= 5 && !scelte.some((c) => c.costo <= 2) && (
               <p
-                className="rounded-xl bg-amber-300/15 px-3 py-2 text-sm font-bold text-amber-200"
+                className="border-2 border-[#ffd21f] bg-[#ffd21f]/10 px-3 py-2 text-sm font-bold text-amber-200"
                 role="status"
               >
                 {it.duello.avvisoCurva}
@@ -517,18 +537,27 @@ export default function DuelloGame({
               {scelte.map((c) => (
                 <DuelloTile key={c.id} carta={c} potenza={c.potenza} />
               ))}
+              {Array.from({ length: draft.mazzo - scelte.length }, (_, i) => (
+                <div
+                  key={i}
+                  aria-hidden="true"
+                  className="num grid aspect-[1/1.2] place-items-center rounded-[3px] border-[1.5px] border-dashed border-white/20 text-sm text-white/25"
+                >
+                  {scelte.length + i + 1}
+                </div>
+              ))}
             </div>
           </section>
         )}
         {pronto && (
-          <section className="panel space-y-4 p-5">
+          <section className="panel-vivo space-y-4 p-5">
             <div className={`space-y-2 ${ranked || scala ? "hidden" : ""}`}>
               <span className="eyebrow">{it.duello.livello}</span>
               <div className="flex gap-2">
                 {LIVELLI.map((l) => (
                   <button
                     key={l}
-                    className={`btn ${livello === l ? "btn-primary" : ""}`}
+                    className="btn min-w-0 flex-1 sm:flex-none"
                     aria-pressed={livello === l}
                     onClick={() => setLivello(l)}
                   >
@@ -538,7 +567,7 @@ export default function DuelloGame({
               </div>
             </div>
             <button
-              className="btn btn-gold w-full"
+              className="btn btn-primary min-h-14 w-full text-xl"
               disabled={busy}
               onClick={inizia}
               data-testid="duello-inizia"
@@ -593,7 +622,7 @@ export default function DuelloGame({
   const vinteCpu = stato.corsie_vinte[1];
 
   return (
-    <main className="mx-auto max-w-7xl space-y-4 p-3 pt-5">
+    <main className="mx-auto max-w-7xl space-y-4 p-2 pt-3 sm:p-3 sm:pt-5">
       <DuelloBoard
         stato={stato}
         avversario={it.duello.cpu}
@@ -608,11 +637,17 @@ export default function DuelloGame({
         </button>
       )}
       {esito && stato.finita && !finaleChiuso && (
-        <div className="fixed inset-0 z-[55] grid place-items-center overflow-y-auto bg-[#05040c]/90 p-4">
+        <div
+          className="esplosione fixed inset-0 z-[55] grid place-items-center overflow-y-auto p-4"
+          style={{
+            ["--tinta" as string]:
+              esito.vinto === null ? "#f3ecdd" : esito.vinto ? "#ffd21f" : "#5a5862",
+          }}
+        >
           <motion.section
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="panel panel-solido my-auto w-full max-w-3xl space-y-4 p-6 text-center sm:p-8"
+            className="my-auto w-full max-w-3xl space-y-5 py-6 text-center"
             data-testid="duello-esito"
           >
             <div className="flex justify-center gap-3" aria-hidden="true">
@@ -622,31 +657,42 @@ export default function DuelloGame({
                   initial={{ opacity: 0, y: 14, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: 0.4 + k * 0.45, duration: 0.3 }}
-                  className={`grid min-w-24 place-items-center rounded-2xl border-2 px-3 py-2 font-black ${
+                  className={`grid min-w-[5.5rem] place-items-center border-2 border-black px-3 py-2 shadow-[3px_3px_0_#000] ${
                     tu > cpu
-                      ? "border-emerald-300 bg-emerald-500/20 text-emerald-200"
+                      ? "bg-[#35d68a] text-black"
                       : cpu > tu
-                        ? "border-red-300 bg-red-500/20 text-red-200"
-                        : "border-white/30 bg-white/10 text-white/80"
+                        ? "bg-[#e0301f] text-white"
+                        : "bg-carta text-nero"
                   }`}
                 >
-                  <span className="text-xs font-bold uppercase tracking-widest opacity-80">
+                  <span className="text-[0.68rem] font-black uppercase tracking-widest">
                     {it.duello.corsia} {k + 1}
                   </span>
-                  <span className="display text-3xl">
+                  <span className="num text-2xl">
                     {tu}–{cpu}
                   </span>
                 </motion.span>
               ))}
             </div>
-            <h2 className="display text-grad text-6xl font-black sm:text-7xl">
+            <motion.h2
+              initial={{ scale: 2.4, rotate: -14, opacity: 0 }}
+              animate={{ scale: 1, rotate: -4, opacity: 1 }}
+              transition={{ delay: 1.75, duration: 0.35, ease: [0.3, 1.6, 0.5, 1] }}
+              className={`not-italic leading-[0.9] ${
+                esito.vinto
+                  ? "onoma text-[clamp(3.6rem,15vw,8rem)]"
+                  : "text-grad text-[clamp(3.4rem,14vw,7rem)]"
+              }`}
+            >
               {esito.vinto === null
                 ? it.duello.pareggio
                 : esito.vinto
                   ? it.duello.vittoria
                   : it.duello.sconfitta}
-            </h2>
-            <p className="muted">{fmt(it.duello.corsieVinte, { a: vinteTu, b: vinteCpu })}</p>
+            </motion.h2>
+            <p className="font-bold text-carta">
+              {fmt(it.duello.corsieVinte, { a: vinteTu, b: vinteCpu })}
+            </p>
             {esitoGiorno && (
               <div className="space-y-3 text-left">
                 <div className="text-center text-3xl">
@@ -659,7 +705,7 @@ export default function DuelloGame({
               </div>
             )}
             {esito.scala && (
-              <div className="panel space-y-3 p-4 text-left" data-testid="scala-esito">
+              <div className="panel panel-solido space-y-3 p-4 text-left" data-testid="scala-esito">
                 <p className="text-center font-bold">
                   {esito.scala.finita
                     ? esito.scala.completata
@@ -714,7 +760,10 @@ export default function DuelloGame({
               </div>
             )}
             {esito.ranked && (
-              <div className="panel space-y-1 p-4 text-left" data-testid="ranked-esito">
+              <div
+                className="panel panel-solido space-y-1 p-4 text-left"
+                data-testid="ranked-esito"
+              >
                 <p className="font-bold">
                   {fmt(it.ranked.risultato, {
                     a: esito.ranked.mmr_prima,
@@ -744,7 +793,7 @@ export default function DuelloGame({
             )}
             {esito.premio && <PremioPanel premio={esito.premio} />}
             <button
-              className={`btn btn-primary ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
+              className={`btn btn-primary min-h-14 px-8 text-xl ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
               onClick={() =>
                 giorno || ranked
                   ? (window.location.href = ranked ? "/ranked" : "/duello")
@@ -760,7 +809,7 @@ export default function DuelloGame({
                     ? it.duello.indietro
                     : it.duello.rigioca}
             </button>
-            <button className="btn mx-2" onClick={() => setFinaleChiuso(true)}>
+            <button className="btn mx-3 mt-3" onClick={() => setFinaleChiuso(true)}>
               {it.duello.vediPlancia}
             </button>
           </motion.section>

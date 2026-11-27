@@ -1,7 +1,9 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import Icon from "@/components/Icon";
 import { AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
 import PackArt from "@/components/negozio/PackArt";
@@ -12,16 +14,16 @@ import type { AperturaOut, NegozioOut } from "@/lib/negozio";
 import { useProfile } from "@/lib/profile";
 
 const COLORI: Record<string, string> = {
-  base: "#8aa0ff",
-  argento: "#cfd8e6",
-  oro: "#ffd45a",
-  leggendario: "#ff3d81",
+  base: "#f3ecdd",
+  argento: "#8fe4f7",
+  oro: "#ffd21f",
+  leggendario: "#ff5a45",
 };
 const RARITA_COL: Record<string, string> = {
-  comune: "#9aa7c7",
-  rara: "#4aa8ff",
-  epica: "#b36bff",
-  leggendaria: "#ffc23d",
+  comune: "#8f8c96",
+  rara: "#58d6f5",
+  epica: "#ff7cc4",
+  leggendaria: "#ffd21f",
 };
 const NOMI_RARITA = it.album.rarita as Record<string, string>;
 
@@ -61,11 +63,17 @@ export default function NegozioView() {
     }
   };
 
-  if (loading || !negozio) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
+  if (loading || !negozio) return <Caricamento testo={errore ?? undefined} />;
   if (!profile)
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
-        <p className="panel p-6">{it.negozio.senzaProfilo}</p>
+        <div className="vuoto">
+          <Icon name="coin" className="size-10" />
+          <p className="font-bold text-carta">{it.negozio.senzaProfilo}</p>
+          <Link href="/profilo" className="btn btn-primary">
+            {it.nav.profilo}
+          </Link>
+        </div>
       </main>
     );
 
@@ -74,26 +82,24 @@ export default function NegozioView() {
       <header className="testata flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1">
           <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
-          <h1 className="display text-5xl font-black">{it.negozio.titolo}</h1>
-          <p className="max-w-xl text-[0.95rem] muted">{it.negozio.intro}</p>
+          <h1 className="text-4xl sm:text-5xl">{it.negozio.titolo}</h1>
+          <p className="max-w-xl text-[0.95rem] font-medium muted">{it.negozio.intro}</p>
         </div>
-        <div className="panel flex items-center gap-4 px-5 py-3">
-          <span className="grid size-12 place-items-center rounded-full bg-gradient-to-br from-amber-200 to-amber-500 text-amber-950 shadow-[0_0_24px_rgb(255_200_60/0.5)]">
-            <Icon name="coin" className="size-7" />
-          </span>
+        <div className="saldo">
+          <Icon name="coin" className="size-10 shrink-0" />
           <div>
-            <div className="display text-4xl font-black leading-none" data-testid="saldo">
+            <div className="num text-3xl leading-none" data-testid="saldo">
               {fmt(it.negozio.crediti, { n: profile.crediti })}
             </div>
             {pity !== null && (
               <div className="mt-1.5 space-y-1">
-                <div className="h-1.5 w-44 overflow-hidden rounded-full bg-white/10">
+                <div className="h-2 w-48 max-w-full border-[1.5px] border-black bg-black/15">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-amber-300 to-pink-500"
+                    className="h-full bg-[#e0301f]"
                     style={{ width: `${Math.min(100, (pity / negozio.pity_max) * 100)}%` }}
                   />
                 </div>
-                <p className="text-[0.7rem] muted">
+                <p className="text-[0.72rem] font-bold muted">
                   {fmt(it.negozio.pity, { n: negozio.pity_max, m: negozio.pity_max - pity })}
                 </p>
               </div>
@@ -105,38 +111,36 @@ export default function NegozioView() {
       {errore && (
         <p
           role="alert"
-          className="rounded-xl bg-rose-500/20 p-2 text-center text-sm font-bold text-rose-200"
+          className="border-2 border-rose-400 bg-rose-400/10 p-2 text-center text-sm font-bold text-rose-300"
         >
           {errore}
         </p>
       )}
 
-      <ul className="grid gap-x-5 gap-y-8 pt-2 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid gap-x-5 gap-y-7 pt-2 sm:grid-cols-2 lg:grid-cols-4">
         {negozio.tipi.map((t) => {
           const manca = t.prezzo - profile.crediti;
           return (
             <li
               key={t.id}
-              className="panel group relative flex flex-col items-center overflow-hidden px-4 pb-4 pt-6"
+              className="panel gruppo-busta group relative isolate flex flex-col items-center overflow-hidden px-4 pb-5 pt-6"
+              style={{ ["--accent" as string]: COLORI[t.id] }}
               data-testid={`pacchetto-${t.id}`}
             >
-              {/* riflettore e piedistallo */}
+              {/* fondo a retino nella tinta della bustina */}
               <span
                 aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-[22rem] opacity-60 transition-opacity group-hover:opacity-100"
+                className="retino absolute inset-x-0 top-0 -z-10 h-72 opacity-30 transition-opacity group-hover:opacity-70"
                 style={{
-                  background: `radial-gradient(ellipse at 50% 42%, ${COLORI[t.id]}55, transparent 68%)`,
+                  WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, #000, transparent 70%)",
+                  maskImage: "radial-gradient(ellipse at 50% 45%, #000, transparent 70%)",
                 }}
               />
-              <div className="pack-vetrina relative w-[84%] max-w-[230px] will-change-transform">
+              <div className="pack-vetrina relative w-[62%] max-w-[210px] drop-shadow-[6px_6px_0_#000] sm:w-[78%]">
                 <PackArt tipo={t.id} nome={t.nome} carte={t.carte} className="w-full" />
               </div>
-              <span
-                aria-hidden="true"
-                className="relative -mt-1 h-4 w-[70%] rounded-[50%] bg-black/70 blur-md"
-              />
               <div className="relative mt-3 flex w-full flex-1 flex-col gap-3">
-                <p className="text-center text-[0.95rem] font-semibold">
+                <p className="text-center text-[0.95rem] font-bold">
                   {fmt(it.negozio.carte, { n: t.carte })}
                   <span className="muted"> · </span>
                   <span style={{ color: COLORI[t.id] }}>
@@ -149,7 +153,7 @@ export default function NegozioView() {
                 </p>
                 <div className="space-y-1.5">
                   <div className="eyebrow">{it.negozio.probabilita}</div>
-                  <div className="flex h-2.5 overflow-hidden rounded-full bg-black/40">
+                  <div className="flex h-3 overflow-hidden border-[1.5px] border-black bg-black">
                     {Object.entries(t.probabilita).map(([r, p]) => (
                       <span key={r} style={{ width: `${p}%`, background: RARITA_COL[r] }} />
                     ))}
@@ -158,10 +162,7 @@ export default function NegozioView() {
                     {Object.entries(t.probabilita).map(([r, p]) => (
                       <li key={r} className="flex items-center justify-between gap-2">
                         <span className="flex items-center gap-1.5">
-                          <i
-                            className="size-2 rounded-full"
-                            style={{ background: RARITA_COL[r] }}
-                          />
+                          <i className="size-2 rotate-45" style={{ background: RARITA_COL[r] }} />
                           {NOMI_RARITA[r]}
                         </span>
                         <b>{p}%</b>
@@ -170,7 +171,7 @@ export default function NegozioView() {
                   </ul>
                 </div>
                 <button
-                  className="btn btn-primary mt-auto w-full text-base"
+                  className="btn btn-primary mt-auto min-h-12 w-full text-lg"
                   disabled={busy || manca > 0}
                   onClick={() => void apri(t.id)}
                   data-testid={`apri-${t.id}`}

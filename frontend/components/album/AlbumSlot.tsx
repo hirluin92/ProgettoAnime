@@ -34,7 +34,7 @@ export default function AlbumSlot({
           type="button"
           onClick={onDettaglio}
           aria-label={`#${n}`}
-          className="relative block aspect-[5/7] w-full overflow-hidden rounded-[1.6cqw] border-2 border-dashed border-[rgb(243_236_221/0.3)] bg-black/30 transition hover:border-[rgb(243_236_221/0.7)]"
+          className="relative block aspect-[5/7] w-full overflow-hidden rounded-[1.6cqw] border-[0.45cqw] border-dashed border-black/45 bg-black/[0.07] transition-colors hover:border-black"
         >
           {immagine ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -43,8 +43,8 @@ export default function AlbumSlot({
               alt=""
               referrerPolicy="no-referrer"
               loading="lazy"
-              className="absolute inset-0 size-full scale-110 object-cover object-top opacity-60"
-              style={{ filter: "blur(6px) brightness(0.4) grayscale(1)" }}
+              className="absolute inset-0 size-full scale-110 object-cover object-top opacity-25"
+              style={{ filter: "blur(5px) grayscale(1) contrast(1.4)" }}
             />
           ) : (
             <span
@@ -52,10 +52,10 @@ export default function AlbumSlot({
               style={{ background: `linear-gradient(150deg, ${pal.from}33, ${pal.to}22)` }}
             />
           )}
-          <span className="num absolute inset-0 grid place-items-center text-[6.5cqw] text-white/40">
+          <span className="num absolute inset-0 grid place-items-center text-[6.5cqw] text-black/55">
             {n}
           </span>
-          <span className="absolute inset-x-0 bottom-[1.2cqw] text-center text-[1.9cqw] font-bold tracking-[0.3em] text-white/25">
+          <span className="absolute inset-x-0 bottom-[1.2cqw] text-center text-[1.9cqw] font-black tracking-[0.3em] text-black/45">
             ???
           </span>
         </button>

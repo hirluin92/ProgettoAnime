@@ -3,7 +3,7 @@ import { APP_NAME, CONTACT_EMAIL } from "@/lib/constants";
 
 export default function InfoPage() {
   return (
-    <main className="panel mx-auto my-10 max-w-3xl space-y-7 p-8 sm:p-10 [&_li]:text-[#cfc9ec] [&_p]:text-[#cfc9ec] [&_li]:leading-relaxed [&_p]:leading-relaxed">
+    <main className="panel mx-auto my-10 max-w-3xl space-y-7 p-8 sm:p-10 [&_li]:text-[#dcd5c5] [&_p]:text-[#dcd5c5] [&_li]:leading-relaxed [&_p]:leading-relaxed">
       <h1 className="text-5xl font-black leading-none">
         {it.info.titolo} {APP_NAME}
       </h1>

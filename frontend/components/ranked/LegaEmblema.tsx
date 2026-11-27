@@ -16,7 +16,7 @@ export default function LegaEmblema({
   className?: string;
 }) {
   const id = useId().replace(/:/g, "");
-  const c = ignota ? "#8b86ad" : (COLORI_LEGA[lega] ?? "#8b86ad");
+  const c = ignota ? "#9a9488" : (COLORI_LEGA[lega] ?? "#9a9488");
   const ali = Math.max(
     1,
     ["Bronzo", "Argento", "Oro", "Platino", "Diamante", "Campione"].indexOf(lega),
@@ -36,7 +36,7 @@ export default function LegaEmblema({
         </linearGradient>
         <radialGradient id={`i${id}`} cx="0.5" cy="0.35" r="0.7">
           <stop offset="0" stopColor={c} stopOpacity="0.5" />
-          <stop offset="1" stopColor="#0a0818" />
+          <stop offset="1" stopColor="#111014" />
         </radialGradient>
         <filter id={`b${id}`} x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="9" />

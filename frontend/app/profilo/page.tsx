@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import Icon, { Medaglia } from "@/components/Icon";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -53,7 +54,7 @@ export default function ProfiloPage() {
     }
   };
 
-  if (loading) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (loading) return <Caricamento />;
 
   if (!profile && accesso)
     return (

@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import Icon from "@/components/Icon";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import BattleScene from "@/components/battle/BattleScene";
@@ -131,7 +132,7 @@ export default function QuickGame({
         </div>
       </main>
     );
-  if (!d) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (!d) return <Caricamento />;
 
   const total = d.roles.length;
   const drafting = round < total;
@@ -336,7 +337,7 @@ export default function QuickGame({
                     onClick={reroll}
                     title={it.draft.rilancioHint}
                   >
-                    ↻ {it.draft.rilancia}
+                    <Icon name="refresh" /> {it.draft.rilancia}
                   </button>
                 )}
               </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -203,7 +204,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
     }
   };
 
-  if (loading || !stato) return <main className="p-6">{messaggio ?? it.stanza.connessione}</main>;
+  if (loading || !stato) return <Caricamento testo={messaggio ?? undefined} />;
   const ritratto = gioco === "personaggio";
 
   return (

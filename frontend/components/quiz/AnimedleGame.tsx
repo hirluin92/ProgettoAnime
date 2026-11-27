@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -271,7 +272,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
     }
   };
 
-  if (loading || !stato) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
+  if (loading || !stato) return <Caricamento testo={errore ?? undefined} />;
 
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="animedle">

@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import QuizRoomView from "@/components/quiz/QuizRoomView";
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import AuctionView from "@/components/auction/AuctionView";
@@ -114,7 +115,7 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
       </main>
     );
 
-  if (!room || !me) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (!room || !me) return <Caricamento />;
 
   return (
     <main className="mx-auto max-w-7xl p-4">

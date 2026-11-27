@@ -1112,3 +1112,84 @@ body.overlay-mode .aurora,
 body.overlay-mode .site-chrome {
   display: none;
 }
+
+@layer components {
+  .carta[data-misura="mini"] .carta-pot {
+    font-size: max(13px, 1.7em);
+  }
+  /* elenco numerato a caselle (regole, passi) */
+  .passi {
+    counter-reset: passo;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .passi > li {
+    counter-increment: passo;
+    display: grid;
+    grid-template-columns: 2.1rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    line-height: 1.45;
+  }
+  .passi > li::before {
+    content: counter(passo);
+    display: grid;
+    place-items: center;
+    height: 2.1rem;
+    font-family: var(--font-num), sans-serif;
+    font-size: 0.95rem;
+    color: var(--nero);
+    background: var(--carta);
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0 var(--accent);
+  }
+  /* schermata finale: linee cinetiche che esplodono dal centro */
+  .esplosione {
+    background:
+      repeating-conic-gradient(
+        from 0deg at 50% 30%,
+        color-mix(in srgb, var(--tinta, var(--rosso)) 30%, transparent) 0deg 1.2deg,
+        transparent 1.2deg 7deg
+      ),
+      #0b0a0d;
+  }
+  /* righe di classifica */
+  .riga {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.6rem;
+    padding: 0.3rem 0.75rem;
+    border-bottom: 1.5px solid var(--line);
+    font-weight: 700;
+  }
+  .riga:last-child {
+    border-bottom: 0;
+  }
+  .riga[data-io] {
+    background: var(--carta);
+    color: var(--nero);
+  }
+}
+
+@layer components {
+  .testata > .eyebrow,
+  .testata > div > .eyebrow {
+    display: flex;
+  }
+  /* targa del saldo: una moneta stampata */
+  .saldo {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    border: 2px solid #000;
+    background: var(--giallo);
+    color: var(--nero);
+    padding: 0.6rem 1rem;
+    box-shadow: 5px 5px 0 #000;
+  }
+  .saldo .muted {
+    color: #4a3d00;
+  }
+}

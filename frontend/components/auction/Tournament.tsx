@@ -111,7 +111,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                         href={`/partita/${m.match_id}`}
                         className="block border-t px-3 py-1 text-center text-[0.65rem] font-bold uppercase tracking-widest text-cyan-200 hover:bg-white/5"
                       >
-                        {it.stanza.guardaScontro} →
+                        {it.stanza.guardaScontro} <Icon name="arrowright" />
                       </Link>
                     )}
                   </div>
@@ -191,7 +191,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                           className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
                           aria-hidden="true"
                         >
-                          {it.stanza.guardaScontro} →
+                          {it.stanza.guardaScontro} <Icon name="arrowright" />
                         </span>
                       </Link>
                     ) : (
@@ -214,7 +214,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                           className="mt-3 block text-center text-xs font-bold uppercase tracking-widest text-cyan-200"
                           aria-hidden="true"
                         >
-                          {it.stanza.guardaScontro} →
+                          {it.stanza.guardaScontro} <Icon name="arrowright" />
                         </span>
                       </div>
                     )}

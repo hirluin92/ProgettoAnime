@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import Icon from "@/components/Icon";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -37,14 +38,14 @@ export default function RankedHome() {
     }
   };
 
-  if (loading) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (loading) return <Caricamento />;
   if (!profile)
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
         <p className="panel p-6">{it.ranked.senzaProfilo}</p>
       </main>
     );
-  if (!st) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
+  if (!st) return <Caricamento testo={errore ?? undefined} />;
 
   const colore = COLORI_LEGA[st.lega];
   const campione = st.divisione === null;

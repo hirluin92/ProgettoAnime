@@ -41,8 +41,8 @@ function TeamBar({
 }) {
   const color =
     side === "A"
-      ? "linear-gradient(90deg,#35e0ff,#2f6bff)"
-      : "linear-gradient(90deg,#ff8a3d,#ff3d81)";
+      ? "linear-gradient(90deg,#3fd0f0,#2f6bff)"
+      : "linear-gradient(90deg,#ff9238,#ff5a45)";
   const glow = side === "A" ? "rgb(53 224 255 / 0.55)" : "rgb(255 61 129 / 0.55)";
   return (
     <div className={`grid gap-1 ${side === "B" ? "text-right" : ""}`}>
@@ -327,7 +327,7 @@ export default function BattleScene({
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.25, delay: 0.05 }}
               >
-                <div className="display text-[clamp(20px,4.6vw,52px)] font-bold leading-none text-yellow-300 [-webkit-text-stroke:2px_#1a0e2a]">
+                <div className="display text-[clamp(20px,4.6vw,52px)] font-bold leading-none text-yellow-300 [-webkit-text-stroke:2px_#1b1a21]">
                   {s.banner.title}
                 </div>
                 <div className="mt-1 text-[clamp(11px,1.8vw,18px)] font-bold uppercase tracking-widest text-white">
@@ -362,7 +362,7 @@ export default function BattleScene({
             <motion.div
               key="intro"
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-[#07060f]/85 backdrop-blur-sm"
+              className="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-[#0b0a0d]/85 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.35 } }}
@@ -519,7 +519,7 @@ export default function BattleScene({
                     </span>
                     <span className="min-w-0 flex-1 text-sm">{m.testo}</span>
                     <button className="btn min-h-9 px-3 text-xs" onClick={() => void play(m.da)}>
-                      ↻ {it.battle.rivedi}
+                      <Icon name="refresh" /> {it.battle.rivedi}
                     </button>
                   </li>
                 ))}

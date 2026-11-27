@@ -86,7 +86,7 @@ export default function Fighter({
           boxShadow: acting ? `0 0 18px 4px ${rar.glow}` : "0 4px 10px rgb(0 0 0 / .5)",
         }}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-[6px] bg-[#0b0a18]">
+        <div className="relative h-full w-full overflow-hidden rounded-[6px] bg-[#121115]">
           {showImg ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -141,7 +141,7 @@ export default function Fighter({
               animate={{ y: -34, opacity: [0, 1, 1, 0], scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
-              className={`absolute inset-x-0 text-center text-[clamp(11px,1.6vw,20px)] font-black [-webkit-text-stroke:1.5px_#1a0e2a] ${FLOAT_STYLE[f.kind]}`}
+              className={`absolute inset-x-0 text-center text-[clamp(11px,1.6vw,20px)] font-black [-webkit-text-stroke:1.5px_#1b1a21] ${FLOAT_STYLE[f.kind]}`}
             >
               {f.text}
             </motion.div>
