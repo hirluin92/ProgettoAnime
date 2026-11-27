@@ -133,7 +133,7 @@ export default function QuickGame({
         </div>
       </main>
     );
-  if (!d) return <Caricamento />;
+  if (!d) return <Caricamento titolo={title} />;
 
   const total = d.roles.length;
   const drafting = round < total;

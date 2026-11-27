@@ -61,7 +61,7 @@ export default function AlbumView() {
     }
   };
 
-  if (loading) return <Caricamento />;
+  if (loading) return <Caricamento titolo={it.seo.album.h1} />;
   if (!profile)
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
@@ -74,7 +74,7 @@ export default function AlbumView() {
         </div>
       </main>
     );
-  if (!album) return <Caricamento testo={errore ?? undefined} />;
+  if (!album) return <Caricamento titolo={it.seo.album.h1} testo={errore ?? undefined} />;
 
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="album">

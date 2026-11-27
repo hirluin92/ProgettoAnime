@@ -39,7 +39,7 @@ export default function RankedHome() {
     }
   };
 
-  if (loading) return <Caricamento />;
+  if (loading) return <Caricamento titolo={it.seo.ranked.h1} />;
   if (!profile)
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
@@ -52,7 +52,7 @@ export default function RankedHome() {
         </div>
       </main>
     );
-  if (!st) return <Caricamento testo={errore ?? undefined} />;
+  if (!st) return <Caricamento titolo={it.seo.ranked.h1} testo={errore ?? undefined} />;
 
   const colore = COLORI_LEGA[st.lega];
   const campione = st.divisione === null;

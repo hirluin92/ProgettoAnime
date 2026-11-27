@@ -1,5 +1,10 @@
+import Link from "next/link";
+import JsonLd from "@/components/JsonLd";
 import it from "@/i18n/it.json";
 import { APP_NAME, CONTACT_EMAIL } from "@/lib/constants";
+import { conNome, meta } from "@/lib/seo";
+
+export const metadata = meta("info", "/info");
 
 export default function InfoPage() {
   return (
@@ -16,6 +21,9 @@ export default function InfoPage() {
         </h1>
       </header>
       <nav aria-label={it.info.indice} className="flex flex-wrap gap-2">
+        <a href="#faq" className="chip min-h-9 border-black bg-nero text-carta">
+          {it.faq.titolo}
+        </a>
         <a href="#duello" className="chip min-h-9 border-black bg-nero text-carta">
           {it.info.duelloTitolo}
         </a>
@@ -32,6 +40,35 @@ export default function InfoPage() {
           {it.info.cookie}
         </a>
       </nav>
+      <section id="faq" className="scroll-mt-24">
+        <h2 className="mb-2 flex items-baseline gap-3 text-3xl before:font-[family-name:var(--font-num)] before:text-xl before:not-italic before:text-[#b3200f] before:content-[counter(sez,decimal-leading-zero)] before:[counter-increment:sez]">
+          {it.faq.titolo}
+        </h2>
+        <dl className="divide-y-[1.5px] divide-black/25">
+          {it.faq.voci.map((v) => (
+            <div key={v.d} className="py-3">
+              <dt className="text-[1.05rem] font-black">{conNome(v.d)}</dt>
+              <dd className="mt-1 font-medium leading-relaxed">{conNome(v.r)}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="mt-3">
+          <Link href="/come-si-gioca" className="font-black underline">
+            {it.linkUtili.comeSiGioca}
+          </Link>
+        </p>
+        <JsonLd
+          dati={{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: it.faq.voci.map((v) => ({
+              "@type": "Question",
+              name: conNome(v.d),
+              acceptedAnswer: { "@type": "Answer", text: conNome(v.r) },
+            })),
+          }}
+        />
+      </section>
       <section id="duello" className="scroll-mt-24">
         <h2 className="mb-2 flex items-baseline gap-3 text-3xl before:font-[family-name:var(--font-num)] before:text-xl before:not-italic before:text-[#b3200f] before:content-[counter(sez,decimal-leading-zero)] before:[counter-increment:sez]">
           {it.info.duelloTitolo}

@@ -1,18 +1,26 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import ZoomGame from "@/components/quiz/ZoomGame";
+import Caricamento from "@/components/Caricamento";
+import Guida from "@/components/Guida";
+import { PaginaZoom } from "@/components/quiz/PaginaQuiz";
+import it from "@/i18n/it.json";
+import { meta } from "@/lib/seo";
 
-function Gioco() {
-  const libero = useSearchParams().get("libero") === "1";
-  return <ZoomGame key={libero ? "libero" : "giorno"} gioco="sigla" libero={libero} />;
-}
+export const metadata = meta("sigla", "/sfide/sigla");
 
 export default function Page() {
   return (
-    <Suspense fallback={null}>
-      <Gioco />
-    </Suspense>
+    <>
+      <Suspense fallback={<Caricamento titolo={it.seo.sigla.h1} />}>
+        <PaginaZoom gioco="sigla" />
+      </Suspense>
+      <Guida
+        chiave="sigla"
+        briciole={[
+          { nome: it.seo.briciole.home, path: "/" },
+          { nome: it.seo.briciole.sfide, path: "/sfide" },
+          { nome: it.seo.sigla.h1, path: "/sfide/sigla" },
+        ]}
+      />
+    </>
   );
 }

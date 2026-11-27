@@ -29,6 +29,7 @@ const ALTRI_MODI = [
   { href: "/scala", label: it.nav.scala, icona: "ladder" },
   { href: "/veloce", label: it.nav.veloce, icona: "bolt" },
   { href: "/#amici", label: it.nav.amici, icona: "music" },
+  { href: "/come-si-gioca", label: it.nav.regole, icona: "flame" },
 ] as const;
 const COLLEZIONE = [
   { href: "/album", label: it.nav.album, icona: "cards" },
@@ -48,7 +49,8 @@ const MENU = [
   { href: "/veloce", label: it.nav.veloce, icona: "bolt" },
   { href: "/#amici", label: it.nav.amici, icona: "music" },
   { href: "/profilo", label: it.nav.profilo, icona: "crown" },
-  { href: "/", label: it.nav.home, icona: "flame" },
+  { href: "/come-si-gioca", label: it.nav.regole, icona: "flame" },
+  { href: "/", label: it.nav.home, icona: "bolt" },
   { href: "/info", label: it.nav.info, icona: "shield" },
 ] as const;
 
@@ -137,7 +139,7 @@ function BarraRapida({ active, nuove }: { active: (href: string) => boolean; nuo
             data-testid="barra-altro"
           >
             {MENU.map((l) => (
-              <li key={l.href} className={l.href === "/info" ? "col-span-2" : ""}>
+              <li key={l.href}>
                 <Link
                   href={l.href}
                   onClick={() => setMenu(false)}

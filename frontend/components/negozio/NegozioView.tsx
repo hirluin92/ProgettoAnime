@@ -64,7 +64,8 @@ export default function NegozioView() {
     }
   };
 
-  if (loading || !negozio) return <Caricamento testo={errore ?? undefined} />;
+  if (loading || !negozio)
+    return <Caricamento titolo={it.seo.negozio.h1} testo={errore ?? undefined} />;
   if (!profile)
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">

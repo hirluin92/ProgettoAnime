@@ -272,7 +272,8 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
     }
   };
 
-  if (loading || !stato) return <Caricamento testo={errore ?? undefined} />;
+  if (loading || !stato)
+    return <Caricamento titolo={it.seo.animedle.h1} testo={errore ?? undefined} />;
 
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="animedle">

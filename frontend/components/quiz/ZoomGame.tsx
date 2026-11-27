@@ -204,7 +204,8 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
     }
   };
 
-  if (loading || !stato) return <Caricamento testo={messaggio ?? undefined} />;
+  if (loading || !stato)
+    return <Caricamento titolo={it.seo[gioco].h1} testo={messaggio ?? undefined} />;
   const ritratto = gioco === "personaggio";
 
   return (

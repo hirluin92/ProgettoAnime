@@ -20,6 +20,17 @@ const COLONNE = [
       { href: "/profilo", label: it.nav.profilo },
     ],
   },
+  {
+    titolo: it.footerImpara,
+    voci: [
+      { href: "/come-si-gioca", label: it.linkUtili.comeSiGioca },
+      { href: "/sfide/animedle", label: it.linkUtili.animedle },
+      { href: "/sfide/sigla", label: it.linkUtili.sigla },
+      { href: "/sfide/scorcio", label: it.linkUtili.scorcio },
+      { href: "/sfide/personaggio", label: it.linkUtili.personaggio },
+      { href: "/info#faq", label: it.linkUtili.faq },
+    ],
+  },
 ] as const;
 
 export default function Footer() {
@@ -34,7 +45,7 @@ export default function Footer() {
           backgroundSize: "9px 9px",
         }}
       />
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:grid-cols-2 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.6fr_1.2fr]">
         <div className="space-y-3">
           <Marchio size={38} />
           <p className="max-w-xs text-[0.95rem] font-bold text-carta">{it.footerMotto}</p>
@@ -42,7 +53,9 @@ export default function Footer() {
         {COLONNE.map((c) => (
           <nav key={c.titolo} aria-label={c.titolo} className="space-y-2">
             <div className="eyebrow">{c.titolo}</div>
-            <ul className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
+            <ul
+              className={`grid gap-x-4 ${c.voci.length > 4 ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-1"}`}
+            >
               {c.voci.map((v) => (
                 <li key={v.href}>
                   <Link

@@ -48,6 +48,11 @@ function Regole({ onOk }: { onOk: () => void }) {
           </li>
         ))}
       </ol>
+      <p className="text-sm font-bold">
+        <Link href="/come-si-gioca" className="inline-flex min-h-11 items-center underline muted">
+          {it.linkUtili.comeSiGioca}
+        </Link>
+      </p>
       <button
         className="btn btn-primary min-h-14 w-full text-xl"
         onClick={onOk}
@@ -183,7 +188,20 @@ export default function DuelloGame({
         </div>
       </main>
     );
-  if (giorno ? !info : !draft) return <Caricamento />;
+  if (giorno ? !info : !draft)
+    return (
+      <Caricamento
+        titolo={
+          giorno
+            ? it.seo.giorno.h1
+            : scala
+              ? it.seo.scala.h1
+              : ranked
+                ? it.seo.ranked.h1
+                : it.seo.duello.h1
+        }
+      />
+    );
 
   if (fase === "regole")
     return (
