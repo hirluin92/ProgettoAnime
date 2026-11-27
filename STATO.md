@@ -149,6 +149,16 @@ Il nome sta in un solo posto: `APP_NAME` in `frontend/lib/constants.ts` (marchio
 - **Pagina nuova `/come-si-gioca`** (regole del Duello per esteso) e collegamenti descrittivi verso ogni sfida da home, footer e menu (`components/LinkSfide.tsx`).
 - **Font:** i tre caratteri sono in `frontend/app/fonts` (solo latino, 5 file, ~55 kB) con `next/font/local`. TRAPPOLA: Zen Kaku Gothic New e Dela Gothic One sono font giapponesi; con `next/font/google` generavano 607 regole `@font-face` (CSS da 124 kB compresso) e il precaricamento di ~380 file (4,5 MB a pagina). Non rimetterli da Google.
 
+### Profondità e 3D (ramo `feat/profondita`, 2026-11-27, non ancora unito)
+Nato dal parere del committente («troppo pieno e piatto»). Tutto in `frontend/app/profondita.css` (caricato dopo `globals.css`): è un secondo strato, la direzione «Inchiostro e carta» resta.
+- **Cinque livelli:** 0 fondo (retino e linee attenuati), 1 `.panel` (lastra: filo di luce in alto, costa scura sotto, ombra corta), 2 `.panel-vivo`/`.panel-hover` (tratto carta, costa più spessa; l'ombra colorata compare solo al passaggio), 3 carte e oggetti (spessore vero), 4 `.panel-solido` (finestre: ombra lunga, riflesso in testa). Ombre sempre piene e sfalsate, mai sfocate.
+- **Tasti:** `.btn` con faccia illuminata dall'alto, costa di 5-6 px e premuto che affonda di 4 px.
+- **Vetro lucido** (`.vetro`, `.vetro-oro`, `.teca`): gradiente chiaro + filo luminoso + riflesso obliquo, **senza `backdrop-filter`**. Usato solo in cinque punti: saldo in barra, barra in basso del telefono, plancia della mano nel Duello, targa del saldo nel negozio, teche delle bustine. Non aggiungerne altri: è un accento.
+- **Oggetti 3D (solo CSS, `preserve-3d`, nessuna libreria):** bustine (`components/negozio/Bustina3D.tsx`: fronte, retro, strati di spessore, luce di volume, riflesso che segue il puntatore, ombra a terra, dondolio), sigillo (`Moneta tre`: due facce, costa, lancio quando il saldo cambia), carte (costa nella tinta della rarità, smusso, `tilt` con lamina che segue il puntatore sulle carte grandi), libro dell'album (pagine di taglio), pila del mazzo nel Duello, biglietto della lobby, stemmi di lega con costa e faccetta, onomatopee e titolo estrusi.
+- **Lasciato piatto di proposito:** le miniature in corsia e le carte in mano (piccole e tante: il tilt disturberebbe il tocco), i testi e le guide, le icone di linea, il fondo.
+- **Meno roba per schermata:** home con una modalità grande, due medie e cinque tessere compatte (prima otto vignette uguali con retino), tre collegamenti di testo al posto di tre pulsanti nell'hero, tolta la striscia «caratteristiche»; via il retino dalle vignette delle Sfide; blocco «Come funziona» a voce bassa; footer a due colonne su telefono.
+- **Misure:** fotogrammi a 16,6-16,7 ms (p95 16,8) con CPU rallentata 4× su /negozio, /duello e home. `prefers-reduced-motion` ferma dondolii e inclinazioni. Nessun sensore di movimento usato (solo puntatore).
+
 ### Idee lasciate come proposte
 Mascotte originale; onomatopee anche per ogni carta rivelata in corsia; bollino «premi da ritirare» sul Ranked (serve una chiamata in più); mosaico di ritratti AniList nella home; suoni nuovi; QR nel biglietto della lobby; nomi tematici per le bustine (li decide il backend).
 

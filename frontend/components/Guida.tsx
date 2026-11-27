@@ -22,7 +22,7 @@ export default function Guida({
   if (!g) return null;
   return (
     <section
-      className="mx-auto mt-10 max-w-7xl px-4"
+      className="guida-quieta mx-auto mt-16 max-w-7xl px-4"
       aria-labelledby={`guida-${chiave}`}
       data-testid="guida"
     >
@@ -65,23 +65,24 @@ export default function Guida({
           />
         </>
       )}
-      <div className="border-t-2 border-dashed border-[var(--line-forte)] pt-6">
+      <div className="border-t-[1.5px] border-[var(--line)] pt-8">
         <span className="eyebrow">{it.seo.guidaOcchiello}</span>
-        <h2 id={`guida-${chiave}`} className="mt-1 max-w-3xl text-3xl leading-none sm:text-4xl">
+        <h2
+          id={`guida-${chiave}`}
+          className="mt-1 max-w-3xl text-2xl leading-none text-[#dcd5c5] sm:text-3xl"
+        >
           {conNome(g.titolo)}
         </h2>
-        <ol className="mt-5 grid gap-5 md:grid-cols-3">
+        <ol className="mt-5 grid gap-x-8 gap-y-4 md:grid-cols-3">
           {g.paragrafi.map((p, i) => (
             <li key={i} className="flex gap-3">
               <span
                 aria-hidden="true"
-                className="num grid size-9 shrink-0 place-items-center border-2 border-black bg-carta text-sm text-nero shadow-[2px_2px_0_var(--accent)]"
+                className="num grid size-7 shrink-0 place-items-center border-[1.5px] border-[var(--line-forte)] text-xs text-[#dcd5c5]"
               >
                 {i + 1}
               </span>
-              <p className="text-[0.95rem] font-medium leading-relaxed text-[#dcd5c5]">
-                {conNome(p)}
-              </p>
+              <p className="text-[0.92rem] font-medium leading-relaxed">{conNome(p)}</p>
             </li>
           ))}
         </ol>

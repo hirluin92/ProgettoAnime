@@ -7,6 +7,7 @@ import { fmt } from "@/components/duello/DuelloBoard";
 import { CartaRetro } from "@/components/carta/Carta";
 import DuelloCard from "@/components/duello/DuelloCard";
 import Icon from "@/components/Icon";
+import Bustina3D from "@/components/negozio/Bustina3D";
 import PackArt, { H, STRAPPO, TEMI_PACCHETTO } from "@/components/negozio/PackArt";
 import it from "@/i18n/it.json";
 import type { AperturaOut } from "@/lib/negozio";
@@ -146,7 +147,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                   default: { duration: 0.6 },
                 }}
               >
-                <PackArt tipo={apertura.tipo} nome={nome} carte={n} className="size-full" />
+                <Bustina3D tipo={apertura.tipo} nome={nome} carte={n} ferma />
               </motion.div>
               {/* linea di strappo: tratteggiata, poi luminosa dove hai già tagliato */}
               <div
@@ -230,17 +231,19 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
               {/* busta strappata che esce di scena */}
               <motion.div
                 className="pointer-events-none absolute left-1/2 top-[8%] z-0 w-[min(46vw,300px,32vh)] -translate-x-1/2"
-                initial={{ y: 0, opacity: 1 }}
-                animate={{ y: 520, opacity: 0 }}
+                initial={{ y: 0, opacity: 1, rotateX: 0 }}
+                animate={{ y: 520, opacity: 0, rotateX: -55 }}
                 transition={{ delay: 0.5, duration: 0.9, ease: "easeIn" }}
+                style={{ transformPerspective: 900, transformOrigin: "50% 0%" }}
               >
                 <PackArt tipo={apertura.tipo} nome={nome} parte="corpo" className="w-full" />
               </motion.div>
               <motion.div
                 className="pointer-events-none absolute left-1/2 top-[-4%] z-0 w-[min(46vw,300px,32vh)] -translate-x-1/2"
-                initial={{ y: 0, x: 0, rotate: 0, opacity: 1 }}
-                animate={{ y: -260, x: 220, rotate: 34, opacity: 0 }}
+                initial={{ y: 0, x: 0, rotate: 0, rotateX: 0, rotateY: 0, opacity: 1 }}
+                animate={{ y: -260, x: 220, rotate: 34, rotateX: 70, rotateY: -40, opacity: 0 }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
+                style={{ transformPerspective: 900 }}
               >
                 <PackArt tipo={apertura.tipo} nome={nome} parte="cima" className="w-full" />
               </motion.div>
@@ -280,7 +283,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                       style={{ transformStyle: "preserve-3d" }}
                     >
                       <div style={{ backfaceVisibility: "hidden" }}>
-                        <DuelloCard mano carta={c.carta} />
+                        <DuelloCard mano tilt carta={c.carta} />
                         {aperta && (
                           <span
                             className={`absolute -right-3 top-[22%] z-10 rotate-6 border-2 border-black px-2 py-0.5 text-xs font-black uppercase shadow-[3px_3px_0_#000] ${

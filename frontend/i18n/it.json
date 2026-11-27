@@ -78,7 +78,7 @@
     "sottoCta": "Gratis, senza registrarti. Una partita dura tre minuti.",
     "grido": "ZAC!",
     "balloon": "Tocca a te!",
-    "modalitaTitolo": "Sei modi, una sola collezione",
+    "modalitaTitolo": "Scegli da dove cominciare",
     "sfideTitolo": "Sfide del giorno",
     "sfideTesto": "Cinque giochi nuovi a mezzanotte: Animedle, sigle, scorci, chi è e il rompicapo.",
     "negozioTitolo": "Bustine",
@@ -87,7 +87,13 @@
     "principale": "La modalità principale",
     "oppure": "oppure",
     "creaAsta": "Crea stanza",
-    "numeriTitolo": "In breve"
+    "numeriTitolo": "In breve",
+    "scalaBreve": "Roguelike a duelli: quanto sali?",
+    "veloceBreve": "Draft e scontro 7 contro 7",
+    "sfidaBreveTitolo": "Rompicapo",
+    "sfidaBreve": "Un duello uguale per tutti, ogni giorno",
+    "albumBreve": "La tua collezione e i mazzi",
+    "negozioBreve": "Si aprono con i sigilli vinti"
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {

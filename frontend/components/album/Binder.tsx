@@ -220,11 +220,8 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
         >
           {/* copertina in pelle */}
           <div
-            className="relative rounded-[10px] border-2 border-black p-[1.8%]"
-            style={{
-              background: "#0a090c",
-              boxShadow: `0 0 0 2px ${accento}, 9px 9px 0 2px #000`,
-            }}
+            className="libro relative rounded-[10px] border-2 border-black p-[1.8%]"
+            style={{ background: "#0a090c", ["--bordo-libro" as string]: accento }}
           >
             <div className="relative flex" style={{ transformStyle: "preserve-3d" }}>
               {doppia ? (

@@ -8,6 +8,7 @@ import SiteNav from "@/components/SiteNav";
 import { APP_NAME } from "@/lib/constants";
 import { meta, SITO } from "@/lib/seo";
 import "./globals.css";
+import "./profondita.css";
 
 // Tre voci: testo (Zen Kaku Gothic New, chiaro anche piccolo), titoli (Anton, stretto e alto, da testata
 // di rivista), numeri e onomatopee (Dela Gothic One, grasso e rotondo).

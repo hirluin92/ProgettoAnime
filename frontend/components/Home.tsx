@@ -106,6 +106,7 @@ function Vignetta({
   n,
   className = "",
   grande,
+  piccola,
   cta = it.home.vai,
 }: {
   href: string;
@@ -116,28 +117,54 @@ function Vignetta({
   n: string;
   className?: string;
   grande?: boolean;
+  /** tessera compatta: icona, titolo e una riga; niente retino né numero */
+  piccola?: boolean;
   cta?: string;
 }) {
+  if (piccola)
+    return (
+      <Link
+        href={href}
+        className={`panel-hover group flex min-h-[4.75rem] items-center gap-3 p-3 sm:p-4 ${className}`}
+        style={{ ["--accent" as string]: accent }}
+      >
+        <span
+          aria-hidden="true"
+          className="grid size-11 shrink-0 place-items-center border-2 border-black text-black shadow-[0_3px_0_#000]"
+          style={{ background: accent }}
+        >
+          <Icon name={icon} className="size-6" />
+        </span>
+        <span className="min-w-0">
+          <span className="display block text-xl leading-none sm:text-2xl">{title}</span>
+          <span className="mt-1 hidden text-sm font-medium leading-snug muted sm:block">
+            {text}
+          </span>
+        </span>
+      </Link>
+    );
   return (
     <Link
       href={href}
-      className={`panel-hover group relative isolate flex min-h-[9.5rem] flex-col overflow-hidden p-5 ${grande ? "md:p-7" : ""} ${className}`}
+      className={`panel-hover group relative isolate flex min-h-[9.5rem] flex-col overflow-hidden p-5 ${grande ? "md:p-8" : ""} ${className}`}
       style={{ ["--accent" as string]: accent }}
     >
-      <i
-        aria-hidden="true"
-        className="retino absolute inset-y-0 right-0 -z-10 w-3/5 opacity-40 transition-opacity group-hover:opacity-80"
-        style={{
-          WebkitMaskImage: "linear-gradient(250deg, #000, transparent 75%)",
-          maskImage: "linear-gradient(250deg, #000, transparent 75%)",
-        }}
-      />
+      {grande && (
+        <i
+          aria-hidden="true"
+          className="retino absolute inset-y-0 right-0 -z-10 w-3/5 opacity-40"
+          style={{
+            WebkitMaskImage: "linear-gradient(250deg, #000, transparent 75%)",
+            maskImage: "linear-gradient(250deg, #000, transparent 75%)",
+          }}
+        />
+      )}
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute -bottom-3 -right-2 -z-10 -rotate-12 opacity-25 transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110 ${grande ? "md:opacity-40" : ""}`}
+        className={`pointer-events-none absolute -bottom-3 -right-2 -z-10 -rotate-12 transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110 ${grande ? "opacity-30 md:opacity-45" : "opacity-[0.14]"}`}
         style={{ color: accent }}
       >
-        <Icon name={icon} className={grande ? "size-40 md:size-64" : "size-28"} />
+        <Icon name={icon} className={grande ? "size-40 md:size-64" : "size-24"} />
       </span>
       <span className="flex items-center gap-2">
         <span className="num text-sm" style={{ color: accent }}>
@@ -157,16 +184,22 @@ function Vignetta({
       >
         {text}
       </span>
-      <span
-        className="display mt-auto flex items-center gap-2 pt-4 text-lg tracking-wider"
-        style={{ color: accent }}
-      >
-        {cta}
+      {grande ? (
+        <span className="btn btn-primary mt-auto w-fit px-7 text-lg">
+          <Icon name={icon} className="size-[1.1em]" /> {cta}
+        </span>
+      ) : (
         <span
-          aria-hidden="true"
-          className="inline-block h-[3px] w-8 bg-current transition-all duration-200 group-hover:w-14"
-        />
-      </span>
+          className="display mt-auto flex items-center gap-2 pt-4 text-lg tracking-wider"
+          style={{ color: accent }}
+        >
+          {cta}
+          <span
+            aria-hidden="true"
+            className="inline-block h-[3px] w-8 bg-current transition-all duration-200 group-hover:w-14"
+          />
+        </span>
+      )}
     </Link>
   );
 }
@@ -253,29 +286,42 @@ export default function Home() {
             <p className="text-sm font-bold muted">{it.home.sottoCta}</p>
           </div>
 
-          <div className="reveal flex flex-wrap gap-2.5" style={{ ["--i" as string]: 4 }}>
-            <Link href="/ranked" className="btn text-base">
-              <Icon name="crown" className="size-[1.1em]" /> {it.home.ctaRanked}
+          <p
+            className="reveal flex flex-wrap gap-x-5 gap-y-1 text-sm font-black uppercase tracking-wide"
+            style={{ ["--i" as string]: 4 }}
+          >
+            <Link
+              href="/ranked"
+              className="inline-flex min-h-11 items-center gap-1.5 underline decoration-2 underline-offset-4 hover:text-white"
+            >
+              <Icon name="crown" /> {it.home.ctaRanked}
             </Link>
-            <Link href="/negozio" className="btn text-base">
-              <Icon name="cards" className="size-[1.1em]" /> {it.home.ctaNegozio}
+            <Link
+              href="/negozio"
+              className="inline-flex min-h-11 items-center gap-1.5 underline decoration-2 underline-offset-4 hover:text-white"
+            >
+              <Icon name="cards" /> {it.home.ctaNegozio}
             </Link>
-            <a href="#amici" className="btn text-base" data-testid="cta-quiz-amici">
-              <Icon name="music" className="size-[1.1em]" /> {it.home.ctaQuizAmici}
+            <a
+              href="#amici"
+              className="inline-flex min-h-11 items-center gap-1.5 underline decoration-2 underline-offset-4 hover:text-white"
+              data-testid="cta-quiz-amici"
+            >
+              <Icon name="music" /> {it.home.ctaQuizAmici}
             </a>
-          </div>
+          </p>
         </div>
 
         <Tavola heroes={heroes} />
       </section>
 
-      <section className="mt-16 space-y-5 sm:mt-24">
+      <section className="mt-20 space-y-6 sm:mt-28">
         <div>
           <span className="eyebrow">{it.home.modalita}</span>
           <h2 className="mt-1 text-4xl leading-none sm:text-5xl">{it.home.modalitaTitolo}</h2>
         </div>
         {/* impaginata come una tavola: una vignetta grande e le altre attorno */}
-        <div className="grid gap-5 md:grid-cols-6">
+        <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
           <Vignetta
             href="/duello"
             icon="swords"
@@ -284,78 +330,81 @@ export default function Home() {
             text={it.home.duelloTesto}
             accent="#ff5a45"
             grande
-            className="md:col-span-4 md:row-span-2"
+            cta={it.home.ctaDuello}
+            className="min-h-[15rem] lg:min-h-0"
           />
+          <div className="grid gap-6">
+            <Vignetta
+              href="/ranked"
+              icon="crown"
+              n="02"
+              title={it.home.rankedTitolo}
+              text={it.home.rankedTesto}
+              accent="#9a86ff"
+            />
+            <Vignetta
+              href="/sfide"
+              icon="sparkles"
+              n="03"
+              title={it.home.sfideTitolo}
+              text={it.home.sfideTesto}
+              accent="#3fd0f0"
+            />
+          </div>
+        </div>
+        {/* il resto: tessere compatte, una riga ciascuna */}
+        <div className="grid grid-cols-2 gap-4 pt-2 lg:grid-cols-5">
           <Vignetta
-            href="/ranked"
-            icon="crown"
-            n="02"
-            title={it.home.rankedTitolo}
-            text={it.home.rankedTesto}
-            accent="#9a86ff"
-            className="md:col-span-2"
-          />
-          <Vignetta
-            href="/sfide"
-            icon="sparkles"
-            n="03"
-            title={it.home.sfideTitolo}
-            text={it.home.sfideTesto}
-            accent="#3fd0f0"
-            className="md:col-span-2"
-          />
-          <Vignetta
+            piccola
             href="/scala"
             icon="ladder"
             n="04"
             title={it.home.scalaTitolo}
-            text={it.home.scalaTesto}
+            text={it.home.scalaBreve}
             accent="#ff5fa8"
-            className="md:col-span-2"
           />
           <Vignetta
+            piccola
             href="/veloce"
             icon="bolt"
             n="05"
             title={it.home.veloceTitolo}
-            text={it.home.veloceTesto}
+            text={it.home.veloceBreve}
             accent="#ff9238"
-            className="md:col-span-2"
           />
           <Vignetta
+            piccola
             href="/duello/giorno"
             icon="trophy"
             n="06"
-            title={it.home.sfidaTitolo}
-            text={it.home.sfidaTesto}
+            title={it.home.sfidaBreveTitolo}
+            text={it.home.sfidaBreve}
             accent="#ffd21f"
-            className="md:col-span-2"
           />
           <Vignetta
+            piccola
             href="/album"
             icon="cards"
             n="07"
-            title={it.home.albumTitolo}
-            text={it.home.albumTesto}
+            title={it.nav.album}
+            text={it.home.albumBreve}
             accent="#35d68a"
-            cta={it.home.apri}
-            className="md:col-span-3"
           />
           <Vignetta
+            piccola
             href="/negozio"
             icon="coin"
             n="08"
             title={it.home.negozioTitolo}
-            text={it.home.negozioTesto}
+            text={it.home.negozioBreve}
             accent="#ffd21f"
-            cta={it.home.apri}
-            className="md:col-span-3"
+            className="max-lg:col-span-2"
           />
         </div>
       </section>
 
       <section
-        className="mt-16 grid scroll-mt-20 items-start gap-8 sm:mt-24 lg:grid-cols-[1fr_1.1fr]"
+        className="mt-20 grid scroll-mt-20 items-start gap-10 sm:mt-28 lg:grid-cols-[1fr_1.1fr]"
         id="amici"
         style={{ ["--accent" as string]: "var(--magenta)" }}
       >
@@ -452,21 +501,6 @@ export default function Home() {
             </p>
           )}
         </section>
-      </section>
-
-      <section className="mt-16 sm:mt-24">
-        <h2 className="sr-only">{it.home.numeriTitolo}</h2>
-        <ul className="grid border-2 border-carta bg-carta text-nero sm:grid-cols-2 lg:grid-cols-4">
-          {it.home.caratteristiche.map((c) => (
-            <li
-              key={c.t}
-              className="su-carta border-black/80 p-5 max-lg:border-b-2 lg:border-r-2 lg:last:border-r-0"
-            >
-              <div className="display text-2xl leading-none">{c.t}</div>
-              <p className="mt-1.5 text-sm font-medium leading-snug muted">{c.d}</p>
-            </li>
-          ))}
-        </ul>
       </section>
     </main>
   );

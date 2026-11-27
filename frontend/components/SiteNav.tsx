@@ -96,7 +96,7 @@ function Saldo({ crediti }: { crediti: number }) {
   return (
     <Link
       href="/negozio"
-      className="chip relative min-h-11 border-black bg-[#ffd21f] text-black"
+      className="chip vetro-oro relative min-h-11 !overflow-visible"
       data-testid="nav-crediti"
       aria-label={`${crediti} ${it.nav.crediti}`}
     >
@@ -157,7 +157,7 @@ function BarraRapida({ active, nuove }: { active: (href: string) => boolean; nuo
       <nav
         aria-label={it.nav.rapida}
         data-testid="barra-rapida"
-        className="fixed inset-x-0 bottom-0 z-50 flex border-t-2 border-carta bg-[#0e0d10] pb-[env(safe-area-inset-bottom)]"
+        className="vetro fixed inset-x-0 bottom-0 z-50 flex !overflow-visible !border-x-0 !border-b-0 border-t-2 pb-[env(safe-area-inset-bottom)] [--vetro:#131217]"
       >
         {RAPIDA.map((l) => (
           <Link

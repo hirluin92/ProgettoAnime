@@ -45,17 +45,9 @@ function Carta({
       className="panel-hover group relative isolate flex min-h-[12.5rem] flex-col gap-2 overflow-hidden p-5"
       style={{ ["--accent" as string]: accento }}
     >
-      <i
-        aria-hidden="true"
-        className="retino absolute inset-y-0 right-0 -z-10 w-3/5 opacity-40 transition-opacity group-hover:opacity-80"
-        style={{
-          WebkitMaskImage: "linear-gradient(250deg, #000, transparent 75%)",
-          maskImage: "linear-gradient(250deg, #000, transparent 75%)",
-        }}
-      />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-4 -right-2 -z-10 -rotate-12 opacity-30 transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110"
+        className="pointer-events-none absolute -bottom-4 -right-2 -z-10 -rotate-12 opacity-[0.16] transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110"
         style={{ color: accento }}
       >
         <Icon name={icona} className="size-36" />
