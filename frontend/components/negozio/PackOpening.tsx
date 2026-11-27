@@ -292,7 +292,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                                 : "0 18px 40px rgb(0 0 0 / 0.6)",
                           }}
                         >
-                          <DuelloCard carta={c.carta} />
+                          <DuelloCard mano carta={c.carta} />
                         </div>
                         {aperta && (
                           <span
@@ -407,7 +407,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
           animate={{ opacity: 1 }}
           className="absolute inset-0 z-40 grid place-items-center overflow-y-auto bg-black/80 p-4"
         >
-          <div className="panel w-full max-w-4xl space-y-4 p-5 text-center sm:p-7">
+          <div className="panel panel-solido w-full max-w-4xl space-y-4 p-5 text-center sm:p-7">
             <p className="eyebrow justify-center">{nome}</p>
             <h3 className="display text-3xl font-black" data-testid="riepilogo-apertura">
               {fmt(it.negozio.riepilogo, {
@@ -415,11 +415,11 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 m: apertura.rimborsati,
               })}
             </h3>
-            <ul className="grid grid-cols-2 justify-items-center gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            <ul className="flex flex-wrap justify-center gap-3">
               {carte.map((c, i) => (
                 <motion.li
                   key={i}
-                  className="w-full max-w-[200px]"
+                  className="w-[9.5rem] sm:w-44"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}

@@ -44,7 +44,7 @@ const NOMI = it.quiz.animedle.colonne as Record<string, string>;
 function colore(esito: string, vicino?: boolean) {
   if (esito === "uguale") return "bg-emerald-500/85 border-emerald-200/60";
   if (esito === "parziale" || vicino) return "bg-amber-500/85 border-amber-200/60";
-  return "bg-rose-900/55 border-rose-300/25";
+  return "bg-white/[0.07] border-white/15";
 }
 
 function Cella({
@@ -101,7 +101,7 @@ function RigaView({ r }: { r: Riga }) {
       {(["anno", "episodi", "voto"] as const).map((c, i) => (
         <Cella key={c} i={i} esito={f[c].esito} vicino={f[c].vicino}>
           <span className="flex flex-col items-center">
-            <span className="text-base">{f[c].valore}</span>
+            <span className="text-base">{c === "voto" ? `${f[c].valore}/100` : f[c].valore}</span>
             <Frecce esito={f[c].esito} />
           </span>
         </Cella>
@@ -113,7 +113,7 @@ function RigaView({ r }: { r: Riga }) {
         <span className="text-[0.7rem]">
           {f.generi.valori.map((g, k) => (
             <span key={g} className={f.generi.giusti.includes(g) ? "" : "opacity-60"}>
-              {g}
+              {(it.quiz.generiNomi as Record<string, string>)[g] ?? g}
               {k < f.generi.valori.length - 1 ? ", " : ""}
             </span>
           ))}
@@ -374,7 +374,8 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
             <i className="size-3 rounded bg-amber-500" /> {it.quiz.animedle.legendaVicino}
           </li>
           <li className="flex items-center gap-1.5">
-            <i className="size-3 rounded bg-rose-900" /> {it.quiz.animedle.legendaNo}
+            <i className="size-3 rounded border border-white/25 bg-white/10" />{" "}
+            {it.quiz.animedle.legendaNo}
           </li>
           <li className="flex items-center gap-1.5">
             <Icon name="arrowup" className="size-3.5" /> {it.quiz.animedle.legendaFreccia}

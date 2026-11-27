@@ -330,6 +330,7 @@ export default function Home() {
           >
             {it.home.creaStanza}
           </button>
+          {!name.trim() && <p className="-mt-2 text-xs muted">{it.home.scriviNome}</p>}
           <button
             className="btn w-full text-lg"
             disabled={!name.trim() || (streamer && !channel.trim())}

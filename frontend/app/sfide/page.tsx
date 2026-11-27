@@ -139,7 +139,7 @@ export default function SfidePage() {
           </p>
         )}
       </header>
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 md:[&>*:last-child]:col-span-2 lg:grid-cols-6 lg:[&>*:nth-child(-n+3)]:col-span-2 lg:[&>*:nth-child(n+4)]:col-span-3">
         <Carta
           href="/sfide/animedle"
           icona="sparkles"
