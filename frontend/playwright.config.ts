@@ -12,7 +12,12 @@ export default defineConfig({
       cwd: "../backend",
       url: "http://localhost:8000/health",
       reuseExistingServer: true,
-      env: { DATABASE_URL: "sqlite:///./e2e.db", DEV_TOOLS: "1", TWITCH_READER: "0" },
+      env: {
+        DATABASE_URL: "sqlite:///./e2e.db",
+        DEV_TOOLS: "1",
+        TWITCH_READER: "0",
+        RATE_LIMIT_PER_MIN: "0",
+      },
     },
     { command: "npm run dev", url: "http://localhost:3000", reuseExistingServer: true },
   ],

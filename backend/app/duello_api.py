@@ -6,7 +6,6 @@ import threading
 import time
 import zlib
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Any
 
@@ -35,6 +34,7 @@ from app.duello.motore import (
 )
 from app.engine.models import Character, Model
 from app.profilo import Premio, assegna_premio_duello
+from app.tempo import giorno_italia
 
 router = APIRouter(prefix="/api/duello")
 
@@ -487,7 +487,7 @@ TOP = 20
 
 
 def oggi() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%d")
+    return giorno_italia()
 
 
 def seed_giorno(day: str) -> int:
