@@ -1,4 +1,4 @@
-import { SEGNO_TAGLIO } from "@/components/Logo";
+import { SegnoStemma } from "@/components/Logo";
 import { COLORI_LEGA } from "@/lib/ranked";
 
 // Stemmi di lega disegnati a tratto pieno, come timbri: tinta piatta, contorno nero, ombra sfalsata.
@@ -130,8 +130,8 @@ export default function LegaEmblema({
             {divisione}
           </text>
         ) : n === 5 ? (
-          <g transform="translate(100 108) scale(1.75) translate(-24 -24)">
-            <path d={SEGNO_TAGLIO} fill={CARTA} />
+          <g transform="translate(100 108) scale(1.5) translate(-24 -24)">
+            <SegnoStemma tinta={CARTA} />
           </g>
         ) : (
           // senza divisione: i galloni dicono il grado (uno per lega)

@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { SEGNO_TAGLIO } from "@/components/Logo";
+import { SegnoStemma } from "@/components/Logo";
 import { APP_NAME } from "@/lib/constants";
 
 // Bustina disegnata in SVG come una copertina a stampa: tinta piatta, retino, linee cinetiche,
@@ -148,9 +148,8 @@ export default function PackArt({ tipo, nome, carte, parte = "intero", className
         strokeWidth="4"
         strokeLinejoin="round"
       />
-      <g transform="translate(120 222) rotate(-6) scale(2) translate(-24 -24)">
-        <rect x="5" y="5" width="38" height="38" rx="6" fill="#0e0d10" />
-        <path d={SEGNO_TAGLIO} fill="#f3ecdd" />
+      <g transform="translate(120 222) scale(2) translate(-24 -24)">
+        <SegnoStemma timbro="#0e0d10" />
       </g>
       {/* nome del livello */}
       <text

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { SEGNO_TAGLIO } from "@/components/Logo";
+import { SegnoStemma } from "@/components/Logo";
 import { SHOW_IMAGES } from "@/lib/api";
 import { paletteFor } from "@/lib/animePalette";
 
@@ -202,9 +202,8 @@ export function CartaRetro({ className = "" }: { className?: string }) {
             strokeWidth="0.8"
             opacity="0.5"
           />
-          <g transform="translate(50 70) rotate(-6) scale(1.25) translate(-24 -24)">
-            <rect x="5" y="5" width="38" height="38" rx="6" fill="#e0301f" />
-            <path d={SEGNO_TAGLIO} fill="#f3ecdd" />
+          <g transform="translate(50 70) scale(1.25) translate(-24 -24)">
+            <SegnoStemma />
           </g>
         </svg>
       </div>

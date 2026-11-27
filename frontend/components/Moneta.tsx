@@ -2,7 +2,7 @@ import it from "@/i18n/it.json";
 
 /**
  * Il SIGILLO: la moneta del gioco. Un gettone giallo con il bordo zigrinato e, al centro,
- * un rombo nero (lo stesso delle gemme d'energia e della rarità) attraversato dal fendente dello stemma.
+ * un rombo nero (lo stesso delle gemme d'energia e della rarità) tagliato dalla lama dello stemma.
  * - piccolo (accanto ai numeri): bastano disco, rombo e fendente
  * - grande (negozio, premi): bordo zigrinato, spessore sfalsato, retino e riflesso
  * `gira` lo fa ruotare una volta su se stesso (quando si guadagna o si spende).
@@ -62,7 +62,7 @@ export default function Moneta({
         </>
       )}
       <path d="M23 9.5 36.5 23 23 36.5 9.5 23z" fill="#0e0d10" />
-      <path d="M33.5 10.5 25.4 22h4.2L12.5 35.5 20.6 24h-4.2z" fill="#f3ecdd" />
+      <path d="M36 9.5 24.6 23.9 10 36.5 21.4 22.1z" fill="#f3ecdd" />
     </svg>
   );
 }

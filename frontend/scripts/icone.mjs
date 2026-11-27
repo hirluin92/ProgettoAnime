@@ -3,9 +3,10 @@
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
 
-const TAGLIO = "M45.5 2.5 28.6 27.4H36l1.6 6.1H20.4L2.5 45.5l16.9-24.9H12l-1.6-6.1h17.2z";
-const TIMBRO =
-  "M11.2 6.6 37.9 4.2a5 5 0 0 1 5.4 4.5l2.4 26.7a5 5 0 0 1-4.5 5.4l-26.7 2.4a5 5 0 0 1-5.4-4.5L6.7 12a5 5 0 0 1 4.5-5.4z";
+// gli stessi tracciati di lib/stemma.ts (questo script non può importare TypeScript)
+const TIMBRO_SOPRA = "M8.3 4.3 35.2 1.5 36.4 2.5 10.5 36.1 8.5 34.4 5.6 7.6Z";
+const TIMBRO_SOTTO = "M37.5 11.9 39.5 13.6 42.4 40.4 39.7 43.7 12.8 46.5 11.6 45.5Z";
+const LAMA = "M41.4 1.4 27.9 22 6.6 46.6 20.1 26Z";
 
 // scala: quanto è grande lo stemma dentro il quadrato (le icone «maskable» vogliono margine)
 const svg = (scala, raggio) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -13,9 +14,8 @@ const svg = (scala, raggio) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox=
 <rect width="512" height="512" rx="${raggio}" fill="#0e0d10"/>
 <path d="M512 0v300L210 0z" fill="url(#r)"/>
 <g transform="translate(256 256) scale(${scala}) translate(-24 -24)">
-<path d="${TIMBRO}" fill="#e0301f"/>
-<path d="${TAGLIO}" fill="#000" opacity=".5" transform="translate(1.6 1.8)"/>
-<path d="${TAGLIO}" fill="#f3ecdd"/>
+<g stroke="#e0301f" stroke-width="1.6" stroke-linejoin="round" fill="#e0301f"><path d="${TIMBRO_SOPRA}"/><path d="${TIMBRO_SOTTO}"/></g>
+<path d="${LAMA}" fill="#f3ecdd"/>
 </g></svg>`;
 
 fs.writeFileSync("public/icons/icon.svg", svg(8.6, 96));
