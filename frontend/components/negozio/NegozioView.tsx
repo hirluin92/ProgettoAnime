@@ -103,7 +103,7 @@ export default function NegozioView() {
               className="absolute -right-8 -top-8 size-32 rounded-full opacity-30 blur-2xl"
               style={{ background: COLORI[t.id] }}
             />
-            <div className="pack-vetrina relative mx-auto w-[78%] max-w-[210px]">
+            <div className="pack-vetrina relative mx-auto w-[78%] max-w-[210px] will-change-transform">
               <PackArt tipo={t.id} nome={t.nome} className="w-full" />
             </div>
             <div className="relative">

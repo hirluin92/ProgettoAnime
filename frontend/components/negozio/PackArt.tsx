@@ -65,7 +65,7 @@ export default function PackArt({ tipo, nome, parte = "intero", className }: Pro
     <svg
       viewBox={`0 0 ${W} ${H}`}
       className={className}
-      style={{ clipPath: clip, filter: "drop-shadow(0 18px 22px rgb(0 0 0 / 0.55))" }}
+      style={{ clipPath: clip }}
       role="img"
       aria-label={nome}
     >
