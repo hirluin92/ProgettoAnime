@@ -56,7 +56,7 @@ test("sfide: Animedle in allenamento con partita nuova", async ({ page }) => {
   await expect(page.getByTestId("animedle-riga")).toHaveCount(0);
 });
 
-for (const gioco of ["scorcio", "personaggio"] as const) {
+for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
   test(`sfide: ${gioco} del giorno, un errore, vittoria e crediti`, async ({ page }) => {
     test.setTimeout(90_000);
     await page.goto("/profilo");
@@ -71,9 +71,9 @@ for (const gioco of ["scorcio", "personaggio"] as const) {
     ).json()) as { id: number; nome: string };
     const elenco = (await (
       await page.request.get(
-        gioco === "scorcio"
-          ? "http://localhost:8000/api/quiz/anime/elenco"
-          : "http://localhost:8000/api/quiz/personaggi/elenco",
+        gioco === "personaggio"
+          ? "http://localhost:8000/api/quiz/personaggi/elenco"
+          : "http://localhost:8000/api/quiz/anime/elenco",
       )
     ).json()) as Voce[];
     // un nome diverso che non contenga quello giusto (così la lista non li mescola)
@@ -86,12 +86,15 @@ for (const gioco of ["scorcio", "personaggio"] as const) {
       await cerca.fill(nome);
       await page.getByTestId("anime-voce").getByText(nome, { exact: true }).first().click();
     };
-    const zoomIniziale = Number(await page.getByTestId("zoom-immagine").getAttribute("data-zoom"));
+    const immagine = page.getByTestId("zoom-immagine");
+    const zoomIniziale = gioco === "sigla" ? 0 : Number(await immagine.getAttribute("data-zoom"));
+    if (gioco === "sigla") await expect(page.getByTestId("ascolto")).toBeVisible();
     await prova(sbagliato.nome);
     await expect(page.getByTestId("zoom-errori")).toContainText(sbagliato.nome);
-    await expect
-      .poll(async () => Number(await page.getByTestId("zoom-immagine").getAttribute("data-zoom")))
-      .toBeLessThan(zoomIniziale);
+    if (gioco !== "sigla")
+      await expect
+        .poll(async () => Number(await immagine.getAttribute("data-zoom")))
+        .toBeLessThan(zoomIniziale);
 
     await prova(sol.nome);
     await expect(page.getByTestId("zoom-fine")).toBeVisible({ timeout: 10_000 });
