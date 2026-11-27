@@ -546,7 +546,8 @@
     "inAttesaAvv": "Mosse consegnate: aspetto {nome}…",
     "avvPronto": "{nome} ha già scelto",
     "tempo": "Tempo: {s}s",
-    "riposo": "Turno di riposo: passi automaticamente"
+    "riposo": "Turno di riposo: passi automaticamente",
+    "grido": "ZAC!"
   },
   "account": {
     "passwordCorta": "La password deve avere almeno 8 caratteri.",

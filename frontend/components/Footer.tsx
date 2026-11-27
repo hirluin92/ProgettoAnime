@@ -47,7 +47,7 @@ export default function Footer() {
                 <li key={v.href}>
                   <Link
                     href={v.href}
-                    className="inline-flex min-h-9 items-center font-bold text-[#cfc8b8] hover:text-white hover:underline"
+                    className="inline-flex min-h-11 items-center font-bold text-[#cfc8b8] hover:text-white hover:underline"
                   >
                     {v.label}
                   </Link>
@@ -61,14 +61,14 @@ export default function Footer() {
           <p>{it.footer}</p>
           <p className="flex flex-wrap gap-x-4 gap-y-1">
             <a
-              className="inline-flex min-h-9 items-center font-bold text-carta underline hover:text-white"
+              className="inline-flex min-h-11 items-center font-bold text-carta underline hover:text-white"
               href="https://anilist.co"
               rel="noreferrer"
             >
               {it.footerCredito}
             </a>
             <Link
-              className="inline-flex min-h-9 items-center font-bold text-carta underline hover:text-white"
+              className="inline-flex min-h-11 items-center font-bold text-carta underline hover:text-white"
               href="/info"
             >
               {it.info.link}

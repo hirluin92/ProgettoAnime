@@ -1,8 +1,8 @@
 // Service worker minimo: rende il gioco installabile e mostra una pagina se manca la rete.
 // Non mette in cache le chiamate all'API né le partite: il server resta l'unica autorità.
-const CACHE = "arena-anime-v1";
+const CACHE = "gioco-v2";
 const OFFLINE = "/offline.html";
-const STATICI = [OFFLINE, "/icons/icon-192.png", "/icons/icon-512.png"];
+const STATICI = [OFFLINE, "/icons/icon.svg", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(STATICI)));

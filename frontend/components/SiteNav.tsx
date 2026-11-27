@@ -94,7 +94,7 @@ function Saldo({ crediti }: { crediti: number }) {
   return (
     <Link
       href="/negozio"
-      className="chip relative min-h-9 border-black bg-[#ffd21f] text-black"
+      className="chip relative min-h-11 border-black bg-[#ffd21f] text-black"
       data-testid="nav-crediti"
       aria-label={`${crediti} ${it.nav.crediti}`}
     >
@@ -117,7 +117,7 @@ function Saldo({ crediti }: { crediti: number }) {
 
 function BarraRapida({ active, nuove }: { active: (href: string) => boolean; nuove: boolean }) {
   const [menu, setMenu] = useState(false);
-  const inMenu = MENU.some((l) => l.href !== "/#amici" && active(l.href));
+  const inMenu = MENU.some((l) => l.href !== "/#amici" && l.href !== "/" && active(l.href));
   const voce = (attivo: boolean) =>
     `relative flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[0.68rem] font-black uppercase tracking-wide transition-colors ${
       attivo ? "bg-carta text-nero" : "text-[#b5aea0]"
@@ -320,7 +320,7 @@ export default function SiteNav() {
               href="/profilo"
               aria-current={active("/profilo") ? "page" : undefined}
               aria-label={it.nav.profilo}
-              className={`chip min-h-9 ${
+              className={`chip min-h-11 ${
                 active("/profilo")
                   ? "border-black bg-carta text-nero"
                   : "border-[rgb(243_236_221/0.32)] text-carta"

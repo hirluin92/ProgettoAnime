@@ -327,6 +327,11 @@ export default function DuelloBoard({
             aria-live="polite"
             data-testid="duello-caption"
           >
+            {caption && (
+              <span key={caption} className="onoma colpo mr-2 text-base" aria-hidden="true">
+                {it.duello.grido}
+              </span>
+            )}
             {didascalia}
           </div>
           <div className="flex items-center justify-between gap-2">

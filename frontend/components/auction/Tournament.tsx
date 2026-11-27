@@ -128,7 +128,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
       )}
 
       <div className="panel overflow-x-auto">
-        <table className="w-full text-sm [&_td]:px-4 [&_td]:py-3 [&_th]:px-4 [&_th]:py-3">
+        <table className="w-full text-sm [&_td]:px-2 [&_td]:py-3 [&_th]:px-2 [&_th]:py-3 sm:[&_td]:px-4 sm:[&_th]:px-4">
           <thead>
             <tr className="text-left text-xs uppercase tracking-widest muted">
               <th>#</th>
