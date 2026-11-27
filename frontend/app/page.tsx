@@ -206,62 +206,21 @@ export default function Home() {
             <Fan heroes={heroes} compact />
           </div>
 
-          <section className="panel reveal space-y-3.5 p-5 sm:p-6" style={{ ["--i" as string]: 3 }}>
-            <div>
-              <h2 className="text-2xl font-extrabold">{it.home.titolo}</h2>
-              <p className="text-xs muted">{it.home.creaSotto}</p>
-            </div>
-            <input
-              aria-label={it.home.tuoNome}
-              placeholder={it.home.tuoNome}
-              className="field w-full"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm muted">
-              <input
-                type="checkbox"
-                className="size-4 accent-pink-500"
-                checked={streamer}
-                onChange={(e) => setStreamer(e.target.checked)}
-              />
-              {it.home.stanzaStreamer}
-            </label>
-            {streamer && (
-              <input
-                aria-label={it.home.canale}
-                placeholder={it.home.canale}
-                className="field w-full"
-                value={channel}
-                onChange={(e) => setChannel(e.target.value)}
-              />
-            )}
-            <button
-              className="btn btn-primary w-full text-lg"
-              disabled={!name.trim() || (streamer && !channel.trim())}
-              onClick={create}
+          <div className="reveal flex flex-wrap gap-3" style={{ ["--i" as string]: 3 }}>
+            <Link
+              href="/duello"
+              className="btn btn-primary px-6 text-base"
+              data-testid="cta-duello"
             >
-              {it.home.creaStanza}
-            </button>
-            <div className="flex flex-wrap gap-2 pt-1">
-              <input
-                aria-label={it.home.codice}
-                placeholder={it.home.codice}
-                maxLength={5}
-                className="field min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em] placeholder:tracking-normal"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
-              <button className="btn flex-1" disabled={code.trim().length < 5} onClick={join}>
-                {it.home.entraCodice}
-              </button>
-            </div>
-            {error && (
-              <p role="alert" className="text-rose-400">
-                {error}
-              </p>
-            )}
-          </section>
+              <Icon name="swords" className="size-[1.2em]" /> {it.home.ctaDuello}
+            </Link>
+            <Link href="/ranked" className="btn px-5 text-base">
+              <Icon name="crown" className="size-[1.2em]" /> {it.home.ctaRanked}
+            </Link>
+            <Link href="/negozio" className="btn px-5 text-base">
+              <Icon name="cards" className="size-[1.2em]" /> {it.home.ctaNegozio}
+            </Link>
+          </div>
         </div>
 
         <div className="hidden lg:block">
@@ -315,6 +274,72 @@ export default function Home() {
             accent="#3ddc97"
           />
         </div>
+      </section>
+
+      <section className="mt-16 grid items-center gap-8 lg:grid-cols-[1fr_1.1fr]" id="amici">
+        <div className="space-y-3">
+          <h2 className="eyebrow">{it.home.amiciEyebrow}</h2>
+          <p className="display text-4xl font-black leading-none sm:text-5xl">
+            {it.home.amiciTitolo}
+          </p>
+          <p className="max-w-md muted">{it.home.amiciTesto}</p>
+        </div>
+        <section className="panel space-y-3.5 p-5 sm:p-6">
+          <div>
+            <h2 className="text-2xl font-extrabold">{it.home.titolo}</h2>
+            <p className="text-xs muted">{it.home.creaSotto}</p>
+          </div>
+          <input
+            aria-label={it.home.tuoNome}
+            placeholder={it.home.tuoNome}
+            className="field w-full"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm muted">
+            <input
+              type="checkbox"
+              className="size-4 accent-pink-500"
+              checked={streamer}
+              onChange={(e) => setStreamer(e.target.checked)}
+            />
+            {it.home.stanzaStreamer}
+          </label>
+          {streamer && (
+            <input
+              aria-label={it.home.canale}
+              placeholder={it.home.canale}
+              className="field w-full"
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+            />
+          )}
+          <button
+            className="btn btn-primary w-full text-lg"
+            disabled={!name.trim() || (streamer && !channel.trim())}
+            onClick={create}
+          >
+            {it.home.creaStanza}
+          </button>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <input
+              aria-label={it.home.codice}
+              placeholder={it.home.codice}
+              maxLength={5}
+              className="field min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em] placeholder:tracking-normal"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <button className="btn flex-1" disabled={code.trim().length < 5} onClick={join}>
+              {it.home.entraCodice}
+            </button>
+          </div>
+          {error && (
+            <p role="alert" className="text-rose-400">
+              {error}
+            </p>
+          )}
+        </section>
       </section>
 
       <section className="mt-20 space-y-6">

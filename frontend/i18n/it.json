@@ -2,7 +2,13 @@
   "home": {
     "titolo": "Gioca con gli amici",
     "creaStanza": "Crea stanza",
-    "sottotitolo": "Compra all'asta i personaggi anime, forma la squadra e vinci il torneo.",
+    "sottotitolo": "Duelli a corsie con i tuoi personaggi anime preferiti: costruisci il mazzo, scala le leghe, apri pacchetti.",
+    "ctaDuello": "Gioca il Duello",
+    "ctaRanked": "Classificata",
+    "ctaNegozio": "Apri pacchetti",
+    "amiciEyebrow": "In compagnia",
+    "amiciTitolo": "Asta e torneo con gli amici",
+    "amiciTesto": "Da 2 a 20 giocatori: comprate all'asta i personaggi, formate la squadra e sfidatevi nel torneo. C'è anche la stanza streamer, dove la chat gioca come squadra.",
     "tuoNome": "Il tuo nome",
     "stanzaStreamer": "Stanza streamer (la chat di Twitch gioca come squadra)",
     "canale": "Canale Twitch",
@@ -10,7 +16,7 @@
     "entraCodice": "Entra con un codice",
     "partitaVeloce": "Partita veloce: draft da solo contro la CPU",
     "sfidaGiorno": "Sfida del giorno con classifica",
-    "eyebrow": "Aste live · Draft · Tornei",
+    "eyebrow": "Duelli · Leghe · Pacchetti",
     "titoloHero": "Il colosseo degli anime",
     "creaTitolo": "Gioca con gli amici",
     "creaSotto": "2–20 giocatori · sette leggende all'asta · poi il torneo",
@@ -20,7 +26,7 @@
     "sfidaTitolo": "Rompicapo del giorno",
     "sfidaTesto": "Stesso mazzo e stessa CPU per tutti, un solo tentativo: vince chi gioca meglio. Sali in classifica.",
     "vai": "Gioca",
-    "comeTitolo": "Come si gioca",
+    "comeTitolo": "Come funziona l'asta con gli amici",
     "passi": [
       {
         "n": "01",
