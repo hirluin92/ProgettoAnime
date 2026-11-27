@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, type ReactNode } from "react";
 import it from "@/i18n/it.json";
@@ -142,16 +143,17 @@ export default function DuelloBoard({
               />
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[9rem] leading-none opacity-[0.09]"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.09]"
+                style={{ color: tema.accento }}
               >
-                {tema.simbolo}
+                <Icon name={tema.simbolo} className="size-48" />
               </span>
               <div className="relative text-center">
                 <div
                   className="display flex items-center justify-center gap-2 text-xl font-black leading-none"
                   style={{ color: tema.accento }}
                 >
-                  <span aria-hidden="true">{tema.simbolo}</span>
+                  <Icon name={tema.simbolo} className="size-[1.1em]" />
                   {l.nome}
                 </div>
                 <p className="mt-1 text-xs leading-snug text-white/80">{l.regola}</p>
@@ -266,7 +268,8 @@ export default function DuelloBoard({
         <section className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-sm font-black" data-testid="duello-energia">
-              ⚡ {it.duello.energia}: {stato.energia - speso}/{stato.energia}
+              <Icon name="bolt" className="size-[1em] text-amber-300" /> {it.duello.energia}:{" "}
+              {stato.energia - speso}/{stato.energia}
             </span>
             <div className="flex gap-2">
               {occupato && onSalta && (

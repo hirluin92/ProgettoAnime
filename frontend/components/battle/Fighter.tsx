@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import { SHOW_IMAGES } from "@/lib/api";
 import { STATI_INFO } from "@/lib/battle/arene";
@@ -106,7 +107,7 @@ export default function Fighter({
               title={STATI_INFO[status].nome}
               data-testid="status"
             >
-              {STATI_INFO[status].icona}
+              <Icon name={STATI_INFO[status].icona} className="size-[0.9em]" />
             </span>
           )}
           <span className="absolute bottom-0 left-0 right-0 truncate bg-black/55 px-0.5 text-center text-[clamp(6px,0.9vw,10px)] font-bold leading-tight">

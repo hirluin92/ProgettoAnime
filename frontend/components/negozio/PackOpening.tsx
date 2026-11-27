@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -151,7 +152,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                   style={{ left: `calc(1.5rem + (100% - 3rem) * ${taglio})` }}
                   aria-hidden="true"
                 >
-                  ✂️
+                  <Icon name="scissors" className="size-9 text-white" />
                 </span>
               </div>
             </div>
@@ -237,7 +238,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                       }}
                     >
                       <span className="display grid size-20 place-items-center rounded-full border-2 border-white/70 bg-black/50 text-4xl font-black text-white">
-                        ⚡
+                        <Icon name="bolt" className="size-10" />
                       </span>
                     </div>
                   </motion.div>

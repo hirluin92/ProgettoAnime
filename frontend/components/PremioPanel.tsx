@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import it from "@/i18n/it.json";
 import type { Premio } from "@/lib/profile";
@@ -60,7 +61,7 @@ export default function PremioPanel({ premio }: { premio: Premio }) {
         )}
         {premio.obiettivi_completati.map((o) => (
           <li key={o.id} className="chip text-emerald-200">
-            ✓ {o.nome} +20 XP
+            <Icon name="check" /> {o.nome} +20 XP
           </li>
         ))}
       </ul>

@@ -1,3 +1,4 @@
+import Icon from "@/components/Icon";
 import it from "@/i18n/it.json";
 
 export default function MissionCard({
@@ -26,7 +27,8 @@ export default function MissionCard({
         <span className="eyebrow">{titolo ?? it.missione.titolo}</span>
         {esito !== undefined && (
           <span className="chip">
-            {esito ? `✓ ${it.missione.riuscita}` : `✗ ${it.missione.fallita}`}
+            <Icon name={esito ? "check" : "x"} />{" "}
+            {esito ? it.missione.riuscita : it.missione.fallita}
           </span>
         )}
       </div>

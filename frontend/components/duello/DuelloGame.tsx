@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import PremioPanel from "@/components/PremioPanel";
@@ -48,8 +49,9 @@ function Regole({ onOk }: { onOk: () => void }) {
 function Stelle({ n }: { n: number }) {
   return (
     <span aria-label={`${n} stelle`} className="text-amber-300">
-      {"★".repeat(n)}
-      <span className="text-white/20">{"★".repeat(3 - n)}</span>
+      {[0, 1, 2].map((i) => (
+        <Icon key={i} name="star" className={`size-[1.15em] ${i < n ? "" : "text-white/20"}`} />
+      ))}
     </span>
   );
 }
@@ -370,11 +372,11 @@ export default function DuelloGame({
           <div className="flex flex-wrap items-center gap-2 pt-1 text-sm">
             {!ranked && !scala && (
               <Link href="/ranked" className="chip text-cyan-200">
-                ⚔ {it.ranked.giocaClassificata}
+                <Icon name="swords" /> {it.ranked.giocaClassificata}
               </Link>
             )}
             <Link href="/duello/giorno" className="chip text-amber-200" data-testid="link-giorno">
-              ★ {it.duello.giornoLink}
+              <Icon name="star" /> {it.duello.giornoLink}
             </Link>
             {profile && (
               <span className="chip" data-testid="duello-elo">

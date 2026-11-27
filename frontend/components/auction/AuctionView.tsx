@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import CharacterCard, { rarity } from "@/components/battle/CharacterCard";
@@ -283,7 +284,11 @@ export default function AuctionView({
                       style={{ background: p.color }}
                     />
                     <span className="font-bold">{p.name}</span>
-                    {leading && <span className="chip text-gold">★</span>}
+                    {leading && (
+                      <span className="chip text-gold">
+                        <Icon name="star" />
+                      </span>
+                    )}
                     {lot?.passed.includes(p.id) && (
                       <span className="ml-auto text-xs opacity-60">{it.stanza.passato}</span>
                     )}

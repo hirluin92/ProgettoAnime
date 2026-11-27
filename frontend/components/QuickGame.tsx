@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import BattleScene from "@/components/battle/BattleScene";
 import CharacterCard from "@/components/battle/CharacterCard";
@@ -206,7 +207,7 @@ export default function QuickGame({
 
   if (played)
     return (
-      <main className="mx-auto max-w-5xl space-y-3 p-4">
+      <main className="mx-auto max-w-6xl space-y-3 p-4">
         <h1 className="text-5xl font-black leading-none">{title}</h1>
         {!senzaMissione && (
           <p className="text-sm muted">
@@ -253,7 +254,7 @@ export default function QuickGame({
 
   const swapping = !drafting;
   return (
-    <main className="mx-auto max-w-5xl space-y-4 p-4">
+    <main className="mx-auto max-w-6xl space-y-4 p-4">
       <div className="reveal space-y-1">
         <span className="eyebrow">{it.veloce.draft}</span>
         <h1 className="text-5xl font-black leading-none sm:text-6xl">{title}</h1>
@@ -277,7 +278,7 @@ export default function QuickGame({
                     : "text-white/40"
               }`}
             >
-              {i < round ? "✓ " : ""}
+              {i < round ? <Icon name="check" /> : null}{" "}
               {i === d.mystery_round && i >= round ? "? " : ""}
               {it.draft.giro} {i + 1}
             </li>

@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
@@ -100,7 +101,7 @@ export default function RankedHome() {
               className="btn btn-gold w-full text-lg"
               data-testid="gioca-ranked"
             >
-              ⚔ {it.ranked.gioca}
+              <Icon name="swords" /> {it.ranked.gioca}
             </Link>
           )}
         </div>

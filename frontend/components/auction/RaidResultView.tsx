@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
 import ArenaBanner from "@/components/ArenaBanner";
 import BattleScene from "@/components/battle/BattleScene";
@@ -47,8 +48,7 @@ export default function RaidResultView({ room }: { room: RoomView }) {
       <ul className="flex flex-wrap gap-1.5 text-xs">
         {raid.boss.map((m, i) => (
           <li key={m.id} className={`chip ${i === 0 ? "text-gold" : ""}`}>
-            {i === 0 ? "👑 " : ""}
-            {m.nome} · {m.rating}
+            {i === 0 ? <Icon name="crown" /> : null} {m.nome} · {m.rating}
           </li>
         ))}
       </ul>

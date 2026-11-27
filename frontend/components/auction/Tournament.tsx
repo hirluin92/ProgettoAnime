@@ -1,11 +1,12 @@
 "use client";
 
+import { Medaglia } from "@/components/Icon";
+import Icon from "@/components/Icon";
 import Link from "next/link";
 import MissionCard from "@/components/MissionCard";
 import it from "@/i18n/it.json";
 import { ROLES, type RoomView, type TournamentView } from "@/lib/messages";
 
-const MEDAL = ["🥇", "🥈", "🥉"];
 // Ordine visivo del podio: secondo, primo, terzo.
 const ORDER = [1, 0, 2];
 const HEIGHT = ["h-36", "h-28", "h-20"];
@@ -40,7 +41,9 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                 className="reveal flex flex-1 flex-col items-center"
                 style={{ ["--i" as string]: i }}
               >
-                <div className="text-3xl">{MEDAL[i]}</div>
+                <div className="flex justify-center">
+                  <Medaglia pos={i} />
+                </div>
                 <div
                   className="grid size-14 place-items-center rounded-full text-2xl font-black text-black/70 ring-2 ring-white/60"
                   style={{ background: p?.color, boxShadow: `0 0 30px -4px ${p?.color}` }}
@@ -66,7 +69,8 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
           <h3 className="eyebrow">{it.tabellone.titolo}</h3>
           {t.campione && (
             <p className="display text-grad text-center text-4xl font-black" data-testid="campione">
-              🏆 {it.tabellone.campione}: {name(t.campione)}
+              <Icon name="trophy" className="size-[0.9em]" /> {it.tabellone.campione}:{" "}
+              {name(t.campione)}
             </p>
           )}
           <div className="flex gap-4 overflow-x-auto pb-2">
@@ -280,8 +284,7 @@ function Side({
           <span className="size-3 shrink-0 rounded-full" style={{ background: p?.color }} />
         )}
         <span className={`truncate font-extrabold ${win ? "text-gold" : ""}`}>
-          {win ? "★ " : ""}
-          {p?.name ?? "?"}
+          {win ? <Icon name="star" /> : null} {p?.name ?? "?"}
         </span>
         {right && (
           <span className="size-3 shrink-0 rounded-full" style={{ background: p?.color }} />

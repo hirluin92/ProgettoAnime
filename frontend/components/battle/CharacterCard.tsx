@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import { useId, useState } from "react";
 import { SHOW_IMAGES } from "@/lib/api";
@@ -187,7 +188,7 @@ export default function CharacterCard({
                 )}
                 {character.mossa && (
                   <span className="truncate text-[0.62rem] font-bold text-amber-200">
-                    ⚡ {character.mossa.nome}
+                    <Icon name="bolt" className="size-[1em]" /> {character.mossa.nome}
                   </span>
                 )}
               </div>

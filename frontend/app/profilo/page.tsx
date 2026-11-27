@@ -1,5 +1,6 @@
 "use client";
 
+import Icon, { Medaglia } from "@/components/Icon";
 import { useEffect, useMemo, useState } from "react";
 import it from "@/i18n/it.json";
 import AccountPanel from "@/components/AccountPanel";
@@ -178,7 +179,13 @@ export default function ProfiloPage() {
                   o.fatto ? "border-emerald-300/50 bg-emerald-400/10" : "bg-white/[0.03]"
                 }`}
               >
-                <span className="text-xl">{o.fatto ? "✅" : "⬜"}</span>
+                <span
+                  className={`grid size-6 shrink-0 place-items-center rounded-full border-2 ${
+                    o.fatto ? "border-emerald-300 bg-emerald-400 text-black" : "border-white/30"
+                  }`}
+                >
+                  {o.fatto && <Icon name="check" className="size-4" />}
+                </span>
                 <span>
                   <b className="block">{o.nome}</b>
                   <span className="text-sm muted">{o.descrizione}</span>
@@ -211,7 +218,7 @@ export default function ProfiloPage() {
                 }`}
               >
                 <span className="display w-7 text-xl font-black text-gold">
-                  {["🥇", "🥈", "🥉"][i] ?? `${i + 1}.`}
+                  <Medaglia pos={i} />
                 </span>
                 <span className="min-w-0 flex-1 truncate font-bold">{r.name}</span>
                 <span className="display text-xl font-black tabular-nums">{r.points}</span>

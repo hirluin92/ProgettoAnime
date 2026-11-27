@@ -211,6 +211,15 @@
     "link": "Info, regole e rimozioni",
     "titolo": "Info su",
     "regole": "Regole in breve",
+    "duelloTitolo": "Duello a corsie",
+    "duelloElenco": [
+      "Hai un mazzo di 8 carte e ne peschi 1 a ogni turno; la partita dura 6 turni.",
+      "Al turno N hai N energia da spendere: l'energia non si accumula.",
+      "Scegli in segreto dove giocare le carte tra le 3 corsie, poi si girano tutte insieme.",
+      "Chi è in vantaggio gira per primo: gli effetti «Al rivelarsi» scattano in ordine.",
+      "Dopo il turno 6 vince ogni corsia chi ha più potenza. Vince la partita chi conquista 2 corsie su 3.",
+      "Con i crediti guadagnati giocando apri pacchetti: i crediti non si comprano con denaro."
+    ],
     "regoleElenco": [
       "Da 2 a 20 giocatori comprano all'asta i personaggi per 7 ruoli.",
       "Ogni offerta valida riporta il timer ad almeno 5 secondi e devi tenere almeno 1 per ogni altro slot libero.",

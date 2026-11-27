@@ -137,6 +137,10 @@ body::before {
     text-transform: uppercase;
   }
 
+  h1 {
+    text-shadow: 0 2px 28px rgb(139 92 255 / 0.4);
+  }
+
   ::selection {
     background: rgb(255 61 129 / 0.5);
   }

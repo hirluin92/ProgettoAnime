@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -106,9 +107,10 @@ function ModeCard({
       />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-6 right-10 select-none text-[7rem] leading-none opacity-[0.07] transition-opacity group-hover:opacity-[0.14]"
+        className="pointer-events-none absolute -bottom-5 right-10 opacity-[0.08] transition-opacity group-hover:opacity-[0.16]"
+        style={{ color: accent }}
       >
-        {icon}
+        <Icon name={icon} className="size-28" />
       </span>
       <span
         aria-hidden="true"
@@ -116,13 +118,13 @@ function ModeCard({
         style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
       />
       <span
-        className="relative grid size-16 shrink-0 place-items-center rounded-2xl text-3xl shadow-lg ring-1 ring-white/30"
+        className="relative grid size-16 shrink-0 place-items-center rounded-2xl text-white shadow-lg ring-1 ring-white/30"
         style={{
           background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.45))`,
           boxShadow: `0 8px 24px ${accent}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
         }}
       >
-        {icon}
+        <Icon name={icon} className="size-8" />
       </span>
       <span className="relative min-w-0 flex-1">
         <span className="display block text-2xl font-extrabold leading-none">{title}</span>
@@ -272,42 +274,42 @@ export default function Home() {
         <div className="grid gap-4 md:grid-cols-3">
           <ModeCard
             href="/duello"
-            icon="⚔️"
+            icon="swords"
             title={it.home.duelloTitolo}
             text={it.home.duelloTesto}
             accent="#ff3d81"
           />
           <ModeCard
             href="/ranked"
-            icon="👑"
+            icon="crown"
             title={it.home.rankedTitolo}
             text={it.home.rankedTesto}
             accent="#7a5cff"
           />
           <ModeCard
             href="/veloce"
-            icon="⚡"
+            icon="bolt"
             title={it.home.veloceTitolo}
             text={it.home.veloceTesto}
             accent="#ff8a3d"
           />
           <ModeCard
             href="/scala"
-            icon="🪜"
+            icon="ladder"
             title={it.home.scalaTitolo}
             text={it.home.scalaTesto}
             accent="#35e0ff"
           />
           <ModeCard
             href="/duello/giorno"
-            icon="🏆"
+            icon="trophy"
             title={it.home.sfidaTitolo}
             text={it.home.sfidaTesto}
             accent="#ffd45a"
           />
           <ModeCard
             href="/album"
-            icon="🃏"
+            icon="cards"
             title={it.home.albumTitolo}
             text={it.home.albumTesto}
             accent="#3ddc97"
