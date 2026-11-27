@@ -357,8 +357,13 @@
           "type": "integer"
         },
         "quiz_loop": {
-          "default": true,
+          "default": false,
           "title": "Quiz Loop",
+          "type": "boolean"
+        },
+        "quiz_progressivo": {
+          "default": false,
+          "title": "Quiz Progressivo",
           "type": "boolean"
         },
         "quiz_chiede": {
@@ -388,6 +393,7 @@
         "quiz_tempo",
         "quiz_clip",
         "quiz_loop",
+        "quiz_progressivo",
         "quiz_chiede"
       ],
       "title": "RoomSettings",

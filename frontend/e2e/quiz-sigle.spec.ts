@@ -83,7 +83,8 @@ test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, 
   await expect(host.page.getByTestId("quiz-componenti").locator("li")).toHaveCount(1);
   await expect(host.page.getByTestId("quiz-componenti")).toContainText("Artista");
   await expect(host.page.getByTestId("ascolto-loop")).toContainText("spento");
-  await expect(host.page.getByTestId("ascolto")).toContainText("primi 1 secondi");
+  // di partenza la canzone suona intera, una volta sola (qui 5 secondi: il tetto impostato)
+  await expect(host.page.getByTestId("ascolto")).toContainText("5 secondi, una volta sola");
   const sol = await soluzione(host.page, code);
   await rispondi(host.page, sol.artista!);
   await expect(host.page.getByTestId("quiz-giusto")).toContainText("Giusto");

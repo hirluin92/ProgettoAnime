@@ -127,7 +127,8 @@ class QuizPartita:
     )  # giocatore -> punti presi in questa domanda
     blocchi: dict[str, float] = field(default_factory=dict)
     clip: int = 30  # secondi massimi di anteprima di una sigla
-    loop: bool = True
+    loop: bool = False
+    progressivo: bool = False  # anteprima che si allunga a ogni livello
     chiede: str = "tutto"  # nelle sigle: tutto | anime | brano | artista
     parziali: dict[str, dict[str, int]] = field(
         default_factory=dict
@@ -146,8 +147,9 @@ class QuizPartita:
         giocatori: list[str],
         adesso: float,
         clip: int = 30,
-        loop: bool = True,
+        loop: bool = False,
         chiede: str = "tutto",
+        progressivo: bool = False,
     ) -> "QuizPartita":
         rng = random.Random(f"quiz:{seed}")
         kinds = list(TIPI) if tipo == "misto" else [tipo]
@@ -162,7 +164,7 @@ class QuizPartita:
                 k = "indizi"
             domande.append(Domanda(k, t))
         p = cls(domande, tempo, list(giocatori), adesso)
-        p.clip, p.loop, p.chiede = clip, loop, chiede
+        p.clip, p.loop, p.chiede, p.progressivo = clip, loop, chiede, progressivo
         p.punti = dict.fromkeys(giocatori, 0)
         p.serie = dict.fromkeys(giocatori, 0)
         p._apri(adesso)
@@ -177,6 +179,12 @@ class QuizPartita:
         self.blocchi = {}
         self.parziali = {}
         self.serie_prima = dict(self.serie)
+
+    def secondi_audio(self, livello: int) -> int:
+        """Secondi di canzone che si sentono: tutti quelli a disposizione, o in crescita."""
+        if self.progressivo:
+            return min(self.clip, zoom.secondi_sigla(livello))
+        return max(1, min(self.clip, self.tempo, 30))  # l'anteprima è lunga al massimo 30 s
 
     def tipi(self, d: Domanda) -> list[str]:
         """Come si può rispondere a una domanda: nelle sigle dipende dalle impostazioni."""
@@ -277,7 +285,8 @@ class QuizPartita:
             fy=fy,
             livello=liv,
             audio=d.audio(),
-            audio_secondi=min(self.clip, zoom.secondi_sigla(liv)) if d.kind == "sigla" else 0,
+            audio_secondi=self.secondi_audio(liv) if d.kind == "sigla" else 0,
+            audio_progressivo=self.progressivo,
             loop=self.loop,
             tipi=self.tipi(d),
             principale=self.principale(d),

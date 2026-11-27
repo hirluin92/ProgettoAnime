@@ -107,6 +107,7 @@ export type QuizRound = number;
 export type QuizTempo = number;
 export type QuizClip = number;
 export type QuizLoop = boolean;
+export type QuizProgressivo = boolean;
 export type QuizChiede = "tutto" | "anime" | "brano" | "artista";
 
 export interface Join {
@@ -201,5 +202,6 @@ export interface RoomSettings {
   quiz_tempo: QuizTempo;
   quiz_clip: QuizClip;
   quiz_loop: QuizLoop;
+  quiz_progressivo: QuizProgressivo;
   quiz_chiede: QuizChiede;
 }

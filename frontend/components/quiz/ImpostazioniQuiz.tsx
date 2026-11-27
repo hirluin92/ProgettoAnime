@@ -198,6 +198,22 @@ export default function ImpostazioniQuiz({
                     testId="quiz-clip"
                   />
                   <div className="space-y-2">
+                    <p className="text-[1.05rem] font-extrabold">{t.anteprima}</p>
+                    <Segmentato
+                      etichetta={t.anteprima}
+                      valore={s.quiz_progressivo ? "progressiva" : "intera"}
+                      onChange={(v) => upd({ quiz_progressivo: v === "progressiva" })}
+                      testId="quiz-anteprima"
+                      opzioni={[
+                        ["intera", t.intera],
+                        ["progressiva", t.progressiva],
+                      ]}
+                    />
+                    <p className="text-sm muted">
+                      {s.quiz_progressivo ? t.progressivaAiuto : t.interaAiuto}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
                     <p className="text-[1.05rem] font-extrabold">{t.dipartenza}</p>
                     <Segmentato
                       etichetta={t.dipartenza}

@@ -47,6 +47,7 @@ export type QuizRound = number;
 export type QuizTempo = number;
 export type QuizClip = number;
 export type QuizLoop = boolean;
+export type QuizProgressivo = boolean;
 export type QuizChiede = "tutto" | "anime" | "brano" | "artista";
 export type Id = string;
 export type Name = string;
@@ -160,6 +161,7 @@ export type Livello = number;
 export type Audio = string | null;
 export type AudioSecondi = number;
 export type Loop = boolean;
+export type AudioProgressivo = boolean;
 export type Tipi = string[];
 export type Principale = string;
 export type K = string;
@@ -313,6 +315,7 @@ export interface RoomSettings {
   quiz_tempo: QuizTempo;
   quiz_clip: QuizClip;
   quiz_loop: QuizLoop;
+  quiz_progressivo: QuizProgressivo;
   quiz_chiede: QuizChiede;
 }
 export interface PlayerView {
@@ -490,6 +493,7 @@ export interface QuizView {
   audio: Audio;
   audio_secondi: AudioSecondi;
   loop: Loop;
+  audio_progressivo: AudioProgressivo;
   tipi: Tipi;
   principale: Principale;
   indizi: Indizi;
