@@ -13,11 +13,8 @@ export const ANIME_PALETTE: Record<string, { from: string; to: string; label: st
   "death-note": { from: "#c9c4d6", to: "#2a1a3a", label: "Death Note" },
   "chainsaw-man": { from: "#ff4a3a", to: "#3a1210", label: "Chainsaw Man" },
   "one-punch-man": { from: "#ffd84a", to: "#9a2a2a", label: "One Punch Man" },
-  "spy-x-family": { from: "#ff8fb0", to: "#3a4a7a", label: "Spy x Family" },
   "fairy-tail": { from: "#ff9a4a", to: "#2a4aa0", label: "Fairy Tail" },
   "black-clover": { from: "#a0a0b0", to: "#1a1a30", label: "Black Clover" },
-  evangelion: { from: "#a45cff", to: "#1a5a3a", label: "Evangelion" },
-  "cowboy-bebop": { from: "#4aa0e0", to: "#8a4a1a", label: "Cowboy Bebop" },
 };
 const FALLBACK = { from: "#6b7280", to: "#1f2937", label: "Anime" };
 

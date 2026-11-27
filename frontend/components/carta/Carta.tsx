@@ -137,6 +137,7 @@ export default function Carta({
         {forma && !mini && <span className="carta-forma">{forma}</span>}
         {!mini && (
           <span className="carta-targa block">
+            <span className="carta-anime">{pal.label}</span>
             <span className="carta-nome" data-acapo={nomeACapo ? "" : undefined}>
               {nome}
             </span>
@@ -172,7 +173,18 @@ export default function Carta({
       ? { onPointerMove: inclina, onPointerLeave: raddrizza, onPointerCancel: raddrizza }
       : {}),
     "data-testid": testId,
-    title,
+    title:
+      title ??
+      [
+        `${nome} · ${pal.label}`,
+        sotto,
+        forma ? `Forma: ${forma}` : null,
+        `Valore ${rating}${potenza !== undefined ? ` · Potenza ${potenza}` : ""}${
+          costo !== undefined ? ` · Costo ${costo}` : ""
+        }`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
   };
   return onClick ? (
     <button type="button" onClick={onClick} aria-label={ariaLabel} {...attr}>

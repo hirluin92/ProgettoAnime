@@ -37,11 +37,8 @@ ANIME_NOMI: dict[str, str] = {
     "death-note": "Death Note",
     "chainsaw-man": "Chainsaw Man",
     "one-punch-man": "One Punch Man",
-    "spy-x-family": "Spy x Family",
     "fairy-tail": "Fairy Tail",
     "black-clover": "Black Clover",
-    "evangelion": "Evangelion",
-    "cowboy-bebop": "Cowboy Bebop",
 }
 
 # Le etichette storiche: restano nei dati come descrizione, non hanno effetto sul combattimento.
