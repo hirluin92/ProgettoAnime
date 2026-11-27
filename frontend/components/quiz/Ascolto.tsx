@@ -33,6 +33,12 @@ export default function Ascolto({
   const [tempo, setTempo] = useState(0); // secondi ascoltati, per la barra che scorre
   const [errore, setErrore] = useState(false);
   const [loop, setLoop] = useState(!!loopIniziale);
+  const [carica, setCarica] = useState(false); // la canzone sta caricando (rete lenta)
+  // vero finché si vuole che la canzone stia suonando: serve a distinguere una pausa voluta da una
+  // pausa subita (altro audio, telefonata, schermo spento, rete)
+  const voluto = useRef(false);
+  const tentativi = useRef(0);
+  const attesa = useRef<number | undefined>(undefined);
   // il volume si ricorda tra una partita e l'altra
   const [volume, setVolume] = useState(0.8);
   useEffect(() => {
@@ -62,6 +68,10 @@ export default function Ascolto({
       sorgente.connect(guadagno);
       guadagno.connect(ctx.destination);
       a.volume = 1; // il volume lo fa il guadagno, non va applicato due volte
+      // se il telefono sospende l'audio (schermo spento, altra app) lo si riprende appena possibile
+      ctx.onstatechange = () => {
+        if (ctx.state !== "running" && voluto.current) void ctx.resume().catch(() => undefined);
+      };
       ctxRef.current = ctx;
       gainRef.current = guadagno;
     } catch {
@@ -93,10 +103,19 @@ export default function Ascolto({
       ? Math.min(tetto ?? 30, SECONDI_SIGLA[Math.min(livello, SECONDI_SIGLA.length - 1)])
       : (tetto ?? 30);
 
+  // il timer di fine anteprima legge i valori di adesso, non quelli di quando è partito
+  const secondiRef = useRef(secondi);
+  secondiRef.current = secondi;
+  const interoRef = useRef(!!intero);
+  interoRef.current = !!intero;
+
   const ferma = () => {
+    voluto.current = false;
     window.clearTimeout(timer.current);
+    window.clearTimeout(attesa.current);
     ref.current?.pause();
     setSuona(false);
+    setCarica(false);
     setTempo(0);
   };
   // `gesto`: chiamata da un tocco dell'utente. Solo lì si attiva il controllo di volume Web Audio:
@@ -106,19 +125,24 @@ export default function Ascolto({
     if (!a) return;
     window.clearTimeout(timer.current);
     if (gesto) attivaVolume();
+    voluto.current = true;
     a.currentTime = 0;
     setTempo(0);
     a.play()
       .then(() => {
+        if (!voluto.current) return; // nel frattempo è stato fermato: niente timer orfano
         setSuona(true);
         setErrore(false);
         // a fine anteprima: si ripete se il loop è attivo, altrimenti si ferma
         timer.current = window.setTimeout(() => {
-          if (loopRef.current && !intero) avvia();
+          if (loopRef.current && !interoRef.current) avvia();
           else ferma();
-        }, secondi * 1000);
+        }, secondiRef.current * 1000);
       })
-      .catch(() => setErrore(true));
+      .catch(() => {
+        // un nuovo avvio ha interrotto questo (cambio di domanda): non è un errore
+        if (voluto.current && ref.current?.paused !== false) setErrore(true);
+      });
   };
 
   // mentre suona, la barra segue la posizione dell'audio
@@ -137,6 +161,29 @@ export default function Ascolto({
     id = requestAnimationFrame(giro);
     return () => cancelAnimationFrame(id);
   }, [suona]);
+
+  // alla rivelazione la canzone prosegue fino in fondo: il timer dell'anteprima non deve fermarla
+  useEffect(() => {
+    const a = ref.current;
+    if (!intero || !voluto.current || !a) return;
+    window.clearTimeout(timer.current);
+    const resto = Math.max(0, (Number.isFinite(a.duration) ? a.duration : 30) - a.currentTime);
+    timer.current = window.setTimeout(ferma, (resto + 0.5) * 1000);
+     
+  }, [intero]);
+
+  // se si torna sulla pagina (schermo riacceso, altra app) l'audio sospeso riparte
+  useEffect(() => {
+    const torna = () => {
+      if (document.visibilityState !== "visible") return;
+      const ctx = ctxRef.current;
+      if (ctx && ctx.state !== "running") void ctx.resume().catch(() => undefined);
+      const a = ref.current;
+      if (voluto.current && a && a.paused && !a.ended) a.play().catch(() => undefined);
+    };
+    document.addEventListener("visibilitychange", torna);
+    return () => document.removeEventListener("visibilitychange", torna);
+  }, []);
 
   // progressiva: a ogni livello (nuovo errore o tempo che passa) si riascolta dall'inizio;
   // intera: parte una volta sola all'inizio della domanda
@@ -162,10 +209,52 @@ export default function Ascolto({
           if (cors) {
             gainRef.current = null;
             setCors(false);
+            return;
           }
+          // rete caduta: si riprova a caricare un paio di volte prima di arrendersi
+          const a = ref.current;
+          if (voluto.current && a && tentativi.current < 2) {
+            tentativi.current += 1;
+            window.setTimeout(() => {
+              a.load();
+              if (voluto.current) a.play().catch(() => undefined);
+            }, 600);
+          } else setErrore(true);
         }}
         preload="auto"
-        onEnded={() => (loopRef.current && !intero ? avvia() : ferma())}
+        onPlaying={() => {
+          window.clearTimeout(attesa.current);
+          tentativi.current = 0;
+          setCarica(false);
+          setErrore(false);
+          setSuona(true);
+        }}
+        onWaiting={() => {
+          if (!voluto.current) return;
+          setCarica(true);
+          // se resta bloccata più di 8 secondi si ricarica la canzone dal punto in cui era
+          window.clearTimeout(attesa.current);
+          attesa.current = window.setTimeout(() => {
+            const a = ref.current;
+            if (!voluto.current || !a) return;
+            const t = a.currentTime;
+            a.load();
+            a.currentTime = t;
+            a.play().catch(() => undefined);
+          }, 8000);
+        }}
+        onPause={() => {
+          const a = ref.current;
+          // pausa non voluta (telefonata, altro audio, cuffie): l'interfaccia lo dice e si riprova
+          if (!voluto.current || !a || a.ended) return;
+          setSuona(false);
+          setCarica(false);
+          window.setTimeout(() => {
+            if (voluto.current && ref.current?.paused && document.visibilityState === "visible")
+              ref.current.play().catch(() => undefined);
+          }, 500);
+        }}
+        onEnded={() => (loopRef.current && !interoRef.current ? avvia() : ferma())}
       />
       <button
         type="button"
@@ -223,6 +312,15 @@ export default function Ascolto({
         </ul>
         <div className="flex justify-between text-[0.7rem] tabular-nums muted">
           <span>{mmss(tempo)}</span>
+          {carica && (
+            <span
+              role="status"
+              data-testid="ascolto-carica"
+              className="text-[var(--giallo,#ffd21f)]"
+            >
+              {it.quiz.sigla.carico}
+            </span>
+          )}
           <span>{mmss(secondi)}</span>
         </div>
       </div>
