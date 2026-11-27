@@ -123,5 +123,40 @@
     "a": "denji",
     "b": "power",
     "nome": "Compagni di caccia"
+  },
+  {
+    "a": "meliodas",
+    "b": "elizabeth-liones",
+    "nome": "Amore eterno"
+  },
+  {
+    "a": "ban",
+    "b": "king",
+    "nome": "Amici e compagni"
+  },
+  {
+    "a": "shinra-kusakabe",
+    "b": "arthur-boyle",
+    "nome": "Compagni di squadra"
+  },
+  {
+    "a": "mash-burnedead",
+    "b": "finn-ames",
+    "nome": "Fratelli di cuore"
+  },
+  {
+    "a": "sung-jinwoo",
+    "b": "igris",
+    "nome": "Maestro e soldato"
+  },
+  {
+    "a": "shoyo-hinata",
+    "b": "tobio-kageyama",
+    "nome": "Il duo bizzarro"
+  },
+  {
+    "a": "yoichi-isagi",
+    "b": "meguru-bachira",
+    "nome": "Compagni di gol"
   }
 ]

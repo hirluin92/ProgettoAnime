@@ -2648,5 +2648,778 @@
     ],
     "rating": 80,
     "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b187268-vkcrcTvjNSrA.png"
+  },
+  {
+    "id": "meliodas",
+    "nome": "Meliodas",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "AURA"
+    ],
+    "rating": 94,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b72921-XDHNd1wflN6P.png"
+  },
+  {
+    "id": "ban",
+    "nome": "Ban",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "REGEN"
+    ],
+    "rating": 91,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b77605-NrjhQwZwgJ3l.png"
+  },
+  {
+    "id": "diane",
+    "nome": "Diane",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "GIANT",
+      "BARRIER"
+    ],
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b74653-XpMcsLVZBnkZ.jpg"
+  },
+  {
+    "id": "gowther",
+    "nome": "Gowther",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "PSYCHIC"
+    ],
+    "rating": 85,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b88823-Oppzl2h6OhO8.png"
+  },
+  {
+    "id": "merlin",
+    "nome": "Merlin",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "ELEMENT",
+      "PSYCHIC"
+    ],
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b89180-rN6OVPki8h3V.png"
+  },
+  {
+    "id": "escanor",
+    "nome": "Escanor",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "ELEMENT"
+    ],
+    "rating": 95,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b90202-1H7FIX2hDmYd.png"
+  },
+  {
+    "id": "elizabeth-liones",
+    "nome": "Elizabeth Liones",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL",
+      "AURA"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b72923-Hidpb955mwMW.png"
+  },
+  {
+    "id": "zeldris",
+    "nome": "Zeldris",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "SPEED"
+    ],
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b131559-MmROAidOkGqL.jpg"
+  },
+  {
+    "id": "gilthunder",
+    "nome": "Gilthunder",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "RANGE",
+      "ELEMENT"
+    ],
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b74285-qGwNsXKYRPcC.png"
+  },
+  {
+    "id": "arthur-pendragon",
+    "nome": "Arthur Pendragon",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "SUMMON",
+      "AURA"
+    ],
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b122210-l6g1EMCf5NdE.png"
+  },
+  {
+    "id": "hawk",
+    "nome": "Hawk",
+    "anime": "seven-deadly-sins",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "HEAL"
+    ],
+    "rating": 55,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n86683-ZXPoLZnKqNtx.png"
+  },
+  {
+    "id": "shinra-kusakabe",
+    "nome": "Shinra Kusakabe",
+    "anime": "fire-force",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "SPEED",
+      "ELEMENT"
+    ],
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n120462-oSWdz2MhkbDE.png"
+  },
+  {
+    "id": "arthur-boyle",
+    "nome": "Arthur Boyle",
+    "anime": "fire-force",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "ELEMENT"
+    ],
+    "rating": 87,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n130715-IYNBAHBQa14y.png"
+  },
+  {
+    "id": "maki-oze",
+    "nome": "Maki Oze",
+    "anime": "fire-force",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "RANGE",
+      "ELEMENT"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b130713-TgLx8rgtGpXV.png"
+  },
+  {
+    "id": "tamaki-kotatsu",
+    "nome": "Tamaki Kotatsu",
+    "anime": "fire-force",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER",
+      "ELEMENT"
+    ],
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b130751-J8rhd4d3TxF4.png"
+  },
+  {
+    "id": "benimaru-shinmon",
+    "nome": "Benimaru Shinmon",
+    "anime": "fire-force",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "ELEMENT"
+    ],
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b130848-AuuIm6GR8ody.jpg"
+  },
+  {
+    "id": "iris",
+    "nome": "Iris",
+    "anime": "fire-force",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL",
+      "AURA"
+    ],
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n130716-5564jUgQxK9a.png"
+  },
+  {
+    "id": "joker",
+    "nome": "Joker",
+    "anime": "fire-force",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "STEALTH",
+      "MELEE"
+    ],
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b135385-gfcFoxReUVzq.png"
+  },
+  {
+    "id": "princess-hibana",
+    "nome": "Princess Hibana",
+    "anime": "fire-force",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "ELEMENT",
+      "ENERGY"
+    ],
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b130783-10kVdsVrwpuO.png"
+  },
+  {
+    "id": "akitaru-oubi",
+    "nome": "Akitaru Oubi",
+    "anime": "fire-force",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER",
+      "ELEMENT"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b130712-N38fiCh2y0CX.png"
+  },
+  {
+    "id": "takehisa-hinawa",
+    "nome": "Takehisa Hinawa",
+    "anime": "fire-force",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "RANGE"
+    ],
+    "rating": 73,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/n130714-pLzE3rXtP1C4.png"
+  },
+  {
+    "id": "mash-burnedead",
+    "nome": "Mash Burnedead",
+    "anime": "mashle",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "MELEE",
+      "BARRIER"
+    ],
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b158734-k8FAVIyXKdW1.jpg"
+  },
+  {
+    "id": "lance-crown",
+    "nome": "Lance Crown",
+    "anime": "mashle",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "ELEMENT",
+      "SPEED"
+    ],
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b172075-aOsZuM7D0bcW.jpg"
+  },
+  {
+    "id": "rain-ames",
+    "nome": "Rain Ames",
+    "anime": "mashle",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "ELEMENT",
+      "RANGE"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b202422-DNcyHSn8ICHp.jpg"
+  },
+  {
+    "id": "dot-barrett",
+    "nome": "Dot Barrett",
+    "anime": "mashle",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "ELEMENT"
+    ],
+    "rating": 74,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b174369-VjKvYJbXLO5I.jpg"
+  },
+  {
+    "id": "finn-ames",
+    "nome": "Finn Ames",
+    "anime": "mashle",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "AURA"
+    ],
+    "rating": 66,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b174368-tYxOTsrCDEk9.jpg"
+  },
+  {
+    "id": "lemon-irvine",
+    "nome": "Lemon Irvine",
+    "anime": "mashle",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL"
+    ],
+    "rating": 62,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b167819-2pddKcJiApjD.jpg"
+  },
+  {
+    "id": "abel-walker",
+    "nome": "Abel Walker",
+    "anime": "mashle",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "ELEMENT",
+      "MOBILITY"
+    ],
+    "rating": 70,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b207410-BXfkA9UGsM34.png"
+  },
+  {
+    "id": "innocent-zero",
+    "nome": "Innocent Zero",
+    "anime": "mashle",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "PSYCHIC",
+      "AURA"
+    ],
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b262136-vmc8MJHetX8h.png"
+  },
+  {
+    "id": "sung-jinwoo",
+    "nome": "Sung Jinwoo",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "SUMMON",
+      "STEALTH",
+      "AURA"
+    ],
+    "rating": 95,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b129928-BCEjVaP0AQSw.png"
+  },
+  {
+    "id": "cha-hae-in",
+    "nome": "Cha Hae-In",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "SPEED"
+    ],
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b138789-AhE8m0LWjE7E.png"
+  },
+  {
+    "id": "igris",
+    "nome": "Igris",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "SUMMON"
+    ],
+    "rating": 88,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b145722-qSJ71S6vpeeM.png"
+  },
+  {
+    "id": "lee-ju-hee",
+    "nome": "Lee Ju-Hee",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Guaritore",
+    "tags": [
+      "HEAL"
+    ],
+    "rating": 66,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136074-pLyumEnxjL7P.png"
+  },
+  {
+    "id": "sung-jin-ah",
+    "nome": "Sung Jin-Ah",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "AURA"
+    ],
+    "rating": 58,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b138791-IngjgBQqGMWc.png"
+  },
+  {
+    "id": "go-gun-hee",
+    "nome": "Go Gun-Hee",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "AURA",
+      "BARRIER"
+    ],
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b138792-TXFrDA1wpbmo.png"
+  },
+  {
+    "id": "yu-jin-ho",
+    "nome": "Yu Jin-Ho",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER"
+    ],
+    "rating": 68,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136076-D7eiE3pA9U8g.jpg"
+  },
+  {
+    "id": "baek-yoon-ho",
+    "nome": "Baek Yoon-Ho",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "TRANSFORM"
+    ],
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136077-IIMqRmMK5Fgs.png"
+  },
+  {
+    "id": "choi-jong-in",
+    "nome": "Choi Jong-In",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "ELEMENT"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b138794-dZNdO0pvZ659.png"
+  },
+  {
+    "id": "woo-jin-cheol",
+    "nome": "Woo Jin-Cheol",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE",
+      "STEALTH"
+    ],
+    "rating": 64,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b136819-okbPuuFAefYX.png"
+  },
+  {
+    "id": "iron",
+    "nome": "Iron",
+    "anime": "solo-leveling",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "SUMMON",
+      "BARRIER"
+    ],
+    "rating": 74,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b184956-uy2dOVHacMsf.png"
+  },
+  {
+    "id": "yoichi-isagi",
+    "nome": "Yoichi Isagi",
+    "anime": "blue-lock",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "SPEED",
+      "RANGE"
+    ],
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b140856-wVzKSyvU7R5B.png"
+  },
+  {
+    "id": "meguru-bachira",
+    "nome": "Meguru Bachira",
+    "anime": "blue-lock",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "SPEED",
+      "MOBILITY"
+    ],
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b162213-4czykzdxmWG6.png"
+  },
+  {
+    "id": "seishiro-nagi",
+    "nome": "Seishiro Nagi",
+    "anime": "blue-lock",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "SPEED",
+      "STEALTH"
+    ],
+    "rating": 91,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b162969-WGnGyVQrFi0X.png"
+  },
+  {
+    "id": "rin-itoshi",
+    "nome": "Rin Itoshi",
+    "anime": "blue-lock",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "RANGE"
+    ],
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b169395-oYTkJnimI3Eu.png"
+  },
+  {
+    "id": "hyoma-chigiri",
+    "nome": "Hyoma Chigiri",
+    "anime": "blue-lock",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "SPEED",
+      "MOBILITY"
+    ],
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b167444-JTHkkJAX4E3q.png"
+  },
+  {
+    "id": "shoei-barou",
+    "nome": "Shoei Barou",
+    "anime": "blue-lock",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE"
+    ],
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b169401-jeepvEsqW4Ns.png"
+  },
+  {
+    "id": "rensuke-kunigami",
+    "nome": "Rensuke Kunigami",
+    "anime": "blue-lock",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "MELEE",
+      "BARRIER"
+    ],
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b162214-9x9Q3A9rxpx8.png"
+  },
+  {
+    "id": "reo-mikage",
+    "nome": "Reo Mikage",
+    "anime": "blue-lock",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "AURA"
+    ],
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b169394-8KDqHUN1VyGC.png"
+  },
+  {
+    "id": "sae-itoshi",
+    "nome": "Sae Itoshi",
+    "anime": "blue-lock",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "RANGE",
+      "PSYCHIC"
+    ],
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b169397-wC55onsv5u8t.jpg"
+  },
+  {
+    "id": "ryusei-shidou",
+    "nome": "Ryusei Shidou",
+    "anime": "blue-lock",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE",
+      "SPEED"
+    ],
+    "rating": 82,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b186875-JGHisZO21JxJ.png"
+  },
+  {
+    "id": "jinpachi-ego",
+    "nome": "Jinpachi Ego",
+    "anime": "blue-lock",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "PSYCHIC"
+    ],
+    "rating": 72,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b140857-DOTyKBCufon9.png"
+  },
+  {
+    "id": "gin-gagamaru",
+    "nome": "Gin Gagamaru",
+    "anime": "blue-lock",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER",
+      "GIANT"
+    ],
+    "rating": 70,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b169404-90OF8t2ukD9H.jpg"
+  },
+  {
+    "id": "shoyo-hinata",
+    "nome": "Shoyo Hinata",
+    "anime": "haikyuu",
+    "ruolo_firma": "Capitano",
+    "tags": [
+      "SPEED",
+      "MOBILITY"
+    ],
+    "rating": 93,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b64769-WoWlCMLLgJ14.png"
+  },
+  {
+    "id": "tobio-kageyama",
+    "nome": "Tobio Kageyama",
+    "anime": "haikyuu",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "AURA",
+      "RANGE"
+    ],
+    "rating": 92,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b64771-BuCVs7B8bBdh.png"
+  },
+  {
+    "id": "yu-nishinoya",
+    "nome": "Yu Nishinoya",
+    "anime": "haikyuu",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER",
+      "MOBILITY"
+    ],
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b67327-zQb1dlC7joPb.jpg"
+  },
+  {
+    "id": "kenma-kozume",
+    "nome": "Kenma Kozume",
+    "anime": "haikyuu",
+    "ruolo_firma": "Supporto",
+    "tags": [
+      "PSYCHIC"
+    ],
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b71267-q44J2MXMinXD.jpg"
+  },
+  {
+    "id": "tooru-oikawa",
+    "nome": "Tooru Oikawa",
+    "anime": "haikyuu",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "RANGE",
+      "AURA"
+    ],
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b71611-cUZwVfzeNXD9.png"
+  },
+  {
+    "id": "kei-tsukishima",
+    "nome": "Kei Tsukishima",
+    "anime": "haikyuu",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER"
+    ],
+    "rating": 84,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b67329-k7mDdqQ6rJ4w.png"
+  },
+  {
+    "id": "tetsuro-kuroo",
+    "nome": "Tetsuro Kuroo",
+    "anime": "haikyuu",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "BARRIER",
+      "PSYCHIC"
+    ],
+    "rating": 86,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b71269-pi9vjyxKPFAu.jpg"
+  },
+  {
+    "id": "koshi-sugawara",
+    "nome": "Koshi Sugawara",
+    "anime": "haikyuu",
+    "ruolo_firma": "Supporto II",
+    "tags": [
+      "AURA"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b67321-cxP7NdI0JC3H.png"
+  },
+  {
+    "id": "ryunosuke-tanaka",
+    "nome": "Ryunosuke Tanaka",
+    "anime": "haikyuu",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE"
+    ],
+    "rating": 74,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b67325-yPkbZJkofp5w.jpg"
+  },
+  {
+    "id": "tadashi-yamaguchi",
+    "nome": "Tadashi Yamaguchi",
+    "anime": "haikyuu",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "RANGE"
+    ],
+    "rating": 68,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b71609-5Ht0aqB34eEa.png"
+  },
+  {
+    "id": "asahi-azumane",
+    "nome": "Asahi Azumane",
+    "anime": "haikyuu",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE"
+    ],
+    "rating": 76,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b67333-on5KXeKxZqKs.png"
+  },
+  {
+    "id": "daichi-sawamura",
+    "nome": "Daichi Sawamura",
+    "anime": "haikyuu",
+    "ruolo_firma": "Tank",
+    "tags": [
+      "BARRIER",
+      "AURA"
+    ],
+    "rating": 80,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b67323-yFbLDAfJ5ysG.png"
+  },
+  {
+    "id": "wakatoshi-ushijima",
+    "nome": "Wakatoshi Ushijima",
+    "anime": "haikyuu",
+    "ruolo_firma": "Danno",
+    "tags": [
+      "MELEE"
+    ],
+    "rating": 90,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b76816-sS6LcPRxisQ9.png"
+  },
+  {
+    "id": "hajime-iwaizumi",
+    "nome": "Hajime Iwaizumi",
+    "anime": "haikyuu",
+    "ruolo_firma": "Vice",
+    "tags": [
+      "MELEE"
+    ],
+    "rating": 78,
+    "immagine_url": "https://s4.anilist.co/file/anilistcdn/character/large/b75636-d8LM75218eDS.png"
   }
 ]

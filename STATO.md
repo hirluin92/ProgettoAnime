@@ -214,3 +214,6 @@ Nel draft della Partita veloce un interruttore «Usa il piano di battaglia» (`p
 
 ## Meno anime, anime sulle carte
 Tolti Spy x Family, Evangelion e Cowboy Bebop (219 personaggi, 15 anime; tolti anche da `scripts/nuovi_personaggi.py`). Ogni carta mostra il nome dell'anime sulla targa e, al passaggio del mouse, un riepilogo (nome, anime, ruolo e mossa, valore, potenza, costo).
+
+## Altri 6 anime
+Aggiunti Seven Deadly Sins, Fire Force, Mashle, Solo Leveling, Blue Lock, Haikyu!! (66 personaggi, 4 forme, 12 tratti nuovi; dati in `scripts/nuovi_personaggi_2.py`, unito a `nuovi_personaggi.py`). Ora 285 personaggi, 21 anime, 40 forme. Prezzi rimisurati con `balance_v2.py --scrivi`. Immagini: collegamenti AniList. Test resi meno dipendenti dal mazzo (Scala, arena gravità, regalo carte di prova).

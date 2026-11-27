@@ -15,6 +15,12 @@ export const ANIME_PALETTE: Record<string, { from: string; to: string; label: st
   "one-punch-man": { from: "#ffd84a", to: "#9a2a2a", label: "One Punch Man" },
   "fairy-tail": { from: "#ff9a4a", to: "#2a4aa0", label: "Fairy Tail" },
   "black-clover": { from: "#a0a0b0", to: "#1a1a30", label: "Black Clover" },
+  "seven-deadly-sins": { from: "#ffb347", to: "#7a1f1f", label: "Seven Deadly Sins" },
+  "fire-force": { from: "#ff7a2a", to: "#1a2a5a", label: "Fire Force" },
+  mashle: { from: "#ffe066", to: "#5a2a8a", label: "Mashle" },
+  "solo-leveling": { from: "#8a6cff", to: "#0d0a24", label: "Solo Leveling" },
+  "blue-lock": { from: "#3a7bff", to: "#0a1a3a", label: "Blue Lock" },
+  haikyuu: { from: "#ff9a2a", to: "#1a1a1a", label: "Haikyu!!" },
 };
 const FALLBACK = { from: "#6b7280", to: "#1f2937", label: "Anime" };
 

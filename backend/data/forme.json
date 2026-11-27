@@ -546,5 +546,65 @@
    "effetto": "regen"
   },
   "costo_delta": 1
+ },
+ {
+  "base": "sung-jinwoo",
+  "slug": "monarca",
+  "forma": "Monarca delle Ombre",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Dominio del Monarca",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Sovrano d'Ombra",
+   "effetto": "lifesteal"
+  },
+  "costo_delta": 2
+ },
+ {
+  "base": "escanor",
+  "slug": "mezzogiorno",
+  "forma": "Mezzogiorno",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "The One",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Sole Supremo",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "meliodas",
+  "slug": "assalto",
+  "forma": "Modalità Assalto",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Hellblaze Finale",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Furia Demoniaca",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "shinra-kusakabe",
+  "slug": "adolla",
+  "forma": "Adolla Burst",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Calcio del Diavolo",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Fuoco di Adolla",
+   "effetto": "firststrike"
+  },
+  "costo_delta": 1
  }
 ]

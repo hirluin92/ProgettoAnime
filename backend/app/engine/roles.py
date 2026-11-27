@@ -39,6 +39,12 @@ ANIME_NOMI: dict[str, str] = {
     "one-punch-man": "One Punch Man",
     "fairy-tail": "Fairy Tail",
     "black-clover": "Black Clover",
+    "seven-deadly-sins": "Seven Deadly Sins",
+    "fire-force": "Fire Force",
+    "mashle": "Mashle",
+    "solo-leveling": "Solo Leveling",
+    "blue-lock": "Blue Lock",
+    "haikyuu": "Haikyu!!",
 }
 
 # Le etichette storiche: restano nei dati come descrizione, non hanno effetto sul combattimento.
