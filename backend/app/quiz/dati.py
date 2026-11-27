@@ -78,7 +78,10 @@ def pool_personaggi() -> list[dict[str, Any]]:
 
 def normalizza(s: str) -> str:
     """Minuscolo, senza accenti né punteggiatura: per confrontare risposte scritte a mano."""
-    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    # Come fa il frontend (lib/quiz.ts): si tolgono gli accenti e tutto il resto, apostrofo
+    # tipografico compreso, diventa uno spazio. Prima l'apostrofo ’ spariva senza lasciare lo
+    # spazio («journey’s» → «journeys») e chi scriveva il titolo intero non trovava l'anime.
+    s = "".join(c for c in unicodedata.normalize("NFKD", s) if not unicodedata.combining(c))
     return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
 
 

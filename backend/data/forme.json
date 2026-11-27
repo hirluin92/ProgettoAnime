@@ -351,5 +351,215 @@
    "effetto": "laststand"
   },
   "costo_delta": 1
+ },
+ {
+  "base": "ichigo-kurosaki",
+  "slug": "bankai",
+  "forma": "Bankai",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Getsuga Tensho Finale",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Velocità del Bankai",
+   "effetto": "firststrike"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "ichigo-kurosaki",
+  "slug": "hollow",
+  "forma": "Hollow",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Cero Hollow",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Maschera Hollow",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "izuku-midoriya",
+  "slug": "full-cowl",
+  "forma": "Full Cowl 100%",
+  "rating_delta": 1,
+  "mossa": {
+   "nome": "Delaware Smash",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Full Cowl",
+   "effetto": "rage"
+  },
+  "costo_delta": 0
+ },
+ {
+  "base": "all-might",
+  "slug": "forma-magra",
+  "forma": "Forma Magra",
+  "rating_delta": -12,
+  "mossa": {
+   "nome": "Pugno Sfinito",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Cuore d'Eroe",
+   "effetto": "laststand"
+  },
+  "costo_delta": -3
+ },
+ {
+  "base": "eren-yeager",
+  "slug": "titano-fondatore",
+  "forma": "Titano Fondatore",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Boato della Terra",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Ordine dei Giganti",
+   "effetto": "aura_atk"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "killua-zoldyck",
+  "slug": "fulmine-divino",
+  "forma": "Godspeed",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Fulmine Divino",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Modalità Fulmine",
+   "effetto": "firststrike"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "gon-freecss",
+  "slug": "adulto",
+  "forma": "Forma Adulta",
+  "rating_delta": 4,
+  "mossa": {
+   "nome": "Jajanken Adulto",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Aura Sconfinata",
+   "effetto": "aura_atk"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "natsu-dragneel",
+  "slug": "dragon-force",
+  "forma": "Dragon Force",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Pugno Fiamma Esplosiva",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Forza del Drago",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "erza-scarlet",
+  "slug": "armatura-purgatorio",
+  "forma": "Armatura Purgatorio",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Lama Infuocata",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Armatura Purgatorio",
+   "effetto": "armor"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "asta",
+  "slug": "demone",
+  "forma": "Forma Demone",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Taglio Demoniaco",
+   "effetto": "pierce"
+  },
+  "passiva": {
+   "nome": "Forma Demone",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "denji",
+  "slug": "chainsaw-man",
+  "forma": "Chainsaw Man",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Demone Motosega",
+   "effetto": "multi"
+  },
+  "passiva": {
+   "nome": "Rigenerazione Infernale",
+   "effetto": "regen"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "saitama",
+  "slug": "serio",
+  "forma": "Serio",
+  "rating_delta": 2,
+  "mossa": {
+   "nome": "Pugno Serio",
+   "effetto": "execute"
+  },
+  "passiva": {
+   "nome": "Serietà Assoluta",
+   "effetto": "armor"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "shinji-ikari",
+  "slug": "berserk",
+  "forma": "EVA-01 Berserk",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Furia Berserk",
+   "effetto": "strike"
+  },
+  "passiva": {
+   "nome": "Controllo Perso",
+   "effetto": "rage"
+  },
+  "costo_delta": 1
+ },
+ {
+  "base": "sousuke-aizen",
+  "slug": "forma-finale",
+  "forma": "Forma Finale",
+  "rating_delta": 3,
+  "mossa": {
+   "nome": "Hogyoku Fuso",
+   "effetto": "aoe"
+  },
+  "passiva": {
+   "nome": "Corpo Perfetto",
+   "effetto": "regen"
+  },
+  "costo_delta": 1
  }
 ]

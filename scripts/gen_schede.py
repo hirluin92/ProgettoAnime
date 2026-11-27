@@ -2,7 +2,11 @@
 id | archetipo | mossa | effetto mossa | passiva | effetto passiva | tratti"""
 
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nuovi_personaggi import RIGHE_SCHEDE, TRATTI_NUOVI  # noqa: E402
 
 RIGHE = """
 naruto-uzumaki|BRU|Rasengan|strike|Modalità Eremitica|aura_atk|squadra-7,hokage,jinchuriki
@@ -140,6 +144,8 @@ TRATTI = {
     "clan-zenin": ("Clan Zenin", "spd", [8, 16, 24]),
 }
 
+TRATTI.update(TRATTI_NUOVI)
+
 ARCH = {"BRU", "ASS", "MAG", "TAN", "TIR", "SUP", "GUA", "EVO"}
 MOSSE = {"strike", "pierce", "aoe", "stun", "barrier", "heal", "healall", "buff", "debuff",
          "drain", "execute", "revive", "snipe", "multi", "haste"}
@@ -148,8 +154,13 @@ PASSIVE = {"thorns", "regen", "lifesteal", "crit", "dodge", "armor", "rage", "la
 
 if __name__ == "__main__":
     base = Path(__file__).resolve().parent.parent / "backend" / "data"
+    # i prezzi misurati dal simulatore (balance_v2.py --scrivi) non vanno persi a ogni rigenerazione
+    f_schede = base / "schede.json"
+    prezzi = {}
+    if f_schede.exists():
+        prezzi = {k: v["costo"] for k, v in json.loads(f_schede.read_text(encoding="utf8")).items() if "costo" in v}
     schede = {}
-    for riga in RIGHE.strip().splitlines():
+    for riga in [*RIGHE.strip().splitlines(), *RIGHE_SCHEDE.strip().splitlines()]:
         i, arch, mossa, em, passiva, ep, tr = riga.split("|")
         assert arch in ARCH and em in MOSSE and ep in PASSIVE, riga
         tratti = [t for t in tr.split(",") if t]
@@ -161,6 +172,8 @@ if __name__ == "__main__":
             "passiva": {"nome": passiva, "effetto": ep},
             "tratti": tratti,
         }
+        if i in prezzi:
+            schede[i]["costo"] = prezzi[i]
     chars = {c["id"] for c in json.loads((base / "characters.json").read_text(encoding="utf8"))}
     assert set(schede) == chars, (chars ^ set(schede))
     usati = {t for s in schede.values() for t in s["tratti"]}

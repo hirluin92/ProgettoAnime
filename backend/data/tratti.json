@@ -288,5 +288,295 @@
    "3": 16,
    "4": 24
   }
+ },
+ {
+  "id": "classe-1a",
+  "nome": "Classe 1-A",
+  "stat": "def",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "eroi-professionisti",
+  "nome": "Eroi Professionisti",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "corpo-di-ricerca",
+  "nome": "Corpo di Ricerca",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "cadetti-104",
+  "nome": "104° Corpo Cadetti",
+  "stat": "spd",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "guerrieri-marley",
+  "nome": "Guerrieri di Marley",
+  "stat": "hp",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "fratelli-elric",
+  "nome": "Fratelli Elric",
+  "stat": "hp",
+  "soglie": {
+   "2": 10,
+   "3": 20,
+   "4": 30
+  }
+ },
+ {
+  "id": "alchimisti-di-stato",
+  "nome": "Alchimisti di Stato",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "homunculus",
+  "nome": "Homunculus",
+  "stat": "hp",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "famiglia-zoldyck",
+  "nome": "Famiglia Zoldyck",
+  "stat": "spd",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "amici-di-gon",
+  "nome": "Amici di Gon",
+  "stat": "def",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "brigata-fantasma",
+  "nome": "Brigata Fantasma",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "formiche-chimera",
+  "nome": "Formiche Chimera",
+  "stat": "hp",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "gotei-13",
+  "nome": "Gotei 13",
+  "stat": "hp",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "amici-di-ichigo",
+  "nome": "Amici di Ichigo",
+  "stat": "def",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "arrancar",
+  "nome": "Arrancar",
+  "stat": "atk",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "squadra-investigativa",
+  "nome": "Squadra Investigativa",
+  "stat": "def",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "culto-di-kira",
+  "nome": "Culto di Kira",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "divisione-4",
+  "nome": "Divisione Speciale 4",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "diavoli",
+  "nome": "Diavoli",
+  "stat": "hp",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "classe-s",
+  "nome": "Eroi di Classe S",
+  "stat": "hp",
+  "soglie": {
+   "2": 4,
+   "3": 8,
+   "4": 12
+  }
+ },
+ {
+  "id": "associazione-eroi",
+  "nome": "Associazione Eroi",
+  "stat": "spd",
+  "soglie": {
+   "2": 8,
+   "3": 16,
+   "4": 24
+  }
+ },
+ {
+  "id": "famiglia-forger",
+  "nome": "Famiglia Forger",
+  "stat": "hp",
+  "soglie": {
+   "2": 10,
+   "3": 20,
+   "4": 30
+  }
+ },
+ {
+  "id": "team-natsu",
+  "nome": "Team Natsu",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "gilda-fairy-tail",
+  "nome": "Gilda di Fairy Tail",
+  "stat": "hp",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "toro-nero",
+  "nome": "Toro Nero",
+  "stat": "hp",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "cavalieri-magici",
+  "nome": "Cavalieri Magici",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "piloti-eva",
+  "nome": "Piloti EVA",
+  "stat": "atk",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
+ },
+ {
+  "id": "nerv",
+  "nome": "NERV",
+  "stat": "def",
+  "soglie": {
+   "2": 5,
+   "3": 10,
+   "4": 15
+  }
+ },
+ {
+  "id": "equipaggio-bebop",
+  "nome": "Equipaggio del Bebop",
+  "stat": "spd",
+  "soglie": {
+   "2": 6,
+   "3": 12,
+   "4": 18
+  }
  }
 ]

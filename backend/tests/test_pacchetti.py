@@ -4,6 +4,7 @@ from collections import Counter
 from fastapi.testclient import TestClient
 
 from app.album import rarita
+from app.data_loader import load_characters, load_forms
 from app.db.models import ProfileRow
 from app.db.session import configure, session_scope
 from app.main import app
@@ -27,7 +28,8 @@ def test_shop_lists_prices_and_public_odds() -> None:
     assert [t["id"] for t in n["tipi"]] == ["base", "argento", "oro", "leggendario"]
     for t in n["tipi"]:
         assert abs(sum(t["probabilita"].values()) - 100) < 1e-9
-        assert sum(t["carte_per_rarita"].values()) == 123 and t["prezzo"] > 0
+        assert t["prezzo"] > 0
+        assert sum(t["carte_per_rarita"].values()) == len(load_characters()) + len(load_forms())
     assert n["pity_max"] == PITY_MAX and set(n["rimborso"]) == set(RARITA)
     prezzi = [t["prezzo"] for t in n["tipi"]]
     assert prezzi == sorted(prezzi)

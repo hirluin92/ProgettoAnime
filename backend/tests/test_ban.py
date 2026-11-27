@@ -1,5 +1,6 @@
 import asyncio
 
+from app.data_loader import load_characters
 from app.rooms.manager import RoomManager
 from app.rooms.protocol import Ban, Start
 
@@ -38,7 +39,7 @@ def test_ban_phase_then_auction_without_banned() -> None:
             {room.auction.lot.id} if room.auction.lot else set()
         )
         assert not banned & queued
-        assert len(queued) == 100 - 4
+        assert len(queued) == len(load_characters()) - 4
 
     asyncio.run(run())
 
