@@ -1,7 +1,6 @@
 """Sfida del giorno: stesso mazzo di opzioni per tutti, un tentativo a nome, classifica."""
 
 import zlib
-from datetime import UTC, datetime
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException
@@ -13,13 +12,14 @@ from app.db.models import DailyScore
 from app.db.session import session_scope
 from app.engine.models import Model
 from app.quick import DraftOptions, PickIn, PlayResponse, draft_options, premio_per, run_quick
+from app.tempo import giorno_italia
 
 router = APIRouter(prefix="/api/daily")
 TOP = 20
 
 
 def today() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%d")
+    return giorno_italia()
 
 
 def seed_for(day: str) -> int:

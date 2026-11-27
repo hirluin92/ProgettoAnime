@@ -8,7 +8,7 @@ L'avversario è il mazzo (da draft) di un altro giocatore di livello simile, gui
 import random
 import secrets
 import time
-from datetime import UTC, datetime
+from datetime import datetime
 
 from fastapi import APIRouter, HTTPException
 from pydantic import Field
@@ -27,6 +27,7 @@ from app.duello_api import (
 )
 from app.engine.models import Model
 from app.profilo import UUID_RE
+from app.tempo import adesso_italia
 
 router = APIRouter(prefix="/api/ranked")
 
@@ -65,7 +66,7 @@ def nuovo_mmr(mio: int, avversario: int, esito: float, partite: int) -> int:
 
 
 def settimana_di(giorno: datetime | None = None) -> str:
-    d = giorno or datetime.now(UTC)
+    d = giorno or adesso_italia()
     anno, sett, _ = d.isocalendar()
     return f"{anno}-W{sett:02d}"
 

@@ -8,7 +8,6 @@ import random
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException
 from pydantic import Field
@@ -18,6 +17,7 @@ from app.data_loader import load_characters, load_forms
 from app.db.models import ProfileDay, ProfileRow, SeasonScore
 from app.db.session import session_scope
 from app.engine.models import Fase, MatchResult, Model
+from app.tempo import giorno_italia
 
 router = APIRouter(prefix="/api")
 
@@ -250,7 +250,7 @@ def premio_consentito(s, profile_id: str, giorno: str) -> bool:  # type: ignore[
 
 
 def oggi() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%d")
+    return giorno_italia()
 
 
 def totale_collezione() -> int:

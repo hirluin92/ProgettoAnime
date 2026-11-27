@@ -141,3 +141,26 @@ def test_premi_hanno_un_tetto_giornaliero(tmp_path) -> None:  # type: ignore[no-
     assert premiate == TETTO_PREMI_GIORNO
     p = client.get(f"/api/profile/{pid}").json()
     assert p["partite"] == TETTO_PREMI_GIORNO
+
+
+def test_giorno_italiano_cambia_a_mezzanotte_italiana() -> None:
+    from datetime import UTC, datetime
+
+    from app.tempo import giorno_italia
+
+    # inverno (UTC+1): le 23:30 UTC sono già il giorno dopo
+    assert giorno_italia(datetime(2026, 1, 10, 22, 59, tzinfo=UTC)) == "2026-01-10"
+    assert giorno_italia(datetime(2026, 1, 10, 23, 0, tzinfo=UTC)) == "2026-01-11"
+    # estate (UTC+2): cambia alle 22:00 UTC
+    assert giorno_italia(datetime(2026, 7, 10, 21, 59, tzinfo=UTC)) == "2026-07-10"
+    assert giorno_italia(datetime(2026, 7, 10, 22, 0, tzinfo=UTC)) == "2026-07-11"
+    # il passaggio all'ora legale 2026: domenica 29 marzo alle 01:00 UTC
+    assert giorno_italia(datetime(2026, 3, 28, 22, 59, tzinfo=UTC)) == "2026-03-28"
+    assert giorno_italia(datetime(2026, 3, 28, 23, 0, tzinfo=UTC)) == "2026-03-29"
+    assert giorno_italia(datetime(2026, 3, 29, 21, 59, tzinfo=UTC)) == "2026-03-29"
+    assert giorno_italia(datetime(2026, 3, 29, 22, 0, tzinfo=UTC)) == "2026-03-30"
+    # ritorno all'ora solare 2026: domenica 25 ottobre
+    assert giorno_italia(datetime(2026, 10, 24, 21, 59, tzinfo=UTC)) == "2026-10-24"
+    assert giorno_italia(datetime(2026, 10, 24, 22, 0, tzinfo=UTC)) == "2026-10-25"
+    assert giorno_italia(datetime(2026, 10, 25, 22, 59, tzinfo=UTC)) == "2026-10-25"
+    assert giorno_italia(datetime(2026, 10, 25, 23, 0, tzinfo=UTC)) == "2026-10-26"

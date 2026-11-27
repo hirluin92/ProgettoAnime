@@ -5,8 +5,9 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi import FastAPI, HTTPException, Request, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, TypeAdapter, field_validator
 
 from app.account import router as account_router
@@ -18,6 +19,7 @@ from app.db.session import init_db
 from app.duello_api import router as duello_router
 from app.engine.models import Character, MatchResult, Team
 from app.engine.simulate import simulate
+from app.limite import LimiteRichieste
 from app.pacchetti import router as pacchetti_router
 from app.profilo import router as profilo_router
 from app.quick import router as quick_router
@@ -37,6 +39,25 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="Gioco d'asta anime", lifespan=lifespan)
+
+# richieste che scrivono, per IP e al minuto (0 = nessun limite)
+_limite = LimiteRichieste(int(os.environ.get("RATE_LIMIT_PER_MIN", "300")))
+
+
+@app.middleware("http")
+async def limita_richieste(request: Request, call_next):  # type: ignore[no-untyped-def]
+    p = request.url.path
+    if (
+        request.method in ("POST", "PUT", "DELETE")
+        and p.startswith("/api/")
+        and not p.startswith("/api/dev/")
+    ):
+        ip = request.client.host if request.client else "?"
+        if not _limite.consenti(ip):
+            return JSONResponse({"detail": "troppe richieste: riprova tra poco"}, status_code=429)
+    return await call_next(request)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(","),
