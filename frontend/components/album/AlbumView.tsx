@@ -68,8 +68,8 @@ export default function AlbumView() {
   if (!album) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
 
   return (
-    <main className="mx-auto max-w-[88rem] space-y-5 p-4 pt-6" data-testid="album">
-      <header className="space-y-1">
+    <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="album">
+      <header className="testata space-y-1">
         <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
         <h1 className="display text-4xl font-black">{it.album.titolo}</h1>
         <p className="text-sm muted" data-testid="album-conta">
@@ -97,6 +97,40 @@ export default function AlbumView() {
         onCarta={(c) => (c.posseduta && mazzo ? toggle(c.carta.id) : setAperta(c.carta.id))}
         onDettaglio={(c) => setAperta(c.carta.id)}
       />
+      {mazzo && (
+        <div
+          className="panel panel-solido sticky bottom-[3.75rem] z-30 flex items-center gap-3 p-2 sm:bottom-2"
+          data-testid="vassoio"
+        >
+          <span className="shrink-0 pl-1 text-xs font-extrabold">
+            {mazzo.nome} · {mazzo.carte.length}/{album.limiti.mazzo}
+          </span>
+          <ul className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5">
+            {Array.from({ length: album.limiti.mazzo }, (_, i) => {
+              const c = album.carte.find((x) => x.carta.id === mazzo.carte[i]);
+              return (
+                <li
+                  key={i}
+                  className="relative size-11 shrink-0 overflow-hidden rounded-lg border border-dashed border-white/25 bg-white/5"
+                >
+                  {c?.carta.immagine_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={c.carta.immagine_url}
+                      alt={c.carta.nome}
+                      referrerPolicy="no-referrer"
+                      className="size-full object-cover object-top"
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <button className="btn btn-primary shrink-0" onClick={() => void salva()}>
+            {it.album.salva}
+          </button>
+        </div>
+      )}
       <section className="panel space-y-3 p-4" id="mazzi" data-testid="mazzi">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-2xl font-extrabold">{it.album.mazzi}</h2>

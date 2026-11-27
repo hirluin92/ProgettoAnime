@@ -6,7 +6,7 @@ import { APP_NAME } from "@/lib/constants";
 export default function Footer() {
   return (
     <footer
-      className="site-chrome mx-auto mt-24 max-w-6xl border-t px-5 py-10 text-xs muted"
+      className="site-chrome mx-auto mt-24 max-w-7xl border-t px-5 py-10 text-xs muted"
       data-testid="footer"
     >
       <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">

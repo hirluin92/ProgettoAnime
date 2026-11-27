@@ -139,27 +139,7 @@ export default function CharacterCard({
           transition={{ duration: 0.45 }}
         >
           <div className="tcg-inner">
-            <span className="tcg-glare" aria-hidden="true" />
-            <div className="flex items-start justify-between gap-1">
-              <div className="min-w-0">
-                <div className="display truncate font-bold leading-tight">{character.nome}</div>
-                <div className="truncate text-[0.7em] font-bold uppercase tracking-wider opacity-70">
-                  {role ?? pal.label}
-                </div>
-              </div>
-              <div
-                className="display grid shrink-0 place-items-center rounded-lg px-1.5 text-[1.7em] font-bold leading-none"
-                style={{ background: rar.frame, color: "#1a1030" }}
-              >
-                {power ?? character.rating}
-              </div>
-            </div>
             <div className="tcg-art">
-              {character.forma && (
-                <span className="absolute bottom-1 left-1 z-[3] max-w-[92%] truncate rounded bg-black/70 px-1.5 py-0.5 text-[0.55rem] font-extrabold uppercase tracking-wider text-amber-200">
-                  {character.forma}
-                </span>
-              )}
               {showImg ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -179,23 +159,34 @@ export default function CharacterCard({
                 />
               )}
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-1">
-                {character.arch && (
-                  <span className="rounded-md bg-white/15 px-1.5 py-0.5 text-[0.62rem] font-extrabold uppercase tracking-wide">
-                    {ARCH_NOMI[character.arch] ?? character.arch}
-                  </span>
-                )}
-                {character.mossa && (
-                  <span className="truncate text-[0.62rem] font-bold text-amber-200">
-                    <Icon name="bolt" className="size-[1em]" /> {character.mossa.nome}
-                  </span>
-                )}
+            <span className="tcg-glare" aria-hidden="true" />
+            {/* stessa carta del Duello: arte a tutta carta, potenza in alto a destra, nome in basso */}
+            <div
+              className="display absolute right-[0.5em] top-[0.5em] z-[3] grid min-w-[2.1em] place-items-center rounded-[0.6em] border-2 border-white/80 bg-black/80 px-[0.3em] py-[0.1em] text-[1.9em] font-black leading-none text-white shadow-lg"
+              title={rar.name}
+            >
+              {power ?? character.rating}
+            </div>
+            {character.forma && (
+              <span className="absolute left-[0.5em] top-[0.5em] z-[3] max-w-[60%] truncate rounded bg-black/70 px-1.5 py-0.5 text-[0.6em] font-extrabold uppercase tracking-wider text-amber-200">
+                {character.forma}
+              </span>
+            )}
+            <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-[#0b0818] via-[#0b0818]/85 to-transparent px-[0.7em] pb-[0.55em] pt-[2.2em]">
+              <div className="display truncate text-[1.45em] font-black leading-none drop-shadow">
+                {character.nome}
               </div>
-              <div className="mt-1 flex items-center justify-between text-[0.62rem] font-bold uppercase tracking-widest opacity-60">
-                <span className="truncate whitespace-nowrap">{pal.label}</span>
-                <span className="ml-1 shrink-0">{rar.name}</span>
+              <div className="mt-[0.2em] truncate text-[0.75em] font-semibold text-white/70">
+                {character.arch
+                  ? (ARCH_NOMI[character.arch] ?? character.arch)
+                  : (role ?? pal.label)}{" "}
+                · {rar.name}
               </div>
+              {character.mossa && (
+                <div className="mt-[0.2em] truncate text-[0.68em] font-bold text-amber-200">
+                  <Icon name="bolt" className="size-[1em]" /> {character.mossa.nome}
+                </div>
+              )}
             </div>
           </div>
         </motion.div>

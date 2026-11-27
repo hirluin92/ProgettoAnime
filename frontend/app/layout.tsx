@@ -3,6 +3,7 @@ import { Barlow_Condensed, Plus_Jakarta_Sans } from "next/font/google";
 import CookieBanner from "@/components/CookieBanner";
 import Footer from "@/components/Footer";
 import PwaRegister from "@/components/PwaRegister";
+import ModoSfondo from "@/components/ModoSfondo";
 import SiteNav from "@/components/SiteNav";
 import { APP_NAME } from "@/lib/constants";
 import "./globals.css";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <i />
           <i />
         </div>
+        <ModoSfondo />
         <SiteNav />
         {children}
         <Footer />

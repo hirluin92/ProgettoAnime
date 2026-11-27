@@ -12,7 +12,30 @@
   --cyan: #35e0ff;
   --gold: #ffd45a;
   --violet: #8b5cff;
+  --green: #3ddc97;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* ruoli dei colori: rosa-arancio = azione principale; celeste = informazione e selezione;
+     oro = premi e rarità; viola = solo fondo; verde e rosso = solo esiti */
+  --accent: var(--pink); /* il colore della modalità, cambia con la pagina (data-modo sul body) */
+  /* tempi: 150 ms ai tocchi, 300 ms alle carte che si girano, 700 ms solo a vittorie e rarità alte */
+  --t-tocco: 150ms;
+  --t-carta: 300ms;
+  --t-premio: 700ms;
+}
+body[data-modo="duello"] {
+  --accent: var(--pink);
+}
+body[data-modo="ranked"] {
+  --accent: var(--violet);
+}
+body[data-modo="sfide"] {
+  --accent: var(--cyan);
+}
+body[data-modo="album"] {
+  --accent: var(--green);
+}
+body[data-modo="negozio"] {
+  --accent: var(--gold);
 }
 
 @theme inline {
@@ -66,7 +89,11 @@ body {
   top: -18%;
   width: 52vw;
   height: 52vw;
-  background: radial-gradient(circle, rgb(255 61 129 / 0.6), transparent 65%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 62%, transparent),
+    transparent 65%
+  );
 }
 .aurora i:nth-child(3) {
   left: 18%;
@@ -178,8 +205,18 @@ body::before {
     background: linear-gradient(90deg, transparent, var(--cyan));
   }
 
-  /* Pannello con bordo luminoso a gradiente */
+  /* Pannello piatto e opaco con bordo sottile: la base di ogni schermata */
   .panel {
+    border: 1px solid rgb(255 255 255 / 0.11);
+    border-radius: 1.2rem;
+    background: linear-gradient(170deg, #14112d, #0e0b22);
+    box-shadow:
+      0 18px 40px -16px rgb(0 0 0 / 0.65),
+      inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+  /* Bordo luminoso a gradiente: solo per ciò che si può toccare o che si è appena vinto */
+  .panel-vivo,
+  .panel-hover {
     border: 1px solid transparent;
     border-radius: 1.4rem;
     background:
@@ -197,18 +234,10 @@ body::before {
       inset 0 1px 0 rgb(255 255 255 / 0.1),
       inset 0 -30px 50px -30px rgb(139 92 255 / 0.12);
   }
-  /* Pannello opaco per finestre e tendine: niente testo che traspare da sotto */
+  /* Finestre e tendine: opache, con un bordo un po' più chiaro */
   .panel-solido {
-    background:
-      linear-gradient(165deg, rgb(30 25 64), rgb(15 12 34)) padding-box,
-      linear-gradient(
-          140deg,
-          rgb(255 255 255 / 0.32),
-          rgb(255 255 255 / 0.05) 38%,
-          rgb(139 92 255 / 0.35) 72%,
-          rgb(255 61 129 / 0.3)
-        )
-        border-box;
+    border-color: rgb(255 255 255 / 0.2);
+    background: #15122f;
   }
   .panel-hover {
     transition:
@@ -223,6 +252,40 @@ body::before {
       inset 0 1px 0 rgb(255 255 255 / 0.1);
   }
 
+  /* Testata di pagina: retino a puntini e taglio diagonale nel colore della modalità */
+  .testata {
+    position: relative;
+    isolation: isolate;
+  }
+  .testata::before {
+    content: "";
+    position: absolute;
+    inset: -1rem -1rem -1rem 38%;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--accent) 55%, transparent) 1.3px,
+      transparent 1.6px
+    );
+    background-size: 11px 11px;
+    -webkit-mask-image: linear-gradient(100deg, transparent 8%, #000 70%);
+    mask-image: linear-gradient(100deg, transparent 8%, #000 70%);
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 0.55;
+  }
+  .testata h1 {
+    text-shadow: 0 2px 26px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  /* Un solo stile di «selezionato» per tutto il sito: celeste */
+  .sel,
+  .btn[aria-pressed="true"] {
+    border-color: var(--cyan);
+    background: rgb(53 224 255 / 0.14);
+    color: #d9f7ff;
+    box-shadow:
+      0 0 0 1px rgb(53 224 255 / 0.5),
+      0 0 22px -4px rgb(53 224 255 / 0.5);
+  }
   .btn {
     position: relative;
     display: inline-flex;
@@ -402,24 +465,17 @@ body::before {
   }
   .tcg-inner {
     position: relative;
-    display: grid;
     height: 100%;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    min-height: 0;
-    gap: 0.35rem;
     overflow: hidden;
     border-radius: calc(1.1rem - 3px);
-    padding: 0.55rem;
-    background: linear-gradient(180deg, #17142b, #0b0a18);
+    background: #0b0a18;
   }
   .tcg-art {
-    position: relative;
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
     overflow: hidden;
-    border-radius: 0.7rem;
-    border: 1px solid rgb(255 255 255 / 0.25);
     background:
       radial-gradient(circle at 50% 38%, rgb(255 255 255 / 0.35), transparent 55%),
       linear-gradient(160deg, var(--from), var(--to));

@@ -189,14 +189,20 @@ export default function DuelloBoard({
                 ))}
               </div>
               <div className="relative flex items-center justify-between rounded-xl border border-white/10 bg-black/65 px-4 py-1.5 text-2xl font-black shadow-inner">
-                <span className="text-emerald-300" data-testid={`tot-tu-${k}`}>
-                  {tu}
+                <span className="grid leading-none text-emerald-300">
+                  <small className="text-[0.55rem] font-extrabold tracking-[0.2em] opacity-70">
+                    {it.duello.tu}
+                  </small>
+                  <span data-testid={`tot-tu-${k}`}>{tu}</span>
                 </span>
                 <span className="display text-sm tracking-widest muted">
-                  {tu > cpu ? "◀ VANTAGGIO" : cpu > tu ? "SVANTAGGIO ▶" : "PARI"}
+                  {tu > cpu ? it.duello.inVantaggio : cpu > tu ? it.duello.inSvantaggio : "PARI"}
                 </span>
-                <span className="text-red-300" data-testid={`tot-cpu-${k}`}>
-                  {cpu}
+                <span className="grid text-right leading-none text-red-300">
+                  <small className="text-[0.55rem] font-extrabold tracking-[0.2em] opacity-70">
+                    {it.duello.cpu}
+                  </small>
+                  <span data-testid={`tot-cpu-${k}`}>{cpu}</span>
                 </span>
               </div>
               <div
@@ -275,6 +281,16 @@ export default function DuelloBoard({
             <span className="text-sm font-black" data-testid="duello-energia">
               <Icon name="bolt" className="size-[1em] text-amber-300" /> {it.duello.energia}:{" "}
               {stato.energia - speso}/{stato.energia}
+              <span className="ml-2 inline-flex gap-0.5 align-middle" aria-hidden="true">
+                {Array.from({ length: Math.min(8, stato.energia) }, (_, i) => (
+                  <i
+                    key={i}
+                    className={`size-2.5 rotate-45 rounded-[2px] ${
+                      i < stato.energia - speso ? "bg-amber-300" : "bg-white/15"
+                    }`}
+                  />
+                ))}
+              </span>
             </span>
             <div className="flex gap-2">
               {occupato && onSalta && (

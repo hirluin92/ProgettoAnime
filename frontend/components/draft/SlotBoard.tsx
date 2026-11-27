@@ -15,6 +15,7 @@ export default function SlotBoard({
   mode,
   swapFirst,
   onSlot,
+  compatta,
 }: {
   roles: string[];
   byRole: Record<string, Placed | undefined>;
@@ -22,9 +23,13 @@ export default function SlotBoard({
   mode: SlotMode;
   swapFirst: string | null;
   onSlot: (role: string) => void;
+  compatta?: boolean; // accanto alla mano: tre colonne di caselle piccole
 }) {
   return (
-    <ol className="grid grid-cols-2 gap-3 sm:grid-cols-4" data-testid="slots">
+    <ol
+      className={`grid grid-cols-2 gap-3 ${compatta ? "sm:grid-cols-3" : "sm:grid-cols-4"}`}
+      data-testid="slots"
+    >
       {roles.map((role) => {
         const p = byRole[role];
         const placing = mode === "place" && !p && !!selected;

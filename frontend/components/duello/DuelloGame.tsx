@@ -102,6 +102,10 @@ export default function DuelloGame({
   const [esito, setEsito] = useState<TurnoOut | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [finaleChiuso, setFinaleChiuso] = useState(false);
+  useEffect(() => {
+    if (!stato?.finita) setFinaleChiuso(false);
+  }, [stato?.finita]);
   const skip = useRef(false);
   const { profile } = useProfile();
   const [mazziProfilo, setMazziProfilo] = useState<string[]>([]);
@@ -598,135 +602,169 @@ export default function DuelloGame({
         onConferma={(m) => void conferma(m)}
         onSalta={() => (skip.current = true)}
       />
-      {esito && stato.finita && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="panel space-y-4 p-6 text-center"
-          data-testid="duello-esito"
-        >
-          <h2 className="display text-grad text-5xl font-black">
-            {esito.vinto === null
-              ? it.duello.pareggio
-              : esito.vinto
-                ? it.duello.vittoria
-                : it.duello.sconfitta}
-          </h2>
-          <p className="muted">{fmt(it.duello.corsieVinte, { a: vinteTu, b: vinteCpu })}</p>
-          {esitoGiorno && (
-            <div className="space-y-3 text-left">
-              <div className="text-center text-3xl">
-                <Stelle n={esitoGiorno.stelle} />
-              </div>
-              <p className="text-center text-sm muted">
-                {fmt(it.duello.posizione, { n: esitoGiorno.posizione })}
-              </p>
-              <ClassificaGiorno righe={esitoGiorno.classifica} />
-            </div>
-          )}
-          {esito.scala && (
-            <div className="panel space-y-3 p-4 text-left" data-testid="scala-esito">
-              <p className="text-center font-bold">
-                {esito.scala.finita
-                  ? esito.scala.completata
-                    ? it.scalaD.completata
-                    : it.scalaD.fine
-                  : it.scalaD.vintoGradino}{" "}
-                · {fmt(it.scalaD.gradiniVinti, { n: esito.scala.vinti })}
-              </p>
-              {!esito.scala.finita && (
-                <>
-                  <h3 className="eyebrow text-center">{it.scalaD.scegliPremio}</h3>
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    {esito.scala.offerte.map((o, i) => (
-                      <div key={i} className="space-y-2 text-center">
-                        <p className="text-xs font-extrabold uppercase tracking-widest text-cyan-200">
-                          {o.tipo === "carta" ? it.scalaD.carta : it.scalaD.rinforzo}
-                        </p>
-                        <DuelloCard carta={o.carta} />
-                        <p className="text-xs">{o.testo}</p>
-                        <button
-                          className="btn btn-primary w-full"
-                          disabled={busy}
-                          data-testid={`scala-offerta-${i}`}
-                          onClick={async () => {
-                            setBusy(true);
-                            try {
-                              const r = await api<RunView>(
-                                `/api/scala-duelli/${run?.run_id}/scegli`,
-                                { method: "POST", body: JSON.stringify({ indice: i }) },
-                              );
-                              setRun(r);
-                              setPartita(null);
-                              setStato(null);
-                              setEsito(null);
-                            } catch (e) {
-                              err(e);
-                            } finally {
-                              setBusy(false);
-                            }
-                          }}
-                        >
-                          {it.scalaD.scegli}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-              {esito.scala.finita && esito.scala.premio && (
-                <PremioPanel premio={esito.scala.premio} />
-              )}
-            </div>
-          )}
-          {esito.ranked && (
-            <div className="panel space-y-1 p-4 text-left" data-testid="ranked-esito">
-              <p className="font-bold">
-                {fmt(it.ranked.risultato, {
-                  a: esito.ranked.mmr_prima,
-                  b: esito.ranked.mmr_dopo,
-                  d: `${esito.ranked.mmr_dopo - esito.ranked.mmr_prima >= 0 ? "+" : ""}${esito.ranked.mmr_dopo - esito.ranked.mmr_prima}`,
-                })}
-              </p>
-              <p className="text-sm muted">
-                {nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo)}
-                {esito.ranked.in_piazzamento ? ` · ${it.ranked.piazzamentoFatto}` : ""}
-              </p>
-              {esito.ranked.promosso && (
-                <p className="font-bold text-emerald-300">
-                  {fmt(it.ranked.promosso, {
-                    lega: nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo),
-                  })}
-                </p>
-              )}
-              {esito.ranked.retrocesso && (
-                <p className="font-bold text-rose-300">
-                  {fmt(it.ranked.retrocesso, {
-                    lega: nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo),
-                  })}
-                </p>
-              )}
-            </div>
-          )}
-          {esito.premio && <PremioPanel premio={esito.premio} />}
-          <button
-            className={`btn btn-primary ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
-            onClick={() =>
-              giorno || ranked
-                ? (window.location.href = ranked ? "/ranked" : "/duello")
-                : carica().catch(err)
-            }
-            data-testid="duello-rigioca"
+      {esito && stato.finita && finaleChiuso && (
+        <button className="btn mx-auto flex" onClick={() => setFinaleChiuso(false)}>
+          {it.duello.mostraEsito}
+        </button>
+      )}
+      {esito && stato.finita && !finaleChiuso && (
+        <div className="fixed inset-0 z-[55] grid place-items-center overflow-y-auto bg-[#05040c]/90 p-4">
+          <motion.section
+            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="panel panel-solido my-auto w-full max-w-3xl space-y-4 p-6 text-center sm:p-8"
+            data-testid="duello-esito"
           >
-            {ranked
-              ? it.ranked.torna
-              : scala
-                ? it.scalaD.ricomincia
-                : giorno
-                  ? it.duello.indietro
-                  : it.duello.rigioca}
-          </button>
-        </motion.section>
+            <div className="flex justify-center gap-3" aria-hidden="true">
+              {stato.totali.map(([tu, cpu], k) => (
+                <motion.span
+                  key={k}
+                  initial={{ opacity: 0, y: 14, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.4 + k * 0.45, duration: 0.3 }}
+                  className={`grid min-w-24 place-items-center rounded-2xl border-2 px-3 py-2 font-black ${
+                    tu > cpu
+                      ? "border-emerald-300 bg-emerald-500/20 text-emerald-200"
+                      : cpu > tu
+                        ? "border-red-300 bg-red-500/20 text-red-200"
+                        : "border-white/30 bg-white/10 text-white/80"
+                  }`}
+                >
+                  <span className="text-xs font-bold uppercase tracking-widest opacity-80">
+                    {it.duello.corsia} {k + 1}
+                  </span>
+                  <span className="display text-3xl">
+                    {tu}–{cpu}
+                  </span>
+                </motion.span>
+              ))}
+            </div>
+            <h2 className="display text-grad text-6xl font-black sm:text-7xl">
+              {esito.vinto === null
+                ? it.duello.pareggio
+                : esito.vinto
+                  ? it.duello.vittoria
+                  : it.duello.sconfitta}
+            </h2>
+            <p className="muted">{fmt(it.duello.corsieVinte, { a: vinteTu, b: vinteCpu })}</p>
+            {esitoGiorno && (
+              <div className="space-y-3 text-left">
+                <div className="text-center text-3xl">
+                  <Stelle n={esitoGiorno.stelle} />
+                </div>
+                <p className="text-center text-sm muted">
+                  {fmt(it.duello.posizione, { n: esitoGiorno.posizione })}
+                </p>
+                <ClassificaGiorno righe={esitoGiorno.classifica} />
+              </div>
+            )}
+            {esito.scala && (
+              <div className="panel space-y-3 p-4 text-left" data-testid="scala-esito">
+                <p className="text-center font-bold">
+                  {esito.scala.finita
+                    ? esito.scala.completata
+                      ? it.scalaD.completata
+                      : it.scalaD.fine
+                    : it.scalaD.vintoGradino}{" "}
+                  · {fmt(it.scalaD.gradiniVinti, { n: esito.scala.vinti })}
+                </p>
+                {!esito.scala.finita && (
+                  <>
+                    <h3 className="eyebrow text-center">{it.scalaD.scegliPremio}</h3>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      {esito.scala.offerte.map((o, i) => (
+                        <div key={i} className="space-y-2 text-center">
+                          <p className="text-xs font-extrabold uppercase tracking-widest text-cyan-200">
+                            {o.tipo === "carta" ? it.scalaD.carta : it.scalaD.rinforzo}
+                          </p>
+                          <DuelloCard carta={o.carta} />
+                          <p className="text-xs">{o.testo}</p>
+                          <button
+                            className="btn btn-primary w-full"
+                            disabled={busy}
+                            data-testid={`scala-offerta-${i}`}
+                            onClick={async () => {
+                              setBusy(true);
+                              try {
+                                const r = await api<RunView>(
+                                  `/api/scala-duelli/${run?.run_id}/scegli`,
+                                  { method: "POST", body: JSON.stringify({ indice: i }) },
+                                );
+                                setRun(r);
+                                setPartita(null);
+                                setStato(null);
+                                setEsito(null);
+                              } catch (e) {
+                                err(e);
+                              } finally {
+                                setBusy(false);
+                              }
+                            }}
+                          >
+                            {it.scalaD.scegli}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+                {esito.scala.finita && esito.scala.premio && (
+                  <PremioPanel premio={esito.scala.premio} />
+                )}
+              </div>
+            )}
+            {esito.ranked && (
+              <div className="panel space-y-1 p-4 text-left" data-testid="ranked-esito">
+                <p className="font-bold">
+                  {fmt(it.ranked.risultato, {
+                    a: esito.ranked.mmr_prima,
+                    b: esito.ranked.mmr_dopo,
+                    d: `${esito.ranked.mmr_dopo - esito.ranked.mmr_prima >= 0 ? "+" : ""}${esito.ranked.mmr_dopo - esito.ranked.mmr_prima}`,
+                  })}
+                </p>
+                <p className="text-sm muted">
+                  {nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo)}
+                  {esito.ranked.in_piazzamento ? ` · ${it.ranked.piazzamentoFatto}` : ""}
+                </p>
+                {esito.ranked.promosso && (
+                  <p className="font-bold text-emerald-300">
+                    {fmt(it.ranked.promosso, {
+                      lega: nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo),
+                    })}
+                  </p>
+                )}
+                {esito.ranked.retrocesso && (
+                  <p className="font-bold text-rose-300">
+                    {fmt(it.ranked.retrocesso, {
+                      lega: nomeLega(esito.ranked.lega_dopo, esito.ranked.divisione_dopo),
+                    })}
+                  </p>
+                )}
+              </div>
+            )}
+            {esito.premio && <PremioPanel premio={esito.premio} />}
+            <button
+              className={`btn btn-primary ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
+              onClick={() =>
+                giorno || ranked
+                  ? (window.location.href = ranked ? "/ranked" : "/duello")
+                  : carica().catch(err)
+              }
+              data-testid="duello-rigioca"
+            >
+              {ranked
+                ? it.ranked.torna
+                : scala
+                  ? it.scalaD.ricomincia
+                  : giorno
+                    ? it.duello.indietro
+                    : it.duello.rigioca}
+            </button>
+            <button className="btn mx-2" onClick={() => setFinaleChiuso(true)}>
+              {it.duello.vediPlancia}
+            </button>
+          </motion.section>
+        </div>
       )}
     </main>
   );

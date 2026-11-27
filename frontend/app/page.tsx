@@ -89,17 +89,23 @@ function ModeCard({
   title,
   text,
   accent,
+  grande,
+  largo,
 }: {
   href: string;
   icon: string;
   title: string;
   text: string;
   accent: string;
+  grande?: boolean;
+  largo?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className="panel panel-hover group relative flex items-center gap-4 overflow-hidden p-5"
+      className={`panel panel-hover group relative flex items-center gap-4 overflow-hidden p-5 ${
+        grande ? "md:col-span-2 md:p-7" : ""
+      } ${largo ? "md:col-span-3" : ""}`}
     >
       <span
         className="absolute -right-10 -top-10 size-36 rounded-full opacity-30 blur-2xl transition-opacity group-hover:opacity-60"
@@ -118,16 +124,22 @@ function ModeCard({
         style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
       />
       <span
-        className="relative grid size-16 shrink-0 place-items-center rounded-2xl text-white shadow-lg ring-1 ring-white/30"
+        className={`relative grid shrink-0 place-items-center rounded-2xl text-white shadow-lg ring-1 ring-white/30 ${
+          grande ? "size-24" : "size-16"
+        }`}
         style={{
           background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.45))`,
           boxShadow: `0 8px 24px ${accent}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
         }}
       >
-        <Icon name={icon} className="size-8" />
+        <Icon name={icon} className={grande ? "size-12" : "size-8"} />
       </span>
       <span className="relative min-w-0 flex-1">
-        <span className="display block text-2xl font-extrabold leading-none">{title}</span>
+        <span
+          className={`display block font-extrabold leading-none ${grande ? "text-4xl" : "text-2xl"}`}
+        >
+          {title}
+        </span>
         <span className="mt-1.5 block text-[0.95rem] leading-snug muted">{text}</span>
       </span>
       <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg transition-all group-hover:translate-x-1 group-hover:bg-white/20">
@@ -187,7 +199,7 @@ export default function Home() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-5 pb-6 pt-8 sm:pt-14">
+    <main className="mx-auto max-w-7xl px-5 pb-6 pt-8 sm:pt-14">
       <section className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
         <div className="min-w-0 space-y-7">
           <header className="space-y-4">
@@ -246,6 +258,7 @@ export default function Home() {
             title={it.home.duelloTitolo}
             text={it.home.duelloTesto}
             accent="#ff3d81"
+            grande
           />
           <ModeCard
             href="/ranked"
@@ -281,6 +294,7 @@ export default function Home() {
             title={it.home.albumTitolo}
             text={it.home.albumTesto}
             accent="#3ddc97"
+            largo
           />
         </div>
       </section>
@@ -371,7 +385,7 @@ export default function Home() {
               className="panel reveal relative overflow-hidden p-6"
               style={{ ["--i" as string]: i }}
             >
-              <span className="display text-grad pointer-events-none absolute -right-2 -top-4 text-[6.5rem] font-black leading-none opacity-30">
+              <span className="display text-grad pointer-events-none absolute right-4 top-1 text-[5.5rem] font-black leading-none opacity-30">
                 {p.n}
               </span>
               <h3 className="relative text-3xl font-extrabold">{p.t}</h3>

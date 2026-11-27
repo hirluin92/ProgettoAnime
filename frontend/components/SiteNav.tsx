@@ -121,7 +121,7 @@ export default function SiteNav() {
         <div className="border-b bg-[#05040c]/70 backdrop-blur-xl">
           <nav
             aria-label="Principale"
-            className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4"
+            className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4"
           >
             <Link href="/" className="flex items-center gap-2.5" aria-label={APP_NAME}>
               <Logo />

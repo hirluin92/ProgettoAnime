@@ -49,16 +49,16 @@
     ],
     "caratteristiche": [
       {
-        "t": "100 personaggi",
-        "d": "Da 5 anime, con schede, mosse e passive."
+        "t": "123 carte da collezionare",
+        "d": "Da 5 anime, con mosse e passive: le trovi nei pacchetti."
       },
       {
-        "t": "Asta in tempo reale",
-        "d": "Offerte live, timer autorevole dal server."
+        "t": "Sfide ogni giorno",
+        "d": "Animedle, sigle, scorci e il rompicapo del Duello."
       },
       {
-        "t": "Sinergie e legami",
-        "d": "Le squadre coerenti combattono meglio."
+        "t": "Leghe e classifica",
+        "d": "Da Bronzo a Campione, con il draft nuovo a ogni partita."
       },
       {
         "t": "Modalità streamer",
@@ -70,7 +70,7 @@
     "raidTitolo": "Raid cooperativo",
     "raidTesto": "2-4 amici costruiscono una squadra e sfidano un boss.",
     "duelloTitolo": "Duello",
-    "duelloTesto": "Nuovo! 6 turni, 3 corsie, carte in segreto: vince chi gioca meglio, non chi ha le carte più forti.",
+    "duelloTesto": "6 turni, 3 corsie, carte giocate in segreto: vince chi gioca meglio, non chi ha le carte più forti.",
     "rankedTitolo": "Classificata",
     "rankedTesto": "Leghe da Bronzo a Campione: draft nuovo a ogni partita, conta solo la bravura.",
     "albumTitolo": "Album e pacchetti",
@@ -203,6 +203,7 @@
     "vuoto": "Libero",
     "ora": "Ora",
     "passaSopra": "Passa sopra una carta per ingrandirla",
+    "passaSopraTocco": "Tocca la «i» su una carta per vederla ingrandita",
     "draft": "Draft",
     "dettagli": "Dettagli",
     "chiudi": "Chiudi",
@@ -374,6 +375,7 @@
     "obiettivi": "Obiettivi di oggi",
     "obiettivoXp": "+20 XP ciascuno",
     "collezione": "Collezione",
+    "apriAlbum": "Apri l'album",
     "bloccata": "???",
     "classifica": "Classifica della stagione",
     "tuaPosizione": "La tua posizione",
@@ -467,6 +469,10 @@
     "tu": "Tu",
     "cpu": "CPU",
     "corsia": "Corsia",
+    "mostraEsito": "Mostra il risultato",
+    "inVantaggio": "IN VANTAGGIO",
+    "inSvantaggio": "IN SVANTAGGIO",
+    "vediPlancia": "Guarda la plancia",
     "gioca": "Gioca qui",
     "conferma": "Conferma il turno",
     "passa": "Passa il turno",
@@ -776,6 +782,7 @@
       "Thriller": "Thriller"
     },
     "persa": "Persa",
+    "prossima": "Nuove sfide tra {t}",
     "rivedi": "Rivedi",
     "gioca": "Gioca",
     "rompicapo": "Rompicapo del Duello",
@@ -785,6 +792,7 @@
       "titolo": "Animedle",
       "intro": "Scegli un anime: le caselle ti dicono quanto si avvicina a quello misterioso. Verde è giusto, giallo è vicino, le frecce indicano se il valore cercato è più alto o più basso.",
       "vuoto": "Scrivi un titolo qui sopra per fare il primo tentativo.",
+      "scorri": "← Scorri di lato per vedere tutti gli indizi →",
       "legendaGiusto": "Giusto",
       "legendaVicino": "Vicino o in comune",
       "legendaNo": "Sbagliato",

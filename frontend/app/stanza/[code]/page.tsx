@@ -117,7 +117,7 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
   if (!room || !me) return <main className="p-6">{it.stanza.connessione}</main>;
 
   return (
-    <main className="mx-auto max-w-6xl p-4">
+    <main className="mx-auto max-w-7xl p-4">
       {status === "closed" && (
         <p
           role="status"
