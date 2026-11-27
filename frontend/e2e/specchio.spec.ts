@@ -34,7 +34,7 @@ test("draft a specchio in 2 e torneo a eliminazione diretta", async ({ browser }
   await host.page.getByLabel("Modalità").selectOption("specchio");
   await host.page.getByLabel("Formato torneo").selectOption("eliminazione");
   await host.page.getByLabel("Piano di battaglia (s)").fill("0");
-  await host.page.getByRole("button", { name: "Avvia l'asta" }).click();
+  await host.page.getByRole("button", { name: "Avvia il draft" }).click();
   for (const p of [host, guest]) await expect(p.page.getByTestId("specchio")).toBeVisible();
 
   await Promise.all([gioca(host.page), gioca(guest.page)]);

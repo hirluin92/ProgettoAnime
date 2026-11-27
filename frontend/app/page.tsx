@@ -175,8 +175,14 @@ export default function Home() {
     try {
       await api(`/api/rooms/${code.trim().toUpperCase()}`);
       router.push(`/stanza/${code.trim().toUpperCase()}`);
-    } catch {
-      setError(it.errori.stanzaNonTrovata);
+    } catch (e) {
+      // «non trovata» solo se il server l'ha detto davvero; altrimenti è un problema di rete
+      const m = (e as Error).message.toLowerCase();
+      setError(
+        m.includes("non trovata") || m.includes("404")
+          ? it.errori.stanzaNonTrovata
+          : it.errori.serverNonRaggiungibile,
+      );
     }
   };
 

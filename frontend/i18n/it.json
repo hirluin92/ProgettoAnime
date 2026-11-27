@@ -109,7 +109,8 @@
   },
   "errori": {
     "partitaNonTrovata": "Partita non trovata.",
-    "stanzaNonTrovata": "Stanza non trovata o scaduta.",
+    "stanzaNonTrovata": "Stanza non trovata o scaduta: controlla il codice (le stanze create su un altro sito o computer non si vedono).",
+    "serverNonRaggiungibile": "Non riesco a collegarmi al server: riprova tra qualche secondo.",
     "stanzaScaduta": "La stanza non esiste più o è scaduta.",
     "paginaNonTrovata": "Pagina non trovata",
     "tornaHome": "Torna alla home",
@@ -125,6 +126,8 @@
     "timer": "Timer (s)",
     "timerRuolo": "Scelta ruolo (s)",
     "avvia": "Avvia l'asta",
+    "avviaDraft": "Avvia il draft",
+    "avviaRaid": "Avvia il raid",
     "attendiHost": "In attesa che l'host avvii l'asta…",
     "entra": "Entra nella stanza",
     "connessione": "Connessione in corso…",
@@ -622,6 +625,7 @@
       "cercaSigla": "Scrivi l'anime, il titolo del brano o l'artista…",
       "parzialeGiusto": "{cosa} giusto! +{n} punti",
       "serieDi": "{n} domande indovinate di fila: bonus punti!",
+      "avviaQuiz": "Avvia il quiz",
       "serieGiusta": "Serie giusta, ma un'altra stagione: riprova tra poco.",
       "tipo": "Giochi",
       "tipi": {
