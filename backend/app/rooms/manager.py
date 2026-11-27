@@ -590,8 +590,9 @@ class RoomManager:
         st = room.settings
         umani = [p.id for p in room.players.values() if not p.is_chat]
         room.phase = "quiz"
+        room.extras["quiz_giri"] = room.extras.get("quiz_giri", 0) + 1
         room.extras["quiz"] = QuizPartita.nuova(
-            room.seed,
+            room.seed + 7919 * room.extras["quiz_giri"],
             st.quiz_tipo,
             st.quiz_round,
             st.quiz_tempo,

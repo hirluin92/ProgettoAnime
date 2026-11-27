@@ -27,7 +27,10 @@ export default function DuelliView({ room, socket }: { room: RoomView; socket: R
     let vivo = true;
     const rivela = duello.eventi.filter((e) => e.t === "rivela" && e.carta_view);
     if (rivela.length === 0) {
+      // anche se una rivelazione precedente è stata interrotta: la plancia torna giocabile
       setVista(duello.vista);
+      setCaption(null);
+      setAnimando(false);
       return;
     }
     setAnimando(true);

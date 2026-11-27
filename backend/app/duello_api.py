@@ -301,6 +301,7 @@ class Partita:
     ranked_esito: Any = None
     scala: str | None = None  # id della corsa della Scala (roguelike)
     scala_esito: Any = None
+    giocate: int = 0  # carte giocate dal giocatore: senza, nessun premio
     giorno: str | None = None  # rompicapo del giorno: giorno e nome del giocatore
     nome: str | None = None
     creata: float = field(default_factory=time.time)
@@ -434,13 +435,19 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
         eventi = gioca_turno(s, mie, cpu)
     except MossaNonValida as e:
         raise HTTPException(422, str(e)) from e
+    p.giocate += len(mie)
     vinto: bool | None = None
     if s.finita:
         vinto = None if s.vincitore is None else s.vincitore == 0
         if p.premio is None:
-            p.premio = assegna_premio_duello(
-                p.profile_id, vinto, p.livello, [c.id for c in p.mazzo], conta_elo=not p.personale
-            )
+            if p.giocate > 0:
+                p.premio = assegna_premio_duello(
+                    p.profile_id,
+                    vinto,
+                    p.livello,
+                    [c.id for c in p.mazzo],
+                    conta_elo=not p.personale,
+                )
             if p.giorno and p.nome:
                 _registra_giorno(p, s)
             if p.scala and p.scala_esito is None:

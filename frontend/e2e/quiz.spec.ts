@@ -16,9 +16,9 @@ test("sfide: Animedle del giorno, due tentativi, vittoria e crediti", async ({ p
   await page.goto("/sfide");
   await expect(page.getByTestId("sfida-animedle-stato")).toContainText("Da fare");
 
-  // la soluzione si legge dall'API senza profilo (non chiude la sfida di nessuno)
+  // la soluzione si legge dall'endpoint di sviluppo (non chiude la sfida di nessuno)
   const sol = (await (
-    await page.request.post("http://localhost:8000/api/quiz/animedle/arrenditi", { data: {} })
+    await page.request.get("http://localhost:8000/api/dev/quiz-giorno/animedle")
   ).json()) as { id: number; titolo: string; titolo_en: string };
   const elenco = (await (
     await page.request.get("http://localhost:8000/api/quiz/anime/elenco")
@@ -77,9 +77,7 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
     await expect(page.getByTestId("profilo")).toBeVisible();
 
     const sol = (await (
-      await page.request.post(`http://localhost:8000/api/quiz/zoom/${gioco}/arrenditi`, {
-        data: {},
-      })
+      await page.request.get(`http://localhost:8000/api/dev/quiz-giorno/${gioco}`)
     ).json()) as { id: number; nome: string };
     const elenco = (await (
       await page.request.get(
@@ -147,7 +145,7 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
 test("sfide: Animedle sblocca gli indizi dopo qualche errore", async ({ page }) => {
   test.setTimeout(60_000);
   const sol = (await (
-    await page.request.post("http://localhost:8000/api/quiz/animedle/arrenditi", { data: {} })
+    await page.request.get("http://localhost:8000/api/dev/quiz-giorno/animedle")
   ).json()) as { id: number };
   const elenco = (await (
     await page.request.get("http://localhost:8000/api/quiz/anime/elenco")

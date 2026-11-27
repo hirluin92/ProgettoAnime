@@ -6,9 +6,7 @@ bersaglio vero soltanto a partita finita. I crediti si ottengono solo vincendo l
 
 import hashlib
 import hmac
-import os
 import random
-import secrets
 from datetime import date, timedelta
 from typing import Any
 
@@ -29,10 +27,11 @@ from app.quiz.dati import (
     pool_anime,
     stessa_serie,
 )
+from app.quiz.segreto import segreto
 
 router = APIRouter(prefix="/api/quiz")
 
-_SEGRETO = (os.environ.get("QUIZ_SECRET") or secrets.token_hex(16)).encode()
+_SEGRETO = segreto()
 
 
 def firma(gioco: str, valore: int) -> str:
@@ -308,11 +307,12 @@ def animedle_arrenditi(body: Arrenditi) -> SoluzioneAnime:
         return soluzione(anime_per_id()[bid])
     day = oggi()
     pid = _profilo_ok(body.profile_id)
-    if pid is not None:
-        with session_scope() as s:
-            riga = _riga_oggi(s, pid, day)
-            if not riga.vinto:
-                riga.tentativi = animedle.TENTATIVI_MAX
+    if pid is None:  # la soluzione del giorno si vede solo giocando con un profilo (e perdendo)
+        raise HTTPException(422, "serve un profilo per arrendersi")
+    with session_scope() as s:
+        riga = _riga_oggi(s, pid, day)
+        if not riga.vinto:
+            riga.tentativi = animedle.TENTATIVI_MAX
     return soluzione(animedle.bersaglio_giorno(day))
 
 
@@ -536,11 +536,12 @@ def zoom_arrenditi(gioco: str, body: Arrenditi) -> SoluzioneZoom:
         return _soluzione_zoom(gioco, _bersaglio_token(gioco, body.token))
     day = oggi()
     pid = _profilo_ok(body.profile_id)
-    if pid is not None:
-        with session_scope() as s:
-            riga = _riga_oggi(s, pid, day, gioco)
-            if not riga.vinto:
-                riga.tentativi = zoom.TENTATIVI_MAX
+    if pid is None:
+        raise HTTPException(422, "serve un profilo per arrendersi")
+    with session_scope() as s:
+        riga = _riga_oggi(s, pid, day, gioco)
+        if not riga.vinto:
+            riga.tentativi = zoom.TENTATIVI_MAX
     return _soluzione_zoom(gioco, zoom.bersaglio_giorno(gioco, day))
 
 

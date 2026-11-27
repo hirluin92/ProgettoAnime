@@ -232,6 +232,23 @@ class SeasonView(Model):
     top: list[SeasonRow]
 
 
+TETTO_PREMI_GIORNO = 30  # partite al giorno che danno XP e crediti: oltre, si gioca ma senza premio
+
+
+def premio_consentito(s, profile_id: str, giorno: str) -> bool:  # type: ignore[no-untyped-def]
+    """Conta una partita premiata nel giorno; falso se il tetto è già raggiunto."""
+    day = s.scalar(
+        select(ProfileDay).where(ProfileDay.profile_id == profile_id, ProfileDay.day == giorno)
+    )
+    if day is None:
+        day = ProfileDay(profile_id=profile_id, day=giorno, fatti=[], primo=False, premiate=0)
+        s.add(day)
+    if day.premiate >= TETTO_PREMI_GIORNO:
+        return False
+    day.premiate += 1
+    return True
+
+
 def oggi() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%d")
 
@@ -295,7 +312,7 @@ def assegna_premio(
     giorno = oggi()
     with session_scope() as s:
         row = s.get(ProfileRow, profile_id)
-        if row is None:
+        if row is None or not premio_consentito(s, profile_id, giorno):
             return None
         prima = livello_per_xp(row.xp)
         day = s.scalar(
@@ -355,7 +372,7 @@ def assegna_premio_scala(
         return None
     with session_scope() as s:
         row = s.get(ProfileRow, profile_id)
-        if row is None:
+        if row is None or not premio_consentito(s, profile_id, oggi()):
             return None
         prima = livello_per_xp(row.xp)
         guadagno = 20 + 15 * gradini
@@ -411,7 +428,7 @@ def assegna_premio_duello(
         return None
     with session_scope() as s:
         row = s.get(ProfileRow, profile_id)
-        if row is None:
+        if row is None or not premio_consentito(s, profile_id, oggi()):
             return None
         prima = livello_per_xp(row.xp)
         bonus = {"facile": 0, "normale": 10, "difficile": 25}.get(livello, 0)
