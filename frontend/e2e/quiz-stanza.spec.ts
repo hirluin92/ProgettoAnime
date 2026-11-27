@@ -83,8 +83,10 @@ test("quiz tra amici: funziona con più di 2 giocatori (4 in classifica)", async
   await attendiViaQuiz(host.page, altri[1].page);
   const sol = await soluzione(host.page, code);
   await rispondi(altri[1].page, sol.nome);
+  // il punteggio arriva dal server: sui runner lenti ci vuole più dei 5 secondi predefiniti
   await expect(host.page.getByTestId("quiz-classifica").locator("li").first()).toContainText(
     "Carla",
+    { timeout: 20_000 },
   );
 });
 
