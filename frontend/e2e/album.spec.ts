@@ -16,12 +16,27 @@ test("album: carte possedute dal draft, mazzo personale salvato e giocato", asyn
   await page.goto("/album");
   await expect(page.getByTestId("album")).toBeVisible();
   await expect(page.getByTestId("album-conta")).toContainText("Possiedi 12 carte");
-  await expect(page.getByTestId("album-posseduta")).toHaveCount(12);
+  await expect(page.getByTestId("raccoglitore")).toBeVisible();
 
-  // un mazzo con le 8 carte possedute
+  // un mazzo con le 8 carte possedute: si sfogliano le pagine e si toccano le carte
   await page.getByTestId("nuovo-mazzo").click();
   const possedute = page.getByTestId("album-posseduta");
-  for (let i = 0; i < 8; i++) await possedute.nth(i).locator("button").first().click();
+  const stato = page.getByTestId("mazzo-stato");
+  for (let pagina = 0; pagina < 20; pagina++) {
+    if ((await stato.textContent())?.includes("8/8")) break;
+    const n = await possedute.count();
+    for (let i = 0; i < n; i++) {
+      if ((await stato.textContent())?.includes("8/8")) break;
+      await possedute.nth(i).locator("button").first().click();
+    }
+    const avanti = page.getByTestId("pagina-avanti");
+    if (await avanti.isDisabled()) break;
+    await avanti.click();
+    await expect(avanti)
+      .toBeEnabled({ timeout: 5000 })
+      .catch(() => undefined);
+    await page.waitForTimeout(1100); // fine animazione della pagina
+  }
   await expect(page.getByTestId("mazzo-stato")).toContainText("8/8 carte");
   await page.getByTestId("salva-mazzi").click();
   await expect(page.getByText("Salvato!")).toBeVisible();

@@ -1,21 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Binder from "@/components/album/Binder";
 import DuelloCard, { DuelloTile } from "@/components/duello/DuelloCard";
 import { fmt } from "@/components/duello/DuelloBoard";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
-import { riepilogoMazzo, type AlbumOut, type MazzoPersonale, type Rarita } from "@/lib/album";
+import { riepilogoMazzo, type AlbumOut, type MazzoPersonale } from "@/lib/album";
 import { useProfile } from "@/lib/profile";
-
-const RARITA: Rarita[] = ["comune", "rara", "epica", "leggendaria"];
 
 export default function AlbumView() {
   const { profile, loading } = useProfile();
   const [album, setAlbum] = useState<AlbumOut | null>(null);
-  const [anime, setAnime] = useState("");
-  const [rar, setRar] = useState<Rarita | "">("");
-  const [solo, setSolo] = useState(false);
   const [mazzi, setMazzi] = useState<MazzoPersonale[]>([]);
   const [sel, setSel] = useState(0);
   const [msg, setMsg] = useState<string | null>(null);
@@ -32,14 +28,6 @@ export default function AlbumView() {
     carica().catch((e: Error) => setErrore(e.message));
   }, [carica]);
 
-  const animeLista = useMemo(
-    () => [...new Set((album?.carte ?? []).map((c) => c.carta.anime))],
-    [album],
-  );
-  const visibili = (album?.carte ?? []).filter(
-    (c) =>
-      (!anime || c.carta.anime === anime) && (!rar || c.rarita === rar) && (!solo || c.posseduta),
-  );
   const mazzo = mazzi[sel];
   const r = album && mazzo ? riepilogoMazzo(album.carte, mazzo.carte) : null;
 
@@ -80,7 +68,7 @@ export default function AlbumView() {
   if (!album) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
 
   return (
-    <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="album">
+    <main className="mx-auto max-w-[88rem] space-y-5 p-4 pt-6" data-testid="album">
       <header className="space-y-1">
         <span className="eyebrow">{profile.name}</span>
         <h1 className="display text-4xl font-black">{it.album.titolo}</h1>
@@ -89,7 +77,27 @@ export default function AlbumView() {
         </p>
       </header>
 
-      <section className="panel space-y-3 p-4" data-testid="mazzi">
+      {mazzo && r && (
+        <p
+          className="panel flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-sm"
+          data-testid="mazzo-striscia"
+        >
+          <span>
+            <b>{mazzo.nome}</b> · {mazzo.carte.length}/{album.limiti.mazzo}
+          </span>
+          <span className="muted">{it.album.aggiungi}</span>
+          <a href="#mazzi" className="underline">
+            {it.album.gestisciMazzi}
+          </a>
+        </p>
+      )}
+      <Binder
+        carte={album.carte}
+        inMazzo={new Set(mazzo?.carte ?? [])}
+        onCarta={(c) => (c.posseduta && mazzo ? toggle(c.carta.id) : setAperta(c.carta.id))}
+        onDettaglio={(c) => setAperta(c.carta.id)}
+      />
+      <section className="panel space-y-3 p-4" id="mazzi" data-testid="mazzi">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-2xl font-extrabold">{it.album.mazzi}</h2>
           <button
@@ -195,60 +203,6 @@ export default function AlbumView() {
         </div>
       </section>
 
-      <section className="flex flex-wrap items-center gap-2">
-        <select
-          aria-label={it.album.tuttiAnime}
-          className="field"
-          value={anime}
-          onChange={(e) => setAnime(e.target.value)}
-        >
-          <option value="">{it.album.tuttiAnime}</option>
-          {animeLista.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
-        <button className={`btn ${rar === "" ? "btn-primary" : ""}`} onClick={() => setRar("")}>
-          {it.album.tutte}
-        </button>
-        {RARITA.map((x) => (
-          <button
-            key={x}
-            className={`btn ${rar === x ? "btn-primary" : ""}`}
-            onClick={() => setRar(x)}
-          >
-            {it.album.rarita[x]}
-          </button>
-        ))}
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={solo} onChange={(e) => setSolo(e.target.checked)} />
-          {it.album.soloPossedute}
-        </label>
-      </section>
-
-      <p className="text-xs muted">{it.album.aggiungi}</p>
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {visibili.map((c) => {
-          const dentro = !!mazzo?.carte.includes(c.carta.id);
-          return (
-            <li
-              key={c.carta.id}
-              className={c.posseduta ? "" : "opacity-40 grayscale"}
-              data-testid={c.posseduta ? "album-posseduta" : "album-mancante"}
-            >
-              <div className={dentro ? "ring-2 ring-emerald-400 rounded-2xl" : ""}>
-                <DuelloCard
-                  carta={c.carta}
-                  onClick={() =>
-                    c.posseduta && mazzo ? toggle(c.carta.id) : setAperta(c.carta.id)
-                  }
-                />
-              </div>
-            </li>
-          );
-        })}
-      </ul>
       {aperta && (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4"
@@ -256,7 +210,11 @@ export default function AlbumView() {
         >
           <div className="w-64">
             <DuelloCard carta={album.carte.find((c) => c.carta.id === aperta)!.carta} />
-            <p className="mt-2 text-center text-sm">{it.album.nonPosseduta}</p>
+            <p className="mt-2 text-center text-sm">
+              {album.carte.find((c) => c.carta.id === aperta)?.posseduta
+                ? it.album.posseduta
+                : it.album.nonPosseduta}
+            </p>
           </div>
         </div>
       )}
