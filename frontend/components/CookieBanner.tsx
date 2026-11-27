@@ -32,7 +32,7 @@ export default function CookieBanner() {
       role="dialog"
       aria-label={it.cookie.titolo}
       data-testid="cookie-banner"
-      className="panel fixed inset-x-2 bottom-2 z-50 mx-auto max-w-xl bg-[#14112a] p-4 text-sm"
+      className="panel panel-solido fixed inset-x-2 bottom-[4.75rem] z-[45] mx-auto max-w-xl p-4 text-sm sm:bottom-2"
     >
       <p>{it.cookie.testo}</p>
       <div className="mt-3 flex gap-2">

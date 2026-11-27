@@ -265,7 +265,9 @@
     "duello": "Duello",
     "album": "Album",
     "negozio": "Negozio",
-    "ranked": "Ranked"
+    "ranked": "Ranked",
+    "altro": "Altro",
+    "rapida": "Navigazione rapida"
   },
   "draft": {
     "tono": {
@@ -715,6 +717,7 @@
       "ascolta": "Ascolta",
       "ferma": "Ferma",
       "secondi": "Ascolti i primi {n} secondi",
+      "secondo": "Ascolti il primo secondo",
       "tutta": "Ora puoi ascoltarla tutta",
       "noAudio": "Il browser ha bloccato l'audio: premi il pulsante per ascoltare.",
       "intera": "Ascolti {n} secondi, una volta sola",
@@ -744,6 +747,7 @@
     "daFare": "Da fare",
     "vinta": "Vinta",
     "persa": "Persa",
+    "rivedi": "Rivedi",
     "gioca": "Gioca",
     "rompicapo": "Rompicapo del Duello",
     "rompicapoTesto": "Stesso mazzo e stessa CPU per tutti: vince chi gioca meglio.",

@@ -145,9 +145,12 @@ export default function Binder({ carte, inMazzo, onCarta, onDettaglio }: Props) 
     : fmt(it.album.pagina, { a: pos + 1, tot: pagine.length });
 
   return (
-    <section className="grid gap-4 lg:grid-cols-[15rem_minmax(0,1fr)]" data-testid="raccoglitore">
+    <section
+      className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[15rem_minmax(0,1fr)]"
+      data-testid="raccoglitore"
+    >
       {/* indice dei capitoli */}
-      <nav aria-label={it.album.indice} className="lg:sticky lg:top-20 lg:self-start">
+      <nav aria-label={it.album.indice} className="min-w-0 lg:sticky lg:top-20 lg:self-start">
         <h2 className="eyebrow mb-2">{it.album.indice}</h2>
         <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
           <li className="shrink-0">

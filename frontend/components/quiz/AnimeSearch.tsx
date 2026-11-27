@@ -124,7 +124,7 @@ export default function AnimeSearch({
         <ul
           id="anime-lista"
           role="listbox"
-          className="panel absolute inset-x-0 top-full z-30 mt-1 max-h-80 overflow-y-auto p-1"
+          className="panel panel-solido absolute inset-x-0 top-full z-30 mt-1 max-h-80 overflow-y-auto p-1"
         >
           {risultati.map((a, i) => (
             <li key={`${a.tipo ?? "x"}-${a.id}`} role="option" aria-selected={i === sel}>

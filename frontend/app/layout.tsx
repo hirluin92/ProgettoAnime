@@ -27,7 +27,7 @@ export const viewport: Viewport = { themeColor: "#05040c" };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="it">
-      <body className={`${body.variable} ${display.variable} antialiased`}>
+      <body className={`${body.variable} ${display.variable} antialiased pb-16 sm:pb-0`}>
         <div className="aurora" aria-hidden="true">
           <i />
           <i />

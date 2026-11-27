@@ -183,7 +183,9 @@ export default function Ascolto({
         {intero
           ? it.quiz.sigla.tutta
           : (progressivo
-              ? it.quiz.sigla.secondi
+              ? secondi === 1
+                ? it.quiz.sigla.secondo
+                : it.quiz.sigla.secondi
               : loop
                 ? it.quiz.sigla.interaLoop
                 : it.quiz.sigla.intera
