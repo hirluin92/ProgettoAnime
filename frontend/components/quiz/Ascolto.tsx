@@ -39,10 +39,52 @@ export default function Ascolto({
     const v = Number(window.localStorage.getItem("arena.volume"));
     if (v > 0 || window.localStorage.getItem("arena.volume") === "0") setVolume(Math.min(1, v));
   }, []);
+  // Il volume passa da un nodo di guadagno (Web Audio): i browser dei telefoni spesso ignorano
+  // `audio.volume`. Se non è disponibile (o l'audio non ammette l'accesso) si usa `audio.volume`.
+  const [cors, setCors] = useState(true);
+  const ctxRef = useRef<AudioContext | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+  const volumeRef = useRef(volume);
+  volumeRef.current = volume;
+  const [applicato, setApplicato] = useState("");
+  const collega = () => {
+    const a = ref.current;
+    if (!a || gainRef.current || !cors) return;
+    const AC =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AC) return;
+    try {
+      const ctx = new AC();
+      const sorgente = ctx.createMediaElementSource(a);
+      const guadagno = ctx.createGain();
+      guadagno.gain.value = volumeRef.current;
+      sorgente.connect(guadagno);
+      guadagno.connect(ctx.destination);
+      a.volume = 1; // il volume lo fa il guadagno, non va applicato due volte
+      ctxRef.current = ctx;
+      gainRef.current = guadagno;
+    } catch {
+      /* si resta con audio.volume */
+    }
+  };
+  // da chiamare dentro un tocco: collega l'audio al guadagno e riattiva il contesto
+  const attivaVolume = () => {
+    collega();
+    void ctxRef.current?.resume();
+  };
   useEffect(() => {
-    if (ref.current) ref.current.volume = volume;
+    if (gainRef.current) gainRef.current.gain.value = volume;
+    else if (ref.current) ref.current.volume = volume;
+    setApplicato(String(volume));
     window.localStorage.setItem("arena.volume", String(volume));
   }, [volume]);
+  useEffect(
+    () => () => {
+      void ctxRef.current?.close();
+    },
+    [],
+  );
   const loopRef = useRef(loop);
   loopRef.current = loop;
   const secondi = intero
@@ -57,10 +99,13 @@ export default function Ascolto({
     setSuona(false);
     setTempo(0);
   };
-  const avvia = () => {
+  // `gesto`: chiamata da un tocco dell'utente. Solo lì si attiva il controllo di volume Web Audio:
+  // creato senza un tocco, il contesto resta sospeso e l'audio non scorre.
+  const avvia = (gesto = false) => {
     const a = ref.current;
     if (!a) return;
     window.clearTimeout(timer.current);
+    if (gesto) attivaVolume();
     a.currentTime = 0;
     setTempo(0);
     a.play()
@@ -97,16 +142,29 @@ export default function Ascolto({
   }, [progressivo ? livello : 0, src, autoplay]);
 
   return (
-    <div className="panel space-y-3 p-5 text-center" data-testid="ascolto">
+    <div
+      className="panel space-y-3 p-5 text-center"
+      data-testid="ascolto"
+      data-volume-applicato={applicato}
+    >
       <audio
+        key={cors ? "cors" : "senza"}
         ref={ref}
         src={src}
+        crossOrigin={cors ? "anonymous" : undefined}
+        onError={() => {
+          // se l'audio non ammette l'accesso da altri siti si riprova senza Web Audio
+          if (cors) {
+            gainRef.current = null;
+            setCors(false);
+          }
+        }}
         preload="auto"
         onEnded={() => (loopRef.current && !intero ? avvia() : ferma())}
       />
       <button
         type="button"
-        onClick={suona ? ferma : avvia}
+        onClick={() => (suona ? ferma() : avvia(true))}
         className="btn btn-primary mx-auto size-24 !rounded-full"
         aria-label={suona ? it.quiz.sigla.ferma : it.quiz.sigla.ascolta}
         data-testid="ascolto-play"
@@ -164,7 +222,10 @@ export default function Ascolto({
       <label className="mx-auto flex max-w-xs items-center gap-3 text-xs muted">
         <button
           type="button"
-          onClick={() => setVolume((v) => (v > 0 ? 0 : 0.8))}
+          onClick={() => {
+            attivaVolume();
+            setVolume((v) => (v > 0 ? 0 : 0.8));
+          }}
           aria-label={volume > 0 ? it.quiz.sigla.silenzia : it.quiz.sigla.riattiva}
           className="grid size-8 shrink-0 place-items-center rounded-full bg-white/10 hover:bg-white/20"
         >
@@ -175,7 +236,10 @@ export default function Ascolto({
           min={0}
           max={100}
           value={Math.round(volume * 100)}
-          onChange={(e) => setVolume(Number(e.target.value) / 100)}
+          onChange={(e) => {
+            attivaVolume();
+            setVolume(Number(e.target.value) / 100);
+          }}
           className="h-2 flex-1 cursor-pointer accent-[#7a86ff]"
           aria-label={it.quiz.sigla.volume}
           data-testid="ascolto-volume"
