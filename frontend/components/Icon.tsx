@@ -73,6 +73,13 @@ const LINEA: Record<string, ReactNode> = {
       <path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12" />
     </>
   ),
+  coin: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="5.5" />
+      <path d="M12 9.5v5M10 12h4" />
+    </>
+  ),
   check: <path d="M4 12.5l5 5L20 6.5" />,
   x: <path d="M6 6l12 12M18 6 6 18" />,
   arrowup: <path d="M12 20V5M5 12l7-7 7 7" />,
