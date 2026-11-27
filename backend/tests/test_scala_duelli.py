@@ -134,3 +134,17 @@ def test_run_ends_with_prize_and_best_record(tmp_path) -> None:  # type: ignore[
     # a corsa finita non si continua e il premio non si paga due volte
     assert client.post(f"/api/scala-duelli/{rid}/gioca").status_code == 409
     assert client.get(f"/api/profile/{pid}").json()["xp"] == ultimo["premio"]["xp_totale"]
+
+
+def test_duello_scaduto_non_blocca_la_corsa(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from app.duello_api import PARTITE
+
+    configure(f"sqlite:///{tmp_path / 'sd.db'}")
+    run = avvia(7)
+    g = client.post(f"/api/scala-duelli/{run['run_id']}/gioca")
+    assert g.status_code == 200
+    # finché il duello esiste, non se ne apre un secondo
+    assert client.post(f"/api/scala-duelli/{run['run_id']}/gioca").status_code == 409
+    # il duello scade (o il server si riavvia): la corsa riparte invece di restare bloccata
+    PARTITE.pop(g.json()["id"], None)
+    assert client.post(f"/api/scala-duelli/{run['run_id']}/gioca").status_code == 200

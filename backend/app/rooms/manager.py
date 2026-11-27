@@ -200,7 +200,8 @@ class Room:
             data = m.model_dump_json()
             for ws in list(targets):
                 try:
-                    await ws.send_text(data)
+                    # un client lento non deve bloccare la stanza per tutti
+                    await asyncio.wait_for(ws.send_text(data), 3)
                 except Exception:
                     for pid, s in list(self.sockets.items()):
                         if s is ws:

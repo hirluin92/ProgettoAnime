@@ -76,7 +76,13 @@ def _blocca_se_troppi(chiave: str) -> None:
 
 
 def _registra_fallimento(chiave: str) -> None:
-    _falliti.setdefault(chiave, []).append(time.time())
+    ora = time.time()
+    if (
+        len(_falliti) > 5000
+    ):  # le chiavi scadute non servono più: la memoria non cresce all'infinito
+        for k in [k for k, v in _falliti.items() if not v or ora - v[-1] >= FINESTRA]:
+            del _falliti[k]
+    _falliti.setdefault(chiave, []).append(ora)
 
 
 # ---------- modelli ----------

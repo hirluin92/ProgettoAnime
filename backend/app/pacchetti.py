@@ -141,7 +141,7 @@ def apri_pacchetto(profile_id: str, tipo_id: str, rng: random.Random | None = No
         raise HTTPException(404, "pacchetto sconosciuto")
     rng = rng or random.SystemRandom()
     with session_scope() as s:
-        row = s.get(ProfileRow, profile_id)
+        row = s.get(ProfileRow, profile_id, with_for_update=True)
         if row is None:
             raise HTTPException(404, "profilo non trovato")
         if row.crediti < tipo.prezzo:

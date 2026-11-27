@@ -121,6 +121,7 @@ class Corsa:
     offerte: list[tuple[str, Carta, int]] = field(default_factory=list)  # (tipo, carta, +potenza)
     finita: bool = False
     in_corso: bool = False  # un duello è in svolgimento
+    partita_id: str | None = None  # id del duello in corso (per riprenderlo se si è perso)
     premio: Premio | None = None
     creata: float = field(default_factory=time.time)
     iniziali: set[str] = field(default_factory=set)
@@ -226,8 +227,10 @@ def gioca(run_id: str) -> DuelloState:
         raise HTTPException(409, "la corsa è finita")
     if c.offerte:
         raise HTTPException(409, "scegli prima un premio")
-    if c.in_corso:
+    if c.in_corso and c.partita_id in PARTITE:
         raise HTTPException(409, "c'è già un duello in corso")
+    # se il duello è scaduto o il server si è riavviato, la corsa riparte dal gradino attuale
+    c.in_corso = False
     leg, riv = _legami()
     seed = c.seed * 31 + c.gradino
     stato = nuovo(
@@ -249,6 +252,7 @@ def gioca(run_id: str) -> DuelloState:
     )
     PARTITE[p.id] = p
     c.in_corso = True
+    c.partita_id = p.id
     return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
 
 
