@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { impostaCursore } from "./helpers";
 
 interface Voce {
   id: number;
@@ -88,7 +89,15 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
     };
     const immagine = page.getByTestId("zoom-immagine");
     const zoomIniziale = gioco === "sigla" ? 0 : Number(await immagine.getAttribute("data-zoom"));
-    if (gioco === "sigla") await expect(page.getByTestId("ascolto")).toBeVisible();
+    if (gioco === "sigla") {
+      await expect(page.getByTestId("ascolto")).toBeVisible();
+      // il volume si regola e l'audio lo segue (e viene ricordato)
+      await impostaCursore(page, "ascolto-volume", 30);
+      await expect
+        .poll(() => page.evaluate(() => document.querySelector("audio")!.volume))
+        .toBeCloseTo(0.3, 1);
+      expect(await page.evaluate(() => localStorage.getItem("arena.volume"))).toBe("0.3");
+    }
     // si può saltare un turno: conta come tentativo e sblocca di più
     await page.getByTestId("zoom-salta").click();
     await expect(page.getByTestId("zoom-errori")).toContainText("Saltato");
