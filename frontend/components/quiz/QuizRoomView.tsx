@@ -64,12 +64,21 @@ export default function QuizRoomView({
   const livello = chiusa ? 5 : q.livello;
   const zoom = chiusa ? 1 : ZOOM[livello];
   const [msg, setMsg] = useState<string | null>(null);
+  const [msgOk, setMsgOk] = useState(false);
   useEffect(() => setMsg(null), [q.round]);
   useEffect(() => {
     if (codice === "locked" || codice === "done" || codice === "closed") setMsg(errore);
   }, [errore, codice]);
   useEffect(() => {
-    if (esito && !esito.giusto)
+    setMsgOk(!!esito?.giusto);
+    if (esito?.giusto)
+      setMsg(
+        fmt(it.quiz.stanza.parzialeGiusto, {
+          cosa: it.quiz.stanza.tipoRisposta[esito.componente as "anime" | "brano" | "artista"],
+          n: esito.punti,
+        }),
+      );
+    else if (esito)
       setMsg(esito.stessa_serie ? it.quiz.stanza.serieGiusta : it.quiz.stanza.sbagliata);
   }, [esito]);
 
@@ -172,26 +181,58 @@ export default function QuizRoomView({
                   ))}
                 </ul>
               )}
-              {!chiusa && !sono?.giusto && (
-                <div className="space-y-1">
-                  <AnimeSearch
-                    onScegli={(a) => socket.send({ type: "quiz_risposta", risposta_id: a.id })}
-                    personaggi={ritratto}
-                    disabilitato={bloccato}
-                    testId="quiz-cerca"
-                  />
-                  {bloccato && (
-                    <p className="text-sm text-amber-200">
-                      {fmt(it.quiz.stanza.blocco, { n: Math.ceil(blocco) })}
-                    </p>
-                  )}
-                  {!bloccato && msg && (
-                    <p className="text-sm text-amber-200" role="status">
-                      {msg}
-                    </p>
-                  )}
-                </div>
+              {q.kind === "sigla" && !chiusa && (
+                <ul className="flex flex-wrap justify-center gap-2" data-testid="quiz-componenti">
+                  {(
+                    [
+                      ["anime", !!sono?.giusto],
+                      ["brano", !!sono?.brano],
+                      ["artista", !!sono?.artista],
+                    ] as const
+                  ).map(([k, fatto]) => (
+                    <li
+                      key={k}
+                      className={`chip px-3 py-1 ${fatto ? "text-emerald-300" : "muted"}`}
+                      data-fatto={fatto}
+                    >
+                      {fatto && <Icon name="check" className="size-3.5" />}
+                      {it.quiz.stanza.tipoRisposta[k]}
+                    </li>
+                  ))}
+                </ul>
               )}
+              {!chiusa &&
+                (!sono?.giusto || (q.kind === "sigla" && !(sono.brano && sono.artista))) && (
+                  <div className="space-y-1">
+                    <AnimeSearch
+                      onScegli={(a) =>
+                        socket.send({
+                          type: "quiz_risposta",
+                          risposta_id: a.id,
+                          tipo: a.tipo ?? "anime",
+                        })
+                      }
+                      personaggi={ritratto}
+                      sigle={q.kind === "sigla"}
+                      disabilitato={bloccato}
+                      testId="quiz-cerca"
+                    />
+                    {bloccato && (
+                      <p className="text-sm text-amber-200">
+                        {fmt(it.quiz.stanza.blocco, { n: Math.ceil(blocco) })}
+                      </p>
+                    )}
+                    {!bloccato && msg && (
+                      <p
+                        className={`text-sm ${msgOk ? "text-emerald-300" : "text-amber-200"}`}
+                        role="status"
+                        data-testid="quiz-msg"
+                      >
+                        {msg}
+                      </p>
+                    )}
+                  </div>
+                )}
               {!chiusa && sono?.giusto && (
                 <p
                   className="text-center text-xl font-extrabold text-emerald-300"
@@ -245,7 +286,16 @@ export default function QuizRoomView({
               >
                 <Medaglia pos={i} />
                 <span className="min-w-0 flex-1 truncate font-bold">{nome(p.id)}</span>
-                {p.giusto && q.fase !== "fine" && (
+                {p.serie >= 2 && (
+                  <span
+                    className="chip text-orange-300"
+                    title={fmt(it.quiz.stanza.serieDi, { n: p.serie })}
+                    data-testid="quiz-serie"
+                  >
+                    <Icon name="flame" className="size-3.5" />×{p.serie}
+                  </span>
+                )}
+                {p.guadagno > 0 && q.fase !== "fine" && (
                   <span className="chip text-emerald-300">
                     <Icon name="check" className="size-3.5" />+{p.guadagno}
                   </span>

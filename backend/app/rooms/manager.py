@@ -600,14 +600,23 @@ class RoomManager:
         if room.phase != "quiz" or q is None:
             raise RoomError("not_quiz", "Non è il momento del quiz")
         try:
-            esito = q.rispondi(pid, msg.risposta_id, now())
+            esito = q.rispondi(pid, msg.risposta_id, now(), msg.tipo)
         except QuizErrore as e:
             raise RoomError(e.code, e.message) from e
-        blocco = {"giusto": 0.0, "serie": BLOCCO_SERIE, "no": BLOCCO}[esito]
+        blocco = {"giusto": 0.0, "parziale": 0.0, "serie": BLOCCO_SERIE, "no": BLOCCO}[esito]
+        comp, punti = (
+            q.ultimo.get(pid, ("anime", 0)) if esito in ("giusto", "parziale") else ("", 0)
+        )
         room.invii.append(
             (
                 pid,
-                QuizEsito(giusto=esito == "giusto", blocco=blocco, stessa_serie=esito == "serie"),
+                QuizEsito(
+                    giusto=esito in ("giusto", "parziale"),
+                    blocco=blocco,
+                    stessa_serie=esito == "serie",
+                    componente=comp or msg.tipo,
+                    punti=punti,
+                ),
             )
         )
         # se hanno risposto tutti si chiude subito, altrimenti si aggiornano i punteggi

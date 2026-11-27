@@ -144,3 +144,61 @@ def test_altra_stagione_blocca_meno_e_si_segnala() -> None:
     assert p.rispondi("a", s2["id"], 1001.0) == "serie"
     assert p.blocchi["a"] == 1001.0 + BLOCCO_SERIE
     assert p.rispondi("b", s1["id"], 1002.0) == "giusto"
+
+
+def partita_sigla(n: int = 3) -> QuizPartita:
+    return QuizPartita.nuova(11, "sigla", n, 20, ["a", "b"], 1000.0)
+
+
+def test_sigla_punti_parziali_per_brano_e_artista() -> None:
+    p = partita_sigla()
+    t = p.corrente.target
+    # solo il titolo del brano: punti ridotti, nessun bonus posizione, la domanda resta aperta
+    assert p.rispondi("a", t["brano_idx"], 1000.0, "brano") == "parziale"
+    assert p.ultimo["a"][0] == "brano" and p.fase == "domanda"
+    assert p.punti["a"] == round(200 * 0.5)  # risposta istantanea: 100 + 100 di tempo
+    # lo stesso pezzo non si incassa due volte
+    with pytest.raises(QuizErrore) as e:
+        p.rispondi("a", t["brano_idx"], 1001.0, "brano")
+    assert e.value.code == "done"
+    assert p.rispondi("a", t["artista_idx"], 1000.0, "artista") == "parziale"
+    assert p.punti["a"] == 100 + round(200 * 0.4)
+    # l'anime vale di più di titolo e artista messi insieme
+    assert p.rispondi("b", t["id"], 1000.0) == "giusto"
+    assert p.punti["b"] == 200 + 50
+    assert p.punti["b"] > p.punti["a"]
+    v = p.view(1000.0)
+    ra = next(x for x in v.punteggi if x.id == "a")
+    assert ra.brano and ra.artista and not ra.giusto and ra.guadagno == p.punti["a"]
+    # un brano sbagliato blocca come ogni errore
+    q = partita_sigla()
+    assert q.rispondi("a", q.corrente.target["brano_idx"] + 1, 1000.0, "brano") == "no"
+    assert q.blocchi["a"] == 1000.0 + BLOCCO
+
+
+def test_titolo_e_artista_solo_nelle_sigle() -> None:
+    p = partita(tipo="scorcio", n=3)
+    with pytest.raises(QuizErrore) as e:
+        p.rispondi("a", 1, 1000.0, "brano")
+    assert e.value.code == "bad_type"
+
+
+def test_serie_di_risposte_giuste_da_bonus_e_si_perde_sbagliando() -> None:
+    p = partita(tipo="indizi", n=4, tempo=20)
+    t = 1000.0
+    guadagni = []
+    for _ in range(3):
+        giusto = p.corrente.target["id"]
+        p.rispondi("a", giusto, t + 20 - 0.0001)  # allo scadere: solo 100 + bonus posizione
+        guadagni.append(p.giusti["a"])
+        # «b» non indovina: perde la serie (e non ne ha una)
+        p.tick(t + 21, ["a", "b"])
+        t += 21 + RIVELAZIONE
+        p.tick(t, ["a", "b"])
+    # 1ª: 100+50; 2ª: +20 di serie; 3ª: +40
+    assert guadagni[1] - guadagni[0] == 20 and guadagni[2] - guadagni[1] == 20
+    assert p.serie["a"] == 3 and p.serie["b"] == 0
+    assert p.view(t).punteggi[0].serie == 3
+    # saltare una domanda azzera la serie
+    p.tick(t + 21, ["a", "b"])
+    assert p.serie["a"] == 0

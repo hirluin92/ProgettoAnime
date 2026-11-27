@@ -71,6 +71,7 @@ class QuizRisposta(Model):
 
     type: Literal["quiz_risposta"] = "quiz_risposta"
     risposta_id: int
+    tipo: Literal["anime", "brano", "artista"] = "anime"  # nelle sigle anche titolo o artista
 
 
 class QuizLobby(Model):
@@ -86,6 +87,8 @@ class QuizEsito(Model):
     giusto: bool
     blocco: float  # secondi di attesa prima di poter riprovare (0 se giusto)
     stessa_serie: bool = False  # era un'altra stagione della stessa serie
+    componente: str = "anime"  # cosa hai indovinato: anime, brano o artista
+    punti: int = 0  # punti presi con questa risposta
 
 
 class UpdateSettings(Model):

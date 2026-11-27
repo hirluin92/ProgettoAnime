@@ -161,6 +161,22 @@ export interface ZoomNuovo {
   audio?: string | null;
 }
 
+export type TipoRisposta = "anime" | "brano" | "artista";
+export type Voce = VoceAnime & { tipo?: TipoRisposta };
+export interface VoceSigla {
+  tipo: "brano" | "artista";
+  id: number;
+  nome: string;
+  alt: string;
+  k: string;
+}
+
+let cacheSigle: Promise<VoceSigla[]> | null = null;
+export function caricaSigle(api: <T>(p: string) => Promise<T>): Promise<VoceSigla[]> {
+  cacheSigle ??= api<VoceSigla[]>("/api/quiz/sigle/elenco");
+  return cacheSigle;
+}
+
 let cachePersonaggi: Promise<VoceAnime[]> | null = null;
 export function caricaPersonaggi(api: <T>(p: string) => Promise<T>): Promise<VoceAnime[]> {
   cachePersonaggi ??= api<VoceAnime[]>("/api/quiz/personaggi/elenco");

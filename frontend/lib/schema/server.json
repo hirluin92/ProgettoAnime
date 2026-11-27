@@ -993,9 +993,19 @@
           "default": false,
           "title": "Stessa Serie",
           "type": "boolean"
+        },
+        "componente": {
+          "default": "anime",
+          "title": "Componente",
+          "type": "string"
+        },
+        "punti": {
+          "default": 0,
+          "title": "Punti",
+          "type": "integer"
         }
       },
-      "required": ["type", "giusto", "blocco", "stessa_serie"],
+      "required": ["type", "giusto", "blocco", "stessa_serie", "componente", "punti"],
       "title": "QuizEsito",
       "type": "object"
     },
@@ -1031,9 +1041,24 @@
         "guadagno": {
           "title": "Guadagno",
           "type": "integer"
+        },
+        "serie": {
+          "default": 0,
+          "title": "Serie",
+          "type": "integer"
+        },
+        "brano": {
+          "default": false,
+          "title": "Brano",
+          "type": "boolean"
+        },
+        "artista": {
+          "default": false,
+          "title": "Artista",
+          "type": "boolean"
         }
       },
-      "required": ["id", "punti", "giusto", "guadagno"],
+      "required": ["id", "punti", "giusto", "guadagno", "serie", "brano", "artista"],
       "title": "QuizPunteggio",
       "type": "object"
     },

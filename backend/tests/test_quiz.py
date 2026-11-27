@@ -345,3 +345,17 @@ def test_altra_stagione_viene_segnalata_nelle_sfide() -> None:
     assert r.status_code in (200, 404)
     if r.status_code == 200:
         assert not r.json()["stessa_serie"]
+
+
+def test_elenco_brani_e_artisti_per_rispondere_alle_sigle() -> None:
+    from app.quiz.dati import artisti, sigle
+
+    r = client.get("/api/quiz/sigle/elenco").json()
+    brani = [v for v in r if v["tipo"] == "brano"]
+    arts = [v for v in r if v["tipo"] == "artista"]
+    assert len(brani) == len(sigle()) and len(arts) == len(artisti())
+    gurenge = next(v for v in brani if v["nome"] == "Gurenge")
+    assert "gurenge" in gurenge["k"] and gurenge["alt"] == "LiSA"
+    # l'id del brano e dell'artista combaciano con i dati delle sigle
+    s = next(x for x in sigle() if x["brano_lat"] == "Gurenge")
+    assert gurenge["id"] == s["brano_idx"] and artisti()[s["artista_idx"]] == "LiSA"
