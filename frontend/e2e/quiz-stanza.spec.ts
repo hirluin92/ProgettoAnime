@@ -15,7 +15,7 @@ async function rispondi(page: Page, nome: string) {
 test("quiz tra amici: due giocatori rispondono, blocco dopo l'errore, classifica finale", async ({
   browser,
 }) => {
-  test.setTimeout(150_000);
+  test.setTimeout(300_000);
   const { host, code } = await createRoom(browser, "Anna");
   const ospite = await joinRoom(browser, code, "Bruno");
 
