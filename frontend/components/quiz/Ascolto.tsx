@@ -8,6 +8,25 @@ import { SECONDI_SIGLA } from "@/lib/quiz";
 // Lettore dell'anteprima di una sigla: si ascolta solo l'inizio, che si allunga a ogni errore.
 // L'audio è l'anteprima di 30 secondi ospitata da Apple: non viene copiata né scaricata.
 
+// Gli ascolti in loop usano un buffer Web Audio invece dell'elemento <audio>: il ritorno all'inizio è
+// senza stacco. Su iPhone riportare l'elemento audio a 0 mentre suona fa ripartire il caricamento e la
+// musica si ferma per circa un secondo a ogni giro. Il buffer si scarica una volta sola (circa 1 MB).
+const buffers = new Map<string, Promise<AudioBuffer>>();
+function caricaBuffer(ctx: AudioContext, src: string): Promise<AudioBuffer> {
+  let p = buffers.get(src);
+  if (!p) {
+    p = fetch(src, { mode: "cors" })
+      .then((r) => {
+        if (!r.ok) throw new Error("audio non disponibile");
+        return r.arrayBuffer();
+      })
+      .then((ab) => new Promise<AudioBuffer>((ok, ko) => ctx.decodeAudioData(ab, ok, ko)));
+    p.catch(() => buffers.delete(src));
+    buffers.set(src, p);
+  }
+  return p;
+}
+
 const mmss = (t: number) => `0:${String(Math.floor(t)).padStart(2, "0")}`;
 
 export default function Ascolto({
@@ -39,6 +58,13 @@ export default function Ascolto({
   const voluto = useRef(false);
   const tentativi = useRef(0);
   const attesa = useRef<number | undefined>(undefined);
+  // motore a buffer (loop senza stacco)
+  const sorgente = useRef<AudioBufferSourceNode | null>(null);
+  const bufferCorrente = useRef<AudioBuffer | null>(null);
+  const motoreBuffer = useRef(false);
+  const avvioBuf = useRef(0); // istante del contesto in cui l'ascolto è partito
+  const finestra = useRef(0); // durata del giro del loop (0 = nessun loop)
+  const riavvio = useRef(false); // l'elemento audio sta ripartendo da noi: le sue pause non contano
   // il volume si ricorda tra una partita e l'altra
   const [volume, setVolume] = useState(0.8);
   useEffect(() => {
@@ -91,6 +117,7 @@ export default function Ascolto({
   }, [volume]);
   useEffect(
     () => () => {
+      fermaSorgente();
       void ctxRef.current?.close();
     },
     [],
@@ -109,10 +136,25 @@ export default function Ascolto({
   const interoRef = useRef(!!intero);
   interoRef.current = !!intero;
 
+  const fermaSorgente = () => {
+    const s = sorgente.current;
+    sorgente.current = null;
+    motoreBuffer.current = false;
+    if (s) {
+      s.onended = null;
+      try {
+        s.stop();
+      } catch {
+        /* già fermo */
+      }
+    }
+  };
+
   const ferma = () => {
     voluto.current = false;
     window.clearTimeout(timer.current);
     window.clearTimeout(attesa.current);
+    fermaSorgente();
     ref.current?.pause();
     setSuona(false);
     setCarica(false);
@@ -120,12 +162,84 @@ export default function Ascolto({
   };
   // `gesto`: chiamata da un tocco dell'utente. Solo lì si attiva il controllo di volume Web Audio:
   // creato senza un tocco, il contesto resta sospeso e l'audio non scorre.
+  const avviaBuffer = async (): Promise<boolean> => {
+    const ctx = ctxRef.current;
+    const g = gainRef.current;
+    if (!ctx || !g) return false;
+    voluto.current = true;
+    setCarica(true);
+    if (ctx.state !== "running") {
+      // senza un tocco il contesto non parte (iPhone): non si resta in attesa all'infinito
+      await Promise.race([
+        ctx.resume().catch(() => undefined),
+        new Promise((r) => setTimeout(r, 1500)),
+      ]);
+      if ((ctx.state as AudioContextState) !== "running") {
+        setCarica(false);
+        return false;
+      }
+    }
+    let buf: AudioBuffer;
+    try {
+      buf = await caricaBuffer(ctx, src);
+    } catch {
+      setCarica(false);
+      return false;
+    }
+    if (!voluto.current) return true; // nel frattempo è stato fermato
+    fermaSorgente();
+    ref.current?.pause(); // l'elemento resta in silenzio: suona solo il buffer
+    const s = ctx.createBufferSource();
+    s.buffer = buf;
+    const giro = Math.min(secondiRef.current, buf.duration);
+    s.loop = true;
+    s.loopStart = 0;
+    s.loopEnd = giro;
+    s.connect(g);
+    s.start(0, 0);
+    sorgente.current = s;
+    bufferCorrente.current = buf;
+    motoreBuffer.current = true;
+    avvioBuf.current = ctx.currentTime;
+    finestra.current = giro;
+    window.clearTimeout(timer.current);
+    setTempo(0);
+    setCarica(false);
+    setErrore(false);
+    setSuona(true);
+    return true;
+  };
+
   const avvia = (gesto = false) => {
     const a = ref.current;
     if (!a) return;
     window.clearTimeout(timer.current);
     if (gesto) attivaVolume();
+    const ctx = ctxRef.current;
+    if (
+      loopRef.current &&
+      !interoRef.current &&
+      ctx &&
+      gainRef.current &&
+      (gesto || ctx.state === "running")
+    ) {
+      voluto.current = true;
+      void avviaBuffer().then((ok) => {
+        if (!ok && voluto.current) avviaElemento();
+      });
+      return;
+    }
+    fermaSorgente();
+    avviaElemento();
+  };
+
+  const avviaElemento = () => {
+    const a = ref.current;
+    if (!a) return;
     voluto.current = true;
+    void ctxRef.current?.resume().catch(() => undefined);
+    riavvio.current = true;
+    window.setTimeout(() => (riavvio.current = false), 1500);
     a.currentTime = 0;
     setTempo(0);
     a.play()
@@ -154,7 +268,11 @@ export default function Ascolto({
       // la barra si aggiorna ~12 volte al secondo: ridisegnare a ogni frame appesantisce i telefoni
       if (t - ultimo > 80) {
         ultimo = t;
-        setTempo(ref.current?.currentTime ?? 0);
+        const ctx = ctxRef.current;
+        if (motoreBuffer.current && ctx) {
+          const el = ctx.currentTime - avvioBuf.current;
+          setTempo(finestra.current > 0 ? el % finestra.current : el);
+        } else setTempo(ref.current?.currentTime ?? 0);
       }
       id = requestAnimationFrame(giro);
     };
@@ -166,10 +284,48 @@ export default function Ascolto({
   useEffect(() => {
     const a = ref.current;
     if (!intero || !voluto.current || !a) return;
+    if (motoreBuffer.current) {
+      // in loop con il buffer: si prosegue dal punto raggiunto fino alla fine, senza ripetere
+      const ctx = ctxRef.current;
+      const g = gainRef.current;
+      const buf = bufferCorrente.current;
+      if (ctx && g && buf) {
+        const el = ctx.currentTime - avvioBuf.current;
+        const pos = finestra.current > 0 ? el % finestra.current : el;
+        fermaSorgente();
+        const s = ctx.createBufferSource();
+        s.buffer = buf;
+        s.connect(g);
+        s.start(0, Math.min(pos, buf.duration));
+        s.onended = () => {
+          if (sorgente.current === s) ferma();
+        };
+        sorgente.current = s;
+        motoreBuffer.current = true;
+        avvioBuf.current = ctx.currentTime - pos;
+        finestra.current = 0;
+      }
+      return;
+    }
     window.clearTimeout(timer.current);
     const resto = Math.max(0, (Number.isFinite(a.duration) ? a.duration : 30) - a.currentTime);
     timer.current = window.setTimeout(ferma, (resto + 0.5) * 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intero]);
+
+  // Collegato il volume, l'audio dell'elemento passa dal contesto Web Audio: se il telefono lo sospende
+  // (altra app, schermo spento, iPhone che lo «interrompe») la canzone sembra suonare ma è muta.
+  // Qualsiasi tocco sulla pagina è un gesto valido per riattivarlo (anche «Salta e ascolta di più»).
+  useEffect(() => {
+    const riattiva = () => {
+      const ctx = ctxRef.current;
+      if (ctx && (ctx.state as AudioContextState) !== "running")
+        void ctx.resume().catch(() => undefined);
+    };
+    const eventi = ["pointerdown", "touchend", "keydown"] as const;
+    eventi.forEach((e) => document.addEventListener(e, riattiva, { passive: true }));
+    return () => eventi.forEach((e) => document.removeEventListener(e, riattiva));
+  }, []);
 
   // se si torna sulla pagina (schermo riacceso, altra app) l'audio sospeso riparte
   useEffect(() => {
@@ -178,7 +334,8 @@ export default function Ascolto({
       const ctx = ctxRef.current;
       if (ctx && ctx.state !== "running") void ctx.resume().catch(() => undefined);
       const a = ref.current;
-      if (voluto.current && a && a.paused && !a.ended) a.play().catch(() => undefined);
+      if (voluto.current && !motoreBuffer.current && a && a.paused && !a.ended)
+        a.play().catch(() => undefined);
     };
     document.addEventListener("visibilitychange", torna);
     return () => document.removeEventListener("visibilitychange", torna);
@@ -197,6 +354,8 @@ export default function Ascolto({
       className="panel space-y-3 p-5 text-center"
       data-testid="ascolto"
       data-volume-applicato={applicato}
+      data-tempo={tempo.toFixed(1)}
+      data-motore={motoreBuffer.current ? "buffer" : "elemento"}
     >
       <audio
         key={cors ? "cors" : "senza"}
@@ -222,6 +381,7 @@ export default function Ascolto({
         }}
         preload="auto"
         onPlaying={() => {
+          riavvio.current = false;
           window.clearTimeout(attesa.current);
           tentativi.current = 0;
           setCarica(false);
@@ -245,7 +405,15 @@ export default function Ascolto({
         onPause={() => {
           const a = ref.current;
           // pausa non voluta (telefonata, altro audio, cuffie): l'interfaccia lo dice e si riprova
-          if (!voluto.current || !a || a.ended) return;
+          if (
+            !voluto.current ||
+            !a ||
+            a.ended ||
+            a.seeking ||
+            riavvio.current ||
+            motoreBuffer.current
+          )
+            return;
           setSuona(false);
           setCarica(false);
           window.setTimeout(() => {
