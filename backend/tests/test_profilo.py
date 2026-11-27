@@ -6,6 +6,7 @@ from app.db.session import configure
 from app.main import app
 from app.profilo import (
     OBIETTIVI,
+    TETTO_PREMI_GIORNO,
     TITOLI,
     livello_per_xp,
     obiettivi_del_giorno,
@@ -88,7 +89,7 @@ def test_objectives_award_only_once_per_day(tmp_path) -> None:  # type: ignore[n
     configure(f"sqlite:///{tmp_path / 'pr4.db'}")
     pid = client.post("/api/profile", json={"name": "Anna"}).json()["id"]
     done: set[str] = set()
-    for seed in range(1, 40):
+    for seed in range(1, TETTO_PREMI_GIORNO - 4):
         r = client.post("/api/quick/play", json={**cheapest_picks(seed), "profile_id": pid}).json()
         ids = {o["id"] for o in r["premio"]["obiettivi_completati"]}
         assert not (ids & done)  # mai due volte lo stesso obiettivo nello stesso giorno
@@ -126,3 +127,17 @@ def test_collection_lists_every_character_and_form() -> None:
     assert len(items) >= 123
     assert len({i["id"] for i in items}) == len(items)
     assert any(i["forma"] for i in items) and any(not i["forma"] for i in items)
+
+
+def test_premi_hanno_un_tetto_giornaliero(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Ripetere la stessa richiesta non dà premi all'infinito: oltre il tetto niente premio."""
+    configure(f"sqlite:///{tmp_path / 'tetto.db'}")
+    pid = client.post("/api/profile", json={"name": "Anna"}).json()["id"]
+    corpo = {**cheapest_picks(9), "profile_id": pid}
+    premiate = 0
+    for _ in range(TETTO_PREMI_GIORNO + 3):
+        if client.post("/api/quick/play", json=corpo).json()["premio"] is not None:
+            premiate += 1
+    assert premiate == TETTO_PREMI_GIORNO
+    p = client.get(f"/api/profile/{pid}").json()
+    assert p["partite"] == TETTO_PREMI_GIORNO

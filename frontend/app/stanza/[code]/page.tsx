@@ -49,6 +49,19 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
     }
   }, [errorCode, code]);
 
+  // errore all'ingresso (nome già usato, stanza piena, partita iniziata): si smette di riprovare
+  // con lo stesso nome e si torna al modulo, così se ne può scegliere un altro
+  useEffect(() => {
+    if (
+      !room &&
+      started &&
+      errorCode &&
+      errorCode !== "room_not_found" &&
+      errorCode !== "bad_token"
+    )
+      setStarted(false);
+  }, [room, started, errorCode]);
+
   useEffect(() => {
     if (!error || !room) return;
     const t = setTimeout(() => useRoom.getState().clearError(), 5000);

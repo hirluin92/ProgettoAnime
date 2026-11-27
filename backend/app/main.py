@@ -2,6 +2,7 @@ import os
 import random
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import Any
 
 from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
@@ -117,6 +118,20 @@ def quiz_soluzione(code: str) -> dict[str, str | int]:
     if q.corrente.kind == "sigla":
         out |= {"brano": t["brano_lat"], "artista": t["artista_lat"]}
     return out
+
+
+@app.get("/api/dev/quiz-giorno/{gioco}")
+def quiz_giorno(gioco: str) -> dict[str, Any]:
+    """Solo per i test e2e: la soluzione di oggi di una sfida del giorno."""
+    if os.environ.get("DEV_TOOLS") != "1":
+        raise HTTPException(404, "non disponibile")
+    from app.profilo import oggi
+    from app.quiz import animedle, zoom
+    from app.quiz_api import _soluzione_zoom, soluzione
+
+    if gioco == "animedle":
+        return soluzione(animedle.bersaglio_giorno(oggi())).model_dump()
+    return _soluzione_zoom(gioco, zoom.bersaglio_giorno(gioco, oggi())).model_dump()
 
 
 @app.post("/api/dev/regala-carte/{profile_id}")

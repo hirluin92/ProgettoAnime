@@ -81,7 +81,8 @@ def test_save_decks_and_play_with_one(tmp_path) -> None:  # type: ignore[no-unty
     )
     # finire la partita: XP sì, ELO no
     gid = g.json()["id"]
-    for _ in range(6):
-        out = client.post(f"/api/duello/{gid}/turno", json={"mosse": []}).json()
+    from tests.test_duello_api import finisci
+
+    out = finisci(gid, g.json()["stato"])
     assert out["premio"]["xp"] >= 20 and out["premio"]["elo_prima"] == out["premio"]["elo_dopo"]
     assert client.get(f"/api/profile/{pid}").json()["elo"] == 1200

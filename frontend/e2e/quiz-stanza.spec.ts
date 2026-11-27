@@ -98,3 +98,20 @@ test("home: «Crea una stanza per il quiz musicale» apre la lobby già in modal
   await page.getByTestId("quiz-impostazioni-fatto").click();
   await expect(page.getByTestId("quiz-riepilogo")).toContainText("Sigle");
 });
+
+test("stanza: dopo «Nome già usato» si può scegliere un altro nome ed entrare", async ({
+  browser,
+}) => {
+  test.setTimeout(60_000);
+  const { code } = await createRoom(browser, "Anna");
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  await page.goto(`/stanza/${code}`);
+  await page.getByLabel("Il tuo nome").fill("Anna");
+  await page.getByRole("button", { name: "Entra nella stanza" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "Nome già usato" })).toBeVisible();
+  await page.getByLabel("Il tuo nome").fill("Bruno");
+  await page.getByRole("button", { name: "Entra nella stanza" }).click();
+  await expect(page.getByTestId("room-code")).toHaveText(code);
+  await ctx.close();
+});

@@ -4,6 +4,7 @@ import hashlib
 from typing import Any
 
 from app.quiz.dati import pool_anime
+from app.quiz.segreto import segreto
 
 TENTATIVI_MAX = 8
 CREDITI_BASE = 45
@@ -14,7 +15,7 @@ BONUS_SERIE_MAX = 25
 
 
 def indice_giorno(gioco: str, day: str, n: int) -> int:
-    h = hashlib.sha256(f"{gioco}:{day}".encode()).digest()
+    h = hashlib.sha256(segreto() + f":{gioco}:{day}".encode()).digest()
     return int.from_bytes(h[:8], "big") % n
 
 

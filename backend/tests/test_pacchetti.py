@@ -110,8 +110,9 @@ def test_credits_are_earned_by_playing_only(tmp_path) -> None:  # type: ignore[n
     pid = client.post("/api/profile", json={"name": "Elena"}).json()["id"]
     assert client.get(f"/api/profile/{pid}").json()["crediti"] == 0
     g = avvia(31, "facile", pid)
-    for _ in range(6):
-        out = client.post(f"/api/duello/{g['id']}/turno", json={"mosse": []}).json()
+    from tests.test_duello_api import finisci
+
+    out = finisci(g["id"], g["stato"])
     pr = out["premio"]
     assert (
         pr["crediti"] >= 10 and client.get(f"/api/profile/{pid}").json()["crediti"] == pr["crediti"]

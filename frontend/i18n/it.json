@@ -108,6 +108,7 @@
     "testoCondivisione": "Ho {esito} contro la CPU su Arena Anime: guarda lo scontro!"
   },
   "errori": {
+    "richiestaNonValida": "Controlla i dati inseriti: qualcosa non è valido.",
     "partitaNonTrovata": "Partita non trovata.",
     "stanzaNonTrovata": "Stanza non trovata o scaduta: controlla il codice (le stanze create su un altro sito o computer non si vedono).",
     "serverNonRaggiungibile": "Non riesco a collegarmi al server: riprova tra qualche secondo.",
@@ -512,6 +513,7 @@
     "riposo": "Turno di riposo: passi automaticamente"
   },
   "account": {
+    "passwordCorta": "La password deve avere almeno 8 caratteri.",
     "proteggi": "Proteggi il tuo profilo",
     "proteggiTesto": "Scegli un nome utente e una password: potrai ritrovare XP, collezione ed ELO da qualsiasi dispositivo. In regalo 100 crediti, un Pacchetto Base!",
     "utente": "Nome utente (lettere, numeri, _)",

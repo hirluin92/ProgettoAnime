@@ -44,6 +44,29 @@ def mosse_valide(stato: dict, rnd: random.Random) -> list[dict]:  # type: ignore
     return out
 
 
+def finisci(gid: str, stato: dict, vuote: bool = False) -> dict:  # type: ignore[type-arg]
+    """Gioca i 6 turni: a ogni turno prova le carte dalla più economica, in ogni corsia."""
+    out: dict = {}  # type: ignore[type-arg]
+    for _ in range(6):
+        out = {}
+        if not vuote:
+            for c in sorted(stato["mano"], key=lambda c: c["costo"]):
+                for corsia in range(3):
+                    r = client.post(
+                        f"/api/duello/{gid}/turno",
+                        json={"mosse": [{"carta": c["id"], "corsia": corsia}]},
+                    )
+                    if r.status_code == 200:
+                        out = r.json()
+                        break
+                if out:
+                    break
+        if not out:
+            out = client.post(f"/api/duello/{gid}/turno", json={"mosse": []}).json()
+        stato = out["stato"]
+    return out
+
+
 def test_draft_is_deterministic_and_complete() -> None:
     a = client.get("/api/duello/draft?seed=3").json()
     assert a == client.get("/api/duello/draft?seed=3").json()
@@ -158,6 +181,16 @@ def test_prize_for_profile_after_a_game(tmp_path) -> None:  # type: ignore[no-un
     for _ in range(6):
         out2 = client.post(f"/api/duello/{g2['id']}/turno", json={"mosse": []}).json()
     assert out2["premio"] is None
+
+
+def test_senza_carte_giocate_nessun_premio(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """Chiudere una partita a mosse vuote non rende crediti né XP."""
+    configure(f"sqlite:///{tmp_path / 'du4b.db'}")
+    pid = client.post("/api/profile", json={"name": "Anna"}).json()["id"]
+    g = avvia(13, "facile", pid)
+    out = finisci(g["id"], g["stato"], vuote=True)
+    assert out["finita"] and out["premio"] is None
+    assert client.get(f"/api/profile/{pid}").json()["crediti"] == 0
 
 
 # ---------- rompicapo del giorno ed ELO ----------

@@ -359,3 +359,21 @@ def test_elenco_brani_e_artisti_per_rispondere_alle_sigle() -> None:
     # l'id del brano e dell'artista combaciano con i dati delle sigle
     s = next(x for x in sigle() if x["brano_lat"] == "Gurenge")
     assert gurenge["id"] == s["brano_idx"] and artisti()[s["artista_idx"]] == "LiSA"
+
+
+def test_arrendersi_senza_profilo_non_svela_la_soluzione_del_giorno() -> None:
+    for url in (
+        "/api/quiz/animedle/arrenditi",
+        "/api/quiz/zoom/scorcio/arrenditi",
+        "/api/quiz/zoom/sigla/arrenditi",
+    ):
+        assert client.post(url, json={}).status_code == 422
+
+
+def test_bersaglio_del_giorno_dipende_dal_segreto(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    giorni = [f"2026-12-{d:02d}" for d in range(1, 29)]
+    monkeypatch.setenv("QUIZ_SECRET", "uno")
+    a = [animedle.bersaglio_giorno(g)["id"] for g in giorni]
+    assert a == [animedle.bersaglio_giorno(g)["id"] for g in giorni]  # stabile
+    monkeypatch.setenv("QUIZ_SECRET", "due")
+    assert a != [animedle.bersaglio_giorno(g)["id"] for g in giorni]

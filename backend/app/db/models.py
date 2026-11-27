@@ -107,6 +107,9 @@ class ProfileDay(Base):
     day: Mapped[str] = mapped_column(String(10))
     fatti: Mapped[list[str]] = mapped_column(JSON, default=list)  # id obiettivi completati
     primo: Mapped[bool] = mapped_column(Boolean, default=False)
+    premiate: Mapped[int] = mapped_column(
+        Integer, default=0, server_default="0"
+    )  # partite che hanno già dato un premio oggi
 
 
 class RankedGhost(Base):

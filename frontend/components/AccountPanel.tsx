@@ -28,6 +28,10 @@ export default function AccountPanel({
 
   const invia = async () => {
     setErrore(null);
+    if (modo !== "accedi" && password.length < 8) {
+      setErrore(it.account.passwordCorta);
+      return;
+    }
     setBusy(true);
     try {
       const out =

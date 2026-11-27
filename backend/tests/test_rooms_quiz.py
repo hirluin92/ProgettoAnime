@@ -1,6 +1,7 @@
 import pytest
 
 from app.rooms import quiz as modulo_quiz
+from app.rooms.manager import RoomManager
 from app.rooms.quiz import BLOCCO, LIVELLI, RIVELAZIONE, QuizErrore, QuizPartita
 
 
@@ -277,3 +278,16 @@ def test_conto_alla_rovescia_prima_di_ogni_domanda(monkeypatch) -> None:  # type
     p.tick(1004.0, ["a", "b", "c"])
     p.tick(1004.0 + RIVELAZIONE, ["a", "b", "c"])
     assert p.idx == 1 and p.inizio == 1004.0 + RIVELAZIONE + 3.0
+
+
+def test_due_partite_nella_stessa_stanza_hanno_domande_diverse() -> None:
+    mgr = RoomManager()
+    stanza, _ = mgr.create_room("Anna")
+    stanza.settings.quiz_round = 6
+    mgr._begin_quiz(stanza)
+    domande_a = [d.target["id"] for d in stanza.extras["quiz"].domande]
+    stanza.extras["quiz"].fase = "fine"
+    mgr._quiz_lobby(stanza)
+    mgr._begin_quiz(stanza)
+    domande_b = [d.target["id"] for d in stanza.extras["quiz"].domande]
+    assert domande_a and domande_a != domande_b
