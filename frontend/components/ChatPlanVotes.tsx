@@ -19,9 +19,7 @@ export default function ChatPlanVotes({
 }) {
   return (
     <div className={compact ? "space-y-1" : "panel space-y-2 p-4"} data-testid="chat-plan">
-      <h3 className={compact ? "text-xl font-extrabold" : "text-3xl"}>
-        {it.piano.chat.titolo}
-      </h3>
+      <h3 className={compact ? "text-xl font-extrabold" : "text-3xl"}>{it.piano.chat.titolo}</h3>
       <p className="text-xs muted">{it.piano.chat.comandi}</p>
       <ul className="grid gap-1 text-sm sm:grid-cols-2">
         {CASELLE.map(([k, label]) => {

@@ -107,7 +107,8 @@ export default function RisultatoPopup(p: Props) {
                     className="chip border-black bg-[#ffd21f] text-sm text-black"
                     data-testid={`${p.testId}-crediti`}
                   >
-                    <Moneta gira className="size-[1.4em]" /> {fmt(it.quiz.guadagnati, { n: p.crediti })}
+                    <Moneta gira className="size-[1.4em]" />{" "}
+                    {fmt(it.quiz.guadagnati, { n: p.crediti })}
                   </p>
                 )}
                 <div className="flex flex-wrap gap-2 pt-1">

@@ -66,7 +66,12 @@ export default function LegaEmblema({
       <g strokeLinejoin="round">
         {/* esplosione dietro (Diamante e Campione) */}
         {n >= 4 && (
-          <polygon points={ESPLOSIONE_1} fill={n === 5 ? "#ffd21f" : NERO} stroke={NERO} strokeWidth="4" />
+          <polygon
+            points={ESPLOSIONE_1}
+            fill={n === 5 ? "#ffd21f" : NERO}
+            stroke={NERO}
+            strokeWidth="4"
+          />
         )}
         {n === 5 && <polygon points={ESPLOSIONE_2} fill="#e0301f" stroke={NERO} strokeWidth="3" />}
         {/* lame ai lati: una in più a ogni lega */}
@@ -81,7 +86,12 @@ export default function LegaEmblema({
         })}
         {/* corona */}
         {punte === 3 && (
-          <path d="M68 44 62 10 84 28 100 4 116 28 138 10 132 44Z" fill={c} stroke={NERO} strokeWidth="4" />
+          <path
+            d="M68 44 62 10 84 28 100 4 116 28 138 10 132 44Z"
+            fill={c}
+            stroke={NERO}
+            strokeWidth="4"
+          />
         )}
         {punte === 5 && (
           <path

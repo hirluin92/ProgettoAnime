@@ -129,7 +129,8 @@
     "stanzaScaduta": "La stanza non esiste più o è scaduta.",
     "paginaNonTrovata": "Pagina non trovata",
     "tornaHome": "Torna alla home",
-    "riprova": "Riprova"
+    "riprova": "Riprova",
+    "paginaPersa": "Questa tavola non è mai stata disegnata. Torniamo all'inizio?"
   },
   "stanza": {
     "lobby": "Lobby",
@@ -261,7 +262,8 @@
     "rimozioneTesto": "Se sei un titolare dei diritti e vuoi la rimozione di un contenuto, scrivi a",
     "cookie": "Cookie",
     "cookieTesto": "Il gioco salva nel tuo browser solo il necessario (ad esempio il token per rientrare in una stanza). Nessuno script di analisi o pubblicità viene caricato senza il tuo consenso.",
-    "credito": "Immagini dei personaggi: AniList"
+    "credito": "Immagini dei personaggi: AniList",
+    "occhiello": "Regole, crediti e note legali"
   },
   "sfida": {
     "titolo": "Sfida del giorno",
@@ -331,11 +333,7 @@
     "descrizione": "Scegli una tattica per ognuna delle 3 fasi. La CPU sceglie in segreto e legge i tuoi schemi: non essere prevedibile.",
     "batte": "batte",
     "effetto": "Chi vince il confronto infligge il +{bonus}% di danno nella fase, chi perde il -{malus}%. Se sono uguali, nessun effetto.",
-    "turni": [
-      "turni 1-3",
-      "turni 4-6",
-      "turni 7-10"
-    ],
+    "turni": ["turni 1-3", "turni 4-6", "turni 7-10"],
     "carica": {
       "titolo": "Mossa finale",
       "subito": "Subito",
@@ -355,11 +353,7 @@
   "formazione": {
     "titolo": "Formazione",
     "descrizione": "Chi sta davanti incassa i colpi; chi sta dietro viene colpito per ultimo.",
-    "file": [
-      "Davanti",
-      "Centro",
-      "Dietro"
-    ]
+    "file": ["Davanti", "Centro", "Dietro"]
   },
   "missione": {
     "titolo": "Missione segreta",

@@ -47,28 +47,32 @@ export function TimerRing({
   return (
     <div className={`relative size-20 shrink-0 ${urgent ? "animate-pulse" : ""}`}>
       <svg viewBox="0 0 80 80" className="size-full -rotate-90" aria-hidden="true">
-        <circle cx="40" cy="40" r={R} fill="none" stroke="rgb(255 255 255 / 0.1)" strokeWidth="6" />
+        <circle cx="40" cy="40" r={R} fill="#0e0d10" stroke="#000" strokeWidth="9" />
         <circle
           cx="40"
           cy="40"
           r={R}
           fill="none"
-          stroke={urgent ? "#ff4d6d" : "#3fd0f0"}
+          stroke="rgb(243 236 221 / 0.18)"
           strokeWidth="6"
-          strokeLinecap="round"
+        />
+        <circle
+          cx="40"
+          cy="40"
+          r={R}
+          fill="none"
+          stroke={urgent ? "#e0301f" : "#ffd21f"}
+          strokeWidth="6"
           strokeDasharray={C}
           strokeDashoffset={C * (1 - frac)}
-          style={{
-            transition: "stroke-dashoffset 0.12s linear, stroke 0.3s",
-            filter: `drop-shadow(0 0 6px ${urgent ? "#ff4d6d" : "#3fd0f0"})`,
-          }}
+          style={{ transition: "stroke-dashoffset 0.12s linear, stroke 0.3s" }}
         />
       </svg>
       <span
         data-testid="timer"
         aria-label={label}
-        className={`display absolute inset-0 grid place-items-center text-2xl font-black tabular-nums ${
-          urgent ? "text-rose-300" : "text-cyan-100"
+        className={`num absolute inset-0 grid place-items-center text-lg tabular-nums ${
+          urgent ? "text-rose-300" : "text-carta"
         }`}
       >
         {left.toFixed(1)}

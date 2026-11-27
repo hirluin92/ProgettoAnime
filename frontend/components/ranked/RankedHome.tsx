@@ -83,7 +83,10 @@ export default function RankedHome() {
           className="mx-auto w-36 shrink-0 sm:w-44"
         />
         <div className="min-w-0 space-y-2 text-center sm:text-left">
-          <div className="display text-5xl italic leading-none sm:text-6xl" data-testid="ranked-lega">
+          <div
+            className="display text-5xl italic leading-none sm:text-6xl"
+            data-testid="ranked-lega"
+          >
             {st.in_piazzamento ? it.ranked.titolo : nomeLega(st.lega, st.divisione)}
           </div>
           <p className="num text-lg text-[var(--accent)]">{fmt(it.ranked.mmr, { n: st.mmr })}</p>
@@ -131,8 +134,7 @@ export default function RankedHome() {
           />
           {leghe.map((l) => {
             const qui = l === st.lega && !st.in_piazzamento;
-            const passata =
-              !st.in_piazzamento && leghe.indexOf(l) < leghe.indexOf(st.lega);
+            const passata = !st.in_piazzamento && leghe.indexOf(l) < leghe.indexOf(st.lega);
             return (
               <li
                 key={l}
@@ -157,7 +159,10 @@ export default function RankedHome() {
       </section>
 
       {errore && (
-        <p role="alert" className="border-2 border-rose-400 bg-rose-400/10 p-2 text-center font-bold text-rose-300">
+        <p
+          role="alert"
+          className="border-2 border-rose-400 bg-rose-400/10 p-2 text-center font-bold text-rose-300"
+        >
           {errore}
         </p>
       )}

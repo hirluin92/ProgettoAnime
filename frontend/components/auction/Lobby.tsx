@@ -44,29 +44,46 @@ export default function Lobby({
   const num = (v: string, d: number) => (Number.isFinite(parseInt(v, 10)) ? parseInt(v, 10) : d);
   return (
     <section className="space-y-5 pt-6">
-      <div className="panel reveal relative overflow-hidden p-6 text-center sm:p-8">
-        <div
+      {/* il biglietto d'invito: carta stampata, una casella per lettera, bordo perforato */}
+      <div className="su-carta reveal relative mx-auto max-w-2xl -rotate-1 border-2 border-black bg-carta p-5 text-center text-nero shadow-[8px_8px_0_var(--accent)] sm:p-7">
+        <i
           aria-hidden="true"
-          className="pointer-events-none absolute -top-20 left-1/2 h-48 w-[26rem] -translate-x-1/2 rounded-full bg-cyan-400/20 hidden"
+          className="absolute inset-x-0 top-0 h-2"
+          style={{
+            backgroundImage: "radial-gradient(circle at 6px 0, #0e0d10 4px, transparent 4.5px)",
+            backgroundSize: "12px 8px",
+          }}
         />
-        <span className="eyebrow relative">{it.stanza.lobby}</span>
-        <h2 className="relative mt-2">
+        <span className="text-xs font-black uppercase tracking-[0.25em] text-[#b3200f]">
+          {it.stanza.lobby}
+        </span>
+        <h2 className="mt-2 not-italic">
           <span
             data-testid="room-code"
-            className="display text-grad text-7xl font-black tracking-[0.18em] sm:text-8xl"
+            className="num inline-flex gap-1.5 text-5xl sm:gap-2.5 sm:text-7xl"
+            aria-label={room.code}
           >
-            {room.code}
+            {room.code.split("").map((ch, i) => (
+              <span
+                key={i}
+                className="colpo grid w-[1.25em] place-items-center border-2 border-black bg-white/60 py-1 shadow-[3px_3px_0_#000]"
+                style={{ ["--i" as string]: i }}
+              >
+                {ch}
+              </span>
+            ))}
           </span>
         </h2>
-        <p className="relative mt-1 text-sm muted">{it.stanza.condividi}</p>
+        <p className="mt-3 text-sm font-bold muted">{it.stanza.condividi}</p>
         <button
-          className="btn relative mt-4"
+          className="btn btn-primary mt-3"
           onClick={() => {
             void navigator.clipboard?.writeText(window.location.href);
             setCopied(true);
             setTimeout(() => setCopied(false), 1800);
           }}
         >
+          <Icon name={copied ? "check" : "link"} />
           {copied ? it.stanza.copiato : it.stanza.copiaLink}
         </button>
       </div>
@@ -75,7 +92,7 @@ export default function Lobby({
           <li
             key={p.id}
             data-testid="player"
-            className="panel reveal flex items-center gap-3 p-3.5"
+            className="panel-vivo reveal flex items-center gap-3 p-3.5"
             style={{ ["--i" as string]: i }}
           >
             <span
@@ -102,10 +119,10 @@ export default function Lobby({
             <li
               key={`vuoto-${i}`}
               aria-hidden="true"
-              className="flex items-center gap-3 rounded-[1.4rem] border border-dashed p-3.5 text-sm text-white/35"
+              className="flex items-center gap-3 border-2 border-dashed border-[var(--line-forte)] p-3.5 text-sm font-bold text-white/40"
             >
-              <span className="grid size-11 place-items-center  border border-dashed text-xl">
-                +
+              <span className="grid size-11 place-items-center border-2 border-dashed border-[var(--line-forte)]">
+                <Icon name="plus" />
               </span>
               {it.stanza.postoLibero}
             </li>

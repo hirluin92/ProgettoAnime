@@ -155,7 +155,10 @@ export default function SfidePage() {
         <h1 className="text-4xl sm:text-5xl">{it.quiz.titolo}</h1>
         <p className="max-w-2xl text-[0.95rem] font-medium muted">{it.quiz.intro}</p>
         {prossima && (
-          <p className="chip mt-2 mr-2 border-black bg-carta text-nero" data-testid="sfide-prossima">
+          <p
+            className="chip mt-2 mr-2 border-black bg-carta text-nero"
+            data-testid="sfide-prossima"
+          >
             <Icon name="clock" />
             {fmt(it.quiz.prossima, { t: prossima })}
           </p>

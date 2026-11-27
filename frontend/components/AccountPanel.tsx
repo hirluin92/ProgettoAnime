@@ -124,7 +124,10 @@ export default function AccountPanel({
         data-testid="account-password"
       />
       {errore && (
-        <p role="alert" className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300">
+        <p
+          role="alert"
+          className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300"
+        >
           {errore}
         </p>
       )}
@@ -142,7 +145,10 @@ export default function AccountPanel({
       </button>
       <div className="flex flex-wrap justify-between gap-2 text-sm">
         {modo === "accedi" && (
-          <button className="min-h-11 font-bold underline muted" onClick={() => setModo("recupera")}>
+          <button
+            className="min-h-11 font-bold underline muted"
+            onClick={() => setModo("recupera")}
+          >
             {it.account.dimenticata}
           </button>
         )}

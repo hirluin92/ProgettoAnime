@@ -39,17 +39,12 @@ function TeamBar({
   pct: number;
   hype: number;
 }) {
-  const color =
-    side === "A"
-      ? "#3fd0f0"
-      : "#e0301f";
+  const color = side === "A" ? "#3fd0f0" : "#e0301f";
   return (
     <div className={`grid gap-1 ${side === "B" ? "text-right" : ""}`}>
       <div className={`flex items-baseline gap-2 ${side === "B" ? "flex-row-reverse" : ""}`}>
         <span className="display truncate text-2xl italic">{name}</span>
-        <span className="num text-sm tabular-nums">
-          {Math.round(pct)}%
-        </span>
+        <span className="num text-sm tabular-nums">{Math.round(pct)}%</span>
       </div>
       <div
         className="relative h-5 overflow-hidden border-2 border-black bg-black outline outline-1 outline-[rgb(243_236_221/0.3)]"
@@ -206,9 +201,7 @@ export default function BattleScene({
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-4">
           <TeamBar side="A" name={A.nome} pct={pct("A")} hype={s.hype.A} />
           <div className="text-center">
-            <div className="onoma text-5xl">
-              VS
-            </div>
+            <div className="onoma text-5xl">VS</div>
             <small className="block text-xs font-bold opacity-70" data-testid="round">
               {s.turno ? `${it.battle.turno} ${s.turno}` : it.battle.pronto}
             </small>

@@ -57,11 +57,11 @@ function Cursore({
           max={max}
           value={valore}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="h-2 flex-1 cursor-pointer accent-[#7a86ff]"
+          className="flex-1"
           data-testid={testId}
           aria-label={etichetta}
         />
-        <span className="display w-14 text-right text-2xl font-black normal-case tabular-nums">
+        <span className="num w-16 text-right text-xl normal-case tabular-nums text-[#ffd21f]">
           {valore}
           {suffisso}
         </span>
@@ -87,7 +87,7 @@ function Segmentato<T extends string>({
     <div
       role="radiogroup"
       aria-label={etichetta}
-      className="flex flex-wrap gap-1 rounded-2xl border bg-black/40 p-1"
+      className="flex flex-wrap gap-1 border-2 border-[var(--line-forte)] bg-black/40 p-1"
     >
       {opzioni.map(([v, nome]) => (
         <button
@@ -97,10 +97,8 @@ function Segmentato<T extends string>({
           aria-checked={v === valore}
           onClick={() => onChange(v)}
           data-testid={testId ? `${testId}-${v}` : undefined}
-          className={`min-h-11 flex-1 rounded-xl px-3 text-[0.95rem] font-extrabold transition ${
-            v === valore
-              ? "bg-gradient-to-r from-[#6f7dff] to-[#9a5cf5] text-white shadow-lg"
-              : "text-white/70 hover:bg-white/10"
+          className={`display min-h-11 flex-1 px-3 text-lg tracking-wide transition-colors ${
+            v === valore ? "bg-carta text-nero" : "text-white/75 hover:bg-white/10"
           }`}
         >
           {nome}
@@ -157,14 +155,14 @@ export default function ImpostazioniQuiz({
               type="button"
               onClick={onChiudi}
               aria-label={it.quiz.chiudi}
-              className="absolute right-4 top-4 grid size-10 place-items-center rounded-full bg-white/10 hover:bg-white/20"
+              className="absolute right-3 top-3 grid size-11 place-items-center border-2 border-[var(--line-forte)] bg-[#201f26] hover:border-carta"
               data-testid="quiz-impostazioni-chiudi"
             >
               <Icon name="x" className="size-5" />
             </button>
             <header className="space-y-1">
               <span className="eyebrow">{t.stanza}</span>
-              <h2 className="display text-4xl font-black">{t.titolo}</h2>
+              <h2 className="text-4xl">{t.titolo}</h2>
             </header>
 
             <Sezione titolo={t.giochi}>

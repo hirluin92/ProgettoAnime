@@ -340,7 +340,10 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
           </ul>
         )}
         {!finito && (
-          <button className="min-h-11 text-sm font-bold underline muted" onClick={() => void arrenditi()}>
+          <button
+            className="min-h-11 text-sm font-bold underline muted"
+            onClick={() => void arrenditi()}
+          >
             {it.quiz.arrenditi}
           </button>
         )}

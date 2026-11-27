@@ -73,7 +73,8 @@ export default function AuctionView({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-x-0 -top-24 h-72 opacity-70"
                 style={{
-                  background: `radial-gradient(ellipse at 50% 40%, ${rarity(lot.character.rating).glow}, transparent 65%)`,
+                  background:
+                    "repeating-conic-gradient(from 0deg at 50% 42%, rgb(243 236 221 / 0.07) 0deg 1deg, transparent 1deg 6deg)",
                 }}
               />
               <div className="relative flex items-center justify-between">
@@ -141,7 +142,7 @@ export default function AuctionView({
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300, damping: 14 }}
                 className="relative mt-4 rounded-2xl border bg-black/40 py-2.5 text-center"
-                style={bidder ? { boxShadow: `0 0 28px -6px ${bidder.color}` } : undefined}
+                style={bidder ? { boxShadow: `5px 5px 0 ${bidder.color}` } : undefined}
               >
                 <div className="text-[0.65rem] font-extrabold uppercase tracking-[0.25em] muted">
                   {it.stanza.offertaAttuale}
@@ -246,9 +247,7 @@ export default function AuctionView({
                   <div
                     key={r}
                     className={`rounded-xl border p-2 text-center text-xs transition ${
-                      c
-                        ? "border-transparent bg-gradient-to-b from-white/15 to-white/5"
-                        : "border-dashed"
+                      c ? "border-carta bg-white/10" : "border-dashed"
                     }`}
                   >
                     <div className="display text-[0.7rem] font-extrabold tracking-wider muted">
@@ -274,13 +273,13 @@ export default function AuctionView({
                   }`}
                   style={
                     leading
-                      ? { borderColor: p.color, boxShadow: `0 0 24px -6px ${p.color}` }
+                      ? { borderColor: p.color, boxShadow: `4px 4px 0 ${p.color}` }
                       : undefined
                   }
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className="size-3.5 rotate-45 ring-2 ring-white/40"
+                      className="size-3.5 rotate-45 border-2 border-black outline outline-1 outline-white/40"
                       style={{ background: p.color }}
                     />
                     <span className="font-bold">{p.name}</span>

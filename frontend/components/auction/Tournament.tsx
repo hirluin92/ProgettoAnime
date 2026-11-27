@@ -27,7 +27,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
     <section className="space-y-10 pt-6" data-testid="tournament">
       <div className="space-y-1 text-center">
         <span className="eyebrow">{it.stanza.torneo}</span>
-        <h2 className="text-5xl font-black leading-none sm:text-6xl">{it.stanza.classifica}</h2>
+        <h2 className="striscia text-5xl leading-none sm:text-6xl">{it.stanza.classifica}</h2>
       </div>
 
       {top.length >= 2 && (
@@ -46,18 +46,23 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                 </div>
                 <div
                   className="grid size-14 place-items-center -rotate-3 border-2 border-black text-2xl font-black text-black/70"
-                  style={{ background: p?.color, boxShadow: `0 0 30px -4px ${p?.color}` }}
+                  style={{ background: p?.color, boxShadow: "3px 3px 0 #000" }}
                 >
                   {name(r.player_id).slice(0, 1).toUpperCase()}
                 </div>
                 <div className="mt-1 max-w-full truncate font-extrabold">{name(r.player_id)}</div>
                 <div className="text-xs muted">{r.punti} pt</div>
                 <div
-                  className={`mt-2 w-full rounded-t-2xl border border-b-0 bg-gradient-to-b from-white/20 to-white/[0.03] ${HEIGHT[i]}`}
-                  style={
-                    i === 0 ? { boxShadow: "0 -10px 40px -10px rgb(255 212 90 / 0.55)" } : undefined
-                  }
-                />
+                  className={`num mt-2 grid w-full place-items-start justify-items-center border-2 border-b-0 border-black pt-2 text-3xl text-black ${HEIGHT[i]} ${
+                    i === 0 ? "bg-[#ffd21f]" : "bg-carta"
+                  }`}
+                  style={{
+                    backgroundImage: "radial-gradient(rgb(0 0 0 / 0.16) 1.3px, transparent 1.7px)",
+                    backgroundSize: "9px 9px",
+                  }}
+                >
+                  {i + 1}
+                </div>
               </div>
             );
           })}
@@ -68,7 +73,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
         <section className="space-y-3" data-testid="tabellone">
           <h3 className="eyebrow">{it.tabellone.titolo}</h3>
           {t.campione && (
-            <p className="display text-grad text-center text-4xl font-black" data-testid="campione">
+            <p className="onoma block text-center text-4xl" data-testid="campione">
               <Icon name="trophy" className="size-[0.9em]" /> {it.tabellone.campione}:{" "}
               {name(t.campione)}
             </p>
@@ -280,15 +285,11 @@ function Side({
       className={`flex min-w-0 flex-1 flex-col ${right ? "items-end text-right" : "items-start"}`}
     >
       <span className="flex max-w-full items-center gap-2">
-        {!right && (
-          <span className="size-3 shrink-0 rotate-45" style={{ background: p?.color }} />
-        )}
+        {!right && <span className="size-3 shrink-0 rotate-45" style={{ background: p?.color }} />}
         <span className={`truncate font-extrabold ${win ? "text-gold" : ""}`}>
           {win ? <Icon name="star" /> : null} {p?.name ?? "?"}
         </span>
-        {right && (
-          <span className="size-3 shrink-0 rotate-45" style={{ background: p?.color }} />
-        )}
+        {right && <span className="size-3 shrink-0 rotate-45" style={{ background: p?.color }} />}
       </span>
       <span className="display text-3xl font-black tabular-nums">{total}</span>
     </span>

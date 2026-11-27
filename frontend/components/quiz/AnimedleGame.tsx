@@ -347,7 +347,10 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           <AnimeSearch onScegli={(a) => void prova(a)} esclusi={provati} testId="animedle-cerca" />
         )}
         {errore && (
-          <p role="alert" className="border-2 border-[#ffd21f] bg-[#ffd21f]/10 p-2 text-sm font-bold text-amber-200">
+          <p
+            role="alert"
+            className="border-2 border-[#ffd21f] bg-[#ffd21f]/10 p-2 text-sm font-bold text-amber-200"
+          >
             {errore}
           </p>
         )}
@@ -370,10 +373,12 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
         </div>
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs muted">
           <li className="flex items-center gap-1.5">
-            <i className="size-3 border border-black bg-[#35d68a]" /> {it.quiz.animedle.legendaGiusto}
+            <i className="size-3 border border-black bg-[#35d68a]" />{" "}
+            {it.quiz.animedle.legendaGiusto}
           </li>
           <li className="flex items-center gap-1.5">
-            <i className="size-3 border border-black bg-[#ffd21f]" /> {it.quiz.animedle.legendaVicino}
+            <i className="size-3 border border-black bg-[#ffd21f]" />{" "}
+            {it.quiz.animedle.legendaVicino}
           </li>
           <li className="flex items-center gap-1.5">
             <i className="size-3 border border-white/30 bg-[#201f26]" />{" "}
@@ -384,7 +389,10 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           </li>
         </ul>
         {!finito && righe.length > 0 && (
-          <button className="min-h-11 text-sm font-bold underline muted" onClick={() => void arrenditi()}>
+          <button
+            className="min-h-11 text-sm font-bold underline muted"
+            onClick={() => void arrenditi()}
+          >
             {it.quiz.arrenditi}
           </button>
         )}

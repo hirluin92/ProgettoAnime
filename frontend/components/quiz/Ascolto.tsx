@@ -247,7 +247,7 @@ export default function Ascolto({
             attivaVolume();
             setVolume(Number(e.target.value) / 100);
           }}
-          className="h-2 flex-1 cursor-pointer accent-[#e0301f]"
+          className="flex-1"
           aria-label={it.quiz.sigla.volume}
           data-testid="ascolto-volume"
         />

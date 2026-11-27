@@ -53,9 +53,7 @@ export default function SpecchioView({
           <div
             data-testid={myTurn ? "specchio-turn-me" : "specchio-turn-other"}
             className={`rounded-2xl border px-4 py-2 text-lg font-extrabold ${
-              myTurn
-                ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
-                : "bg-black/20"
+              myTurn ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]" : "bg-black/20"
             }`}
           >
             {myTurn ? it.specchio.tuoTurno : it.specchio.turnoDi.replace("{nome}", turnName)}
@@ -102,9 +100,7 @@ export default function SpecchioView({
 
       <section className="panel space-y-3 p-4" data-testid="spec-team">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-3xl">
-            {raid ? it.specchio.squadraComune : it.stanza.laTuaSquadra}
-          </h3>
+          <h3 className="text-3xl">{raid ? it.specchio.squadraComune : it.stanza.laTuaSquadra}</h3>
           {myTurn && card && (
             <p className="text-sm text-cyan-100">
               {it.specchio.scegliSlot.replace("{nome}", card.character.nome)}

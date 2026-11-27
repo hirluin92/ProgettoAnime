@@ -51,14 +51,14 @@ export default function Overlay({ params }: { params: Promise<{ code: string }> 
       style={{ width: 1920, height: 1080, background: "transparent" }}
     >
       {room?.phase === "auction" && lot && (
-        <div className="absolute left-10 top-10 flex items-center gap-6 rounded-3xl bg-black/60 p-6">
+        <div className="absolute left-10 top-10 flex items-center gap-6 border-[3px] border-[#f3ecdd] bg-[#0e0d10] p-6 shadow-[8px_8px_0_#e0301f]">
           <CharacterCard character={lot.character} />
           <div>
             <div className="text-2xl font-bold opacity-80">
               {it.stanza.lotto} {lot.number}
             </div>
             {!lot.await_role && <Countdown deadline={lot.deadline} />}
-            <div className="mt-2 text-5xl font-black" data-testid="overlay-bid">
+            <div className="num mt-2 text-5xl text-[#ffd21f]" data-testid="overlay-bid">
               {lot.current_bid > 0
                 ? `${lot.current_bid} · ${bidder?.name}`
                 : it.stanza.nessunaOfferta}
@@ -68,19 +68,23 @@ export default function Overlay({ params }: { params: Promise<{ code: string }> 
         </div>
       )}
       {room?.phase === "duelli" && room.chat_duello && (
-        <div className="absolute left-10 top-10 w-[900px] rounded-3xl bg-black/65 p-6">
+        <div className="absolute left-10 top-10 w-[900px] border-[3px] border-[#f3ecdd] bg-[#0e0d10] p-6 shadow-[8px_8px_0_#e0301f]">
           <ChatDuelloVoti voto={room.chat_duello} compact />
         </div>
       )}
       {room?.phase === "plan" && (
-        <div className="absolute left-10 top-10 w-[760px] rounded-3xl bg-black/65 p-6">
+        <div className="absolute left-10 top-10 w-[760px] border-[3px] border-[#f3ecdd] bg-[#0e0d10] p-6 shadow-[8px_8px_0_#e0301f]">
           <ChatPlanVotes voti={room.chat_plan ?? {}} compact />
         </div>
       )}
       {room && room.phase !== "lobby" && !match && (
         <div className="absolute bottom-6 left-6 right-6 grid grid-cols-4 gap-3">
           {room.players.map((p) => (
-            <div key={p.id} className="rounded-2xl bg-black/60 p-3" data-testid="overlay-team">
+            <div
+              key={p.id}
+              className="border-2 border-[#f3ecdd] bg-[#0e0d10] p-3 shadow-[4px_4px_0_#000]"
+              data-testid="overlay-team"
+            >
               <div className="font-black" style={{ color: p.color }}>
                 {p.name} · {p.budget}
               </div>
@@ -97,7 +101,7 @@ export default function Overlay({ params }: { params: Promise<{ code: string }> 
         </div>
       )}
       {room?.phase === "lobby" && (
-        <div className="absolute left-10 top-10 rounded-3xl bg-black/60 p-6 text-4xl font-black">
+        <div className="absolute left-10 top-10 border-[3px] border-[#f3ecdd] bg-[#0e0d10] p-6 shadow-[8px_8px_0_#e0301f] text-4xl font-black">
           {it.overlay.inAttesa} {code}
         </div>
       )}

@@ -322,7 +322,7 @@ body {
     background: linear-gradient(90deg, var(--accent) 0 5rem, var(--line) 5rem);
   }
   .testata h1,
-  h1.striscia {
+  .striscia {
     display: inline-block;
     max-width: 100%;
     margin: 0.25rem 0 0.35rem;
@@ -1269,4 +1269,45 @@ body.overlay-mode .site-chrome {
   [data-io] .muted {
     color: #55504a;
   }
+}
+
+/* Cursori: binario nero col filo carta, manopola quadrata vermiglia */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  border: 1.5px solid var(--line-forte);
+  background: #0a090c;
+}
+input[type="range"]::-moz-range-track {
+  height: 0.5rem;
+  border: 1.5px solid var(--line-forte);
+  background: #0a090c;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: -0.52rem;
+  border: 2px solid #000;
+  border-radius: 3px;
+  background: var(--rosso);
+  box-shadow: 2px 2px 0 #000;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid #000;
+  border-radius: 3px;
+  background: var(--rosso);
+  box-shadow: 2px 2px 0 #000;
+}
+input[type="checkbox"] {
+  accent-color: var(--rosso);
 }

@@ -88,7 +88,10 @@ export default function ProfiloPage() {
             onChange={(e) => setName(e.target.value)}
           />
           {error && (
-            <p role="alert" className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300">
+            <p
+              role="alert"
+              className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300"
+            >
               {error}
             </p>
           )}
@@ -195,16 +198,16 @@ export default function ProfiloPage() {
         <section className="panel space-y-3 p-5" data-testid="obiettivi">
           <div className="flex items-baseline justify-between">
             <h2 className="text-3xl">{it.profilo.obiettivi}</h2>
-            <span className="chip border-black bg-[#ffd21f] text-black">{it.profilo.obiettivoXp}</span>
+            <span className="chip border-black bg-[#ffd21f] text-black">
+              {it.profilo.obiettivoXp}
+            </span>
           </div>
           <ul className="grid gap-2">
             {profile.obiettivi.map((o) => (
               <li
                 key={o.id}
                 className={`flex items-center gap-3 border-2 p-3 ${
-                  o.fatto
-                    ? "border-[#35d68a] bg-[#35d68a]/10"
-                    : "border-[var(--line)] bg-black/20"
+                  o.fatto ? "border-[#35d68a] bg-[#35d68a]/10" : "border-[var(--line)] bg-black/20"
                 }`}
               >
                 <span

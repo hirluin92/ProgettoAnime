@@ -411,7 +411,9 @@ export default function QuickGame({
                             onMouseLeave={() => setFocus(null)}
                             aria-label={`${o.character.nome}, costo ${o.cost}`}
                             className={`relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 focus-visible:z-20 disabled:opacity-40 disabled:hover:translate-y-0 ${
-                              picked ? "z-20 -translate-y-3 scale-105 outline outline-[3px] outline-offset-2 outline-carta" : ""
+                              picked
+                                ? "z-20 -translate-y-3 scale-105 outline outline-[3px] outline-offset-2 outline-carta"
+                                : ""
                             }`}
                           >
                             <CharacterCard character={o.character} fluid />
