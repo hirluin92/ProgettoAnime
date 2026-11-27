@@ -105,14 +105,28 @@ function ModeCard({
         style={{ background: accent }}
       />
       <span
-        className="relative grid size-14 shrink-0 place-items-center rounded-2xl text-2xl shadow-lg"
-        style={{ background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.35))` }}
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-6 right-10 select-none text-[7rem] leading-none opacity-[0.07] transition-opacity group-hover:opacity-[0.14]"
+      >
+        {icon}
+      </span>
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[3px]"
+        style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
+      />
+      <span
+        className="relative grid size-16 shrink-0 place-items-center rounded-2xl text-3xl shadow-lg ring-1 ring-white/30"
+        style={{
+          background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.45))`,
+          boxShadow: `0 8px 24px ${accent}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
+        }}
       >
         {icon}
       </span>
       <span className="relative min-w-0 flex-1">
         <span className="display block text-2xl font-extrabold leading-none">{title}</span>
-        <span className="mt-1.5 block text-sm leading-snug muted">{text}</span>
+        <span className="mt-1.5 block text-[0.95rem] leading-snug muted">{text}</span>
       </span>
       <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg transition-all group-hover:translate-x-1 group-hover:bg-white/20">
         →
