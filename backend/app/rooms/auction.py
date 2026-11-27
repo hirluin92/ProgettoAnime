@@ -100,8 +100,8 @@ class Auction:
                 return msgs
             lot = self.queue.popleft()
             forced = self.skips >= FORCE_AFTER_SKIPS
-            if len(active) == 1 or forced:
-                # un solo giocatore con slot liberi, o troppi lotti senza offerte: assegnato a 1
+            if forced:
+                # troppi lotti di fila senza offerte: assegnato a 1 a chi ha più slot liberi
                 most = max(len(p.free_roles()) for p in active)
                 target = self.rng.choice([p for p in active if len(p.free_roles()) == most])
                 self.number += 1
