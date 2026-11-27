@@ -313,6 +313,7 @@ class ZoomStato(Model):
     fx: float
     fy: float
     indizi: list[IndizioZoom]
+    audio: str | None = None
     bersaglio: SoluzioneZoom | None = None
 
 
@@ -338,6 +339,7 @@ class ZoomNuovo(Model):
     immagine: str
     fx: float
     fy: float
+    audio: str | None = None
 
 
 def _gioco_ok(gioco: str) -> str:
@@ -347,7 +349,10 @@ def _gioco_ok(gioco: str) -> str:
 
 
 def _soluzione_zoom(gioco: str, t: dict[str, Any]) -> SoluzioneZoom:
-    if gioco == "scorcio":
+    if gioco == "sigla":
+        dett = f"{t['brano']} · {t['artista']} ({t['tipo']})"
+        img = t["cover"]
+    elif gioco == "scorcio":
         dett = f"{t['titolo']} · {t['anno']}"
         img = t["cover"]
     else:
@@ -389,6 +394,7 @@ def zoom_stato(gioco: str, profile_id: str | None = None) -> ZoomStato:
         fx=fx,
         fy=fy,
         indizi=[],
+        audio=zoom.audio(gioco, t),
     )
     pid = _profilo_ok(profile_id)
     if pid is None:
@@ -420,17 +426,18 @@ def zoom_nuovo(gioco: str) -> ZoomNuovo:
     t = random.choice(zoom.pool(gioco))
     fx, fy = zoom.punto(gioco, t)
     return ZoomNuovo(
-        token=firma(gioco, t["id"]),
+        token=firma(gioco, zoom.chiave(gioco, t)),
         tentativi_max=zoom.TENTATIVI_MAX,
         immagine=zoom.immagine(gioco, t),
         fx=fx,
         fy=fy,
+        audio=zoom.audio(gioco, t),
     )
 
 
 def _bersaglio_token(gioco: str, token: str) -> dict[str, Any]:
     bid = leggi_firma(gioco, token)
-    t = zoom.risposta_per_id(gioco, bid) if bid is not None else None
+    t = zoom.da_chiave(gioco, bid) if bid is not None else None
     if t is None:
         raise HTTPException(422, "partita non valida")
     return t
