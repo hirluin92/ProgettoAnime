@@ -105,8 +105,11 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
       await expect(page.getByTestId("ascolto")).toHaveAttribute("data-volume-applicato", "0.3");
       // si preme play: l'audio parte davvero e il volume è applicato al nodo di guadagno
       await page.getByTestId("ascolto-play").click();
+      // la posizione si legge dall'interfaccia: vale sia per l'elemento audio sia per il buffer
       await expect
-        .poll(() => page.evaluate(() => document.querySelector("audio")!.currentTime))
+        .poll(async () => Number(await page.getByTestId("ascolto").getAttribute("data-tempo")), {
+          timeout: 20_000,
+        })
         .toBeGreaterThan(0.2);
       await expect
         .poll(() =>

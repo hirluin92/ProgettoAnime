@@ -150,3 +150,29 @@ test("quiz sulle sigle: se l'audio viene fermato da fuori (telefonata, altra app
     true,
   );
 });
+
+test("quiz sulle sigle: in loop, dopo un tocco, la musica gira senza fermarsi (buffer Web Audio)", async ({
+  browser,
+}) => {
+  test.setTimeout(90_000);
+  const { host, code } = await createRoom(browser, "Anna");
+  await joinRoom(browser, code, "Bruno");
+  await host.page.getByLabel("Modalità").selectOption("quiz");
+  await host.page.getByTestId("quiz-tipo-sigla").click();
+  await impostaCursore(host.page, "quiz-clip", 5);
+  await host.page.getByTestId("quiz-loop-loop").click();
+  await host.page.getByTestId("quiz-impostazioni-fatto").click();
+  await host.page.getByRole("button", { name: "Avvia" }).click();
+  const ascolto = host.page.getByTestId("ascolto");
+  await expect(ascolto).toBeVisible({ timeout: 20_000 });
+  // un tocco sul volume attiva Web Audio; poi si preme play: parte il buffer
+  await impostaCursore(host.page, "ascolto-volume", 70);
+  await host.page.getByTestId("ascolto-play").click();
+  await expect(ascolto).toHaveAttribute("data-motore", "buffer", { timeout: 20_000 });
+  const tempo = async () => Number(await ascolto.getAttribute("data-tempo"));
+  await expect.poll(tempo, { timeout: 10_000 }).toBeGreaterThan(0.5);
+  // oltre il giro di 5 secondi il tempo ricomincia da capo e il lettore resta in riproduzione
+  await expect.poll(tempo, { timeout: 15_000 }).toBeGreaterThan(3.5);
+  await expect.poll(tempo, { timeout: 15_000 }).toBeLessThan(2);
+  await expect(host.page.getByTestId("ascolto-play")).toHaveAttribute("aria-label", "Ferma");
+});
