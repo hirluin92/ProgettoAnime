@@ -11,7 +11,7 @@ export default function FormationPicker({
   onChange: (id: string) => void;
 }) {
   return (
-    <fieldset className="rounded-2xl border bg-white/[0.03] p-3" data-testid="formations">
+    <fieldset className="rounded-2xl border bg-black/20 p-3" data-testid="formations">
       <legend className="px-1 text-xs font-extrabold uppercase tracking-widest text-cyan-200">
         {it.formazione.titolo}
       </legend>
@@ -26,7 +26,7 @@ export default function FormationPicker({
             onClick={() => onChange(f.id)}
             className={`rounded-xl border p-2 text-left transition ${
               value === f.id
-                ? "border-cyan-300 bg-cyan-300/20 shadow-[0_0_18px_rgb(53_224_255/0.4)]"
+                ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
                 : "border-white/15 bg-white/5 hover:bg-white/10"
             }`}
           >

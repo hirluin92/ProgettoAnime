@@ -170,7 +170,7 @@ export default function Ascolto({
       <button
         type="button"
         onClick={() => (suona ? ferma() : avvia(true))}
-        className="btn btn-primary mx-auto size-24 !rounded-full"
+        className="btn btn-primary mx-auto size-24 !rounded-full !p-0"
         aria-label={suona ? it.quiz.sigla.ferma : it.quiz.sigla.ascolta}
         data-testid="ascolto-play"
       >
@@ -208,13 +208,13 @@ export default function Ascolto({
             return (
               <li
                 key={s}
-                className={`relative h-2.5 flex-1 overflow-hidden rounded-full ${
-                  aperto ? "bg-white/25" : "bg-white/10"
+                className={`relative h-3 flex-1 overflow-hidden border-[1.5px] ${
+                  aperto ? "border-carta bg-black" : "border-white/20 bg-white/5"
                 }`}
                 style={{ flexGrow: !progressivo ? 1 : s === 1 ? 1 : Math.log2(s) + 1 }}
               >
                 <span
-                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-cyan-300 to-pink-500"
+                  className="absolute inset-y-0 left-0 bg-[var(--accent)]"
                   style={{ width: `${riempi * 100}%` }}
                 />
               </li>
@@ -234,7 +234,7 @@ export default function Ascolto({
             setVolume((v) => (v > 0 ? 0 : 0.8));
           }}
           aria-label={volume > 0 ? it.quiz.sigla.silenzia : it.quiz.sigla.riattiva}
-          className="grid size-8 shrink-0 place-items-center rounded-full bg-white/10 hover:bg-white/20"
+          className="grid size-11 shrink-0 place-items-center border-2 border-[var(--line-forte)] bg-[#201f26] hover:border-carta"
         >
           <Icon name={volume > 0 ? "volume" : "mute"} className="size-4 text-white" />
         </button>
@@ -247,7 +247,7 @@ export default function Ascolto({
             attivaVolume();
             setVolume(Number(e.target.value) / 100);
           }}
-          className="h-2 flex-1 cursor-pointer accent-[#7a86ff]"
+          className="flex-1"
           aria-label={it.quiz.sigla.volume}
           data-testid="ascolto-volume"
         />
@@ -258,7 +258,7 @@ export default function Ascolto({
           type="button"
           aria-pressed={loop}
           onClick={() => setLoop((l) => !l)}
-          className={`chip mx-auto cursor-pointer px-3 py-1 ${loop ? "text-cyan-200" : "muted"}`}
+          className={`chip mx-auto min-h-9 cursor-pointer px-3 py-1 ${loop ? "border-black bg-carta text-nero" : "muted"}`}
           data-testid="ascolto-loop"
         >
           {loop ? it.quiz.sigla.loopOn : it.quiz.sigla.loopOff}

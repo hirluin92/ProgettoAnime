@@ -1,6 +1,8 @@
 "use client";
 
-import Icon from "@/components/Icon";
+import Caricamento from "@/components/Caricamento";
+import Icon, { Medaglia } from "@/components/Icon";
+import Moneta from "@/components/Moneta";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
@@ -37,68 +39,84 @@ export default function RankedHome() {
     }
   };
 
-  if (loading) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (loading) return <Caricamento titolo={it.seo.ranked.h1} />;
   if (!profile)
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
-        <p className="panel p-6">{it.ranked.senzaProfilo}</p>
+        <div className="vuoto">
+          <LegaEmblema lega="Bronzo" divisione={null} ignota className="w-24" />
+          <p className="font-bold text-carta">{it.ranked.senzaProfilo}</p>
+          <Link href="/profilo" className="btn btn-primary">
+            {it.ranked.vaiProfilo}
+          </Link>
+        </div>
       </main>
     );
-  if (!st) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
+  if (!st) return <Caricamento titolo={it.seo.ranked.h1} testo={errore ?? undefined} />;
 
   const colore = COLORI_LEGA[st.lega];
   const campione = st.divisione === null;
   const pr = progressoGradino(st.mmr);
+  const leghe = Object.keys(COLORI_LEGA);
   return (
-    <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="ranked">
+    <main
+      className="mx-auto max-w-7xl space-y-6 p-4 pt-6"
+      data-testid="ranked"
+      style={{ ["--accent" as string]: st.in_piazzamento ? "var(--viola)" : colore }}
+    >
       <header className="testata space-y-1">
         <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
-        <h1 className="display text-4xl font-black">{it.ranked.titolo}</h1>
-        <p className="max-w-2xl text-sm muted">{it.ranked.intro}</p>
+        <h1 className="text-4xl sm:text-5xl">{it.ranked.titolo}</h1>
+        <p className="max-w-2xl text-[0.95rem] font-medium muted">{it.ranked.intro}</p>
       </header>
 
-      <section className="panel flex flex-wrap items-center gap-6 p-5">
+      <section className="panel-vivo relative isolate grid items-center gap-5 overflow-hidden p-5 sm:grid-cols-[auto_1fr_auto] sm:gap-8 sm:p-7">
+        <i
+          aria-hidden="true"
+          className="cinetiche absolute inset-0 -z-10 opacity-60"
+          style={{ ["--tinta" as string]: "var(--accent)", ["--cx" as string]: "12%" }}
+        />
         <LegaEmblema
           lega={st.lega}
           divisione={st.divisione}
           ignota={st.in_piazzamento}
-          className="w-32 shrink-0 drop-shadow-[0_10px_24px_rgb(0_0_0/0.6)]"
+          className="mx-auto w-36 shrink-0 sm:w-44"
         />
-        <div className="min-w-0 flex-1 space-y-2">
-          <div className="display text-3xl font-black" data-testid="ranked-lega">
+        <div className="min-w-0 space-y-2 text-center sm:text-left">
+          <div
+            className="display text-5xl italic leading-none sm:text-6xl"
+            data-testid="ranked-lega"
+          >
             {st.in_piazzamento ? it.ranked.titolo : nomeLega(st.lega, st.divisione)}
           </div>
-          <p className="text-sm">{fmt(it.ranked.mmr, { n: st.mmr })}</p>
+          <p className="num text-lg text-[var(--accent)]">{fmt(it.ranked.mmr, { n: st.mmr })}</p>
           {st.in_piazzamento ? (
-            <p className="text-sm text-amber-200" data-testid="ranked-piazzamento">
+            <p className="text-sm font-bold text-amber-200" data-testid="ranked-piazzamento">
               {fmt(it.ranked.piazzamento, { n: st.piazzamento_rimaste })}
             </p>
           ) : campione ? (
-            <p className="text-sm text-amber-200">{it.ranked.ultimaLega}</p>
+            <p className="text-sm font-bold text-amber-200">{it.ranked.ultimaLega}</p>
           ) : (
             <>
-              <div className="h-2.5 overflow-hidden rounded-full bg-black/40">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${(pr / 50) * 100}%`, background: colore }}
-                />
+              <div className="barra">
+                <i style={{ width: `${(pr / 50) * 100}%` }} />
               </div>
-              <p className="text-xs muted">{fmt(it.ranked.alProssimo, { n: 50 - pr })}</p>
+              <p className="text-xs font-bold muted">{fmt(it.ranked.alProssimo, { n: 50 - pr })}</p>
             </>
           )}
         </div>
         <div className="w-full sm:w-auto">
           {st.serve_account ? (
-            <div className="space-y-2 text-center">
+            <div className="balloon max-w-xs space-y-3 text-center">
               <p className="text-sm">{it.ranked.serveAccount}</p>
-              <Link href="/profilo" className="btn btn-primary">
+              <Link href="/profilo" className="btn btn-primary w-full">
                 {it.ranked.vaiProfilo}
               </Link>
             </div>
           ) : (
             <Link
               href="/ranked/gioca"
-              className="btn btn-gold w-full text-lg"
+              className="btn btn-primary min-h-16 w-full px-8 text-2xl"
               data-testid="gioca-ranked"
             >
               <Icon name="swords" /> {it.ranked.gioca}
@@ -107,80 +125,132 @@ export default function RankedHome() {
         </div>
       </section>
 
-      <section className="panel p-5" aria-label="Le leghe">
-        <ul className="flex flex-wrap items-end justify-around gap-2">
-          {Object.keys(COLORI_LEGA).map((l) => (
-            <li
-              key={l}
-              className={`text-center transition-opacity ${l === st.lega && !st.in_piazzamento ? "opacity-100" : "opacity-45"}`}
-            >
-              <LegaEmblema lega={l} divisione={null} className="mx-auto w-16 sm:w-20" />
-              <div className="display text-sm font-black" style={{ color: COLORI_LEGA[l] }}>
-                {l}
-              </div>
-            </li>
-          ))}
-        </ul>
+      {/* la scalata: sei stemmi su un binario, quello attuale in evidenza */}
+      <section className="panel overflow-x-auto p-4 sm:p-5" aria-label="Le leghe">
+        <ol className="relative flex min-w-[30rem] items-end justify-between gap-2">
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-6 bottom-[2.1rem] h-1 bg-[var(--line-forte)]"
+          />
+          {leghe.map((l) => {
+            const qui = l === st.lega && !st.in_piazzamento;
+            const passata = !st.in_piazzamento && leghe.indexOf(l) < leghe.indexOf(st.lega);
+            return (
+              <li
+                key={l}
+                className={`relative flex-1 text-center ${qui || passata ? "" : "opacity-45"}`}
+                aria-current={qui ? "step" : undefined}
+              >
+                <LegaEmblema
+                  lega={l}
+                  divisione={null}
+                  className={`mx-auto transition-transform ${qui ? "w-20 -translate-y-1 sm:w-28" : "w-14 sm:w-20"}`}
+                />
+                <div
+                  className={`display mt-1 inline-block px-2 text-base tracking-wide ${qui ? "bg-carta text-nero" : ""}`}
+                  style={qui ? undefined : { color: COLORI_LEGA[l] }}
+                >
+                  {l}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </section>
 
       {errore && (
-        <p role="alert" className="text-center text-rose-300">
+        <p
+          role="alert"
+          className="border-2 border-rose-400 bg-rose-400/10 p-2 text-center font-bold text-rose-300"
+        >
           {errore}
         </p>
       )}
 
-      <section className="panel space-y-3 p-5" data-testid="ranked-settimana">
-        <h2 className="text-2xl font-extrabold">{it.ranked.settimana}</h2>
-        <p className="text-sm muted">{fmt(it.ranked.partiteSett, { n: st.partite_settimana })}</p>
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {st.soglie.map((s) => (
-            <li key={s.partite} className="rounded-2xl border bg-white/[0.04] p-3 text-center">
-              <div className="display text-3xl font-black">
-                {Math.min(st.partite_settimana, s.partite)}/{s.partite}
-              </div>
-              {s.raggiunta && !s.ritirata ? (
-                <button
-                  className="btn btn-primary mt-2 w-full text-sm"
-                  onClick={() => void ritira(s.partite)}
-                  data-testid={`ritira-${s.partite}`}
-                >
-                  {fmt(it.ranked.ritira, { n: s.crediti })}
-                </button>
-              ) : (
-                <p
-                  className={`mt-2 py-2 text-sm font-bold ${s.ritirata ? "text-emerald-300" : "muted"}`}
-                  data-testid={`ritira-${s.partite}`}
-                >
-                  {s.ritirata
-                    ? it.ranked.ritirato
-                    : fmt(it.ranked.ancora, { n: s.partite - st.partite_settimana })}
-                </p>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="panel space-y-2 p-5" data-testid="ranked-classifica">
-        <h2 className="text-2xl font-extrabold">{it.ranked.classifica}</h2>
-        {st.classifica.length === 0 ? (
-          <p className="text-sm muted">{it.ranked.nessunoClass}</p>
-        ) : (
-          <ol className="space-y-1 text-sm">
-            {st.classifica.map((r, i) => (
-              <li key={r.nome + i} className="flex justify-between gap-3">
-                <span>
-                  {i + 1}. {r.nome}
-                </span>
-                <span>
-                  <b style={{ color: COLORI_LEGA[r.lega] }}>{nomeLega(r.lega, r.divisione)}</b>{" "}
-                  <span className="muted">({r.mmr})</span>
-                </span>
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+        <section className="panel space-y-3 p-5" data-testid="ranked-settimana">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <h2 className="text-3xl">{it.ranked.settimana}</h2>
+            <p className="text-sm font-bold muted">
+              {fmt(it.ranked.partiteSett, { n: st.partite_settimana })}
+            </p>
+          </div>
+          <ul className="grid gap-4 sm:grid-cols-3">
+            {st.soglie.map((s) => (
+              <li
+                key={s.partite}
+                className={`space-y-2 border-2 p-3 text-center ${
+                  s.ritirata
+                    ? "border-[#35d68a] bg-[#35d68a]/10"
+                    : s.raggiunta
+                      ? "border-[#ffd21f] bg-[#ffd21f]/10"
+                      : "border-[var(--line-forte)] bg-black/20"
+                }`}
+              >
+                <div className="num text-2xl">
+                  {Math.min(st.partite_settimana, s.partite)}/{s.partite}
+                </div>
+                <div className="barra" style={{ ["--accent" as string]: "var(--giallo)" }}>
+                  <i
+                    style={{
+                      width: `${(Math.min(st.partite_settimana, s.partite) / s.partite) * 100}%`,
+                    }}
+                  />
+                </div>
+                <div className="chip border-black bg-[#ffd21f] text-black">
+                  <Moneta /> +{s.crediti}
+                </div>
+                {s.raggiunta && !s.ritirata ? (
+                  <button
+                    className="btn btn-primary w-full text-sm"
+                    onClick={() => void ritira(s.partite)}
+                    data-testid={`ritira-${s.partite}`}
+                  >
+                    {fmt(it.ranked.ritira, { n: s.crediti })}
+                  </button>
+                ) : (
+                  <p
+                    className={`text-sm font-bold ${s.ritirata ? "text-emerald-300" : "muted"}`}
+                    data-testid={`ritira-${s.partite}`}
+                  >
+                    {s.ritirata
+                      ? it.ranked.ritirato
+                      : fmt(it.ranked.ancora, { n: s.partite - st.partite_settimana })}
+                  </p>
+                )}
               </li>
             ))}
-          </ol>
-        )}
-      </section>
+          </ul>
+        </section>
+
+        <section className="panel space-y-2 p-5" data-testid="ranked-classifica">
+          <h2 className="text-3xl">{it.ranked.classifica}</h2>
+          {st.classifica.length === 0 ? (
+            <p className="vuoto text-sm font-bold">{it.ranked.nessunoClass}</p>
+          ) : (
+            <ol className="text-sm">
+              {st.classifica.map((r, i) => (
+                <li
+                  key={r.nome + i}
+                  className="riga"
+                  data-io={r.nome === profile.name ? "" : undefined}
+                >
+                  <span className="flex min-w-0 items-center gap-2">
+                    <Medaglia pos={i} />
+                    <span className="truncate">{r.nome}</span>
+                  </span>
+                  <span className="shrink-0">
+                    <b style={{ color: r.nome === profile.name ? undefined : COLORI_LEGA[r.lega] }}>
+                      {nomeLega(r.lega, r.divisione)}
+                    </b>{" "}
+                    <span className="num text-xs opacity-70">{r.mmr}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+      </div>
     </main>
   );
 }

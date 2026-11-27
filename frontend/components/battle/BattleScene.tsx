@@ -39,45 +39,40 @@ function TeamBar({
   pct: number;
   hype: number;
 }) {
-  const color =
-    side === "A"
-      ? "linear-gradient(90deg,#35e0ff,#2f6bff)"
-      : "linear-gradient(90deg,#ff8a3d,#ff3d81)";
-  const glow = side === "A" ? "rgb(53 224 255 / 0.55)" : "rgb(255 61 129 / 0.55)";
+  const color = side === "A" ? "#3fd0f0" : "#e0301f";
   return (
     <div className={`grid gap-1 ${side === "B" ? "text-right" : ""}`}>
       <div className={`flex items-baseline gap-2 ${side === "B" ? "flex-row-reverse" : ""}`}>
-        <span className="display truncate text-xl font-black">{name}</span>
-        <span className="display text-sm font-bold tabular-nums opacity-70">
-          {Math.round(pct)}%
-        </span>
+        <span className="display truncate text-2xl italic">{name}</span>
+        <span className="num text-sm tabular-nums">{Math.round(pct)}%</span>
       </div>
       <div
-        className="relative h-5 overflow-hidden rounded-full border border-white/25 bg-black/60"
+        className="relative h-5 overflow-hidden border-2 border-black bg-black outline outline-1 outline-[rgb(243_236_221/0.3)]"
         role="progressbar"
         aria-valuenow={Math.round(pct)}
         aria-label={name}
       >
         <motion.i
-          className="absolute inset-0 rounded-full"
+          className="absolute inset-0"
           style={{
-            background: color,
+            backgroundColor: color,
+            backgroundImage:
+              "repeating-linear-gradient(115deg, rgb(0 0 0 / 0.25) 0 5px, transparent 5px 11px)",
             transformOrigin: side === "A" ? "left" : "right",
-            boxShadow: `0 0 16px ${glow}`,
           }}
           animate={{ scaleX: pct / 100 }}
           transition={{ duration: 0.35 }}
         />
       </div>
       <div
-        className="relative h-1.5 overflow-hidden rounded-full bg-black/50"
+        className="relative h-1.5 overflow-hidden bg-black/50"
         role="progressbar"
         aria-label={`${it.battle.pubblico} ${name}`}
         aria-valuenow={hype}
         title={`${it.battle.pubblico}: ${hype}%`}
       >
         <motion.i
-          className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-300 to-orange-400"
+          className="absolute inset-0 bg-[#ffd21f]"
           style={{ transformOrigin: side === "A" ? "left" : "right" }}
           animate={{ scaleX: hype / 100 }}
           transition={{ duration: 0.4 }}
@@ -200,15 +195,13 @@ export default function BattleScene({
         key={s.shake}
         animate={s.shake ? { x: [0, -6, 6, -4, 3, 0], y: [0, 3, -3, 2, -1, 0] } : {}}
         transition={{ duration: 0.45 }}
-        className="relative isolate overflow-hidden rounded-3xl border border-white/20 bg-[radial-gradient(ellipse_at_50%_0%,rgba(139,92,255,.45),transparent_60%),radial-gradient(ellipse_at_50%_110%,rgba(255,61,129,.35),transparent_55%),linear-gradient(180deg,#120e26,#0a0814)] shadow-[0_20px_60px_rgba(0,0,0,.6)]"
+        className="esplosione relative isolate overflow-hidden rounded-[6px] border-[3px] border-carta shadow-[8px_8px_0_var(--rosso)] [--tinta:#4a4850]"
         data-testid="arena"
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-4">
           <TeamBar side="A" name={A.nome} pct={pct("A")} hype={s.hype.A} />
           <div className="text-center">
-            <div className="display text-5xl font-black text-gold drop-shadow-[0_0_18px_rgb(255_212_90/0.6)]">
-              VS
-            </div>
+            <div className="onoma text-5xl">VS</div>
             <small className="block text-xs font-bold opacity-70" data-testid="round">
               {s.turno ? `${it.battle.turno} ${s.turno}` : it.battle.pronto}
             </small>
@@ -248,15 +241,15 @@ export default function BattleScene({
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-[6%] bottom-3 h-16 rounded-[50%] bg-[radial-gradient(ellipse,rgb(139_92_255/0.45),transparent_70%)] blur-md"
+          className="pointer-events-none absolute inset-x-[6%] bottom-3 h-16 rounded-[50%] bg-[radial-gradient(ellipse,rgb(139_92_255/0.45),transparent_70%)] hidden"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-10 left-[12%] h-56 w-40 -rotate-12 bg-gradient-to-b from-cyan-300/25 to-transparent blur-xl"
+          className="pointer-events-none absolute -top-10 left-[12%] h-56 w-40 -rotate-12 bg-gradient-to-b from-cyan-300/25 to-transparent hidden"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-10 right-[12%] h-56 w-40 rotate-12 bg-gradient-to-b from-pink-400/25 to-transparent blur-xl"
+          className="pointer-events-none absolute -top-10 right-[12%] h-56 w-40 rotate-12 bg-gradient-to-b from-pink-400/25 to-transparent hidden"
         />
         {arena && (
           <p
@@ -327,7 +320,7 @@ export default function BattleScene({
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.25, delay: 0.05 }}
               >
-                <div className="display text-[clamp(20px,4.6vw,52px)] font-bold leading-none text-yellow-300 [-webkit-text-stroke:2px_#1a0e2a]">
+                <div className="display text-[clamp(20px,4.6vw,52px)] font-bold leading-none text-yellow-300 [-webkit-text-stroke:2px_#1b1a21]">
                   {s.banner.title}
                 </div>
                 <div className="mt-1 text-[clamp(11px,1.8vw,18px)] font-bold uppercase tracking-widest text-white">
@@ -362,7 +355,7 @@ export default function BattleScene({
             <motion.div
               key="intro"
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-[#07060f]/85 backdrop-blur-sm"
+              className="pointer-events-none absolute inset-0 z-[6] grid place-items-center bg-[#0b0a0d]/85"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.35 } }}
@@ -377,7 +370,7 @@ export default function BattleScene({
                   {A.nome}
                 </motion.div>
                 <motion.div
-                  className="display text-grad text-[clamp(2.4rem,9vw,6rem)] font-black"
+                  className="onoma text-[clamp(2.4rem,9vw,6rem)]"
                   initial={{ scale: 3, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.35, type: "spring", stiffness: 200, damping: 12 }}
@@ -385,7 +378,7 @@ export default function BattleScene({
                   VS
                 </motion.div>
                 <motion.div
-                  className="display truncate text-[clamp(1.6rem,6vw,4rem)] font-black text-pink-300"
+                  className="display truncate text-[clamp(1.6rem,6vw,4rem)] font-black text-[#ff9c8f]"
                   initial={{ x: 160, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 140, damping: 16 }}
@@ -412,7 +405,7 @@ export default function BattleScene({
               transition={{ type: "spring", stiffness: 160, damping: 12 }}
             >
               <div className="eyebrow justify-center">{it.battle.vittoria}</div>
-              <div className="display text-grad text-[clamp(2.4rem,8vw,5.5rem)] font-black leading-none">
+              <div className="onoma text-[clamp(2.4rem,8vw,5.5rem)]">
                 {result.squadre[result.vincitore].nome}
               </div>
             </motion.div>
@@ -494,7 +487,7 @@ export default function BattleScene({
           )}
           {s.phase === "done" && result.rivalita.length > 0 && (
             <section className="panel mt-4 space-y-2 p-5" data-testid="rivalita">
-              <h3 className="text-2xl font-extrabold">{it.rivalita.titolo}</h3>
+              <h3 className="text-3xl">{it.rivalita.titolo}</h3>
               <ul className="flex flex-wrap gap-2">
                 {result.rivalita.map((r) => (
                   <li key={`${r.a}-${r.b}`} className="chip">
@@ -507,19 +500,19 @@ export default function BattleScene({
           )}
           {s.phase === "done" && momenti.length > 0 && (
             <section className="panel mt-4 space-y-2 p-5" data-testid="momenti">
-              <h3 className="text-2xl font-extrabold">{it.battle.momenti}</h3>
+              <h3 className="text-3xl">{it.battle.momenti}</h3>
               <ul className="grid gap-2">
                 {momenti.map((m) => (
                   <li
                     key={m.da}
-                    className="flex items-center gap-3 rounded-xl border bg-white/[0.03] p-3"
+                    className="flex items-center gap-3 rounded-xl border bg-black/20 p-3"
                   >
                     <span className="display w-14 shrink-0 text-lg font-black text-gold">
                       T{m.turno}
                     </span>
                     <span className="min-w-0 flex-1 text-sm">{m.testo}</span>
                     <button className="btn min-h-9 px-3 text-xs" onClick={() => void play(m.da)}>
-                      ↻ {it.battle.rivedi}
+                      <Icon name="refresh" /> {it.battle.rivedi}
                     </button>
                   </li>
                 ))}

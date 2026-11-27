@@ -2,7 +2,7 @@
   "home": {
     "titolo": "Gioca con gli amici",
     "creaStanza": "Crea stanza",
-    "sottotitolo": "Duelli a corsie con i tuoi personaggi anime preferiti: costruisci il mazzo, scala le leghe, apri pacchetti.",
+    "sottotitolo": "Tre corsie, sei turni, otto carte: schiera i personaggi degli anime, gioca in segreto e conquista due corsie su tre.",
     "ctaDuello": "Gioca il Duello",
     "ctaRanked": "Classificata",
     "ctaNegozio": "Apri pacchetti",
@@ -23,13 +23,13 @@
     "creaTitolo": "Gioca con gli amici",
     "scriviNome": "Scrivi prima il tuo nome per creare una stanza.",
     "creaSotto": "2–20 giocatori · sette leggende all'asta · poi il torneo",
-    "modalita": "Da solo, subito",
+    "modalita": "Scegli come giocare",
     "veloceTitolo": "Partita veloce",
     "veloceTesto": "Fai il draft da solo contro la CPU e guarda lo scontro 7 contro 7.",
     "sfidaTitolo": "Rompicapo del giorno",
     "sfidaTesto": "Stesso mazzo e stessa CPU per tutti, un solo tentativo: vince chi gioca meglio. Sali in classifica.",
     "vai": "Gioca",
-    "comeTitolo": "Come funziona l'asta con gli amici",
+    "comeTitolo": "L'asta con gli amici, in tre vignette",
     "passi": [
       {
         "n": "01",
@@ -73,8 +73,21 @@
     "duelloTesto": "6 turni, 3 corsie, carte giocate in segreto: vince chi gioca meglio, non chi ha le carte più forti.",
     "rankedTitolo": "Classificata",
     "rankedTesto": "Leghe da Bronzo a Campione: draft nuovo a ogni partita, conta solo la bravura.",
-    "albumTitolo": "Album e pacchetti",
-    "albumTesto": "Colleziona le carte, crea i tuoi mazzi e apri pacchetti con i crediti guadagnati giocando."
+    "albumTitolo": "Album e mazzi",
+    "albumTesto": "Colleziona le carte in un raccoglitore da sfogliare e costruisci i tuoi mazzi.",
+    "sottoCta": "Gratis, senza registrarti. Una partita dura tre minuti.",
+    "grido": "ZAC!",
+    "balloon": "Tocca a te!",
+    "modalitaTitolo": "Sei modi, una sola collezione",
+    "sfideTitolo": "Sfide del giorno",
+    "sfideTesto": "Cinque giochi nuovi a mezzanotte: Animedle, sigle, scorci, chi è e il rompicapo.",
+    "negozioTitolo": "Bustine",
+    "negozioTesto": "Si aprono con i sigilli vinti giocando. Mai con soldi veri.",
+    "apri": "Apri",
+    "principale": "La modalità principale",
+    "oppure": "oppure",
+    "creaAsta": "Crea stanza",
+    "numeriTitolo": "In breve"
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -106,7 +119,7 @@
     "perche": "Perché è andata così",
     "condividi": "Condividi lo scontro",
     "copiato": "Link copiato!",
-    "testoCondivisione": "Ho {esito} contro la CPU su Arena Anime: guarda lo scontro!"
+    "testoCondivisione": "Ho {esito} contro la CPU su {app}: guarda lo scontro!"
   },
   "errori": {
     "richiestaNonValida": "Controlla i dati inseriti: qualcosa non è valido.",
@@ -116,7 +129,8 @@
     "stanzaScaduta": "La stanza non esiste più o è scaduta.",
     "paginaNonTrovata": "Pagina non trovata",
     "tornaHome": "Torna alla home",
-    "riprova": "Riprova"
+    "riprova": "Riprova",
+    "paginaPersa": "Questa tavola non è mai stata disegnata. Torniamo all'inizio?"
   },
   "stanza": {
     "lobby": "Lobby",
@@ -234,7 +248,7 @@
       "Scegli in segreto dove giocare le carte tra le 3 corsie, poi si girano tutte insieme.",
       "Chi è in vantaggio gira per primo: gli effetti «Al rivelarsi» scattano in ordine.",
       "Dopo il turno 6 vince ogni corsia chi ha più potenza. Vince la partita chi conquista 2 corsie su 3.",
-      "Con i crediti guadagnati giocando apri pacchetti: i crediti non si comprano con denaro."
+      "Con i sigilli guadagnati giocando apri pacchetti: i sigilli non si comprano con denaro."
     ],
     "regoleElenco": [
       "Da 2 a 20 giocatori comprano all'asta i personaggi per 7 ruoli.",
@@ -248,7 +262,8 @@
     "rimozioneTesto": "Se sei un titolare dei diritti e vuoi la rimozione di un contenuto, scrivi a",
     "cookie": "Cookie",
     "cookieTesto": "Il gioco salva nel tuo browser solo il necessario (ad esempio il token per rientrare in una stanza). Nessuno script di analisi o pubblicità viene caricato senza il tuo consenso.",
-    "credito": "Immagini dei personaggi: AniList"
+    "credito": "Immagini dei personaggi: AniList",
+    "occhiello": "Regole, crediti e note legali"
   },
   "sfida": {
     "titolo": "Sfida del giorno",
@@ -273,7 +288,17 @@
     "ranked": "Ranked",
     "altro": "Altro",
     "ciao": "Ciao, {nome}",
-    "rapida": "Navigazione rapida"
+    "rapida": "Navigazione rapida",
+    "crediti": "sigilli",
+    "menu": "Menu",
+    "altriModi": "Altri modi",
+    "amici": "Con gli amici",
+    "scala": "La Scala",
+    "home": "Home",
+    "sfideNuove": "Sfide nuove",
+    "guadagnati": "+{n}",
+    "spesi": "−{n}",
+    "regole": "Come si gioca"
   },
   "draft": {
     "tono": {
@@ -385,7 +410,7 @@
     "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica.",
     "scala": "Record Scala",
     "elo": "ELO Duello",
-    "crediti": "crediti"
+    "crediti": "sigilli"
   },
   "specchio": {
     "titolo": "Draft a specchio",
@@ -522,12 +547,13 @@
     "inAttesaAvv": "Mosse consegnate: aspetto {nome}…",
     "avvPronto": "{nome} ha già scelto",
     "tempo": "Tempo: {s}s",
-    "riposo": "Turno di riposo: passi automaticamente"
+    "riposo": "Turno di riposo: passi automaticamente",
+    "grido": "ZAC!"
   },
   "account": {
     "passwordCorta": "La password deve avere almeno 8 caratteri.",
     "proteggi": "Proteggi il tuo profilo",
-    "proteggiTesto": "Scegli un nome utente e una password: potrai ritrovare XP, collezione ed ELO da qualsiasi dispositivo. In regalo 100 crediti, un Pacchetto Base!",
+    "proteggiTesto": "Scegli un nome utente e una password: potrai ritrovare XP, collezione ed ELO da qualsiasi dispositivo. In regalo 100 sigilli, un Pacchetto Base!",
     "utente": "Nome utente (lettere, numeri, _)",
     "password": "Password (almeno 8 caratteri)",
     "crea": "Crea l'account",
@@ -592,7 +618,7 @@
   },
   "quiz": {
     "titolo": "Sfide del giorno",
-    "intro": "Ogni giorno un nuovo bersaglio, uguale per tutti. Vinci crediti e tieni viva la serie.",
+    "intro": "Ogni giorno un nuovo bersaglio, uguale per tutti. Vinci sigilli e tieni viva la serie.",
     "delGiorno": "Del giorno",
     "allenamento": "Allenamento",
     "nuova": "Nuova partita",
@@ -751,12 +777,12 @@
     "arrenditi": "Mi arrendo, mostrami la risposta",
     "indovinato": "Indovinato!",
     "eraQuesto": "Era questo",
-    "guadagnati": "Hai guadagnato {n} crediti",
+    "guadagnati": "Hai guadagnato {n} sigilli",
     "condividi": "Copia il risultato",
     "copiato": "Copiato!",
     "copiaNonRiuscita": "Non sono riuscito a copiare: selezionalo a mano.",
     "altreSfide": "Altre sfide",
-    "senzaProfilo": "Senza un profilo si gioca lo stesso, ma non si guadagnano crediti né serie: creane uno dal Profilo.",
+    "senzaProfilo": "Senza un profilo si gioca lo stesso, ma non si guadagnano sigilli né serie: creane uno dal Profilo.",
     "fatto": "Fatta",
     "daFare": "Da fare",
     "vinta": "Vinta",
@@ -792,7 +818,7 @@
       "titolo": "Animedle",
       "intro": "Scegli un anime: le caselle ti dicono quanto si avvicina a quello misterioso. Verde è giusto, giallo è vicino, le frecce indicano se il valore cercato è più alto o più basso.",
       "vuoto": "Scrivi un titolo qui sopra per fare il primo tentativo.",
-      "scorri": "← Scorri di lato per vedere tutti gli indizi →",
+      "scorri": "Scorri di lato per vedere tutti gli indizi",
       "legendaGiusto": "Giusto",
       "legendaVicino": "Vicino o in comune",
       "legendaNo": "Sbagliato",
@@ -812,24 +838,24 @@
   },
   "negozio": {
     "titolo": "Negozio di pacchetti",
-    "crediti": "{n} crediti",
-    "intro": "I crediti si guadagnano solo giocando. Le probabilità sono qui sotto, per ogni carta del pacchetto.",
-    "senzaProfilo": "Crea un profilo per guadagnare crediti e aprire pacchetti.",
+    "crediti": "{n} sigilli",
+    "intro": "I sigilli si guadagnano solo giocando. Le probabilità sono qui sotto, per ogni carta del pacchetto.",
+    "senzaProfilo": "Crea un profilo per guadagnare sigilli e aprire pacchetti.",
     "apri": "Apri",
-    "prezzo": "{n} crediti",
+    "prezzo": "{n} sigilli",
     "carte": "{n} carte",
     "garantita": "Almeno 1 carta {r}",
     "nessunaGaranzia": "Nessuna rarità garantita",
     "probabilita": "Probabilità per carta",
     "pity": "Leggendaria garantita entro {n} pacchetti (ne mancano {m}).",
-    "pocoCrediti": "Servono più crediti",
+    "pocoCrediti": "Servono più sigilli",
     "mancano": "Ti mancano {n}",
     "tocca": "Tocca le carte per scoprirle",
     "scopriTutte": "Scopri tutte",
     "nuova": "Nuova!",
-    "doppione": "Doppione: +{n} crediti",
+    "doppione": "Doppione: +{n} sigilli",
     "chiudi": "Continua",
-    "riepilogo": "Carte nuove: {n} · Crediti restituiti: {m}",
+    "riepilogo": "Carte nuove: {n} · Sigilli restituiti: {m}",
     "vaiAlbum": "Vedi nell'album",
     "garanziaPity": "Leggendaria garantita!",
     "taglia": "Strappa la busta: trascina lungo la linea tratteggiata, da sinistra a destra.",
@@ -857,7 +883,7 @@
     "gioca": "Gioca una classificata",
     "settimana": "Obiettivi della settimana",
     "partiteSett": "Partite classificate: {n}",
-    "ritira": "Ritira {n} crediti",
+    "ritira": "Ritira {n} sigilli",
     "ritirato": "Ritirato",
     "ancora": "Ancora {n} partite",
     "classifica": "Classifica",
@@ -865,7 +891,7 @@
     "avversario": "Avversario: {nome} · {lega}",
     "fantasma": "Mazzo di un altro giocatore",
     "sfidante": "Sfidante generato",
-    "risultato": "Punti {a} → {b} ({d})",
+    "risultato": "Punti: da {a} a {b} ({d})",
     "promosso": "Promozione! Ora sei {lega}",
     "retrocesso": "Retrocesso in {lega}",
     "piazzamentoFatto": "Partita di piazzamento",
@@ -889,5 +915,335 @@
     "ricomincia": "Nuova corsa",
     "carta": "Nuova carta",
     "rinforzo": "Rinforzo"
-  }
+  },
+  "meta": {
+    "motto": "gioco di carte anime",
+    "descrizione": "Duelli a corsie con i personaggi degli anime: costruisci il mazzo, apri le bustine, scala le leghe e sfida gli amici a quiz e aste. Gratis, in italiano, nel browser.",
+    "ogAlt": "{app}: duelli di carte anime"
+  },
+  "footerMotto": "Tre corsie, sei turni, una tavola da riempire.",
+  "footerGioca": "Gioca",
+  "footerColleziona": "Colleziona",
+  "footerSito": "Il sito",
+  "caricamento": "Sto inchiostrando la tavola…",
+  "moneta": {
+    "nome": "sigilli",
+    "singolare": "sigillo",
+    "nota": "Il nome della moneta: per cambiarlo, sostituisci «sigilli» in questo file (trova e sostituisci)."
+  },
+  "seo": {
+    "guidaOcchiello": "Come funziona",
+    "briciole": {
+      "home": "Home",
+      "sfide": "Sfide del giorno"
+    },
+    "home": {
+      "titolo": "{app} – Gioco di carte anime online, gratis",
+      "descrizione": "Duelli di carte con i personaggi degli anime: tre corsie, sei turni, partite da tre minuti. Gratis, nel browser, senza scaricare nulla.",
+      "h1": "{app}",
+      "og": "Gioco di carte anime online, gratis",
+      "guida": {
+        "titolo": "Un gioco di carte anime da giocare subito, nel browser",
+        "paragrafi": [
+          "{app} è un gioco di carte anime online e gratuito, in italiano. Si gioca dal browser, su telefono o computer, senza scaricare nulla e senza registrarsi: apri la pagina, scegli otto carte e sei già in partita.",
+          "Il cuore del gioco è il Duello: tre corsie, sei turni, le carte giocate in segreto nello stesso momento. Vince chi conquista due corsie su tre, e una partita dura circa tre minuti. Conta come giochi, più delle carte che hai.",
+          "Intorno al Duello ci sono le sfide del giorno (indovina l'anime, la sigla, il personaggio), la classificata a leghe, le bustine da aprire con i sigilli vinti giocando, un album da completare e le stanze per giocare con gli amici, quiz musicale compreso."
+        ]
+      }
+    },
+    "duello": {
+      "titolo": "Duello di carte anime: 3 corsie, 6 turni",
+      "descrizione": "Scegli otto carte, gioca in segreto e conquista due corsie su tre. Sfida la CPU gratis, direttamente dal browser.",
+      "h1": "Duello a corsie",
+      "og": "Duello di carte anime",
+      "guida": {
+        "titolo": "Come funziona il Duello di carte anime",
+        "paragrafi": [
+          "Prima della partita scegli otto carte, una per mano, tra quelle che ti vengono proposte: ogni carta ha un costo in energia, una potenza e due effetti. Puoi cambiare mano un paio di volte se non ti convince.",
+          "Poi si gioca su tre corsie per sei turni. A ogni turno hai un'energia in più da spendere e giochi le carte in segreto, nello stesso momento dell'avversario: quando entrambi avete confermato, le carte si rivelano e gli effetti scattano.",
+          "Alla fine del sesto turno vince la corsia chi ha più potenza, e vince il duello chi conquista due corsie su tre. Ogni corsia ha un luogo con una regola sua, quindi la stessa mano non si gioca mai due volte allo stesso modo."
+        ]
+      }
+    },
+    "giorno": {
+      "titolo": "Rompicapo del giorno: un duello uguale per tutti",
+      "descrizione": "Stesso mazzo e stessa CPU per tutti, un solo tentativo al giorno: fino a tre stelle e una classifica per chi gioca meglio.",
+      "h1": "Rompicapo del giorno",
+      "og": "Rompicapo del giorno",
+      "guida": {
+        "titolo": "Il rompicapo del Duello, una volta al giorno",
+        "paragrafi": [
+          "Ogni giorno c'è un duello uguale per tutti: lo stesso mazzo di otto carte, lo stesso mazzo avversario e la stessa CPU. Non conta la fortuna del draft né la collezione: conta solo come giochi le tue carte.",
+          "Hai un solo tentativo a nome. Il risultato vale da zero a tre stelle: una per il pareggio, due per la vittoria, tre se vinci tutte e tre le corsie.",
+          "La classifica del giorno ordina i giocatori per stelle e poi per margine di potenza. A mezzanotte, ora italiana, arriva un rompicapo nuovo."
+        ]
+      }
+    },
+    "sfide": {
+      "titolo": "Sfide anime del giorno: quiz e indovinelli",
+      "descrizione": "Cinque giochi nuovi ogni giorno: indovina l'anime, la sigla, il personaggio. Uguali per tutti, in italiano.",
+      "h1": "Sfide del giorno",
+      "og": "Sfide anime del giorno",
+      "guida": {
+        "titolo": "Cinque quiz sugli anime, nuovi ogni giorno",
+        "paragrafi": [
+          "Le sfide del giorno sono cinque piccoli giochi sugli anime, uguali per tutti e in italiano: Animedle (indovina l'anime dagli indizi), Scorcio (indovina l'anime da un dettaglio dell'immagine), Chi è? (indovina il personaggio), Sigla (indovina l'anime dalla sigla) e il rompicapo del Duello.",
+          "Ogni sfida si può fare una volta al giorno e cambia a mezzanotte, ora italiana. Meno tentativi usi, più sigilli vinci; se torni ogni giorno la serie cresce e porta un bonus.",
+          "Se vuoi solo allenarti, ogni quiz ha una modalità libera con partite illimitate che non toccano la serie."
+        ]
+      }
+    },
+    "animedle": {
+      "titolo": "Animedle in italiano: indovina l'anime del giorno",
+      "descrizione": "Hai otto tentativi: anno, studio, generi ed episodi ti dicono quanto sei vicino. Un anime nuovo ogni giorno.",
+      "h1": "Animedle",
+      "og": "Animedle: indovina l'anime del giorno",
+      "guida": {
+        "titolo": "Come si gioca ad Animedle",
+        "paragrafi": [
+          "Animedle è il gioco «indovina l'anime» in stile Wordle, in italiano. Scrivi il titolo di un anime e il gioco lo confronta con quello misterioso su otto colonne: anno, episodi, voto, studio, generi, formato, origine e stagione.",
+          "Verde vuol dire giusto, giallo vuol dire vicino o in parte in comune, le frecce dicono se il valore cercato è più alto o più basso. Dopo qualche errore si sbloccano indizi in più, come l'iniziale del titolo e la copertina sfocata.",
+          "Hai otto tentativi e un anime nuovo ogni giorno, uguale per tutti. In allenamento puoi giocare quante partite vuoi."
+        ]
+      }
+    },
+    "sigla": {
+      "titolo": "Quiz sigle anime: indovina l'anime dalla sigla",
+      "descrizione": "Ascolta un secondo di sigla e indovina l'anime. A ogni errore ne senti di più. Una sigla nuova ogni giorno.",
+      "h1": "Sigla",
+      "og": "Indovina l'anime dalla sigla",
+      "guida": {
+        "titolo": "Come funziona il quiz delle sigle anime",
+        "paragrafi": [
+          "Parte un solo secondo di una sigla: opening o ending di un anime. Se la riconosci, scrivi il titolo dell'anime; se sbagli o salti, ne ascolti di più: due, quattro, otto, sedici secondi, fino a trenta.",
+          "A ogni errore arrivano anche degli indizi: il tipo di sigla, l'anno, l'artista, lo studio, i generi. Hai sei tentativi, e prima indovini più sigilli vinci.",
+          "La sigla del giorno è uguale per tutti e cambia a mezzanotte. Con gli amici c'è anche il quiz musicale in stanza, dove vince chi risponde per primo."
+        ]
+      }
+    },
+    "scorcio": {
+      "titolo": "Scorcio: indovina l'anime dall'immagine",
+      "descrizione": "Un dettaglio ingrandito e sfocato che si scopre a ogni errore: riconosci l'anime in sei tentativi. Uno nuovo ogni giorno.",
+      "h1": "Scorcio",
+      "og": "Indovina l'anime dall'immagine",
+      "guida": {
+        "titolo": "Come si gioca a Scorcio",
+        "paragrafi": [
+          "Vedi solo un dettaglio, ingrandito e sfocato, dell'immagine di un anime. Scrivi il titolo che pensi sia quello giusto.",
+          "A ogni errore l'immagine si allarga e si schiarisce, e arriva un indizio: l'anno, l'origine, lo studio, i generi. Puoi anche saltare, ma conta come un tentativo.",
+          "Hai sei tentativi. Lo scorcio del giorno è uguale per tutti; in allenamento le partite sono illimitate."
+        ]
+      }
+    },
+    "personaggio": {
+      "titolo": "Chi è? Indovina il personaggio anime",
+      "descrizione": "Un dettaglio del volto, sempre più chiaro a ogni errore: riconosci il personaggio in sei tentativi. Uno nuovo ogni giorno.",
+      "h1": "Chi è?",
+      "og": "Indovina il personaggio anime",
+      "guida": {
+        "titolo": "Come si gioca a «Chi è?»",
+        "paragrafi": [
+          "Parti da un dettaglio ingrandito e sfocato del ritratto di un personaggio. Scrivi il nome dell'anime da cui viene.",
+          "A ogni errore il ritratto si scopre un po' di più e si sblocca un indizio: il ruolo nella storia, il genere, l'anno, l'iniziale del nome.",
+          "Hai sei tentativi e un personaggio nuovo ogni giorno, uguale per tutti."
+        ]
+      }
+    },
+    "negozio": {
+      "titolo": "Bustine di carte anime da aprire online",
+      "descrizione": "Apri le bustine con i sigilli vinti giocando, mai con soldi veri. Probabilità di ogni rarità sempre in chiaro.",
+      "h1": "Negozio di pacchetti",
+      "og": "Bustine di carte anime",
+      "guida": {
+        "titolo": "Aprire pacchetti di carte anime, senza spendere soldi",
+        "paragrafi": [
+          "Nel negozio apri bustine di carte anime online: strappi la busta e scopri le carte una alla volta. Ci sono quattro pacchetti, da tre a cinque carte, con rarità minime garantite che salgono con il prezzo.",
+          "Le bustine si pagano solo con i sigilli, la moneta del gioco, che si guadagnano giocando: duelli, sfide del giorno, obiettivi della settimana. I sigilli non si comprano con denaro.",
+          "Le probabilità di ogni rarità sono scritte sotto ogni pacchetto, una leggendaria è garantita entro un certo numero di aperture e i doppioni tornano indietro come sigilli."
+        ]
+      }
+    },
+    "album": {
+      "titolo": "Album delle carte anime: collezione e mazzi",
+      "descrizione": "Sfoglia il raccoglitore, completa i capitoli e costruisci i tuoi mazzi da otto carte.",
+      "h1": "Il tuo album",
+      "og": "Album delle carte anime",
+      "guida": {
+        "titolo": "La collezione di carte anime e i tuoi mazzi",
+        "paragrafi": [
+          "L'album è un raccoglitore da sfogliare: un capitolo per ogni anime, le carte che possiedi a colori e le altre in sagoma, con il numero che ti manca.",
+          "Le carte arrivano giocando a draft e aprendo le bustine. Ogni carta ha una rarità (comune, rara, epica, leggendaria), un costo, una potenza e due effetti.",
+          "Con le carte che possiedi costruisci fino a cinque mazzi da otto carte, con qualche limite su rarità e costo totale, e li usi nel Duello contro la CPU."
+        ]
+      }
+    },
+    "ranked": {
+      "titolo": "Classificata: leghe da Bronzo a Campione",
+      "descrizione": "Draft nuovo a ogni partita: conta la bravura, non la collezione. Scala sei leghe e la classifica.",
+      "h1": "Classificata",
+      "og": "Classificata a leghe",
+      "guida": {
+        "titolo": "Come funziona la classificata",
+        "paragrafi": [
+          "Nella classificata ogni partita parte da un draft nuovo: tutti scelgono tra le stesse mani, quindi la collezione non dà vantaggi. Affronti il mazzo costruito da un altro giocatore del tuo livello.",
+          "Dopo cinque partite di piazzamento entri in una lega: Bronzo, Argento, Oro, Platino, Diamante, fino a Campione, ognuna divisa in gradini. Vincere fa salire, perdere fa scendere.",
+          "Ogni settimana ci sono obiettivi di partite giocate che danno sigilli, e una classifica dei giocatori. Le classificate sono riservate a chi ha un account: si crea dal profilo in pochi secondi."
+        ]
+      }
+    },
+    "scala": {
+      "titolo": "La Scala: roguelike di duelli di carte anime",
+      "descrizione": "Dodici gradini, avversari sempre più forti: dopo ogni vittoria scegli una carta nuova o un rinforzo. Quanto in alto arrivi?",
+      "h1": "La Scala",
+      "og": "La Scala: roguelike di duelli",
+      "guida": {
+        "titolo": "Come funziona la Scala",
+        "paragrafi": [
+          "La Scala è una corsa a duelli: parti con un mazzo di otto carte scelte a draft e sali fino a dodici gradini, uno per avversario.",
+          "Dopo ogni vittoria scegli un premio tra tre: una carta nuova da aggiungere al mazzo oppure un rinforzo che dà più potenza a una carta che hai già.",
+          "Gli avversari crescono a ogni gradino e ogni quattro c'è un boss. Alla prima sconfitta la corsa finisce e incassi esperienza e sigilli in base a quanto sei salito."
+        ]
+      }
+    },
+    "veloce": {
+      "titolo": "Partita veloce: draft e scontro 7 contro 7",
+      "descrizione": "Scegli sette personaggi anime con un budget, assegna i ruoli, decidi le tattiche e guarda lo scontro contro la CPU.",
+      "h1": "Partita veloce",
+      "og": "Partita veloce 7 contro 7",
+      "guida": {
+        "titolo": "Come funziona la partita veloce",
+        "paragrafi": [
+          "Nella partita veloce costruisci una squadra di sette personaggi anime: a ogni giro scegli una carta da una mano di cinque e la metti in un ruolo, restando dentro il budget.",
+          "Ogni personaggio rende di più o di meno a seconda del ruolo: il semaforo sugli slot ti dice dove conviene metterlo. Poi scegli la tattica di ognuna delle tre fasi dello scontro.",
+          "Lo scontro è automatico, a turni, sette contro sette: lo guardi svolgersi e alla fine trovi spiegato perché è andata così."
+        ]
+      }
+    },
+    "info": {
+      "titolo": "Regole, domande frequenti e note legali",
+      "descrizione": "Come si gioca, domande frequenti, crediti delle immagini, richieste di rimozione e cookie.",
+      "h1": "Info",
+      "og": "Regole e domande frequenti"
+    },
+    "comeSiGioca": {
+      "titolo": "Come si gioca: le regole del Duello di carte anime",
+      "descrizione": "Le regole del Duello spiegate bene: carte, energia, corsie, luoghi, effetti e qualche consiglio per vincere le prime partite.",
+      "h1": "Come si gioca",
+      "og": "Come si gioca"
+    },
+    "profilo": {
+      "titolo": "Profilo",
+      "descrizione": "Il tuo livello, gli obiettivi di oggi, la collezione e la classifica della stagione."
+    },
+    "stanza": {
+      "titolo": "Stanza",
+      "descrizione": "Una stanza privata per giocare con gli amici."
+    },
+    "sfida": {
+      "titolo": "Sfida del giorno 7 contro 7",
+      "descrizione": "La sfida del giorno della partita veloce: stesse carte per tutti, un tentativo a nome."
+    }
+  },
+  "comeSiGioca": {
+    "occhiello": "Guida",
+    "intro": "Il Duello è la modalità principale di {app}: un gioco di carte anime a tre corsie in cui si gioca in segreto e una partita dura tre minuti. Qui trovi tutte le regole, dall'inizio.",
+    "sezioni": [
+      {
+        "t": "L'obiettivo",
+        "p": [
+          "Sul tavolo ci sono tre corsie. Alla fine del sesto turno, in ogni corsia vince chi ha la somma di potenza più alta. Vince il duello chi conquista due corsie su tre.",
+          "In caso di parità nelle corsie vinte, il duello finisce in pareggio."
+        ]
+      },
+      {
+        "t": "Le carte",
+        "p": [
+          "Ogni carta è un personaggio e ha quattro cose da guardare: il costo, nel rombo giallo in alto a sinistra; la potenza, sulla targa nera in alto a destra; un effetto «Al rivelarsi», che scatta una volta quando la carta viene scoperta; un effetto «Continuo», che vale finché la carta resta in campo.",
+          "La cornice dice la rarità: grigia per le comuni, ciano per le rare, magenta per le epiche, oro per le leggendarie. Una carta rara non è per forza più forte: di solito costa di più."
+        ]
+      },
+      {
+        "t": "Il mazzo: otto carte a draft",
+        "p": [
+          "Prima della partita ti vengono proposte otto mani di carte, una dopo l'altra: da ognuna ne prendi una. Se una mano non ti piace puoi cambiarla, ma solo un paio di volte.",
+          "Tieni d'occhio il costo totale: in sei turni avrai in tutto 21 punti di energia. Un mazzo di sole carte costose resta in mano; servono anche carte da 1 e 2 per i primi turni."
+        ]
+      },
+      {
+        "t": "I turni e l'energia",
+        "p": [
+          "Si gioca per sei turni. Al primo turno hai 1 punto di energia, al secondo 2, e così via fino a 6. L'energia non spesa non si accumula.",
+          "A ogni turno scegli quali carte giocare e in quale corsia, poi confermi. L'avversario fa lo stesso, in segreto e nello stesso momento. Quando entrambi avete confermato le carte si rivelano una alla volta e scattano gli effetti."
+        ]
+      },
+      {
+        "t": "Le corsie e i luoghi",
+        "p": [
+          "Ogni corsia ha un luogo con una regola: può limitare i posti, dare potenza a certi tipi di personaggio, far costare di più le carte o proteggerle dagli effetti nemici. I tre luoghi cambiano a ogni partita.",
+          "Di norma ogni giocatore ha quattro posti per corsia. Una carta giocata non si può più spostare."
+        ]
+      },
+      {
+        "t": "Consigli per le prime partite",
+        "p": [
+          "Non provare a vincere tutte e tre le corsie: ne bastano due. Spesso conviene lasciarne una all'avversario e concentrare la potenza sulle altre.",
+          "Leggi il luogo prima di giocare una carta costosa, e tieni una carta forte per l'ultimo turno: è quello in cui si decide quasi tutto, e nessuno può più rispondere."
+        ]
+      }
+    ],
+    "poi": "E adesso?",
+    "poiTesto": "Il modo migliore per imparare è giocare: la prima partita contro la CPU a livello facile dura tre minuti.",
+    "cta": "Gioca il Duello",
+    "altreRegole": "Regole delle altre modalità e note legali"
+  },
+  "faq": {
+    "titolo": "Domande frequenti",
+    "voci": [
+      {
+        "d": "{app} è gratis?",
+        "r": "Sì. Si gioca gratis dal browser, senza scaricare nulla. Non ci sono acquisti: i sigilli, la moneta del gioco, si guadagnano solo giocando e non si possono comprare con denaro."
+      },
+      {
+        "d": "Devo registrarmi per giocare?",
+        "r": "No. Puoi giocare subito; se crei un profilo (basta un nome) il gioco ricorda livello, collezione e sigilli su quel dispositivo. Un account con nome utente e password serve solo per le partite classificate e per ritrovare il profilo da un altro dispositivo."
+      },
+      {
+        "d": "Come si vince un duello?",
+        "r": "Si gioca su tre corsie per sei turni. Alla fine, in ogni corsia vince chi ha più potenza: vince il duello chi conquista due corsie su tre. Le regole complete sono nella pagina «Come si gioca»."
+      },
+      {
+        "d": "Come si ottengono carte e bustine?",
+        "r": "Le carte arrivano giocando a draft e aprendo le bustine del negozio, che si pagano con i sigilli vinti nei duelli, nelle sfide del giorno e con gli obiettivi. Le probabilità di ogni rarità sono indicate sotto ogni pacchetto."
+      },
+      {
+        "d": "A che ora cambiano le sfide del giorno?",
+        "r": "A mezzanotte, ora italiana. Animedle, Scorcio, Chi è?, Sigla e il rompicapo del Duello sono uguali per tutti e si possono fare una volta al giorno; in allenamento le partite sono illimitate."
+      },
+      {
+        "d": "Si può giocare con gli amici?",
+        "r": "Sì. Dalla home crei una stanza e condividi il codice: da 2 a 20 giocatori per l'asta con torneo, il draft a specchio, il raid contro un boss o il quiz sugli anime e sulle sigle. C'è anche una modalità per chi trasmette in diretta, in cui la chat gioca come una squadra."
+      },
+      {
+        "d": "Funziona su telefono?",
+        "r": "Sì. Il sito è pensato prima di tutto per il telefono e si può aggiungere alla schermata Home come un'app."
+      },
+      {
+        "d": "Di chi sono i personaggi e le immagini?",
+        "r": "{app} è un progetto non ufficiale creato da fan, senza scopo commerciale. I personaggi appartengono ai rispettivi titolari dei diritti; le immagini sono collegate dal servizio AniList e non sono copiate né ospitate da noi. Per chiedere una rimozione c'è l'indirizzo in fondo a questa pagina."
+      }
+    ]
+  },
+  "linkUtili": {
+    "titolo": "Le sfide di oggi",
+    "sotto": "Cinque giochi sugli anime, nuovi ogni giorno e uguali per tutti.",
+    "animedle": "Animedle: indovina l'anime del giorno",
+    "sigla": "Indovina l'anime dalla sigla",
+    "scorcio": "Indovina l'anime dall'immagine",
+    "personaggio": "Indovina il personaggio anime",
+    "giorno": "Rompicapo del giorno del Duello",
+    "comeSiGioca": "Come si gioca: le regole del Duello",
+    "tutte": "Tutte le sfide del giorno",
+    "faq": "Domande frequenti"
+  },
+  "footerImpara": "Impara"
 }

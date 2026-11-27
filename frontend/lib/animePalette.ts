@@ -4,7 +4,7 @@ export const ANIME_PALETTE: Record<string, { from: string; to: string; label: st
   "one-piece": { from: "#ff5a5a", to: "#8f1f1f", label: "One Piece" },
   "dragon-ball": { from: "#ffd23c", to: "#c25a00", label: "Dragon Ball" },
   "demon-slayer": { from: "#2fbf8f", to: "#0d5a45", label: "Demon Slayer" },
-  "jujutsu-kaisen": { from: "#7a5cff", to: "#2a1a80", label: "Jujutsu Kaisen" },
+  "jujutsu-kaisen": { from: "#9a86ff", to: "#2a1a80", label: "Jujutsu Kaisen" },
 };
 const FALLBACK = { from: "#6b7280", to: "#1f2937", label: "Anime" };
 

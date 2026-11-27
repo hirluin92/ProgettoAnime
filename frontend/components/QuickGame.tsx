@@ -1,8 +1,10 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import Icon from "@/components/Icon";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import BattleScene from "@/components/battle/BattleScene";
+import { CartaRetro } from "@/components/carta/Carta";
 import CharacterCard from "@/components/battle/CharacterCard";
 import ArenaBanner from "@/components/ArenaBanner";
 import PremioPanel from "@/components/PremioPanel";
@@ -131,7 +133,7 @@ export default function QuickGame({
         </div>
       </main>
     );
-  if (!d) return <main className="p-6">{it.stanza.connessione}</main>;
+  if (!d) return <Caricamento titolo={title} />;
 
   const total = d.roles.length;
   const drafting = round < total;
@@ -208,7 +210,7 @@ export default function QuickGame({
   if (played)
     return (
       <main className="mx-auto max-w-7xl space-y-3 p-4">
-        <h1 className="text-5xl font-black leading-none">{title}</h1>
+        <h1 className="striscia text-4xl leading-none sm:text-5xl">{title}</h1>
         {!senzaMissione && (
           <p className="text-sm muted">
             {it.veloce.speso}: {played.spent}/{d.budget} · CPU: {played.cpu_spent}/{d.budget} ·{" "}
@@ -255,9 +257,9 @@ export default function QuickGame({
   const swapping = !drafting;
   return (
     <main className="mx-auto max-w-7xl space-y-4 p-4">
-      <div className="reveal space-y-1">
+      <div className="testata reveal space-y-1">
         <span className="eyebrow">{it.veloce.draft}</span>
-        <h1 className="text-5xl font-black leading-none sm:text-6xl">{title}</h1>
+        <h1 className="text-4xl leading-none sm:text-5xl">{title}</h1>
       </div>
       {header}
       <ArenaBanner {...d.arena} />
@@ -270,12 +272,12 @@ export default function QuickGame({
           {d.roles.map((r, i) => (
             <li
               key={r}
-              className={`rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wider transition ${
+              className={`border-2 px-2.5 py-1 text-xs font-black uppercase tracking-wider ${
                 i < round
-                  ? "border-transparent bg-gradient-to-r from-pink-500 to-orange-400 text-white"
+                  ? "border-black bg-carta text-nero"
                   : i === round
-                    ? "border-cyan-300 bg-cyan-300/15 text-cyan-100 shadow-[0_0_18px_rgb(53_224_255/0.35)]"
-                    : "text-white/40"
+                    ? "border-black bg-[#e0301f] text-white shadow-[2px_2px_0_#000]"
+                    : "border-[var(--line)] text-white/45"
               }`}
             >
               {i < round ? <Icon name="check" /> : null}{" "}
@@ -285,7 +287,7 @@ export default function QuickGame({
           ))}
         </ol>
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-          <p data-testid="step" className="text-lg">
+          <p data-testid="step" className="text-lg font-bold">
             {drafting ? (
               <>
                 {isMystery ? it.draft.misteriosa : it.draft.scegli} ({round + 1}/{total}) ·{" "}
@@ -293,14 +295,18 @@ export default function QuickGame({
             ) : (
               <>{it.draft.scambio} · </>
             )}
-            {it.stanza.budget}: <b data-testid="left">{d.budget - spent}</b>
+            {it.stanza.budget}:{" "}
+            <b data-testid="left" className="num text-[#ffd21f]">
+              {d.budget - spent}
+            </b>
           </p>
           <p className="text-xs muted" data-testid="rerolls">
             {it.draft.rilanci}: <b>{d.rerolls - rerolls}</b>/{d.rerolls}
           </p>
         </div>
         <div
-          className="h-2.5 overflow-hidden rounded-full bg-black/40"
+          className="barra"
+          style={{ ["--accent" as string]: "var(--giallo)" }}
           role="progressbar"
           aria-label={it.stanza.budget}
           aria-valuemin={0}
@@ -308,7 +314,7 @@ export default function QuickGame({
           aria-valuenow={d.budget - spent}
         >
           <div
-            className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-pink-500 transition-[width] duration-500"
+            className="transition-[width] duration-500"
             style={{ width: `${((d.budget - spent) / d.budget) * 100}%` }}
           />
         </div>
@@ -325,7 +331,7 @@ export default function QuickGame({
           <div className="min-w-0 space-y-4">
             <section className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-2xl font-extrabold">
+                <h2 className="text-3xl">
                   {isMystery ? it.draft.cartaMisteriosa : it.draft.laTuaMano}
                 </h2>
                 {!isMystery && (
@@ -336,7 +342,7 @@ export default function QuickGame({
                     onClick={reroll}
                     title={it.draft.rilancioHint}
                   >
-                    ↻ {it.draft.rilancia}
+                    <Icon name="refresh" /> {it.draft.rilancia}
                   </button>
                 )}
               </div>
@@ -350,11 +356,16 @@ export default function QuickGame({
                         setRevealed(true);
                         setSel(hand.cards[0]);
                       }}
-                      className="panel panel-hover grid aspect-[3/4.2] w-44 place-items-center gap-1 text-center"
+                      className="group relative grid w-44 justify-items-center gap-2 text-center transition-transform hover:-translate-y-1 hover:-rotate-2"
                     >
-                      <span className="display text-grad text-7xl font-black">?</span>
+                      <span className="relative block w-full">
+                        <CartaRetro />
+                        <span className="onoma absolute inset-0 grid place-items-center text-7xl">
+                          ?
+                        </span>
+                      </span>
                       <span className="eyebrow justify-center">{it.draft.scopri}</span>
-                      <span className="text-xs muted">
+                      <span className="chip border-black bg-[#ffd21f] text-black">
                         {it.veloce.costo} {hand.mystery_cost}
                       </span>
                     </button>
@@ -363,7 +374,7 @@ export default function QuickGame({
                       <div className="w-44 sm:w-52">
                         <CharacterCard character={hand.cards[0].character} fluid />
                       </div>
-                      <span className="chip text-gold">
+                      <span className="chip border-black bg-[#ffd21f] text-black">
                         {it.veloce.costo} {hand.mystery_cost}
                       </span>
                     </div>
@@ -371,7 +382,11 @@ export default function QuickGame({
                 </div>
               ) : (
                 <>
-                  <CardDetail o={focus ?? sel} />
+                  {/* su schermi larghi la scheda sta sopra (altezza fissa); su telefono sotto le carte,
+                      così aprirla non sposta le carte sotto il dito */}
+                  <div className="hidden lg:block">
+                    <CardDetail o={focus ?? sel} />
+                  </div>
                   <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
                     {hand.cards.map((o) => {
                       const good = ok(o);
@@ -381,7 +396,7 @@ export default function QuickGame({
                           <button
                             type="button"
                             aria-label={`${it.veloce.dettagli}: ${o.character.nome}`}
-                            className="absolute right-2 top-2 z-30 grid size-7 place-items-center rounded-full border border-white/40 bg-black/70 text-xs font-black text-white backdrop-blur transition hover:scale-110 hover:bg-black/90"
+                            className="absolute left-0 top-0 z-30 grid size-9 place-items-center border-2 border-black bg-carta text-sm font-black italic text-nero transition-transform hover:scale-110"
                             onClick={() => setSheet(o)}
                           >
                             i
@@ -396,11 +411,13 @@ export default function QuickGame({
                             onMouseLeave={() => setFocus(null)}
                             aria-label={`${o.character.nome}, costo ${o.cost}`}
                             className={`relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 focus-visible:z-20 disabled:opacity-40 disabled:hover:translate-y-0 ${
-                              picked ? "z-20 -translate-y-3 scale-105 ring-2 ring-cyan-300" : ""
+                              picked
+                                ? "z-20 -translate-y-3 scale-105 outline outline-[3px] outline-offset-2 outline-carta"
+                                : ""
                             }`}
                           >
                             <CharacterCard character={o.character} fluid />
-                            <span className="chip text-gold">
+                            <span className="chip border-black bg-[#ffd21f] text-black">
                               {it.veloce.costo} {o.cost}
                             </span>
                           </button>
@@ -408,6 +425,9 @@ export default function QuickGame({
                       );
                     })}
                   </ul>
+                  <div className="lg:hidden">
+                    <CardDetail o={focus ?? sel} />
+                  </div>
                   {hand.cards.some((o) => !ok(o)) && !blocked && (
                     <p className="text-center text-xs muted" data-testid="draft-hint">
                       {it.draft.noteBudget}
@@ -434,14 +454,14 @@ export default function QuickGame({
 
         <section aria-label={it.veloce.squadra} data-testid="recap" className="panel space-y-3 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-2xl font-extrabold">{it.veloce.squadra}</h2>
+            <h2 className="text-3xl">{it.veloce.squadra}</h2>
             {drafting && sel && (
-              <p className="text-sm text-cyan-100" data-testid="place-hint">
+              <p className="balloon py-1.5 text-sm" data-testid="place-hint">
                 {it.draft.scegliSlot.replace("{nome}", sel.character.nome)}
               </p>
             )}
             {swapping && (
-              <p className="text-sm text-cyan-100" data-testid="swap-hint">
+              <p className="text-sm font-bold text-cyan-100" data-testid="swap-hint">
                 {swap ? it.draft.scambiato : it.draft.scambiaHint}
               </p>
             )}
@@ -475,7 +495,7 @@ export default function QuickGame({
           {swapping && (
             <div className="flex flex-wrap gap-2 pt-1">
               <button
-                className="btn btn-primary flex-1 text-lg"
+                className="btn btn-primary min-h-14 flex-1 text-xl"
                 data-testid="fight"
                 disabled={
                   busy || piano.some((t) => t === null) || (!!fasiLive && fasi.length < FASI - 1)

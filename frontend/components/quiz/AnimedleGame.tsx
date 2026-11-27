@@ -1,5 +1,6 @@
 "use client";
 
+import Caricamento from "@/components/Caricamento";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -42,9 +43,9 @@ const COLONNE = [
 ] as const;
 const NOMI = it.quiz.animedle.colonne as Record<string, string>;
 function colore(esito: string, vicino?: boolean) {
-  if (esito === "uguale") return "bg-emerald-500/85 border-emerald-200/60";
-  if (esito === "parziale" || vicino) return "bg-amber-500/85 border-amber-200/60";
-  return "bg-white/[0.07] border-white/15";
+  if (esito === "uguale") return "bg-[#35d68a] border-black text-black";
+  if (esito === "parziale" || vicino) return "bg-[#ffd21f] border-black text-black";
+  return "bg-[#201f26] border-[rgb(243_236_221/0.18)] text-white";
 }
 
 function Cella({
@@ -63,7 +64,7 @@ function Cella({
       initial={{ rotateX: 90, opacity: 0 }}
       animate={{ rotateX: 0, opacity: 1 }}
       transition={{ delay: 0.15 + i * 0.16, duration: 0.45 }}
-      className={`grid min-h-[4.2rem] place-items-center rounded-xl border px-1.5 py-1 text-center text-[0.8rem] font-bold leading-tight text-white shadow-inner ${colore(esito, vicino)}`}
+      className={`grid min-h-[4.2rem] place-items-center border-2 px-1.5 py-1 text-center text-[0.8rem] font-black leading-tight ${colore(esito, vicino)}`}
       data-esito={esito}
     >
       {children}
@@ -87,12 +88,12 @@ function RigaView({ r }: { r: Riga }) {
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex items-center rounded-xl border bg-white/[0.06] px-2 text-[0.8rem] font-extrabold leading-tight"
+        className="flex items-center border-2 border-black bg-carta px-2 text-[0.8rem] font-black leading-tight text-nero"
       >
         <span className="min-w-0">
           <span className="line-clamp-3">{r.anime.nome}</span>
           {r.serie && (
-            <span className="mt-0.5 block text-[0.65rem] font-black uppercase tracking-wide text-amber-300">
+            <span className="mt-0.5 block text-[0.65rem] font-black uppercase tracking-wide text-[#b3200f]">
               {it.quiz.stessaSerieBreve}
             </span>
           )}
@@ -271,15 +272,16 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
     }
   };
 
-  if (loading || !stato) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
+  if (loading || !stato)
+    return <Caricamento titolo={it.seo.animedle.h1} testo={errore ?? undefined} />;
 
   return (
     <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="animedle">
       <header className="testata flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
           <span className="eyebrow">{libero ? it.quiz.allenamento : it.quiz.delGiorno}</span>
-          <h1 className="display text-5xl font-black">{it.quiz.animedle.titolo}</h1>
-          <p className="max-w-2xl text-[0.95rem] muted">{it.quiz.animedle.intro}</p>
+          <h1 className="text-4xl sm:text-5xl">{it.quiz.animedle.titolo}</h1>
+          <p className="max-w-2xl text-[0.95rem] font-medium muted">{it.quiz.animedle.intro}</p>
         </div>
         <div className="flex gap-2">
           <Link href={libero ? "/sfide/animedle" : "/sfide/animedle?libero=1"} className="btn">
@@ -293,11 +295,11 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
         </div>
       </header>
 
-      {!libero && !profile && <p className="panel p-3 text-sm muted">{it.quiz.senzaProfilo}</p>}
+      {!libero && !profile && <p className="balloon text-sm">{it.quiz.senzaProfilo}</p>}
 
       <section className="panel space-y-3 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-          <span data-testid="animedle-tentativi" className="font-bold">
+          <span data-testid="animedle-tentativi" className="num text-base">
             {fmt(it.quiz.tentativi, { n: righe.length, max: massimo })}
           </span>
           {!libero && stato.serie > 0 && (
@@ -309,7 +311,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
         </div>
         {(indizi.length > 0 || (!finito && prossimaSoglia !== null)) && (
           <div
-            className="space-y-2 rounded-2xl border bg-white/[0.04] p-3"
+            className="space-y-2 border-2 border-dashed border-[var(--line-forte)] bg-black/20 p-3"
             data-testid="animedle-indizi"
           >
             {indizi.length > 0 && (
@@ -346,7 +348,10 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           <AnimeSearch onScegli={(a) => void prova(a)} esclusi={provati} testId="animedle-cerca" />
         )}
         {errore && (
-          <p role="alert" className="text-amber-200">
+          <p
+            role="alert"
+            className="border-2 border-[#ffd21f] bg-[#ffd21f]/10 p-2 text-sm font-bold text-amber-200"
+          >
             {errore}
           </p>
         )}
@@ -363,19 +368,21 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
               <RigaView key={r.anime.id} r={r} />
             ))}
             {righe.length === 0 && (
-              <p className="py-8 text-center text-sm muted">{it.quiz.animedle.vuoto}</p>
+              <p className="vuoto my-2 text-sm font-bold">{it.quiz.animedle.vuoto}</p>
             )}
           </div>
         </div>
         <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs muted">
           <li className="flex items-center gap-1.5">
-            <i className="size-3 rounded bg-emerald-500" /> {it.quiz.animedle.legendaGiusto}
+            <i className="size-3 border border-black bg-[#35d68a]" />{" "}
+            {it.quiz.animedle.legendaGiusto}
           </li>
           <li className="flex items-center gap-1.5">
-            <i className="size-3 rounded bg-amber-500" /> {it.quiz.animedle.legendaVicino}
+            <i className="size-3 border border-black bg-[#ffd21f]" />{" "}
+            {it.quiz.animedle.legendaVicino}
           </li>
           <li className="flex items-center gap-1.5">
-            <i className="size-3 rounded border border-white/25 bg-white/10" />{" "}
+            <i className="size-3 border border-white/30 bg-[#201f26]" />{" "}
             {it.quiz.animedle.legendaNo}
           </li>
           <li className="flex items-center gap-1.5">
@@ -383,7 +390,10 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           </li>
         </ul>
         {!finito && righe.length > 0 && (
-          <button className="text-sm underline muted" onClick={() => void arrenditi()}>
+          <button
+            className="min-h-11 text-sm font-bold underline muted"
+            onClick={() => void arrenditi()}
+          >
             {it.quiz.arrenditi}
           </button>
         )}

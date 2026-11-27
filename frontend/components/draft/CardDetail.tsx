@@ -63,7 +63,9 @@ export function CardDetail({ o, cost, bare }: { o: Option | null; cost?: number;
             )}
             {c.passiva && (
               <p>
-                <b className="text-cyan-200">◆ {c.passiva.nome}</b>
+                <b className="text-cyan-200">
+                  <Icon name="diamond" className="size-[0.8em]" /> {c.passiva.nome}
+                </b>
                 {c.passiva.effetto && (
                   <span className="muted">
                     {" "}
@@ -115,7 +117,7 @@ export function DetailSheet({
       role="dialog"
       aria-modal="true"
       aria-label={o.character.nome}
-      className="fixed inset-0 z-50 grid place-items-end bg-black/70 p-3 backdrop-blur-sm sm:place-items-center"
+      className="fixed inset-0 z-50 grid place-items-end bg-black/70 p-3 sm:place-items-center"
       onClick={onClose}
     >
       <div

@@ -78,7 +78,7 @@ export default function PlanView({
       <ul className="flex flex-wrap gap-2" aria-label={it.piano.giocatori}>
         {humans.map((p) => (
           <li key={p.id} className="chip">
-            <span className="size-2.5 rounded-full" style={{ background: p.color }} />
+            <span className="size-2.5 rotate-45" style={{ background: p.color }} />
             {p.name} <Icon name={p.ready ? "check" : "dots"} />
           </li>
         ))}

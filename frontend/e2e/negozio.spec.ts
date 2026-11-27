@@ -11,7 +11,7 @@ test("negozio: probabilità visibili, apertura carta per carta, saldo e album ag
 
   await page.goto("/negozio");
   await expect(page.getByTestId("negozio")).toBeVisible();
-  await expect(page.getByTestId("saldo")).toContainText("0 crediti");
+  await expect(page.getByTestId("saldo")).toContainText("0 sigilli");
   await expect(page.getByTestId("apri-base")).toBeDisabled(); // senza crediti
   await expect(page.getByTestId("pacchetto-oro")).toContainText("Almeno 1 carta epica");
   await expect(page.getByTestId("pacchetto-base")).toContainText("70%");
@@ -20,7 +20,7 @@ test("negozio: probabilità visibili, apertura carta per carta, saldo e album ag
   const id = await page.evaluate(() => window.localStorage.getItem("arena-profile-id"));
   await page.request.post(`http://localhost:8000/api/dev/regala-carte/${id}`);
   await page.reload();
-  await expect(page.getByTestId("saldo")).toContainText("1000 crediti");
+  await expect(page.getByTestId("saldo")).toContainText("1000 sigilli");
 
   await page.getByTestId("apri-argento").click();
   await expect(page.getByTestId("apertura")).toBeVisible();

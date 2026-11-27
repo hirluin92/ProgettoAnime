@@ -100,18 +100,18 @@ export default function QuizRoomView({
             {fmt(it.quiz.stanza.domanda, { n: q.round, tot: q.totali })} ·{" "}
             {it.quiz.stanza.tipi[q.kind]}
           </span>
-          <h2 className="display text-4xl font-black">
+          <h2 className="striscia text-4xl">
             {q.fase === "fine" ? it.quiz.stanza.fine : it.quiz.stanza.titolo[q.kind]}
           </h2>
         </div>
         {q.fase !== "fine" && (
           <div className="w-full max-w-xs space-y-1 text-right sm:w-72">
-            <div className="display text-4xl font-black tabular-nums" data-testid="quiz-tempo">
+            <div className="num text-3xl tabular-nums text-[#ffd21f]" data-testid="quiz-tempo">
               {Math.ceil(resto)}s
             </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
+            <div className="barra">
               <div
-                className={`h-full rounded-full ${chiusa ? "bg-white/30" : "bg-gradient-to-r from-cyan-300 to-pink-500"}`}
+                className={`h-full transition-none ${chiusa ? "!bg-white/30" : ""}`}
                 style={{ width: `${barra * 100}%` }}
               />
             </div>
@@ -134,11 +134,11 @@ export default function QuizRoomView({
                   src={q.soluzione.immagine}
                   alt=""
                   referrerPolicy="no-referrer"
-                  className="h-28 rounded-xl border-2 border-white/30"
+                  className="h-28 -rotate-2 border-[3px] border-carta shadow-[4px_4px_0_#000]"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="eyebrow">{it.quiz.stanza.eraQuesto}</p>
-                  <p className="text-2xl font-extrabold">{q.soluzione.nome}</p>
+                  <p className="text-3xl">{q.soluzione.nome}</p>
                   <p className="muted">{q.soluzione.dettaglio}</p>
                 </div>
               </motion.div>
@@ -148,7 +148,7 @@ export default function QuizRoomView({
             <div className="panel space-y-3 p-4">
               {q.immagine ? (
                 <div
-                  className={`relative mx-auto overflow-hidden rounded-2xl border-2 border-white/25 bg-black ${
+                  className={`relative mx-auto overflow-hidden border-[3px] border-carta bg-black shadow-[7px_7px_0_var(--accent)] ${
                     ritratto ? "aspect-[3/4] max-h-[26rem]" : "aspect-[19/6] w-full"
                   }`}
                   data-testid="quiz-immagine"
@@ -184,7 +184,7 @@ export default function QuizRoomView({
               )}
               {inPreparazione && (
                 <p
-                  className="display rounded-2xl border bg-black/50 py-3 text-center text-3xl font-black text-amber-200"
+                  className="num border-2 border-black bg-[#ffd21f] py-3 text-center text-3xl text-black shadow-[4px_4px_0_#000]"
                   role="status"
                   data-testid="quiz-countdown"
                 >
@@ -270,12 +270,12 @@ export default function QuizRoomView({
                 {podio.map((p, i) => (
                   <li
                     key={p.id}
-                    className="flex flex-col items-center gap-1 rounded-2xl border bg-white/[0.05] px-6 py-4"
+                    className="colpo flex flex-col items-center gap-1 border-2 border-black bg-carta px-6 py-4 text-nero shadow-[5px_5px_0_var(--accent)]"
                     style={{ minHeight: `${9 - i * 1.4}rem` }}
                   >
                     <Medaglia pos={i} />
-                    <span className="display text-2xl font-black">{nome(p.id)}</span>
-                    <span className="display text-4xl font-black text-gold">{p.punti}</span>
+                    <span className="display text-2xl">{nome(p.id)}</span>
+                    <span className="num text-3xl text-[#b3200f]">{p.punti}</span>
                   </li>
                 ))}
               </ol>
@@ -301,7 +301,7 @@ export default function QuizRoomView({
               <li
                 key={p.id}
                 className={`flex items-center gap-2 rounded-xl border px-3 py-2 ${
-                  p.id === me ? "border-cyan-300/50 bg-cyan-300/10" : "bg-white/[0.03]"
+                  p.id === me ? "border-carta bg-white/10" : "bg-black/20"
                 }`}
               >
                 <Medaglia pos={i} />
@@ -320,7 +320,7 @@ export default function QuizRoomView({
                     <Icon name="check" className="size-3.5" />+{p.guadagno}
                   </span>
                 )}
-                <span className="display text-xl font-black tabular-nums">{p.punti}</span>
+                <span className="num text-base tabular-nums">{p.punti}</span>
               </li>
             ))}
           </ol>

@@ -15,13 +15,14 @@ export default function MissionCard({
   return (
     <div
       data-testid="mission"
-      className={`rounded-2xl border p-3 text-sm ${
+      className={`border-2 border-dashed p-3 text-sm ${
         esito === undefined
-          ? "border-amber-300/40 bg-amber-300/10"
+          ? "border-[#ffd21f] bg-[#ffd21f]/10"
           : esito
-            ? "border-emerald-300/50 bg-emerald-400/10"
-            : "border-rose-400/40 bg-rose-500/10"
+            ? "border-[#35d68a] bg-[#35d68a]/10"
+            : "border-rose-400 bg-rose-500/10"
       }`}
+      style={{ ["--accent" as string]: "var(--giallo)" }}
     >
       <div className="flex flex-wrap items-center gap-2">
         <span className="eyebrow">{titolo ?? it.missione.titolo}</span>

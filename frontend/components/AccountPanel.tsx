@@ -53,11 +53,13 @@ export default function AccountPanel({
 
   if (nuovo)
     return (
-      <section className="panel space-y-3 p-5" data-testid="account-codice">
-        <h2 className="text-2xl font-extrabold">{it.account.codiceTitolo}</h2>
+      <section className="panel-vivo space-y-3 p-5" data-testid="account-codice">
+        <h2 className="text-3xl">{it.account.codiceTitolo}</h2>
         <p className="text-sm muted">{it.account.codiceTesto}</p>
-        <p className="display text-grad text-center text-3xl font-black tracking-widest">{nuovo}</p>
-        <div className="flex gap-2">
+        <p className="num border-2 border-dashed border-black bg-carta p-3 text-center text-2xl tracking-widest text-nero">
+          {nuovo}
+        </p>
+        <div className="flex gap-3 pb-1">
           <button
             className="btn flex-1"
             onClick={() => {
@@ -88,8 +90,8 @@ export default function AccountPanel({
         ? it.account.accedi
         : it.account.dimenticata;
   return (
-    <section className="panel max-w-xl space-y-3 p-5" data-testid={`account-${modo}`}>
-      <h2 className="text-2xl font-extrabold">{titolo}</h2>
+    <section className="panel-vivo max-w-xl space-y-3 p-5" data-testid={`account-${modo}`}>
+      <h2 className="text-3xl">{titolo}</h2>
       {modo === "registra" && <p className="text-sm muted">{it.account.proteggiTesto}</p>}
       <input
         aria-label={it.account.utente}
@@ -122,7 +124,10 @@ export default function AccountPanel({
         data-testid="account-password"
       />
       {errore && (
-        <p role="alert" className="text-rose-400">
+        <p
+          role="alert"
+          className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300"
+        >
           {errore}
         </p>
       )}
@@ -140,12 +145,15 @@ export default function AccountPanel({
       </button>
       <div className="flex flex-wrap justify-between gap-2 text-sm">
         {modo === "accedi" && (
-          <button className="underline muted" onClick={() => setModo("recupera")}>
+          <button
+            className="min-h-11 font-bold underline muted"
+            onClick={() => setModo("recupera")}
+          >
             {it.account.dimenticata}
           </button>
         )}
         {modo !== "registra" && onAltro && (
-          <button className="underline muted" onClick={onAltro}>
+          <button className="min-h-11 font-bold underline muted" onClick={onAltro}>
             {it.account.nuovoProfilo}
           </button>
         )}

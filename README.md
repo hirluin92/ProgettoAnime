@@ -1,4 +1,4 @@
-# Arena Anime (nome provvisorio)
+# Inkiri – gioco di carte anime (prima «Arena Anime»)
 
 Gioco web d'asta e draft a tema anime: da 2 a 20 amici comprano all'asta i personaggi per 7 ruoli,
 poi un torneo all'italiana mette in scena ogni scontro in modo animato. Specifica completa in

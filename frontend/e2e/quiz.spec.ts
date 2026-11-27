@@ -40,7 +40,7 @@ test("sfide: Animedle del giorno, due tentativi, vittoria e crediti", async ({ p
 
   await prova(nomeSol);
   await expect(page.getByTestId("animedle-fine")).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByTestId("animedle-crediti")).toContainText("40 crediti");
+  await expect(page.getByTestId("animedle-crediti")).toContainText("40 sigilli");
 
   // tornati alle sfide la carta risulta vinta
   await page.goto("/sfide");
@@ -138,7 +138,7 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
 
     await prova(sol.nome);
     await expect(page.getByTestId("zoom-fine")).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByTestId("zoom-crediti")).toContainText("28 crediti");
+    await expect(page.getByTestId("zoom-crediti")).toContainText("28 sigilli");
   });
 }
 

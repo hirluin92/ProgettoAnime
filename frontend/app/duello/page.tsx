@@ -1,7 +1,14 @@
 import DuelloGame from "@/components/duello/DuelloGame";
+import Guida from "@/components/Guida";
+import { meta } from "@/lib/seo";
 
-export const metadata = { title: "Duello a corsie" };
+export const metadata = meta("duello", "/duello");
 
 export default function DuelloPage() {
-  return <DuelloGame />;
+  return (
+    <>
+      <DuelloGame />
+      <Guida chiave="duello" />
+    </>
+  );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Moneta from "@/components/Moneta";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -43,10 +44,8 @@ export default function RisultatoPopup(p: Props) {
           type="button"
           onClick={p.onApri}
           data-testid={`${p.testId}-esito`}
-          className={`flex w-full items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left font-bold ${
-            p.vinto
-              ? "border-emerald-300/50 bg-emerald-400/10"
-              : "border-rose-300/40 bg-rose-400/10"
+          className={`flex w-full items-center justify-between gap-3 border-2 px-4 py-3 text-left font-bold ${
+            p.vinto ? "border-[#35d68a] bg-[#35d68a]/10" : "border-rose-400 bg-rose-400/10"
           }`}
         >
           <span>
@@ -64,7 +63,7 @@ export default function RisultatoPopup(p: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/75 p-4"
+            className="fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/85 p-4"
             onClick={p.onChiudi}
           >
             <motion.div
@@ -83,7 +82,7 @@ export default function RisultatoPopup(p: Props) {
                 type="button"
                 onClick={p.onChiudi}
                 aria-label={it.quiz.chiudi}
-                className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-white/10 hover:bg-white/20"
+                className="absolute right-2 top-2 grid size-11 place-items-center border-2 border-[var(--line-forte)] bg-[#201f26] hover:border-carta"
                 data-testid={`${p.testId}-chiudi`}
               >
                 <Icon name="x" className="size-5" />
@@ -93,22 +92,23 @@ export default function RisultatoPopup(p: Props) {
                 src={p.immagine}
                 alt=""
                 referrerPolicy="no-referrer"
-                className="h-44 rounded-xl border-2 border-white/30 shadow-xl"
+                className="h-44 -rotate-2 border-[3px] border-carta shadow-[5px_5px_0_#000]"
               />
               <div className="min-w-0 flex-1 space-y-2">
                 <h2
-                  className={`display text-4xl font-black ${p.vinto ? "text-emerald-300" : "text-rose-300"}`}
+                  className={`text-4xl ${p.vinto ? "onoma -rotate-3 !text-[#35d68a]" : "display italic text-rose-300"}`}
                 >
                   {p.vinto ? it.quiz.indovinato : it.quiz.eraQuesto}
                 </h2>
-                <p className="text-2xl font-extrabold leading-tight">{p.nome}</p>
+                <p className="text-2xl font-black leading-tight">{p.nome}</p>
                 <p className="muted">{p.dettaglio}</p>
                 {p.vinto && p.crediti > 0 && (
                   <p
-                    className="inline-flex items-center gap-2 font-bold text-amber-300"
+                    className="chip border-black bg-[#ffd21f] text-sm text-black"
                     data-testid={`${p.testId}-crediti`}
                   >
-                    <Icon name="coin" /> {fmt(it.quiz.guadagnati, { n: p.crediti })}
+                    <Moneta gira className="size-[1.4em]" />{" "}
+                    {fmt(it.quiz.guadagnati, { n: p.crediti })}
                   </p>
                 )}
                 <div className="flex flex-wrap gap-2 pt-1">
