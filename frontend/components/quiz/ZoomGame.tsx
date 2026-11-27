@@ -209,11 +209,11 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
 
   return (
     <main className="mx-auto max-w-4xl space-y-5 p-4 pt-6" data-testid={`quiz-${gioco}`}>
-      <header className="flex flex-wrap items-end justify-between gap-3">
+      <header className="testata flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
           <span className="eyebrow">{libero ? it.quiz.allenamento : it.quiz.delGiorno}</span>
-          <h1 className="display text-5xl font-black">{testi.titolo}</h1>
-          <p className="max-w-2xl text-[0.95rem] muted">{testi.intro}</p>
+          <h1 className="text-4xl sm:text-5xl">{testi.titolo}</h1>
+          <p className="max-w-2xl text-[0.95rem] font-medium muted">{testi.intro}</p>
         </div>
         <div className="flex gap-2">
           <Link href={libero ? `/sfide/${gioco}` : `/sfide/${gioco}?libero=1`} className="btn">
@@ -227,11 +227,11 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         </div>
       </header>
 
-      {!libero && !profile && <p className="panel p-3 text-sm muted">{it.quiz.senzaProfilo}</p>}
+      {!libero && !profile && <p className="balloon text-sm">{it.quiz.senzaProfilo}</p>}
 
       <section className="panel space-y-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-          <span className="font-bold" data-testid="zoom-tentativi">
+          <span className="num text-base" data-testid="zoom-tentativi">
             {fmt(it.quiz.tentativi, {
               n: Math.min(massimo, errori.length + (vinto ? 1 : 0)),
               max: massimo,
@@ -266,7 +266,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
           <>
             {/* l'immagine si scopre a ogni errore */}
             <div
-              className={`relative mx-auto overflow-hidden rounded-2xl border-2 border-white/25 bg-black shadow-2xl ${
+              className={`relative mx-auto overflow-hidden border-[3px] border-carta bg-black shadow-[8px_8px_0_var(--accent)] ${
                 ritratto ? "aspect-[3/4] max-w-[14rem]" : "aspect-[19/6] w-full"
               }`}
               data-testid="zoom-immagine"
@@ -329,8 +329,8 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
                   e.id < 0
                     ? "muted"
                     : e.vicina
-                      ? "text-amber-200"
-                      : "text-rose-200 line-through decoration-rose-300/60"
+                      ? "border-[#ffd21f] text-amber-200"
+                      : "border-rose-400 text-rose-300 line-through decoration-2"
                 }`}
               >
                 {e.nome}
@@ -340,7 +340,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
           </ul>
         )}
         {!finito && (
-          <button className="text-sm underline muted" onClick={() => void arrenditi()}>
+          <button className="min-h-11 text-sm font-bold underline muted" onClick={() => void arrenditi()}>
             {it.quiz.arrenditi}
           </button>
         )}

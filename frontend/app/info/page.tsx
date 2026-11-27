@@ -25,7 +25,7 @@ export default function InfoPage() {
         </a>
       </nav>
       <section id="duello" className="scroll-mt-24">
-        <h2 className="text-2xl font-extrabold text-gold">{it.info.duelloTitolo}</h2>
+        <h2 className="text-3xl text-gold">{it.info.duelloTitolo}</h2>
         <ul className="list-disc space-y-1 pl-5">
           {it.info.duelloElenco.map((r) => (
             <li key={r}>{r}</li>
@@ -33,7 +33,7 @@ export default function InfoPage() {
         </ul>
       </section>
       <section id="regole" className="scroll-mt-24">
-        <h2 className="text-2xl font-extrabold text-gold">{it.info.regole}</h2>
+        <h2 className="text-3xl text-gold">{it.info.regole}</h2>
         <ul className="list-disc pl-5">
           {it.info.regoleElenco.map((r) => (
             <li key={r}>{r}</li>
@@ -41,12 +41,12 @@ export default function InfoPage() {
         </ul>
       </section>
       <section id="disclaimer" className="scroll-mt-24">
-        <h2 className="text-2xl font-extrabold text-gold">{it.info.disclaimer}</h2>
+        <h2 className="text-3xl text-gold">{it.info.disclaimer}</h2>
         <p>{it.footer}</p>
         <p>{it.info.noImmagini}</p>
       </section>
       <section id="rimozione" className="scroll-mt-24">
-        <h2 className="text-2xl font-extrabold text-gold">{it.info.rimozione}</h2>
+        <h2 className="text-3xl text-gold">{it.info.rimozione}</h2>
         <p>
           {it.info.rimozioneTesto}{" "}
           <a className="underline" href={`mailto:${CONTACT_EMAIL}`} data-testid="contact-email">
@@ -55,7 +55,7 @@ export default function InfoPage() {
         </p>
       </section>
       <section id="cookie" className="scroll-mt-24">
-        <h2 className="text-2xl font-extrabold text-gold">{it.info.cookie}</h2>
+        <h2 className="text-3xl text-gold">{it.info.cookie}</h2>
         <p>{it.info.cookieTesto}</p>
       </section>
     </main>

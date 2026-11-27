@@ -54,8 +54,8 @@ export default function SpecchioView({
             data-testid={myTurn ? "specchio-turn-me" : "specchio-turn-other"}
             className={`rounded-2xl border px-4 py-2 text-lg font-extrabold ${
               myTurn
-                ? "border-cyan-300 bg-cyan-300/15 text-cyan-50 shadow-[0_0_24px_rgb(53_224_255/0.4)]"
-                : "bg-white/[0.04]"
+                ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
+                : "bg-black/20"
             }`}
           >
             {myTurn ? it.specchio.tuoTurno : it.specchio.turnoDi.replace("{nome}", turnName)}
@@ -86,7 +86,7 @@ export default function SpecchioView({
                 aria-label={c.character.nome}
                 className={`relative grid w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 disabled:hover:translate-y-0 ${
                   taken ? "opacity-30" : !myTurn ? "opacity-70" : ""
-                } ${on ? "z-20 -translate-y-3 scale-105 ring-2 ring-cyan-300" : ""}`}
+                } ${on ? "z-20 -translate-y-3 scale-105 outline outline-[3px] outline-offset-2 outline-carta" : ""}`}
               >
                 <CharacterCard character={c.character} fluid />
                 {taken && owner && (
@@ -102,7 +102,7 @@ export default function SpecchioView({
 
       <section className="panel space-y-3 p-4" data-testid="spec-team">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-2xl font-extrabold">
+          <h3 className="text-3xl">
             {raid ? it.specchio.squadraComune : it.stanza.laTuaSquadra}
           </h3>
           {myTurn && card && (

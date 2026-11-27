@@ -102,7 +102,7 @@ export default function AuctionView({
                   >
                     <motion.div
                       aria-hidden="true"
-                      className="pointer-events-none absolute -inset-8 -z-10 rounded-full blur-2xl"
+                      className="pointer-events-none absolute -inset-8 -z-10 rounded-full hidden"
                       style={{ background: rarity(lot.character.rating).glow }}
                       initial={{ opacity: 0.9, scale: 0.6 }}
                       animate={{ opacity: [0.9, 0.45], scale: [0.6, 1.1] }}
@@ -228,7 +228,7 @@ export default function AuctionView({
         <div className="min-w-0 space-y-4">
           <div className="panel p-4">
             <div className="mb-3 flex items-end justify-between">
-              <h3 className="text-2xl font-extrabold">{it.stanza.laTuaSquadra}</h3>
+              <h3 className="text-3xl">{it.stanza.laTuaSquadra}</h3>
               <p className="text-sm">
                 {it.stanza.budget}:{" "}
                 <b className="text-gold" data-testid="my-budget">
@@ -269,7 +269,7 @@ export default function AuctionView({
               return (
                 <li
                   key={p.id}
-                  className={`rounded-2xl border bg-white/[0.04] p-3 transition ${
+                  className={`rounded-2xl border bg-black/20 p-3 transition ${
                     leading ? "scale-[1.02] bg-white/10" : ""
                   }`}
                   style={
@@ -280,7 +280,7 @@ export default function AuctionView({
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className="size-3.5 rounded-full ring-2 ring-white/40"
+                      className="size-3.5 rotate-45 ring-2 ring-white/40"
                       style={{ background: p.color }}
                     />
                     <span className="font-bold">{p.name}</span>
@@ -297,7 +297,7 @@ export default function AuctionView({
                     {ROLES.map((r) => (
                       <span
                         key={r}
-                        className={`h-1.5 flex-1 rounded-full ${p.slots[r] ? "" : "bg-white/15"}`}
+                        className={`h-1.5 flex-1 ${p.slots[r] ? "" : "bg-white/15"}`}
                         style={p.slots[r] ? { background: p.color } : undefined}
                       />
                     ))}
@@ -307,9 +307,9 @@ export default function AuctionView({
                       {done}/7 · {it.stanza.budget} <b className="text-white">{p.budget}</b>
                     </span>
                   </div>
-                  <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/10">
+                  <div className="mt-1 h-1 overflow-hidden bg-white/10">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-violet-400"
+                      className="h-full bg-[var(--accent)]"
                       style={{ width: `${(p.budget / room.settings.budget) * 100}%` }}
                     />
                   </div>

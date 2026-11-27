@@ -116,7 +116,7 @@ export default function Fighter({
         </div>
       </motion.div>
       <div
-        className="mt-0.5 h-1.5 overflow-hidden rounded-full bg-black/60"
+        className="mt-0.5 h-1.5 overflow-hidden bg-black/60"
         role="progressbar"
         aria-valuenow={Math.round(pct)}
         aria-label={`Vita ${ch.nome}`}
@@ -126,7 +126,7 @@ export default function Fighter({
           style={{ width: `${pct}%`, background: bar }}
         />
       </div>
-      <div className="mt-px h-1 overflow-hidden rounded-full bg-black/50">
+      <div className="mt-px h-1 overflow-hidden bg-black/50">
         <div
           className="h-full bg-cyan-300 transition-[width] duration-300"
           style={{ width: `${energia}%` }}

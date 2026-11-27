@@ -7,9 +7,9 @@ import type { FaseOut } from "@/lib/draft";
 
 function Barra({ pct, lato }: { pct: number; lato: "A" | "B" }) {
   return (
-    <div className="h-2.5 overflow-hidden rounded-full bg-black/40">
+    <div className="h-2.5 overflow-hidden bg-black/40">
       <div
-        className={`h-full rounded-full ${lato === "A" ? "bg-emerald-400" : "bg-red-400"}`}
+        className={`h-full ${lato === "A" ? "bg-emerald-400" : "bg-red-400"}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -21,7 +21,7 @@ export default function FaseReport({ r, n }: { r: FaseOut; n: number }) {
   const i = n - 1;
   return (
     <section
-      className="space-y-3 rounded-2xl border bg-white/[0.04] p-4"
+      className="space-y-3 rounded-2xl border bg-black/20 p-4"
       data-testid={`fase-report-${n}`}
     >
       <h4 className="text-lg font-extrabold">

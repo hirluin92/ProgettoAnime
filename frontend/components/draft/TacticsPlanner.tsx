@@ -33,7 +33,7 @@ export default function TacticsPlanner({
   return (
     <div className="space-y-3" data-testid="tactics">
       <div>
-        <h3 className="text-2xl font-extrabold">{it.tattiche.titolo}</h3>
+        <h3 className="text-3xl">{it.tattiche.titolo}</h3>
         <p className="text-sm muted">{it.tattiche.descrizione}</p>
         <p className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
           {TATTICHE.map((t) => (
@@ -57,7 +57,7 @@ export default function TacticsPlanner({
           <fieldset
             key={f}
             disabled={!!live && (f > live.giocate || f < live.giocate)}
-            className={`rounded-2xl border bg-white/[0.03] p-3 ${
+            className={`rounded-2xl border bg-black/20 p-3 ${
               live && f > live.giocate ? "opacity-50" : ""
             }`}
           >
@@ -76,7 +76,7 @@ export default function TacticsPlanner({
                     onClick={() => onChange(f, t)}
                     className={`grid justify-items-center gap-0.5 rounded-xl border px-1 py-2 text-xs font-extrabold transition ${
                       on
-                        ? "border-cyan-300 bg-cyan-300/20 text-cyan-50 shadow-[0_0_18px_rgb(53_224_255/0.4)]"
+                        ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
                         : "border-white/15 bg-white/5 hover:bg-white/10"
                     }`}
                   >
@@ -105,7 +105,7 @@ export default function TacticsPlanner({
       </div>
       <fieldset
         disabled={!!live && live.giocate > 0}
-        className="rounded-2xl border bg-white/[0.03] p-3 disabled:opacity-60"
+        className="rounded-2xl border bg-black/20 p-3 disabled:opacity-60"
       >
         <legend className="px-1 text-xs font-extrabold uppercase tracking-widest text-cyan-200">
           {it.tattiche.carica.titolo}
@@ -120,7 +120,7 @@ export default function TacticsPlanner({
               onClick={() => onCarica(c)}
               className={`rounded-xl border px-3 py-2 text-left text-sm transition ${
                 carica === c
-                  ? "border-cyan-300 bg-cyan-300/20 shadow-[0_0_18px_rgb(53_224_255/0.4)]"
+                  ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
                   : "border-white/15 bg-white/5 hover:bg-white/10"
               }`}
             >

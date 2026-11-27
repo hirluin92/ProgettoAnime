@@ -109,9 +109,9 @@ export default function QuizRoomView({
             <div className="display text-4xl font-black tabular-nums" data-testid="quiz-tempo">
               {Math.ceil(resto)}s
             </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
+            <div className="h-2.5 overflow-hidden bg-white/10">
               <div
-                className={`h-full rounded-full ${chiusa ? "bg-white/30" : "bg-gradient-to-r from-cyan-300 to-pink-500"}`}
+                className={`h-full ${chiusa ? "bg-white/30" : "bg-[var(--accent)]"}`}
                 style={{ width: `${barra * 100}%` }}
               />
             </div>
@@ -138,7 +138,7 @@ export default function QuizRoomView({
                 />
                 <div className="min-w-0 flex-1">
                   <p className="eyebrow">{it.quiz.stanza.eraQuesto}</p>
-                  <p className="text-2xl font-extrabold">{q.soluzione.nome}</p>
+                  <p className="text-3xl">{q.soluzione.nome}</p>
                   <p className="muted">{q.soluzione.dettaglio}</p>
                 </div>
               </motion.div>
@@ -301,7 +301,7 @@ export default function QuizRoomView({
               <li
                 key={p.id}
                 className={`flex items-center gap-2 rounded-xl border px-3 py-2 ${
-                  p.id === me ? "border-cyan-300/50 bg-cyan-300/10" : "bg-white/[0.03]"
+                  p.id === me ? "border-cyan-300/50 bg-cyan-300/10" : "bg-black/20"
                 }`}
               >
                 <Medaglia pos={i} />

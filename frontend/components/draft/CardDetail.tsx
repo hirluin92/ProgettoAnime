@@ -117,7 +117,7 @@ export function DetailSheet({
       role="dialog"
       aria-modal="true"
       aria-label={o.character.nome}
-      className="fixed inset-0 z-50 grid place-items-end bg-black/70 p-3 backdrop-blur-sm sm:place-items-center"
+      className="fixed inset-0 z-50 grid place-items-end bg-black/70 p-3 sm:place-items-center"
       onClick={onClose}
     >
       <div

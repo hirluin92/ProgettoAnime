@@ -44,9 +44,9 @@ export default function SlotBoard({
               data-testid={p ? "slot-filled" : "slot-free"}
               aria-label={`${role}${p ? `: ${p.option.character.nome}` : ""}`}
               onClick={() => onSlot(role)}
-              className={`grid h-full w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-1.5 rounded-2xl border p-2 text-center transition ${
+              className={`grid h-full w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-1.5 border-2 p-2 text-center transition ${
                 swapFirst === role
-                  ? "border-cyan-300 bg-cyan-300/15 shadow-[0_0_24px_rgb(53_224_255/0.4)]"
+                  ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
                   : placing && selected
                     ? `${TONE_CLASS[toneOf(selected.affinita[role])]} hover:-translate-y-1 hover:brightness-125`
                     : p
@@ -54,7 +54,7 @@ export default function SlotBoard({
                       : "border-dashed border-white/20"
               } ${clickable ? "cursor-pointer" : "cursor-default"}`}
             >
-              <span className="display text-sm font-extrabold tracking-wider">{role}</span>
+              <span className="display bg-carta px-2 text-sm tracking-wider text-nero">{role}</span>
               {p ? (
                 <div className="w-full max-w-[230px]">
                   <CharacterCard

@@ -26,9 +26,9 @@ export default function ChatDuelloVoti({
               </span>
               <b>{o.voti}</b>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+            <div className="h-1.5 overflow-hidden bg-white/10">
               <div
-                className="h-full rounded-full bg-cyan-300"
+                className="h-full bg-cyan-300"
                 style={{ width: `${(100 * o.voti) / totale}%` }}
               />
             </div>

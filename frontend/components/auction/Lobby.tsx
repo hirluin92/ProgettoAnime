@@ -47,7 +47,7 @@ export default function Lobby({
       <div className="panel reveal relative overflow-hidden p-6 text-center sm:p-8">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-20 left-1/2 h-48 w-[26rem] -translate-x-1/2 rounded-full bg-cyan-400/20 blur-3xl"
+          className="pointer-events-none absolute -top-20 left-1/2 h-48 w-[26rem] -translate-x-1/2 rounded-full bg-cyan-400/20 hidden"
         />
         <span className="eyebrow relative">{it.stanza.lobby}</span>
         <h2 className="relative mt-2">
@@ -79,7 +79,7 @@ export default function Lobby({
             style={{ ["--i" as string]: i }}
           >
             <span
-              className="grid size-11 shrink-0 place-items-center rounded-full text-lg font-black text-black/70 ring-2 ring-white/50"
+              className="grid size-11 shrink-0 place-items-center -rotate-3 border-2 border-black text-lg font-black text-black/70"
               style={{ background: p.color }}
             >
               {p.name.slice(0, 1).toUpperCase()}
@@ -104,7 +104,7 @@ export default function Lobby({
               aria-hidden="true"
               className="flex items-center gap-3 rounded-[1.4rem] border border-dashed p-3.5 text-sm text-white/35"
             >
-              <span className="grid size-11 place-items-center rounded-full border border-dashed text-xl">
+              <span className="grid size-11 place-items-center  border border-dashed text-xl">
                 +
               </span>
               {it.stanza.postoLibero}
@@ -113,7 +113,7 @@ export default function Lobby({
       </ul>
       {isHost ? (
         <div className="panel grid gap-3 p-5 sm:grid-cols-3">
-          <h3 className="text-2xl font-extrabold sm:col-span-3">{it.stanza.regole}</h3>
+          <h3 className="text-3xl sm:col-span-3">{it.stanza.regole}</h3>
           <label className="grid gap-1 text-sm font-bold">
             {it.stanza.modalita}
             <select
@@ -134,7 +134,7 @@ export default function Lobby({
           </label>
           {s.modalita === "quiz" ? (
             <div className="space-y-3 sm:col-span-3">
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white/[0.04] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-black/20 p-4">
                 <ul className="flex flex-wrap gap-2" data-testid="quiz-riepilogo">
                   <li className="chip">{it.quiz.stanza.tipi[s.quiz_tipo]}</li>
                   <li className="chip">

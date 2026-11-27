@@ -45,7 +45,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                   <Medaglia pos={i} />
                 </div>
                 <div
-                  className="grid size-14 place-items-center rounded-full text-2xl font-black text-black/70 ring-2 ring-white/60"
+                  className="grid size-14 place-items-center -rotate-3 border-2 border-black text-2xl font-black text-black/70"
                   style={{ background: p?.color, boxShadow: `0 0 30px -4px ${p?.color}` }}
                 >
                   {name(r.player_id).slice(0, 1).toUpperCase()}
@@ -93,7 +93,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                         } ${side === 0 ? "border-b" : ""}`}
                       >
                         <span
-                          className="size-2.5 shrink-0 rounded-full"
+                          className="size-2.5 shrink-0 rotate-45"
                           style={{ background: player(pid)?.color ?? "transparent" }}
                         />
                         <span className="min-w-0 flex-1 truncate">
@@ -141,7 +141,7 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
                 <td className="display text-lg font-black text-gold">{i + 1}</td>
                 <td className="font-bold">
                   <span
-                    className="mr-2 inline-block size-3 rounded-full align-middle"
+                    className="mr-2 inline-block size-3 rotate-45 align-middle"
                     style={{ background: player(r.player_id)?.color }}
                   />
                   {name(r.player_id)}
@@ -243,9 +243,9 @@ export default function Tournament({ room, t }: { room: RoomView; t: TournamentV
         <summary className="cursor-pointer text-lg font-extrabold">{it.stanza.squadre}</summary>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {room.players.map((p) => (
-            <div key={p.id} className="rounded-2xl border bg-white/[0.03] p-3">
+            <div key={p.id} className="rounded-2xl border bg-black/20 p-3">
               <div className="mb-2 flex items-center gap-2 font-bold">
-                <span className="size-3 rounded-full" style={{ background: p.color }} />
+                <span className="size-3 rotate-45" style={{ background: p.color }} />
                 {p.name}
               </div>
               <ul className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
@@ -281,13 +281,13 @@ function Side({
     >
       <span className="flex max-w-full items-center gap-2">
         {!right && (
-          <span className="size-3 shrink-0 rounded-full" style={{ background: p?.color }} />
+          <span className="size-3 shrink-0 rotate-45" style={{ background: p?.color }} />
         )}
         <span className={`truncate font-extrabold ${win ? "text-gold" : ""}`}>
           {win ? <Icon name="star" /> : null} {p?.name ?? "?"}
         </span>
         {right && (
-          <span className="size-3 shrink-0 rounded-full" style={{ background: p?.color }} />
+          <span className="size-3 shrink-0 rotate-45" style={{ background: p?.color }} />
         )}
       </span>
       <span className="display text-3xl font-black tabular-nums">{total}</span>

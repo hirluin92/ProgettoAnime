@@ -96,7 +96,7 @@ export default function ScalaLadder({ first }: { first: ScalaResult }) {
             prossimo && (
               <>
                 <section className="panel space-y-3 p-5" data-testid="scala-offerte">
-                  <h3 className="text-2xl font-extrabold">{it.scala.sceglPot}</h3>
+                  <h3 className="text-3xl">{it.scala.sceglPot}</h3>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {cur.offerte.map((o, i) => (
                       <button
@@ -106,7 +106,7 @@ export default function ScalaLadder({ first }: { first: ScalaResult }) {
                         onClick={() => setUpgrade(i)}
                         className={`rounded-2xl border p-3 text-left transition ${
                           upgrade === i
-                            ? "border-cyan-300 bg-cyan-300/20 shadow-[0_0_18px_rgb(53_224_255/0.4)]"
+                            ? "border-carta bg-white/10 shadow-[4px_4px_0_var(--rosso)]"
                             : "border-white/15 bg-white/5 hover:bg-white/10"
                         }`}
                       >

@@ -117,7 +117,6 @@ body[data-modo="amici"] {
 
 html {
   color-scheme: dark;
-  scroll-behavior: smooth;
   /* scala fluida: tutto in rem (testi e contenitori) cresce sugli schermi grandi */
   font-size: clamp(16px, 0.5vw + 10px, 21px);
 }
@@ -181,9 +180,6 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
@@ -1264,5 +1260,13 @@ body.overlay-mode .site-chrome {
   }
   body.overlay-mode .cambio-tavola {
     display: none;
+  }
+}
+
+@layer components {
+  .bg-carta .muted,
+  .sel .muted,
+  [data-io] .muted {
+    color: #55504a;
   }
 }

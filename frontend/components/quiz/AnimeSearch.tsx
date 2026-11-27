@@ -130,8 +130,8 @@ export default function AnimeSearch({
             <li key={`${a.tipo ?? "x"}-${a.id}`} role="option" aria-selected={i === sel}>
               <button
                 type="button"
-                className={`flex w-full items-baseline justify-between gap-3 rounded-lg px-3 py-2 text-left ${
-                  i === sel ? "bg-white/15" : "hover:bg-white/10"
+                className={`flex min-h-11 w-full items-baseline justify-between gap-3 px-3 py-2 text-left ${
+                  i === sel ? "bg-carta text-nero" : "hover:bg-white/10"
                 }`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => scegli(a)}
