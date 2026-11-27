@@ -10,7 +10,7 @@ const LINKS = [
   { href: "/", label: it.nav.gioca },
   { href: "/duello", label: it.nav.duello },
   { href: "/veloce", label: it.nav.veloce },
-  { href: "/duello/giorno", label: it.nav.sfida },
+  { href: "/sfide", label: it.nav.sfida },
   { href: "/ranked", label: it.nav.ranked },
   { href: "/album", label: it.nav.album },
   { href: "/negozio", label: it.nav.negozio },
@@ -57,7 +57,7 @@ export default function SiteNav() {
               <li
                 key={l.href}
                 className={
-                  ["/info", "/veloce", "/duello/giorno", "/negozio", "/ranked"].includes(l.href)
+                  ["/info", "/veloce", "/sfide", "/negozio", "/ranked"].includes(l.href)
                     ? "hidden sm:block"
                     : ""
                 }

@@ -67,6 +67,21 @@ class ProfileRow(Base):
     )
 
 
+class QuizGiorno(Base):
+    """Un gioco a quiz del giorno (Animedle...) di un profilo: tentativi, esito, crediti."""
+
+    __tablename__ = "quiz_giorno"
+    __table_args__ = (UniqueConstraint("profile_id", "gioco", "day", name="uq_quiz_giorno"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    profile_id: Mapped[str] = mapped_column(String(36), index=True)
+    gioco: Mapped[str] = mapped_column(String(20))
+    day: Mapped[str] = mapped_column(String(10), index=True)
+    tentativi: Mapped[int] = mapped_column(Integer, default=0)
+    vinto: Mapped[bool] = mapped_column(Boolean, default=False)
+    crediti: Mapped[int] = mapped_column(Integer, default=0)
+
+
 class DuelloGiorno(Base):
     """Risultato del rompicapo del giorno del Duello: un tentativo a nome."""
 
