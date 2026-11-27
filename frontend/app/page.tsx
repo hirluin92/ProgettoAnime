@@ -54,96 +54,118 @@ function pickHeroes(o: DraftOptions): Hero[] {
   return out.length === 3 ? [out[1], out[0], out[2]] : HERO;
 }
 
-function Fan({ heroes, compact }: { heroes: Hero[]; compact?: boolean }) {
+/** La vignetta d'apertura: tre carte in posa su un fondo di linee cinetiche, un'onomatopea e un balloon. */
+function Tavola({ heroes }: { heroes: Hero[] }) {
   const roles = ["Danno", "Capitano", "Supporto"];
   const pos = [
-    "left-0 top-[14%] -rotate-[10deg]",
-    "left-1/2 top-0 -translate-x-1/2 z-10",
-    "right-0 top-[12%] rotate-[9deg]",
+    "left-[3%] top-[20%] w-[36%] -rotate-[9deg]",
+    "left-1/2 top-[5%] z-10 w-[42%] -translate-x-1/2",
+    "right-[3%] top-[18%] w-[36%] rotate-[8deg]",
   ];
-  const stage = (
-    <div className="relative h-[470px] w-[500px]" aria-hidden="true">
-      <div className="absolute inset-x-[8%] top-[12%] h-[70%] rounded-full bg-fuchsia-600/35 blur-3xl" />
-      <div className="absolute inset-x-[22%] top-[34%] h-[46%] rounded-full bg-cyan-400/20 blur-3xl" />
+  return (
+    <div className="relative mx-auto aspect-[10/9] w-full max-w-[34rem]" aria-hidden="true">
+      <div className="absolute inset-[4%_2%_6%_2%] rotate-[1.5deg] overflow-hidden border-[3px] border-carta bg-black shadow-[10px_10px_0_var(--rosso)]">
+        <i
+          className="cinetiche absolute inset-0"
+          style={{ ["--tinta" as string]: "#ff5a45", ["--cy" as string]: "42%" }}
+        />
+        <i
+          className="retino absolute inset-x-0 bottom-0 h-2/5 opacity-70"
+          style={{
+            WebkitMaskImage: "linear-gradient(to top, #000, transparent)",
+            maskImage: "linear-gradient(to top, #000, transparent)",
+          }}
+        />
+      </div>
       {heroes.map((h, i) => (
         <div key={h.nome} className={`absolute ${pos[i]}`}>
           <div className="float" style={{ ["--i" as string]: i }}>
-            <CharacterCard character={h} role={roles[i]} />
+            <CharacterCard character={h} role={roles[i]} fluid />
           </div>
         </div>
       ))}
-    </div>
-  );
-  if (!compact) return <div className="mx-auto w-[500px] max-w-full">{stage}</div>;
-  // Su mobile: stesso palco, ridotto con una scala per non schiacciare il testo delle carte.
-  return (
-    <div className="relative mx-auto h-[255px] w-[310px]" aria-hidden="true">
-      <div className="absolute left-0 top-0 origin-top-left scale-[0.62]">{stage}</div>
+      <span className="onoma colpo absolute -left-1 top-0 z-20 text-[clamp(2.6rem,9vw,4.6rem)]">
+        {it.home.grido}
+      </span>
+      <span
+        className="balloon reveal absolute bottom-[1%] right-0 z-20 text-sm sm:text-base"
+        style={{ ["--i" as string]: 5 }}
+      >
+        {it.home.balloon}
+      </span>
     </div>
   );
 }
 
-function ModeCard({
+function Vignetta({
   href,
   icon,
   title,
   text,
   accent,
+  n,
+  className = "",
   grande,
-  largo,
+  cta = it.home.vai,
 }: {
   href: string;
   icon: string;
   title: string;
   text: string;
   accent: string;
+  n: string;
+  className?: string;
   grande?: boolean;
-  largo?: boolean;
+  cta?: string;
 }) {
   return (
     <Link
       href={href}
-      className={`panel panel-hover group relative flex items-center gap-4 overflow-hidden p-5 ${
-        grande ? "md:col-span-2 md:p-7" : ""
-      } ${largo ? "md:col-span-3" : ""}`}
+      className={`panel-hover group relative isolate flex min-h-[9.5rem] flex-col overflow-hidden p-5 ${grande ? "md:p-7" : ""} ${className}`}
+      style={{ ["--accent" as string]: accent }}
     >
-      <span
-        className="absolute -right-10 -top-10 size-36 rounded-full opacity-30 blur-2xl transition-opacity group-hover:opacity-60"
-        style={{ background: accent }}
+      <i
+        aria-hidden="true"
+        className="retino absolute inset-y-0 right-0 -z-10 w-3/5 opacity-40 transition-opacity group-hover:opacity-80"
+        style={{
+          WebkitMaskImage: "linear-gradient(250deg, #000, transparent 75%)",
+          maskImage: "linear-gradient(250deg, #000, transparent 75%)",
+        }}
       />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-5 right-10 opacity-[0.08] transition-opacity group-hover:opacity-[0.16]"
+        className={`pointer-events-none absolute -bottom-3 -right-2 -z-10 -rotate-12 opacity-25 transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110 ${grande ? "md:opacity-40" : ""}`}
         style={{ color: accent }}
       >
-        <Icon name={icon} className="size-28" />
+        <Icon name={icon} className={grande ? "size-40 md:size-64" : "size-28"} />
       </span>
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-[3px]"
-        style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
-      />
-      <span
-        className={`relative grid shrink-0 place-items-center rounded-2xl text-white shadow-lg ring-1 ring-white/30 ${
-          grande ? "size-24" : "size-16"
-        }`}
-        style={{
-          background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.45))`,
-          boxShadow: `0 8px 24px ${accent}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
-        }}
-      >
-        <Icon name={icon} className={grande ? "size-12" : "size-8"} />
-      </span>
-      <span className="relative min-w-0 flex-1">
-        <span
-          className={`display block font-extrabold leading-none ${grande ? "text-4xl" : "text-2xl"}`}
-        >
-          {title}
+      <span className="flex items-center gap-2">
+        <span className="num text-sm" style={{ color: accent }}>
+          {n}
         </span>
-        <span className="mt-1.5 block text-[0.95rem] leading-snug muted">{text}</span>
+        {grande && (
+          <span className="chip border-black bg-carta text-nero">{it.home.principale}</span>
+        )}
       </span>
-      <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg transition-all group-hover:translate-x-1 group-hover:bg-white/20">
-        →
+      <span
+        className={`display mt-1 block italic leading-[0.95] ${grande ? "text-5xl md:text-7xl" : "text-3xl"}`}
+      >
+        {title}
+      </span>
+      <span
+        className={`mt-2 block max-w-md font-medium leading-snug muted ${grande ? "text-base md:text-lg" : "text-[0.95rem]"}`}
+      >
+        {text}
+      </span>
+      <span
+        className="display mt-auto flex items-center gap-2 pt-4 text-lg tracking-wider"
+        style={{ color: accent }}
+      >
+        {cta}
+        <span
+          aria-hidden="true"
+          className="inline-block h-[3px] w-8 bg-current transition-all duration-200 group-hover:w-14"
+        />
       </span>
     </Link>
   );
@@ -199,118 +221,166 @@ export default function Home() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-5 pb-6 pt-8 sm:pt-14">
-      <section className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
-        <div className="min-w-0 space-y-7">
+    <main className="mx-auto max-w-7xl px-4 pb-6 pt-6 sm:px-5 sm:pt-10">
+      <section className="grid grid-cols-[minmax(0,1fr)] items-center gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+        <div className="min-w-0 space-y-6">
           <header className="space-y-4">
             <span className="eyebrow reveal" style={{ ["--i" as string]: 0 }}>
               {it.home.eyebrow}
             </span>
             <h1
-              className="reveal text-[4.4rem] font-black leading-[0.86] sm:text-[7rem]"
+              className="reveal text-grad text-[clamp(4.6rem,21vw,10.5rem)] leading-[0.84] tracking-normal lg:text-[clamp(6rem,11.5vw,11rem)]"
               style={{ ["--i" as string]: 1 }}
             >
-              <span className="text-grad">{APP_NAME}</span>
+              {APP_NAME}
             </h1>
             <p
-              className="reveal max-w-md text-lg leading-relaxed muted"
+              className="reveal max-w-lg text-lg font-medium leading-relaxed text-[#dcd5c5]"
               style={{ ["--i" as string]: 2 }}
             >
               {it.home.sottotitolo}
             </p>
           </header>
 
-          <div className="lg:hidden">
-            <Fan heroes={heroes} compact />
-          </div>
-
-          <div className="reveal flex flex-wrap gap-3" style={{ ["--i" as string]: 3 }}>
+          <div className="reveal space-y-3" style={{ ["--i" as string]: 3 }}>
             <Link
               href="/duello"
-              className="btn btn-primary px-6 text-base"
+              className="btn btn-primary min-h-16 w-full px-8 text-2xl sm:w-auto"
               data-testid="cta-duello"
             >
-              <Icon name="swords" className="size-[1.2em]" /> {it.home.ctaDuello}
+              <Icon name="swords" className="size-[1.1em]" /> {it.home.ctaDuello}
             </Link>
-            <Link href="/ranked" className="btn px-5 text-base">
-              <Icon name="crown" className="size-[1.2em]" /> {it.home.ctaRanked}
+            <p className="text-sm font-bold muted">{it.home.sottoCta}</p>
+          </div>
+
+          <div className="reveal flex flex-wrap gap-2.5" style={{ ["--i" as string]: 4 }}>
+            <Link href="/ranked" className="btn text-base">
+              <Icon name="crown" className="size-[1.1em]" /> {it.home.ctaRanked}
             </Link>
-            <Link href="/negozio" className="btn px-5 text-base">
-              <Icon name="cards" className="size-[1.2em]" /> {it.home.ctaNegozio}
+            <Link href="/negozio" className="btn text-base">
+              <Icon name="cards" className="size-[1.1em]" /> {it.home.ctaNegozio}
             </Link>
-            <a href="#amici" className="btn px-5 text-base" data-testid="cta-quiz-amici">
-              <Icon name="music" className="size-[1.2em]" /> {it.home.ctaQuizAmici}
+            <a href="#amici" className="btn text-base" data-testid="cta-quiz-amici">
+              <Icon name="music" className="size-[1.1em]" /> {it.home.ctaQuizAmici}
             </a>
           </div>
         </div>
 
-        <div className="hidden lg:block">
-          <Fan heroes={heroes} />
-        </div>
+        <Tavola heroes={heroes} />
       </section>
 
-      <section className="mt-16 space-y-4">
-        <h2 className="eyebrow">{it.home.modalita}</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <ModeCard
+      <section className="mt-16 space-y-5 sm:mt-24">
+        <div>
+          <span className="eyebrow">{it.home.modalita}</span>
+          <h2 className="mt-1 text-4xl leading-none sm:text-5xl">{it.home.modalitaTitolo}</h2>
+        </div>
+        {/* impaginata come una tavola: una vignetta grande e le altre attorno */}
+        <div className="grid gap-5 md:grid-cols-6">
+          <Vignetta
             href="/duello"
             icon="swords"
+            n="01"
             title={it.home.duelloTitolo}
             text={it.home.duelloTesto}
-            accent="#ff3d81"
+            accent="#ff5a45"
             grande
+            className="md:col-span-4 md:row-span-2"
           />
-          <ModeCard
+          <Vignetta
             href="/ranked"
             icon="crown"
+            n="02"
             title={it.home.rankedTitolo}
             text={it.home.rankedTesto}
-            accent="#7a5cff"
+            accent="#9a86ff"
+            className="md:col-span-2"
           />
-          <ModeCard
-            href="/veloce"
-            icon="bolt"
-            title={it.home.veloceTitolo}
-            text={it.home.veloceTesto}
-            accent="#ff8a3d"
+          <Vignetta
+            href="/sfide"
+            icon="sparkles"
+            n="03"
+            title={it.home.sfideTitolo}
+            text={it.home.sfideTesto}
+            accent="#3fd0f0"
+            className="md:col-span-2"
           />
-          <ModeCard
+          <Vignetta
             href="/scala"
             icon="ladder"
+            n="04"
             title={it.home.scalaTitolo}
             text={it.home.scalaTesto}
-            accent="#35e0ff"
+            accent="#ff5fa8"
+            className="md:col-span-2"
           />
-          <ModeCard
+          <Vignetta
+            href="/veloce"
+            icon="bolt"
+            n="05"
+            title={it.home.veloceTitolo}
+            text={it.home.veloceTesto}
+            accent="#ff9238"
+            className="md:col-span-2"
+          />
+          <Vignetta
             href="/duello/giorno"
             icon="trophy"
+            n="06"
             title={it.home.sfidaTitolo}
             text={it.home.sfidaTesto}
-            accent="#ffd45a"
+            accent="#ffd21f"
+            className="md:col-span-2"
           />
-          <ModeCard
+          <Vignetta
             href="/album"
             icon="cards"
+            n="07"
             title={it.home.albumTitolo}
             text={it.home.albumTesto}
-            accent="#3ddc97"
-            largo
+            accent="#35d68a"
+            cta={it.home.apri}
+            className="md:col-span-3"
+          />
+          <Vignetta
+            href="/negozio"
+            icon="coin"
+            n="08"
+            title={it.home.negozioTitolo}
+            text={it.home.negozioTesto}
+            accent="#ffd21f"
+            cta={it.home.apri}
+            className="md:col-span-3"
           />
         </div>
       </section>
 
-      <section className="mt-16 grid items-center gap-8 lg:grid-cols-[1fr_1.1fr]" id="amici">
-        <div className="space-y-3">
-          <h2 className="eyebrow">{it.home.amiciEyebrow}</h2>
-          <p className="display text-4xl font-black leading-none sm:text-5xl">
-            {it.home.amiciTitolo}
-          </p>
-          <p className="max-w-md muted">{it.home.amiciTesto}</p>
+      <section
+        className="mt-16 grid scroll-mt-20 items-start gap-8 sm:mt-24 lg:grid-cols-[1fr_1.1fr]"
+        id="amici"
+        style={{ ["--accent" as string]: "var(--magenta)" }}
+      >
+        <div className="space-y-4">
+          <span className="eyebrow">{it.home.amiciEyebrow}</span>
+          <h2 className="text-5xl leading-[0.95] sm:text-6xl">{it.home.amiciTitolo}</h2>
+          <p className="max-w-md font-medium muted">{it.home.amiciTesto}</p>
+          <ol className="grid gap-3 pt-2">
+            {it.home.passi.map((p) => (
+              <li key={p.n} className="flex items-start gap-3">
+                <span className="num grid size-10 shrink-0 place-items-center border-2 border-black bg-carta text-sm text-nero">
+                  {p.n}
+                </span>
+                <span>
+                  <b className="display block text-xl tracking-wide">{p.t}</b>
+                  <span className="text-sm muted">{p.d}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
-        <section className="panel space-y-3.5 p-5 sm:p-6">
+        <section className="panel-vivo space-y-4 p-5 sm:p-7">
           <div>
-            <h2 className="text-2xl font-extrabold">{it.home.titolo}</h2>
-            <p className="text-xs muted">{it.home.creaSotto}</p>
+            <h2 className="text-3xl">{it.home.titolo}</h2>
+            <p className="text-sm font-bold muted">{it.home.creaSotto}</p>
           </div>
           <input
             aria-label={it.home.tuoNome}
@@ -319,10 +389,10 @@ export default function Home() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm muted">
+          <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm font-medium muted">
             <input
               type="checkbox"
-              className="size-4 accent-pink-500"
+              className="size-5"
               checked={streamer}
               onChange={(e) => setStreamer(e.target.checked)}
             />
@@ -337,28 +407,35 @@ export default function Home() {
               onChange={(e) => setChannel(e.target.value)}
             />
           )}
-          <button
-            className="btn btn-primary w-full text-lg"
-            disabled={!name.trim() || (streamer && !channel.trim())}
-            onClick={() => void create()}
-          >
-            {it.home.creaStanza}
-          </button>
-          {!name.trim() && <p className="-mt-2 text-xs muted">{it.home.scriviNome}</p>}
-          <button
-            className="btn w-full text-lg"
-            disabled={!name.trim() || (streamer && !channel.trim())}
-            onClick={() => void create("quiz")}
-            data-testid="crea-quiz"
-          >
-            <Icon name="music" className="size-[1.2em]" /> {it.home.creaQuiz}
-          </button>
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <button
+              className="btn btn-primary w-full text-lg"
+              disabled={!name.trim() || (streamer && !channel.trim())}
+              onClick={() => void create()}
+            >
+              {it.home.creaStanza}
+            </button>
+            <button
+              className="btn w-full text-base"
+              disabled={!name.trim() || (streamer && !channel.trim())}
+              onClick={() => void create("quiz")}
+              data-testid="crea-quiz"
+            >
+              <Icon name="music" className="size-[1.2em]" /> {it.home.creaQuiz}
+            </button>
+          </div>
+          {!name.trim() && <p className="text-xs font-bold muted">{it.home.scriviNome}</p>}
+          <div className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] muted">
+            <span className="h-px flex-1 bg-[var(--line-forte)]" />
+            {it.home.oppure}
+            <span className="h-px flex-1 bg-[var(--line-forte)]" />
+          </div>
+          <div className="flex flex-wrap gap-3">
             <input
               aria-label={it.home.codice}
               placeholder={it.home.codice}
               maxLength={5}
-              className="field min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em] placeholder:tracking-normal"
+              className="field num min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em] placeholder:font-sans placeholder:text-sm placeholder:tracking-normal"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
@@ -367,41 +444,29 @@ export default function Home() {
             </button>
           </div>
           {error && (
-            <p role="alert" className="text-rose-400">
+            <p
+              role="alert"
+              className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300"
+            >
               {error}
             </p>
           )}
         </section>
       </section>
 
-      <section className="mt-20 space-y-6">
-        <div>
-          <h2 className="eyebrow">{it.home.comeTitolo}</h2>
-        </div>
-        <ol className="grid gap-4 md:grid-cols-3">
-          {it.home.passi.map((p, i) => (
+      <section className="mt-16 sm:mt-24">
+        <h2 className="sr-only">{it.home.numeriTitolo}</h2>
+        <ul className="grid border-2 border-carta bg-carta text-nero sm:grid-cols-2 lg:grid-cols-4">
+          {it.home.caratteristiche.map((c) => (
             <li
-              key={p.n}
-              className="panel reveal relative overflow-hidden p-6"
-              style={{ ["--i" as string]: i }}
+              key={c.t}
+              className="su-carta border-black/80 p-5 max-lg:border-b-2 lg:border-r-2 lg:last:border-r-0"
             >
-              <span className="display text-grad pointer-events-none absolute right-4 top-1 text-[5.5rem] font-black leading-none opacity-30">
-                {p.n}
-              </span>
-              <h3 className="relative text-3xl font-extrabold">{p.t}</h3>
-              <p className="relative mt-2 text-sm leading-relaxed muted">{p.d}</p>
+              <div className="display text-2xl leading-none">{c.t}</div>
+              <p className="mt-1.5 text-sm font-medium leading-snug muted">{c.d}</p>
             </li>
           ))}
-        </ol>
-      </section>
-
-      <section className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {it.home.caratteristiche.map((c) => (
-          <div key={c.t} className="rounded-2xl border bg-white/[0.03] p-4">
-            <div className="display text-xl font-extrabold text-gold">{c.t}</div>
-            <p className="mt-1 text-sm leading-snug muted">{c.d}</p>
-          </div>
-        ))}
+        </ul>
       </section>
     </main>
   );

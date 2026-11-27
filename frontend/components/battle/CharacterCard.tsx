@@ -1,9 +1,8 @@
 "use client";
 
-import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
-import { useId, useState } from "react";
-import { SHOW_IMAGES } from "@/lib/api";
+import { useId } from "react";
+import Carta from "@/components/carta/Carta";
 import { paletteFor } from "@/lib/animePalette";
 import type { Character } from "@/lib/types/match";
 import { ARCH_NOMI } from "@/lib/battle/labels";
@@ -30,27 +29,27 @@ export function rarity(rating: number) {
   if (rating >= 90)
     return {
       name: "Leggendaria",
-      frame: "linear-gradient(145deg,#fff1a8,#ffb100 40%,#ff6a00 70%,#ffe27a)",
+      frame: "linear-gradient(160deg,#ffe680,#f08a00)",
       glow: "rgb(255 190 40 / .55)",
       foil: true,
     };
   if (rating >= 82)
     return {
       name: "Epica",
-      frame: "linear-gradient(145deg,#e0b3ff,#8b3dff 45%,#ff4fd8 80%,#c9a0ff)",
+      frame: "linear-gradient(160deg,#ff7cc4,#7b3df0)",
       glow: "rgb(160 90 255 / .5)",
       foil: true,
     };
   if (rating >= 72)
     return {
       name: "Rara",
-      frame: "linear-gradient(145deg,#b9ecff,#2f8cff 50%,#35e0ff)",
+      frame: "linear-gradient(160deg,#58d6f5,#1378b8)",
       glow: "rgb(53 150 255 / .4)",
       foil: false,
     };
   return {
     name: "Comune",
-    frame: "linear-gradient(145deg,#eef1f8,#8d97ad 50%,#cfd6e4)",
+    frame: "linear-gradient(160deg,#77747e,#4a4850)",
     glow: "rgb(180 190 210 / .18)",
     foil: false,
   };
@@ -80,8 +79,6 @@ export default function CharacterCard({
   const rar = rarity(character.rating);
   const dir = side === "B" ? -1 : 1;
   const uid = useId().replace(/:/g, "");
-  const [imgFailed, setImgFailed] = useState(false);
-  const showImg = SHOW_IMAGES && !!character.immagine_url && !imgFailed;
   const sizeClass = compact
     ? "w-28 text-[11px]"
     : fluid
@@ -117,15 +114,7 @@ export default function CharacterCard({
         <motion.div
           key={`${lungeKey ?? 0}-${hitKey ?? 0}`}
           data-testid={side ? `card-${side}` : undefined}
-          className={`tcg ${rar.foil ? "tcg-foil" : ""} aspect-[3/4.2] w-full text-white`}
-          style={
-            {
-              "--frame": rar.frame,
-              "--glow": rar.glow,
-              "--from": pal.from,
-              "--to": pal.to,
-            } as React.CSSProperties
-          }
+          className="w-full text-white"
           initial={false}
           animate={{
             opacity: idle ? 0.35 : 1,
@@ -138,57 +127,27 @@ export default function CharacterCard({
           }}
           transition={{ duration: 0.45 }}
         >
-          <div className="tcg-inner">
-            <div className="tcg-art">
-              {showImg ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={character.immagine_url!}
-                  alt={character.nome}
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                  onError={() => setImgFailed(true)}
-                  className="absolute inset-0 h-full w-full object-cover object-top"
-                />
-              ) : (
-                <CardArt
-                  name={character.nome}
-                  anime={character.anime}
-                  role={role ?? "Supporto"}
-                  idPrefix={uid}
-                />
-              )}
-            </div>
-            <span className="tcg-glare" aria-hidden="true" />
-            {/* stessa carta del Duello: arte a tutta carta, potenza in alto a destra, nome in basso */}
-            <div
-              className="display absolute right-[0.5em] top-[0.5em] z-[3] grid min-w-[2.1em] place-items-center rounded-[0.6em] border-2 border-white/80 bg-black/80 px-[0.3em] py-[0.1em] text-[1.9em] font-black leading-none text-white shadow-lg"
-              title={rar.name}
-            >
-              {power ?? character.rating}
-            </div>
-            {character.forma && (
-              <span className="absolute left-[0.5em] top-[0.5em] z-[3] max-w-[60%] truncate rounded bg-black/70 px-1.5 py-0.5 text-[0.6em] font-extrabold uppercase tracking-wider text-amber-200">
-                {character.forma}
-              </span>
-            )}
-            <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-[#0b0818] via-[#0b0818]/85 to-transparent px-[0.7em] pb-[0.55em] pt-[2.2em]">
-              <div className="display truncate text-[1.45em] font-black leading-none drop-shadow">
-                {character.nome}
-              </div>
-              <div className="mt-[0.2em] truncate text-[0.75em] font-semibold text-white/70">
-                {character.arch
-                  ? (ARCH_NOMI[character.arch] ?? character.arch)
-                  : (role ?? pal.label)}{" "}
-                · {rar.name}
-              </div>
-              {character.mossa && (
-                <div className="mt-[0.2em] truncate text-[0.68em] font-bold text-amber-200">
-                  <Icon name="bolt" className="size-[1em]" /> {character.mossa.nome}
-                </div>
-              )}
-            </div>
-          </div>
+          <Carta
+            nome={character.nome}
+            anime={character.anime}
+            rating={character.rating}
+            immagine={character.immagine_url}
+            potenza={power ?? character.rating}
+            forma={character.forma}
+            title={rar.name}
+            sotto={[
+              character.arch ? (ARCH_NOMI[character.arch] ?? character.arch) : (role ?? pal.label),
+              character.mossa?.nome ?? rar.name,
+            ].join(" · ")}
+            arte={
+              <CardArt
+                name={character.nome}
+                anime={character.anime}
+                role={role ?? "Supporto"}
+                idPrefix={uid}
+              />
+            }
+          />
         </motion.div>
       </div>
     </div>

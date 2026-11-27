@@ -1,41 +1,76 @@
 @import "tailwindcss";
 
+/* ──────────────────────────────────────────────────────────────────────────
+   DIREZIONE ARTISTICA «INCHIOSTRO E CARTA» (vedi STATO.md)
+   Una tavola di manga stampata di notte: nero d'inchiostro, bianco carta,
+   un solo colore d'azione (vermiglio del timbro), giallo per premi ed energia.
+   Tratto netto, ombre piene e sfalsate (mai sfumate), retini e linee cinetiche.
+   ────────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --bg: #05040c;
-  --surface: #0f0c22;
-  --surface-2: #171335;
-  --ink: #f6f3ff;
-  --muted: #c3bde3;
-  --line: rgb(255 255 255 / 0.1);
-  --pink: #ff3d81;
-  --orange: #ff8a3d;
-  --cyan: #35e0ff;
-  --gold: #ffd45a;
-  --violet: #8b5cff;
-  --green: #3ddc97;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* ruoli dei colori: rosa-arancio = azione principale; celeste = informazione e selezione;
-     oro = premi e rarità; viola = solo fondo; verde e rosso = solo esiti */
-  --accent: var(--pink); /* il colore della modalità, cambia con la pagina (data-modo sul body) */
-  /* tempi: 150 ms ai tocchi, 300 ms alle carte che si girano, 700 ms solo a vittorie e rarità alte */
-  --t-tocco: 150ms;
-  --t-carta: 300ms;
+  /* inchiostro (fondi) */
+  --bg: #0e0d10;
+  --surface: #17161b;
+  --surface-2: #201f26;
+  --surface-3: #2b2a33;
+  /* carta (testi chiari, superfici «stampate») */
+  --carta: #f3ecdd;
+  --carta-2: #ded5c1;
+  --ink: #f3ecdd;
+  --nero: #0e0d10;
+  --muted: #b5aea0;
+  --line: rgb(243 236 221 / 0.14);
+  --line-forte: rgb(243 236 221 / 0.32);
+  /* colori con un ruolo fisso */
+  --rosso: #e0301f; /* azione principale (fondo) */
+  --rosso-scuro: #8c1a10;
+  --rosso-chiaro: #ff5a45; /* lo stesso colore quando è testo su nero */
+  --giallo: #ffd21f; /* premi, energia, leggendarie */
+  --ciano: #3fd0f0; /* informazione, fuoco della tastiera */
+  --verde: #35d68a; /* esito buono / tu */
+  --viola: #9a86ff;
+  --magenta: #ff5fa8;
+  --arancio: #ff9238;
+  /* nomi storici, usati ancora da qualche componente */
+  --pink: var(--rosso-chiaro);
+  --orange: var(--arancio);
+  --cyan: var(--ciano);
+  --gold: var(--giallo);
+  --violet: var(--viola);
+  --green: var(--verde);
+  /* il colore della modalità: come il dorso di un volume, cambia con la pagina (data-modo sul body) */
+  --accent: var(--rosso-chiaro);
+  /* movimento: 120 ms ai tocchi, 320 ms alle carte, 700 ms solo a vittorie e rarità alte */
+  --ease: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-colpo: cubic-bezier(0.3, 1.6, 0.5, 1);
+  --t-tocco: 120ms;
+  --t-carta: 320ms;
   --t-premio: 700ms;
+  /* forme */
+  --r: 5px;
+  --tratto: 2px;
+  --ombra: 4px 4px 0 #000;
 }
 body[data-modo="duello"] {
-  --accent: var(--pink);
+  --accent: var(--rosso-chiaro);
 }
 body[data-modo="ranked"] {
-  --accent: var(--violet);
+  --accent: var(--viola);
 }
 body[data-modo="sfide"] {
-  --accent: var(--cyan);
+  --accent: var(--ciano);
 }
 body[data-modo="album"] {
-  --accent: var(--green);
+  --accent: var(--verde);
 }
 body[data-modo="negozio"] {
-  --accent: var(--gold);
+  --accent: var(--giallo);
+}
+body[data-modo="veloce"] {
+  --accent: var(--arancio);
+}
+body[data-modo="amici"] {
+  --accent: var(--magenta);
 }
 
 @theme inline {
@@ -44,6 +79,36 @@ body[data-modo="negozio"] {
   --color-pink: var(--pink);
   --color-cyan: var(--cyan);
   --color-gold: var(--gold);
+  --color-carta: var(--carta);
+  --color-nero: var(--nero);
+  --color-rosso: var(--rosso);
+  --color-accento: var(--accent);
+}
+
+/* Forme squadrate ovunque: gli angoli di Tailwind diventano quelli di una vignetta */
+@theme {
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 5px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+  /* le tinte di servizio di Tailwind riportate alla tavolozza */
+  --color-amber-200: #ffe27a;
+  --color-amber-300: #ffd21f;
+  --color-amber-400: #f5bd00;
+  --color-sky-300: #8fe4f7;
+  --color-sky-400: #3fd0f0;
+  --color-sky-500: #1fb4d8;
+  --color-cyan-300: #8fe4f7;
+  --color-cyan-400: #3fd0f0;
+  --color-emerald-300: #6fe6ad;
+  --color-emerald-400: #35d68a;
+  --color-rose-300: #ff9c8f;
+  --color-rose-400: #ff6f5e;
+  --color-red-300: #ff9c8f;
+  --color-red-400: #ff6f5e;
+  --color-pink-500: #e0301f;
 }
 
 * {
@@ -62,73 +127,68 @@ body {
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   background: var(--bg);
+  accent-color: var(--rosso);
 }
 
-/* Sfondo statico (gradienti + griglia + vignetta): niente blur né blend-mode a schermo intero, per restare fluido */
+/* Fondo statico: retino in alto a destra nel colore della modalità, linee cinetiche in basso a sinistra.
+   Nessun blur né blend-mode: si dipinge una volta sola. */
 .aurora {
   position: fixed;
   inset: 0;
   z-index: -2;
   overflow: hidden;
   pointer-events: none;
+  background:
+    radial-gradient(
+      120% 70% at 100% 0%,
+      color-mix(in srgb, var(--accent) 13%, transparent),
+      transparent 60%
+    ),
+    var(--bg);
 }
 .aurora i {
   position: absolute;
-  border-radius: 50%;
-  opacity: 0.55;
 }
 .aurora i:nth-child(1) {
-  left: -12%;
-  top: -22%;
-  width: 60vw;
-  height: 60vw;
-  background: radial-gradient(circle, rgb(139 92 255 / 0.75), transparent 65%);
+  right: 0;
+  top: 0;
+  width: min(70vw, 60rem);
+  height: min(60vh, 34rem);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--accent) 70%, transparent) 1.5px,
+    transparent 2px
+  );
+  background-size: 14px 14px;
+  -webkit-mask-image: linear-gradient(215deg, #000, transparent 62%);
+  mask-image: linear-gradient(215deg, #000, transparent 62%);
+  opacity: 0.5;
 }
 .aurora i:nth-child(2) {
-  right: -14%;
-  top: -18%;
-  width: 52vw;
-  height: 52vw;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--accent) 62%, transparent),
-    transparent 65%
+  left: -20vmax;
+  bottom: -20vmax;
+  width: 60vmax;
+  height: 60vmax;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgb(243 236 221 / 0.055) 0deg 0.7deg,
+    transparent 0.7deg 4deg
   );
+  -webkit-mask-image: radial-gradient(circle, transparent 22%, #000 60%, transparent 70%);
+  mask-image: radial-gradient(circle, transparent 22%, #000 60%, transparent 70%);
 }
 .aurora i:nth-child(3) {
-  left: 18%;
-  bottom: -34%;
-  width: 70vw;
-  height: 54vw;
-  background: radial-gradient(circle, rgb(53 224 255 / 0.32), transparent 65%);
-}
-.aurora::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, transparent 45%, rgb(0 0 0 / 0.55) 100%);
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.55;
-  background-image:
-    linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse at 50% 18%, #000 15%, transparent 72%);
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora i {
-    animation: none;
-  }
   html {
     scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
 
@@ -142,16 +202,19 @@ body::before {
   h3,
   .display {
     font-family: var(--font-display), var(--font-body), sans-serif;
-    letter-spacing: 0.015em;
+    font-weight: 400;
+    font-synthesis: style;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
   }
-
-  h1 {
-    text-shadow: 0 2px 28px rgb(139 92 255 / 0.4);
+  h1,
+  h2 {
+    font-style: italic;
   }
 
   ::selection {
-    background: rgb(255 61 129 / 0.5);
+    background: var(--rosso);
+    color: #fff;
   }
 
   ::-webkit-scrollbar {
@@ -159,133 +222,126 @@ body::before {
     height: 10px;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgb(255 255 255 / 0.16);
-    border-radius: 999px;
+    background: rgb(243 236 221 / 0.22);
+    border-radius: 2px;
     border: 2px solid transparent;
     background-clip: content-box;
+  }
+
+  select,
+  option {
+    background-color: #121115;
+    color: var(--ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ciano);
+    outline-offset: 2px;
   }
 }
 
 @layer components {
-  .text-grad {
-    background: linear-gradient(
-      95deg,
-      var(--gold),
-      var(--orange) 38%,
-      var(--pink) 72%,
-      var(--violet)
-    );
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: sheen 9s ease-in-out infinite alternate;
-  }
-  @keyframes sheen {
-    to {
-      background-position: 100% 0;
-    }
+  /* Numeri e onomatopee: il carattere «grasso» della testata */
+  .num {
+    font-family: var(--font-num), var(--font-display), sans-serif;
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: 0;
   }
 
+  /* Titolo a stampa: bianco carta con il fuori registro vermiglio */
+  .text-grad {
+    color: var(--carta);
+    text-shadow: 0.045em 0.045em 0 var(--rosso);
+  }
+
+  /* Occhiello: tre linee cinetiche e il colore della modalità */
   .eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.18em;
+    gap: 0.55rem;
+    font-family: var(--font-body), sans-serif;
+    font-style: normal;
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--cyan);
+    color: var(--accent);
   }
   .eyebrow::before {
     content: "";
-    width: 1.6rem;
-    height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, transparent, var(--cyan));
+    flex: none;
+    width: 1.5rem;
+    height: 0.6rem;
+    background:
+      linear-gradient(currentColor, currentColor) right top / 100% 2px no-repeat,
+      linear-gradient(currentColor, currentColor) right center / 62% 2px no-repeat,
+      linear-gradient(currentColor, currentColor) right bottom / 30% 2px no-repeat;
   }
 
-  /* Pannello piatto e opaco con bordo sottile: la base di ogni schermata */
+  /* Vignetta: la base di ogni schermata. Piatta, tratto sottile, angoli appena smussati. */
   .panel {
-    border: 1px solid rgb(255 255 255 / 0.11);
-    border-radius: 1.2rem;
-    background: linear-gradient(170deg, #14112d, #0e0b22);
-    box-shadow:
-      0 18px 40px -16px rgb(0 0 0 / 0.65),
-      inset 0 1px 0 rgb(255 255 255 / 0.06);
+    border: 1.5px solid var(--line);
+    border-radius: var(--r);
+    background: var(--surface);
+    box-shadow: var(--ombra);
   }
-  /* Bordo luminoso a gradiente: solo per ciò che si può toccare o che si è appena vinto */
+  /* Vignetta viva: per ciò che si tocca o si è appena vinto. Tratto carta e ombra piena nel colore della modalità. */
   .panel-vivo,
   .panel-hover {
-    border: 1px solid transparent;
-    border-radius: 1.4rem;
-    background:
-      linear-gradient(165deg, rgb(26 21 56 / 0.82), rgb(12 10 28 / 0.88)) padding-box,
-      linear-gradient(
-          140deg,
-          rgb(255 255 255 / 0.32),
-          rgb(255 255 255 / 0.05) 38%,
-          rgb(139 92 255 / 0.35) 72%,
-          rgb(255 61 129 / 0.3)
-        )
-        border-box;
-    box-shadow:
-      0 24px 60px -12px rgb(0 0 0 / 0.6),
-      inset 0 1px 0 rgb(255 255 255 / 0.1),
-      inset 0 -30px 50px -30px rgb(139 92 255 / 0.12);
+    border: var(--tratto) solid var(--carta);
+    border-radius: var(--r);
+    background: var(--surface);
+    box-shadow: 5px 5px 0 var(--accent);
   }
-  /* Finestre e tendine: opache, con un bordo un po' più chiaro */
+  /* Finestre e tendine: opache, tratto chiaro */
   .panel-solido {
-    border-color: rgb(255 255 255 / 0.2);
-    background: #15122f;
+    border: var(--tratto) solid var(--carta);
+    background: #1b1a21;
+    box-shadow: 6px 6px 0 #000;
   }
   .panel-hover {
     transition:
-      transform 0.35s var(--ease),
-      box-shadow 0.35s var(--ease);
+      transform var(--t-tocco) var(--ease),
+      box-shadow var(--t-tocco) var(--ease);
   }
   .panel-hover:hover {
-    transform: translateY(-4px);
-    box-shadow:
-      0 30px 70px -12px rgb(0 0 0 / 0.7),
-      0 0 40px -8px rgb(139 92 255 / 0.45),
-      inset 0 1px 0 rgb(255 255 255 / 0.1);
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 var(--accent);
+  }
+  .panel-hover:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--accent);
   }
 
-  /* Testata di pagina: retino a puntini e taglio diagonale nel colore della modalità */
+  /* Testata di pagina: titolo su striscia di carta tagliata in diagonale, filo sotto */
   .testata {
     position: relative;
-    isolation: isolate;
+    padding-bottom: 0.9rem;
   }
-  .testata::before {
+  .testata::after {
     content: "";
     position: absolute;
-    inset: -1rem -1rem -1rem 38%;
-    z-index: -1;
-    pointer-events: none;
-    background-image: radial-gradient(
-      color-mix(in srgb, var(--accent) 55%, transparent) 1.3px,
-      transparent 1.6px
-    );
-    background-size: 11px 11px;
-    -webkit-mask-image: linear-gradient(100deg, transparent 8%, #000 70%);
-    mask-image: linear-gradient(100deg, transparent 8%, #000 70%);
-    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
-    opacity: 0.55;
+    inset: auto 0 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0 5rem, var(--line) 5rem);
   }
-  .testata h1 {
-    text-shadow: 0 2px 26px color-mix(in srgb, var(--accent) 45%, transparent);
+  .testata h1,
+  h1.striscia {
+    display: inline-block;
+    max-width: 100%;
+    margin: 0.25rem 0 0.35rem;
+    padding: 0.12em 0.75em 0.06em 0.3em;
+    color: var(--nero);
+    line-height: 1.02;
+    background:
+      linear-gradient(var(--carta), var(--carta)) 0 0 / calc(100% - 0.14em) calc(100% - 0.14em)
+        no-repeat,
+      var(--accent);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 0.45em) 100%, 0 100%);
+    text-shadow: none;
   }
-  /* Un solo stile di «selezionato» per tutto il sito: celeste */
-  .sel,
-  .btn[aria-pressed="true"] {
-    border-color: var(--cyan);
-    background: rgb(53 224 255 / 0.14);
-    color: #d9f7ff;
-    box-shadow:
-      0 0 0 1px rgb(53 224 255 / 0.5),
-      0 0 22px -4px rgb(53 224 255 / 0.5);
-  }
+
+  /* Pulsanti: targhe stampate, con lo spessore sotto che si schiaccia quando premi */
   .btn {
     position: relative;
     display: inline-flex;
@@ -293,140 +349,295 @@ body::before {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0 1.3rem;
-    overflow: hidden;
-    border-radius: 0.95rem;
-    border: 1px solid rgb(255 255 255 / 0.2);
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.04));
+    padding: 0.15rem 1.2rem 0;
+    border-radius: var(--r);
+    border: var(--tratto) solid var(--line-forte);
+    background: var(--surface-2);
     color: var(--ink);
-    font-weight: 800;
-    letter-spacing: 0.01em;
+    font-family: var(--font-display), var(--font-body), sans-serif;
+    font-weight: 400;
+    font-synthesis: style;
+    font-size: 1.06em;
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
     cursor: pointer;
+    box-shadow: 0 4px 0 #000;
     transition:
-      transform 0.18s var(--ease),
-      background 0.2s ease,
-      box-shadow 0.2s ease,
-      filter 0.2s ease,
-      border-color 0.2s ease;
-  }
-  .btn::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      105deg,
-      transparent 35%,
-      rgb(255 255 255 / 0.35) 50%,
-      transparent 65%
-    );
-    transform: translateX(-120%);
-    transition: transform 0.7s var(--ease);
-    pointer-events: none;
-  }
-  .btn:hover:not(:disabled)::after {
-    transform: translateX(120%);
+      transform var(--t-tocco) var(--ease),
+      box-shadow var(--t-tocco) var(--ease),
+      background-color var(--t-tocco) ease,
+      border-color var(--t-tocco) ease;
   }
   .btn:hover:not(:disabled) {
-    border-color: rgb(255 255 255 / 0.4);
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.17), rgb(255 255 255 / 0.07));
-    transform: translateY(-2px);
+    border-color: var(--carta);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 #000;
   }
   .btn:active:not(:disabled) {
-    transform: translateY(1px) scale(0.97);
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #000;
   }
-  .btn:disabled {
-    opacity: 0.42;
+  /* spento: un retino a righe, come una vignetta non ancora inchiostrata */
+  .btn:disabled,
+  .btn-primary:disabled,
+  .btn-gold:disabled {
     cursor: not-allowed;
-  }
-  /* il pulsante principale spento è grigio, non un rosa sbiadito che sembra rotto */
-  .btn-primary:disabled {
-    opacity: 1;
-    color: rgb(255 255 255 / 0.5);
-    background: rgb(255 255 255 / 0.1);
-    border-color: rgb(255 255 255 / 0.12);
+    color: rgb(243 236 221 / 0.5);
+    border-color: var(--line);
+    border-style: dashed;
+    background: repeating-linear-gradient(
+      135deg,
+      rgb(243 236 221 / 0.07) 0 3px,
+      transparent 3px 8px
+    );
+    background-color: var(--surface);
     box-shadow: none;
     text-shadow: none;
   }
   .btn:focus-visible,
   .field:focus-visible {
-    outline: 2px solid var(--cyan);
+    outline: 2px solid var(--ciano);
     outline-offset: 2px;
   }
   .btn-primary {
-    border-color: rgb(255 255 255 / 0.25);
+    border-color: #000;
     color: #fff;
-    background: linear-gradient(100deg, var(--pink), var(--orange));
+    background: var(--rosso);
     box-shadow:
-      0 8px 28px rgb(255 61 129 / 0.45),
-      inset 0 1px 0 rgb(255 255 255 / 0.35);
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+      0 4px 0 var(--rosso-scuro),
+      0 4px 0 2px #000;
   }
   .btn-primary:hover:not(:disabled) {
-    background: linear-gradient(100deg, var(--pink), var(--orange));
-    filter: brightness(1.1) saturate(1.1);
+    border-color: #000;
+    background: #f03a28;
     box-shadow:
-      0 12px 40px rgb(255 61 129 / 0.65),
-      inset 0 1px 0 rgb(255 255 255 / 0.4);
+      0 5px 0 var(--rosso-scuro),
+      0 5px 0 2px #000;
+  }
+  .btn-primary:active:not(:disabled) {
+    box-shadow:
+      0 1px 0 var(--rosso-scuro),
+      0 1px 0 2px #000;
   }
   .btn-gold {
-    border-color: rgb(255 255 255 / 0.3);
-    color: #2a1a00;
-    background: linear-gradient(100deg, var(--gold), var(--orange));
+    border-color: #000;
+    color: var(--nero);
+    background: var(--giallo);
     box-shadow:
-      0 8px 28px rgb(255 212 90 / 0.35),
-      inset 0 1px 0 rgb(255 255 255 / 0.5);
+      0 4px 0 #a37f00,
+      0 4px 0 2px #000;
   }
+  .btn-gold:hover:not(:disabled) {
+    border-color: #000;
+    background: #ffe04d;
+    box-shadow:
+      0 5px 0 #a37f00,
+      0 5px 0 2px #000;
+  }
+  .btn-gold:active:not(:disabled) {
+    box-shadow:
+      0 1px 0 #a37f00,
+      0 1px 0 2px #000;
+  }
+  /* Un solo stile di «selezionato» per tutto il sito: bianco carta con testo nero */
+  .sel,
   .btn[aria-pressed="true"] {
-    background: rgb(53 224 255 / 0.22);
-    border-color: var(--cyan);
+    border-color: #000;
+    background: var(--carta);
+    color: var(--nero);
+    box-shadow:
+      0 4px 0 var(--carta-2),
+      0 4px 0 2px #000;
+  }
+  .btn[aria-pressed="true"]:hover:not(:disabled) {
+    background: #fff;
+    border-color: #000;
   }
 
   .field {
     min-height: 2.9rem;
-    border-radius: 0.95rem;
-    border: 1px solid rgb(255 255 255 / 0.16);
-    background: rgb(4 3 12 / 0.55);
-    padding: 0 1rem;
+    border-radius: var(--r);
+    border: var(--tratto) solid var(--line-forte);
+    background: #0a090c;
+    padding: 0 0.9rem;
     color: var(--ink);
-    box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.35);
     transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
+      border-color var(--t-tocco) ease,
+      box-shadow var(--t-tocco) ease;
   }
   .field:hover {
-    border-color: rgb(255 255 255 / 0.3);
+    border-color: rgb(243 236 221 / 0.55);
   }
   .field:focus {
-    border-color: var(--cyan);
-    box-shadow:
-      inset 0 2px 8px rgb(0 0 0 / 0.35),
-      0 0 0 3px rgb(53 224 255 / 0.18);
+    border-color: var(--carta);
+    box-shadow: 3px 3px 0 var(--accent);
   }
   .field::placeholder {
-    color: var(--muted);
+    color: #8f897d;
   }
 
+  /* Etichetta: un cartellino, non una pillola */
   .chip {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    border-radius: 999px;
-    padding: 0.15rem 0.7rem;
-    font-size: 0.75rem;
+    border-radius: 3px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.74rem;
     font-weight: 800;
-    background: rgb(255 255 255 / 0.08);
-    border: 1px solid var(--line);
+    line-height: 1.3;
+    background: rgb(243 236 221 / 0.07);
+    border: 1.5px solid var(--line);
   }
 
-  /* Entrata morbida degli elementi */
+  /* Barra di avanzamento: un binario con dentro un riempimento a righe */
+  .barra {
+    height: 0.7rem;
+    overflow: hidden;
+    border: 1.5px solid var(--line-forte);
+    border-radius: 2px;
+    background: #0a090c;
+  }
+  .barra > i,
+  .barra > span,
+  .barra > div {
+    display: block;
+    height: 100%;
+    background-color: var(--accent);
+    background-image: repeating-linear-gradient(
+      115deg,
+      rgb(0 0 0 / 0.22) 0 4px,
+      transparent 4px 9px
+    );
+    transition: width var(--t-premio) var(--ease);
+  }
+
+  /* Balloon: per consigli, suggerimenti e stati vuoti */
+  .balloon {
+    position: relative;
+    border: var(--tratto) solid #000;
+    border-radius: 14px;
+    background: var(--carta);
+    color: var(--nero);
+    padding: 0.7rem 1rem;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 #000;
+  }
+  .balloon::after {
+    content: "";
+    position: absolute;
+    left: 1.6rem;
+    bottom: -0.72rem;
+    width: 1.1rem;
+    height: 0.75rem;
+    background: var(--carta);
+    clip-path: polygon(0 0, 100% 0, 15% 100%);
+  }
+  .balloon .muted,
+  .su-carta .muted {
+    color: #55504a;
+  }
+
+  /* Stato vuoto: vignetta tratteggiata con retino */
+  .vuoto {
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    border: var(--tratto) dashed var(--line-forte);
+    border-radius: var(--r);
+    padding: 2rem 1.25rem;
+    text-align: center;
+    color: var(--muted);
+    background-image: radial-gradient(rgb(243 236 221 / 0.1) 1px, transparent 1.4px);
+    background-size: 10px 10px;
+  }
+
+  /* Caricamento a scheletro: una striscia chiara che attraversa (solo transform) */
+  .scheletro {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--r);
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+  }
+  .scheletro::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 35%,
+      rgb(243 236 221 / 0.09) 50%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    animation: scheletro 1.4s ease-in-out infinite;
+  }
+  @keyframes scheletro {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Onomatopea grafica: grande, storta, col fuori registro */
+  .onoma {
+    display: inline-block;
+    font-family: var(--font-num), var(--font-display), sans-serif;
+    font-weight: 400;
+    font-synthesis: none;
+    line-height: 0.9;
+    text-transform: uppercase;
+    color: var(--giallo);
+    -webkit-text-stroke: 0.045em #000;
+    paint-order: stroke fill;
+    text-shadow: 0.07em 0.07em 0 var(--rosso);
+    transform: rotate(-6deg);
+  }
+
+  /* Retino e linee cinetiche riusabili come fondo di una vignetta */
+  .retino {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--accent) 60%, transparent) 1.4px,
+      transparent 1.8px
+    );
+    background-size: 11px 11px;
+  }
+  .cinetiche {
+    background: repeating-conic-gradient(
+      from 0deg at var(--cx, 50%) var(--cy, 50%),
+      color-mix(in srgb, var(--tinta, var(--carta)) 22%, transparent) 0deg 0.8deg,
+      transparent 0.8deg 5deg
+    );
+    -webkit-mask-image: radial-gradient(
+      circle at var(--cx, 50%) var(--cy, 50%),
+      transparent 18%,
+      #000 75%
+    );
+    mask-image: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), transparent 18%, #000 75%);
+  }
+
+  /* Entrata: uno scatto netto dal basso, non una dissolvenza lenta */
   .reveal {
-    animation: reveal 0.7s var(--ease) both;
-    animation-delay: calc(var(--i, 0) * 90ms);
+    animation: reveal 0.45s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
   }
   @keyframes reveal {
     from {
       opacity: 0;
-      transform: translateY(18px);
+      transform: translateY(14px) skewY(1.5deg);
+    }
+  }
+  .colpo {
+    animation: colpo 0.5s var(--ease-colpo) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  @keyframes colpo {
+    from {
+      opacity: 0;
+      transform: scale(1.6) rotate(-10deg);
     }
   }
   .float {
@@ -435,17 +646,7 @@ body::before {
   }
   @keyframes float {
     50% {
-      transform: translateY(-12px);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal,
-    .float,
-    .text-grad {
-      animation: none;
-    }
-    .btn::after {
-      display: none;
+      transform: translateY(-10px);
     }
   }
 
@@ -453,83 +654,397 @@ body::before {
     color: var(--muted);
   }
 
-  /* Carte da collezione */
-  .tcg {
+  /* ───────────── LA CARTA: un solo disegno, ogni misura ─────────────
+     Tutto è in «em» e l'em segue la larghezza della carta (container query):
+     la stessa carta funziona da 70 px (corsia) a 320 px (dettaglio). */
+  .carta {
+    --cornice: #77747e;
+    --cornice-2: #4a4850;
+    --targa: var(--carta);
+    --targa-testo: var(--nero);
+    container-type: inline-size;
     position: relative;
-    border-radius: 1.1rem;
-    padding: 4px;
-    background: var(--frame);
-    box-shadow:
-      0 14px 34px rgb(0 0 0 / 0.55),
-      0 0 26px var(--glow);
+    display: block;
+    width: 100%;
+    text-align: left;
+    color: var(--ink);
   }
-  .tcg-inner {
+  .carta-corpo {
     position: relative;
-    height: 100%;
+    isolation: isolate;
     overflow: hidden;
-    border-radius: calc(1.1rem - 3px);
-    background: #0b0a18;
+    font-size: 7.2cqw;
+    padding: 0.36em;
+    border-radius: 0.85em;
+    background: linear-gradient(160deg, var(--cornice), var(--cornice-2));
+    box-shadow:
+      0 0 0 0.12em #000,
+      0.3em 0.35em 0 0.06em rgb(0 0 0 / 0.85);
   }
-  .tcg-art {
+  .carta-quadro {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--ar, 5 / 7);
+    border-radius: 0.55em;
+    background: #131217;
+    box-shadow: 0 0 0 0.1em #000;
+  }
+  .carta-arte {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(150deg, var(--da, #3a3944), var(--a, #17161b));
+  }
+  .carta-arte img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  .carta-sigla {
     position: absolute;
     inset: 0;
     display: grid;
     place-items: center;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 50% 38%, rgb(255 255 255 / 0.35), transparent 55%),
-      linear-gradient(160deg, var(--from), var(--to));
+    font-family: var(--font-num), sans-serif;
+    font-size: 5em;
+    color: rgb(255 255 255 / 0.75);
+    -webkit-text-stroke: 0.03em #000;
+    background-image: radial-gradient(rgb(0 0 0 / 0.28) 1.2px, transparent 1.6px);
+    background-size: 0.5em 0.5em;
   }
-  .tcg-art::before {
-    content: "";
+  /* effetto della rarità sopra l'arte (retino / linee / raggi): mai sopra il viso, solo ai bordi bassi */
+  .carta-fx {
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-      115deg,
-      rgb(255 255 255 / 0.07) 0 6px,
-      transparent 6px 18px
-    );
+    pointer-events: none;
   }
-  .tcg-mono {
+  .carta-ombra {
     position: absolute;
-    font-family: var(--font-display), sans-serif;
-    font-weight: 700;
+    inset: auto 0 0 0;
+    height: 46%;
+    pointer-events: none;
+    background: linear-gradient(to top, rgb(10 9 12 / 0.92) 12%, transparent);
+  }
+  /* costo: gemma gialla d'energia (un rombo), numero nero */
+  .carta-costo {
+    position: absolute;
+    left: 0.42em;
+    top: 0.42em;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 2.05em;
+    height: 2.05em;
+    font-family: var(--font-num), sans-serif;
+    font-size: 1.12em;
     line-height: 1;
-    color: rgb(255 255 255 / 0.16);
-    font-size: 9rem;
-    right: -0.4rem;
-    bottom: -1.6rem;
-    pointer-events: none;
+    color: #000;
   }
-  .tcg-foil::after {
+  .carta-costo::before {
     content: "";
     position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      115deg,
-      transparent 30%,
-      rgb(255 255 255 / 0.35) 45%,
-      rgb(255 255 255 / 0.05) 55%,
-      transparent 70%
-    );
-    background-size: 250% 100%;
-    animation: foil 4.5s linear infinite;
+    inset: 0.16em;
+    z-index: -1;
+    transform: rotate(45deg);
+    border-radius: 0.2em;
+    background: var(--giallo);
+    box-shadow:
+      0 0 0 0.13em #000,
+      0.16em 0.16em 0 0.1em rgb(0 0 0 / 0.6);
   }
-  @keyframes foil {
-    from {
-      background-position: 180% 0;
-    }
-    to {
-      background-position: -80% 0;
-    }
+  /* potenza: targa nera inclinata con numero carta; verde se potenziata, rossa se indebolita */
+  .carta-pot {
+    position: absolute;
+    right: 0;
+    top: 0.32em;
+    z-index: 3;
+    min-width: 2em;
+    padding: 0.14em 0.42em 0.1em 0.62em;
+    font-family: var(--font-num), sans-serif;
+    font-size: 1.5em;
+    line-height: 1;
+    text-align: center;
+    color: var(--carta);
+    background: #000;
+    clip-path: polygon(0.42em 0, 100% 0, 100% 100%, 0 100%);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .tcg-foil::after {
-      animation: none;
-    }
+  .carta-pot[data-delta="su"] {
+    background: #0f8a52;
+    color: #fff;
+  }
+  .carta-pot[data-delta="giu"] {
+    background: #c22417;
+    color: #fff;
+  }
+  /* targa del nome: striscia di carta tagliata in diagonale, come una didascalia */
+  .carta-targa {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 2;
+    padding: 0 0.5em 0.42em;
+  }
+  .carta-nome {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: -0.5em;
+    padding: 0.2em 0.85em 0.1em 0.5em;
+    font-family: var(--font-display), sans-serif;
+    font-size: 1.28em;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--targa-testo);
+    background: var(--targa);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 0.5em) 100%, 0 100%);
+  }
+  .carta-nome[data-acapo] {
+    white-space: normal;
+  }
+  .carta-sotto {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4em;
+    margin-top: 0.28em;
+    font-size: 0.72em;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgb(243 236 221 / 0.86);
+  }
+  .carta-sotto > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* rombi della rarità: 1, 2, 3, 4 */
+  .carta-rombi {
+    display: inline-flex;
+    flex: none;
+    gap: 0.22em;
+    padding-right: 0.1em;
+  }
+  .carta-rombi i {
+    width: 0.62em;
+    height: 0.62em;
+    transform: rotate(45deg);
+    background: var(--cornice);
+    box-shadow: 0 0 0 0.09em #000;
+  }
+  .carta-forma {
+    position: absolute;
+    left: 0.5em;
+    top: 2.9em;
+    z-index: 3;
+    max-width: 62%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.1em 0.4em;
+    font-size: 0.62em;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #000;
+    background: var(--giallo);
+  }
+  .carta-testi {
+    display: grid;
+    gap: 0.45em;
+    padding: 0.55em 0.4em 0.3em;
+    font-size: clamp(11.5px, 0.74em, 15px);
+    line-height: 1.3;
+    color: var(--nero);
+  }
+  .carta[data-testi] .carta-corpo {
+    background:
+      linear-gradient(var(--carta), var(--carta)) 0.36em 0.36em / calc(100% - 0.72em)
+        calc(100% - 0.72em) no-repeat,
+      linear-gradient(160deg, var(--cornice), var(--cornice-2));
+  }
+  .carta-testi b {
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.86em;
+    letter-spacing: 0.05em;
+  }
+  .carta-testi .t-rivela b {
+    color: #b3200f;
+  }
+  .carta-testi .t-continuo b {
+    color: #0b6e8a;
+  }
+  /* misure speciali */
+  .carta[data-misura="mano"] {
+    --ar: 5 / 6.3;
+  }
+  .carta[data-misura="mini"] {
+    --ar: 1 / 1;
+  }
+  .carta[data-misura="mini"] .carta-corpo {
+    font-size: 11cqw;
+    padding: 0.28em;
+    border-radius: 0.6em;
+  }
+  .carta[data-misura="mini"] .carta-quadro {
+    border-radius: 0.38em;
+  }
+  .carta[data-misura="mini"] .carta-pot {
+    top: auto;
+    bottom: 0;
+    font-size: 1.7em;
+    clip-path: polygon(0.42em 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .carta[data-misura="mini"] .carta-ombra {
+    display: none;
   }
 
+  /* RARA: cornice ciano, retino a puntini che sale dal basso */
+  .carta[data-rarita="rara"] {
+    --cornice: #58d6f5;
+    --cornice-2: #1378b8;
+  }
+  .carta[data-rarita="rara"] .carta-fx {
+    background-image: radial-gradient(rgb(88 214 245 / 0.75) 0.09em, transparent 0.12em);
+    background-size: 0.42em 0.42em;
+    -webkit-mask-image: linear-gradient(to top, #000, transparent 42%);
+    mask-image: linear-gradient(to top, #000, transparent 42%);
+  }
+  /* EPICA: cornice magenta-viola, linee cinetiche dai bordi e un riflesso che passa */
+  .carta[data-rarita="epica"] {
+    --cornice: #ff7cc4;
+    --cornice-2: #7b3df0;
+  }
+  .carta[data-rarita="epica"] .carta-fx {
+    background: repeating-conic-gradient(
+      from 0deg at 50% 38%,
+      rgb(255 255 255 / 0.5) 0deg 0.9deg,
+      transparent 0.9deg 6deg
+    );
+    -webkit-mask-image: radial-gradient(ellipse at 50% 38%, transparent 52%, #000 88%);
+    mask-image: radial-gradient(ellipse at 50% 38%, transparent 52%, #000 88%);
+  }
+  /* LEGGENDARIA: cornice d'oro più spessa con lamina che scorre, raggi, targa gialla */
+  .carta[data-rarita="leggendaria"] {
+    --cornice: #ffe680;
+    --cornice-2: #f08a00;
+    --targa: var(--giallo);
+  }
+  .carta[data-rarita="leggendaria"] .carta-corpo {
+    padding: 0.46em;
+    box-shadow:
+      0 0 0 0.12em #000,
+      0.3em 0.35em 0 0.06em rgb(0 0 0 / 0.85),
+      0 0 1.6em -0.2em rgb(255 200 30 / 0.55);
+  }
+  .carta[data-rarita="leggendaria"] .carta-corpo::before {
+    content: "";
+    position: absolute;
+    inset: -60% -60%;
+    z-index: -1;
+    background: repeating-linear-gradient(
+      115deg,
+      #fff6c2 0 6%,
+      #ffcf24 9% 15%,
+      #f08a00 19% 24%,
+      #ffcf24 28% 31%
+    );
+    animation: lamina 5s linear infinite;
+  }
+  @keyframes lamina {
+    to {
+      transform: translateX(31%);
+    }
+  }
+  .carta[data-rarita="leggendaria"] .carta-fx {
+    background: repeating-conic-gradient(
+      from 0deg at 50% 36%,
+      rgb(255 214 60 / 0.6) 0deg 2.4deg,
+      transparent 2.4deg 10deg
+    );
+    -webkit-mask-image: radial-gradient(ellipse at 50% 36%, transparent 50%, #000 92%);
+    mask-image: radial-gradient(ellipse at 50% 36%, transparent 50%, #000 92%);
+  }
+  /* riflesso che attraversa epiche e leggendarie (solo transform) */
+  .carta-lucido {
+    position: absolute;
+    inset: -20% -80%;
+    z-index: 4;
+    pointer-events: none;
+    background: linear-gradient(
+      110deg,
+      transparent 44%,
+      rgb(255 255 255 / 0.42) 50%,
+      transparent 56%
+    );
+    transform: translateX(-60%);
+    animation: lucido 4.8s ease-in-out infinite;
+  }
+  @keyframes lucido {
+    0%,
+    55% {
+      transform: translateX(-60%);
+    }
+    100% {
+      transform: translateX(60%);
+    }
+  }
+  .carta[data-fermo] .carta-lucido,
+  .carta[data-fermo] .carta-corpo::before {
+    animation: none;
+  }
+  /* stati */
+  .carta[data-scelta] .carta-corpo {
+    box-shadow:
+      0 0 0 0.12em #000,
+      0 0 0 0.34em var(--carta),
+      0.5em 0.55em 0 0.3em var(--rosso);
+  }
+  .carta[data-spenta] {
+    opacity: 0.45;
+  }
+  button.carta {
+    cursor: pointer;
+    transition: transform var(--t-tocco) var(--ease);
+  }
+  button.carta:hover {
+    transform: translateY(-4px);
+  }
+  button.carta:active {
+    transform: translateY(1px);
+  }
+  button.carta[data-scelta] {
+    transform: translateY(-8px);
+  }
+
+  /* RETRO della carta */
+  .carta-retro {
+    container-type: inline-size;
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .carta-retro > div {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 5 / 7;
+    font-size: 7.2cqw;
+    border-radius: 0.85em;
+    border: 0.36em solid var(--carta);
+    background: #121115;
+    box-shadow:
+      0 0 0 0.12em #000,
+      0.3em 0.35em 0 0.06em rgb(0 0 0 / 0.85);
+  }
+
+  /* vecchi nomi della carta 7v7: restano per l'inclinazione al passaggio del mouse */
   .tcg-persp {
     perspective: 800px;
   }
@@ -538,21 +1053,6 @@ body::before {
     transition: transform 0.14s ease-out;
     transform-style: preserve-3d;
     will-change: transform;
-  }
-  .tcg-glare {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-    border-radius: inherit;
-    opacity: var(--gl, 0);
-    transition: opacity 0.2s;
-    background: radial-gradient(
-      circle at var(--mx, 50%) var(--my, 50%),
-      rgb(255 255 255 / 0.5),
-      rgb(255 255 255 / 0) 48%
-    );
-    mix-blend-mode: overlay;
   }
   .card-rays {
     transform-origin: 50px 46px;
@@ -574,14 +1074,6 @@ body::before {
       opacity: 0.15;
     }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .card-rays,
-    .card-spark,
-    .tcg-tilt {
-      animation: none;
-      transition: none;
-    }
-  }
 
   .pack-shine {
     animation: pack-shine 4.2s ease-in-out infinite;
@@ -596,33 +1088,26 @@ body::before {
     }
   }
   .pack-vetrina {
-    transition: transform 0.4s var(--ease);
-    animation: float 6s ease-in-out infinite;
+    transition: transform 0.3s var(--ease);
   }
-  li:hover > .pack-vetrina {
-    transform: scale(1.06) rotate(-2deg);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .pack-shine,
-    .pack-vetrina {
-      animation: none;
-    }
+  li:hover > .pack-vetrina,
+  .gruppo-busta:hover .pack-vetrina {
+    transform: translateY(-6px) rotate(-3deg);
   }
 
   .pulse-ring {
-    animation: ring 1.6s ease-out infinite;
+    animation: ring 1.4s ease-out infinite;
   }
   @keyframes ring {
     0% {
-      box-shadow: 0 0 0 0 rgb(255 61 129 / 0.6);
+      box-shadow: 0 0 0 0 rgb(224 48 31 / 0.7);
     }
     100% {
-      box-shadow: 0 0 0 14px rgb(255 61 129 / 0);
+      box-shadow: 0 0 0 14px rgb(224 48 31 / 0);
     }
   }
 }
 
-body.overlay-mode::before,
 body.overlay-mode .aurora,
 body.overlay-mode .site-chrome {
   display: none;

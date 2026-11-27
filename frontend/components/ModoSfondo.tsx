@@ -12,6 +12,9 @@ const MODI: [string, string][] = [
   ["/sfide", "sfide"],
   ["/album", "album"],
   ["/negozio", "negozio"],
+  ["/veloce", "veloce"],
+  ["/sfida", "veloce"],
+  ["/stanza", "amici"],
 ];
 
 export default function ModoSfondo() {

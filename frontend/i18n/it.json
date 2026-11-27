@@ -2,7 +2,7 @@
   "home": {
     "titolo": "Gioca con gli amici",
     "creaStanza": "Crea stanza",
-    "sottotitolo": "Duelli a corsie con i tuoi personaggi anime preferiti: costruisci il mazzo, scala le leghe, apri pacchetti.",
+    "sottotitolo": "Tre corsie, sei turni, otto carte: schiera i personaggi degli anime, gioca in segreto e conquista due corsie su tre.",
     "ctaDuello": "Gioca il Duello",
     "ctaRanked": "Classificata",
     "ctaNegozio": "Apri pacchetti",
@@ -23,13 +23,13 @@
     "creaTitolo": "Gioca con gli amici",
     "scriviNome": "Scrivi prima il tuo nome per creare una stanza.",
     "creaSotto": "2–20 giocatori · sette leggende all'asta · poi il torneo",
-    "modalita": "Da solo, subito",
+    "modalita": "Scegli come giocare",
     "veloceTitolo": "Partita veloce",
     "veloceTesto": "Fai il draft da solo contro la CPU e guarda lo scontro 7 contro 7.",
     "sfidaTitolo": "Rompicapo del giorno",
     "sfidaTesto": "Stesso mazzo e stessa CPU per tutti, un solo tentativo: vince chi gioca meglio. Sali in classifica.",
     "vai": "Gioca",
-    "comeTitolo": "Come funziona l'asta con gli amici",
+    "comeTitolo": "L'asta con gli amici, in tre vignette",
     "passi": [
       {
         "n": "01",
@@ -73,8 +73,21 @@
     "duelloTesto": "6 turni, 3 corsie, carte giocate in segreto: vince chi gioca meglio, non chi ha le carte più forti.",
     "rankedTitolo": "Classificata",
     "rankedTesto": "Leghe da Bronzo a Campione: draft nuovo a ogni partita, conta solo la bravura.",
-    "albumTitolo": "Album e pacchetti",
-    "albumTesto": "Colleziona le carte, crea i tuoi mazzi e apri pacchetti con i crediti guadagnati giocando."
+    "albumTitolo": "Album e mazzi",
+    "albumTesto": "Colleziona le carte in un raccoglitore da sfogliare e costruisci i tuoi mazzi.",
+    "sottoCta": "Gratis, senza registrarti. Una partita dura tre minuti.",
+    "grido": "ZAC!",
+    "balloon": "Tocca a te!",
+    "modalitaTitolo": "Sei modi, una sola collezione",
+    "sfideTitolo": "Sfide del giorno",
+    "sfideTesto": "Cinque giochi nuovi a mezzanotte: Animedle, sigle, scorci, chi è e il rompicapo.",
+    "negozioTitolo": "Bustine",
+    "negozioTesto": "Si aprono con i crediti vinti giocando. Mai con soldi veri.",
+    "apri": "Apri",
+    "principale": "La modalità principale",
+    "oppure": "oppure",
+    "creaAsta": "Crea stanza",
+    "numeriTitolo": "In breve"
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -106,7 +119,7 @@
     "perche": "Perché è andata così",
     "condividi": "Condividi lo scontro",
     "copiato": "Link copiato!",
-    "testoCondivisione": "Ho {esito} contro la CPU su Arena Anime: guarda lo scontro!"
+    "testoCondivisione": "Ho {esito} contro la CPU su {app}: guarda lo scontro!"
   },
   "errori": {
     "richiestaNonValida": "Controlla i dati inseriti: qualcosa non è valido.",
@@ -273,7 +286,8 @@
     "ranked": "Ranked",
     "altro": "Altro",
     "ciao": "Ciao, {nome}",
-    "rapida": "Navigazione rapida"
+    "rapida": "Navigazione rapida",
+    "crediti": "crediti"
   },
   "draft": {
     "tono": {
@@ -889,5 +903,15 @@
     "ricomincia": "Nuova corsa",
     "carta": "Nuova carta",
     "rinforzo": "Rinforzo"
-  }
+  },
+  "meta": {
+    "motto": "duelli di carte anime",
+    "descrizione": "Duelli a corsie con i personaggi degli anime: costruisci il mazzo, apri le bustine, scala le leghe e sfida gli amici a quiz e aste. Gratis, in italiano, nel browser.",
+    "ogAlt": "{app}: duelli di carte anime"
+  },
+  "footerMotto": "Tre corsie, sei turni, una tavola da riempire.",
+  "footerGioca": "Gioca",
+  "footerColleziona": "Colleziona",
+  "footerSito": "Il sito",
+  "caricamento": "Sto inchiostrando la tavola…"
 }

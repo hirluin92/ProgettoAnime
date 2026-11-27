@@ -32,10 +32,11 @@ export default function CookieBanner() {
       role="dialog"
       aria-label={it.cookie.titolo}
       data-testid="cookie-banner"
-      className="panel panel-solido fixed inset-x-2 bottom-[4.75rem] z-[45] mx-auto max-w-xl p-4 text-sm sm:bottom-2"
+      className="panel panel-solido fixed inset-x-2 bottom-[4.75rem] z-[45] mx-auto max-w-xl p-4 text-sm sm:bottom-3"
     >
-      <p>{it.cookie.testo}</p>
-      <div className="mt-3 flex gap-2">
+      <p className="eyebrow mb-1">{it.cookie.titolo}</p>
+      <p className="font-medium">{it.cookie.testo}</p>
+      <div className="mt-3 flex gap-3 pb-1">
         <button className="btn flex-1" onClick={() => choose("rejected")}>
           {it.cookie.rifiuta}
         </button>
