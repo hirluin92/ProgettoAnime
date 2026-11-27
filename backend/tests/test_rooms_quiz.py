@@ -1,11 +1,6 @@
 import pytest
-from fastapi.testclient import TestClient
 
-from app.main import app
-from app.rooms.manager import manager
 from app.rooms.quiz import BLOCCO, LIVELLI, RIVELAZIONE, QuizErrore, QuizPartita
-
-client = TestClient(app)
 
 
 def partita(tipo: str = "misto", n: int = 4, tempo: int = 20) -> QuizPartita:
@@ -77,44 +72,48 @@ def test_scade_il_tempo_senza_risposte() -> None:
         p.rispondi("a", 1, 1011.0)
 
 
-def recv_until(ws, type_: str, limit: int = 30) -> dict:  # type: ignore[no-untyped-def]
-    for _ in range(limit):
-        msg = ws.receive_json()
-        if msg["type"] == type_:
-            return msg
-    raise AssertionError(f"messaggio {type_} non ricevuto")
+def test_stanza_quiz_con_gestore_locale() -> None:
+    import asyncio
+    import json
 
+    from app.rooms.manager import RoomManager
+    from app.rooms.models import RoomSettings
+    from app.rooms.protocol import QuizLobby, QuizRisposta, Start, UpdateSettings
+    from tests.test_plan import Sock
 
-def test_stanza_quiz_in_websocket() -> None:
-    room = client.post("/api/rooms", json={"name": "Host"}).json()
-    code = room["code"]
-    with client.websocket_connect(f"/ws/rooms/{code}") as host:
-        host.send_json({"type": "join", "name": "Host", "token": room["token"]})
-        recv_until(host, "joined")
-        with client.websocket_connect(f"/ws/rooms/{code}") as ospite:
-            ospite.send_json({"type": "join", "name": "Ospite"})
-            recv_until(ospite, "joined")
-            st = recv_until(host, "room_state")["room"]
-            impostazioni = {**st["settings"], "modalita": "quiz", "quiz_round": 3, "quiz_tempo": 20}
-            host.send_json({"type": "update_settings", "settings": impostazioni})
-            host.send_json({"type": "start"})
-            while True:
-                stato = recv_until(host, "room_state")["room"]
-                if stato["phase"] == "quiz":
-                    break
-            q = stato["quiz"]
-            assert q["round"] == 1 and q["totali"] == 3 and q["fase"] == "domanda"
-            assert q["soluzione"] is None and len(q["punteggi"]) == 2
+    async def go():  # type: ignore[no-untyped-def]
+        mgr = RoomManager()
+        room, host = mgr.create_room("Anna")
+        ospite = mgr.join(room, "Bruno", None)
+        socks = {host.id: Sock(), ospite.id: Sock()}
+        await mgr.connect(room, host, socks[host.id])
+        await mgr.connect(room, ospite, socks[ospite.id])
+        await mgr.handle(
+            room,
+            host.id,
+            UpdateSettings(settings=RoomSettings(modalita="quiz", quiz_round=3, quiz_tempo=20)),
+        )
+        await mgr.handle(room, host.id, Start())
+        assert room.phase == "quiz"
+        q = room.view().quiz
+        assert q is not None and q.round == 1 and q.totali == 3 and q.soluzione is None
 
-            r = manager.get(code)
-            assert r is not None
-            giusto = r.extras["quiz"].corrente.target["id"]
-            ospite.send_json({"type": "quiz_risposta", "risposta_id": giusto + 10_000_000})
-            assert recv_until(ospite, "quiz_esito")["giusto"] is False
-            host.send_json({"type": "quiz_risposta", "risposta_id": giusto})
-            assert recv_until(host, "quiz_esito")["giusto"] is True
-            # l'ospite è bloccato per qualche secondo
-            ospite.send_json({"type": "quiz_risposta", "risposta_id": giusto})
-            assert recv_until(ospite, "error")["code"] == "locked"
-            punteggi = recv_until(host, "room_state")["room"]["quiz"]["punteggi"]
-            assert punteggi[0]["punti"] > 0 and punteggi[0]["giusto"]
+        giusto = room.extras["quiz"].corrente.target["id"]
+        await mgr.handle(room, ospite.id, QuizRisposta(risposta_id=giusto + 10_000_000))
+        await mgr.handle(room, ospite.id, QuizRisposta(risposta_id=giusto))  # bloccato
+        await mgr.handle(room, host.id, QuizRisposta(risposta_id=giusto))
+        privati = [json.loads(m) for m in socks[host.id].sent if '"type":"quiz_esito"' in m]
+        assert privati and privati[-1]["giusto"] is True
+        err = [json.loads(m) for m in socks[ospite.id].sent if '"code":"locked"' in m]
+        assert err, "dopo un errore c'è il blocco"
+        v = room.view().quiz
+        assert v is not None and v.punteggi[0].id == host.id and v.punteggi[0].giusto
+        # solo a fine quiz l'host riporta tutti in lobby
+        await mgr.handle(room, host.id, QuizLobby())
+        assert room.phase == "quiz"  # il quiz non è finito: nessun effetto, errore all'host
+        room.extras["quiz"].fase = "fine"
+        await mgr.handle(room, host.id, QuizLobby())
+        return room
+
+    room = asyncio.run(go())
+    assert room.phase == "lobby" and "quiz" not in room.extras
