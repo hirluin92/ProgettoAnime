@@ -49,7 +49,7 @@ test("rompicapo del giorno: mazzo uguale per tutti, partita, stelle e classifica
   await page.getByTestId("duello-capito").click();
   await expect(page.getByTestId("duello-costo")).toHaveCount(0); // nessuna carta scelta ancora
   await page.getByTestId("duello-offerta").first().click();
-  await expect(page.getByTestId("duello-costo")).toContainText("energia in 6 turni: 21");
+  await expect(page.getByTestId("duello-costo")).toContainText("energia che avrai in 6 turni: 21");
   await page.getByTestId("link-giorno").click();
   await expect(page.getByTestId("duello-giorno")).toBeVisible();
   await page.getByTestId("giorno-nome").fill(`Prova${Date.now() % 100000}`);

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { impostaCursore } from "./helpers";
+import { esatto, impostaCursore } from "./helpers";
 
 interface Voce {
   id: number;
@@ -32,7 +32,7 @@ test("sfide: Animedle del giorno, due tentativi, vittoria e crediti", async ({ p
 
   const prova = async (nome: string) => {
     await cerca.fill(nome);
-    await page.getByTestId("anime-voce").getByText(nome, { exact: true }).first().click();
+    await page.getByTestId("anime-voce").getByText(esatto(nome)).first().click();
   };
   await prova(sbagliato.nome);
   await expect(page.getByTestId("animedle-riga")).toHaveCount(1);
@@ -94,7 +94,7 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
     const cerca = page.getByTestId("zoom-cerca");
     const prova = async (nome: string) => {
       await cerca.fill(nome);
-      await page.getByTestId("anime-voce").getByText(nome, { exact: true }).first().click();
+      await page.getByTestId("anime-voce").getByText(esatto(nome)).first().click();
     };
     const immagine = page.getByTestId("zoom-immagine");
     const zoomIniziale = gioco === "sigla" ? 0 : Number(await immagine.getAttribute("data-zoom"));
@@ -157,7 +157,7 @@ test("sfide: Animedle sblocca gli indizi dopo qualche errore", async ({ page }) 
   await expect(page.getByTestId("animedle-indizi")).toContainText("Prossimo indizio dopo 3");
   for (const v of sbagliati) {
     await page.getByTestId("animedle-cerca").fill(v.nome);
-    await page.getByTestId("anime-voce").getByText(v.nome, { exact: true }).first().click();
+    await page.getByTestId("anime-voce").getByText(esatto(v.nome)).first().click();
   }
   await expect(page.getByTestId("animedle-indizi")).toContainText("Il titolo inizia con");
   await expect(page.getByTestId("animedle-indizi")).toContainText("Prossimo indizio dopo 2");

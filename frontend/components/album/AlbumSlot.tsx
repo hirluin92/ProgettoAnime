@@ -33,7 +33,7 @@ export default function AlbumSlot({
           type="button"
           onClick={onDettaglio}
           aria-label={`#${n}`}
-          className="relative block aspect-[5/7] w-full overflow-hidden rounded-[1.8cqw] border-2 border-dashed border-white/15 bg-black/30 transition hover:border-white/35"
+          className="relative block aspect-[5/7] w-full overflow-hidden rounded-[1.8cqw] border-2 border-dashed border-white/25 bg-black/20 transition hover:border-white/50"
         >
           {immagine ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -43,7 +43,7 @@ export default function AlbumSlot({
               referrerPolicy="no-referrer"
               loading="lazy"
               className="absolute inset-0 size-full scale-110 object-cover object-top opacity-60"
-              style={{ filter: "blur(7px) brightness(0.22) grayscale(1)" }}
+              style={{ filter: "blur(6px) brightness(0.4) grayscale(1)" }}
             />
           ) : (
             <span

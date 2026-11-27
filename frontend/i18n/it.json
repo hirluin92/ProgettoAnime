@@ -222,6 +222,7 @@
     "accetta": "Accetta"
   },
   "info": {
+    "indice": "Indice della pagina",
     "link": "Info, regole e rimozioni",
     "titolo": "Info su",
     "regole": "Regole in breve",
@@ -507,7 +508,8 @@
     "giaGiocato": "Hai già giocato oggi con questo nome",
     "nessunoOggi": "Nessun risultato ancora: sii il primo!",
     "tuoElo": "Il tuo ELO: {n}",
-    "costoMazzo": "Costo totale del mazzo: {n} · energia in 6 turni: {tot}",
+    "costoMazzo": "Costo delle carte scelte: {n} · energia che avrai in 6 turni: {tot}",
+    "avvisoCurva": "Attenzione: nessuna carta da 1 o 2 di costo. Nei primi turni (hai poca energia) potresti non poter giocare niente.",
     "consiglioCosto": "Con mazzi più economici giochi più carte per partita: la CPU ne usa 7-8.",
     "indietro": "Torna al Duello",
     "oppMano": "{nome}: {n} carte in mano",
@@ -849,6 +851,7 @@
     "partiteSett": "Partite classificate: {n}",
     "ritira": "Ritira {n} crediti",
     "ritirato": "Ritirato",
+    "ancora": "Ancora {n} partite",
     "classifica": "Classifica",
     "nessunoClass": "La classifica compare dopo le 5 partite di piazzamento.",
     "avversario": "Avversario: {nome} · {lega}",

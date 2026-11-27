@@ -50,7 +50,7 @@ export default function RankedHome() {
   const campione = st.divisione === null;
   const pr = progressoGradino(st.mmr);
   return (
-    <main className="mx-auto max-w-5xl space-y-5 p-4 pt-6" data-testid="ranked">
+    <main className="mx-auto max-w-6xl space-y-5 p-4 pt-6" data-testid="ranked">
       <header className="space-y-1">
         <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
         <h1 className="display text-4xl font-black">{it.ranked.titolo}</h1>
@@ -138,14 +138,24 @@ export default function RankedHome() {
               <div className="display text-3xl font-black">
                 {Math.min(st.partite_settimana, s.partite)}/{s.partite}
               </div>
-              <button
-                className="btn btn-primary mt-2 w-full text-sm"
-                disabled={!s.raggiunta || s.ritirata}
-                onClick={() => void ritira(s.partite)}
-                data-testid={`ritira-${s.partite}`}
-              >
-                {s.ritirata ? it.ranked.ritirato : fmt(it.ranked.ritira, { n: s.crediti })}
-              </button>
+              {s.raggiunta && !s.ritirata ? (
+                <button
+                  className="btn btn-primary mt-2 w-full text-sm"
+                  onClick={() => void ritira(s.partite)}
+                  data-testid={`ritira-${s.partite}`}
+                >
+                  {fmt(it.ranked.ritira, { n: s.crediti })}
+                </button>
+              ) : (
+                <p
+                  className={`mt-2 py-2 text-sm font-bold ${s.ritirata ? "text-emerald-300" : "muted"}`}
+                  data-testid={`ritira-${s.partite}`}
+                >
+                  {s.ritirata
+                    ? it.ranked.ritirato
+                    : fmt(it.ranked.ancora, { n: s.partite - st.partite_settimana })}
+                </p>
+              )}
             </li>
           ))}
         </ul>

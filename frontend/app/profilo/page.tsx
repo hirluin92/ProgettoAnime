@@ -110,7 +110,7 @@ export default function ProfiloPage() {
 
   const pct = profile.partite ? Math.round((100 * profile.vittorie) / profile.partite) : 0;
   return (
-    <main className="mx-auto max-w-5xl space-y-6 px-4 pt-8" data-testid="profilo">
+    <main className="mx-auto max-w-6xl space-y-6 px-4 pt-8" data-testid="profilo">
       <header className="panel reveal flex flex-wrap items-center gap-5 p-5 sm:p-6">
         <div className="grid size-24 shrink-0 place-items-center rounded-full border-2 border-amber-300/70 bg-gradient-to-br from-amber-300/25 to-pink-500/25 shadow-[0_0_30px_rgb(255_212_90/0.3)]">
           <div className="text-center">

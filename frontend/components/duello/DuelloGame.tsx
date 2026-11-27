@@ -501,6 +501,14 @@ export default function DuelloGame({
               })}
             </p>
             <p className="text-xs muted">{it.duello.consiglioCosto}</p>
+            {scelte.length >= 5 && !scelte.some((c) => c.costo <= 2) && (
+              <p
+                className="rounded-xl bg-amber-300/15 px-3 py-2 text-sm font-bold text-amber-200"
+                role="status"
+              >
+                {it.duello.avvisoCurva}
+              </p>
+            )}
             <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
               {scelte.map((c) => (
                 <DuelloTile key={c.id} carta={c} potenza={c.potenza} />
