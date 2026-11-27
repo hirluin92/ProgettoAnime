@@ -576,7 +576,11 @@
     "cartaCoperta": "Carta coperta",
     "scopri": "Scopri",
     "prossima": "Prossima carta",
-    "fine": "Vedi il riepilogo"
+    "fine": "Vedi il riepilogo",
+    "salta": "Salta",
+    "cartaN": "Carta {n} di {tot}",
+    "scorri": "Trascina, usa la rotella o le frecce per scorrere le carte.",
+    "doppioneBreve": "Doppione"
   },
   "ranked": {
     "titolo": "Classificata",

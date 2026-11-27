@@ -1,13 +1,12 @@
 "use client";
 
-import Icon from "@/components/Icon";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
 import DuelloCard from "@/components/duello/DuelloCard";
+import Icon from "@/components/Icon";
 import PackArt, { H, STRAPPO, TEMI_PACCHETTO } from "@/components/negozio/PackArt";
-import { SHOW_IMAGES } from "@/lib/api";
 import it from "@/i18n/it.json";
 import type { AperturaOut } from "@/lib/negozio";
 
@@ -20,33 +19,40 @@ const GLOW: Record<string, string> = {
 const NOMI_RARITA = it.album.rarita as Record<string, string>;
 const SOGLIA = 0.9; // quanta linea va percorsa per strappare la busta
 
+// Carosello 3D: spostamento (in % della larghezza carta), scala e inclinazione per distanza dal centro.
+const X = [0, 66, 116, 152, 176, 192];
+const SCALA = [1, 0.86, 0.72, 0.6, 0.5, 0.42];
+const lim = (n: number) => Math.min(Math.abs(n), X.length - 1);
+
 interface Props {
   apertura: AperturaOut;
   nome: string;
   onChiudi: () => void;
 }
 
-type Fase = "chiuso" | "aperto" | "riepilogo";
+type Fase = "chiuso" | "carosello";
 
 export default function PackOpening({ apertura, nome, onChiudi }: Props) {
   const [fase, setFase] = useState<Fase>("chiuso");
   const [taglio, setTaglio] = useState(0); // 0..1 lungo la linea
   const [indice, setIndice] = useState(0);
-  const [girata, setGirata] = useState(false);
+  const [rivelate, setRivelate] = useState<number[]>([]);
+  const [riepilogo, setRiepilogo] = useState(false);
   const trascina = useRef(false);
   const taglioRef = useRef(0);
   const banda = useRef<HTMLDivElement>(null);
+  const bloccoRuota = useRef(0);
   const tema = TEMI_PACCHETTO[apertura.tipo] ?? TEMI_PACCHETTO.base;
   const carte = apertura.carte;
+  const n = carte.length;
   const corrente = carte[indice];
+  const girata = rivelate.includes(indice);
 
   const apriBusta = () => {
     taglioRef.current = 1;
     setTaglio(1);
     trascina.current = false;
-    setFase("aperto");
-    setIndice(0);
-    setGirata(false);
+    setFase("carosello");
   };
 
   const muovi = (clientX: number) => {
@@ -60,49 +66,87 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
     else setTaglio(nuovo);
   };
 
+  // la carta al centro si gira da sola dopo un attimo
+  useEffect(() => {
+    if (fase !== "carosello") return;
+    const t = setTimeout(
+      () => setRivelate((r) => (r.includes(indice) ? r : [...r, indice])),
+      indice === 0 ? 1500 : 450,
+    );
+    return () => clearTimeout(t);
+  }, [fase, indice]);
+
+  const vai = useCallback(
+    (nuovo: number) => setIndice((i) => Math.min(n - 1, Math.max(0, nuovo === i ? i : nuovo))),
+    [n],
+  );
   const avanti = () => {
-    if (!girata) {
-      setGirata(true);
-      return;
-    }
-    if (indice + 1 >= carte.length) setFase("riepilogo");
-    else {
-      setIndice(indice + 1);
-      setGirata(false);
-    }
+    if (indice + 1 >= n) setRiepilogo(true);
+    else vai(indice + 1);
   };
 
-  const tutte = fase === "riepilogo";
+  useEffect(() => {
+    if (fase !== "carosello" || riepilogo) return;
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") setIndice((i) => Math.min(n - 1, i + 1));
+      else if (e.key === "ArrowLeft") setIndice((i) => Math.max(0, i - 1));
+      else if (e.key === "Enter" && indice === n - 1) setRiepilogo(true);
+    };
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
+  }, [fase, riepilogo, n, indice]);
+
   const stratoStrappo = (STRAPPO / H) * 100;
+  const rara = corrente && (corrente.rarita === "epica" || corrente.rarita === "leggendaria");
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-[radial-gradient(ellipse_at_50%_40%,#1b1240,#05040c_70%)] p-4"
+      className="fixed inset-0 z-50 overflow-hidden bg-[#05040c]"
       data-testid="apertura"
     >
-      <div className="mx-auto flex min-h-full max-w-5xl flex-col items-center justify-center gap-4 py-6 text-center">
-        <h2 className="display text-3xl font-black sm:text-4xl" style={{ color: tema.accento }}>
-          {nome}
-        </h2>
-        {apertura.garanzia_pity && fase !== "chiuso" && (
-          <p className="font-bold text-amber-300">{it.negozio.garanziaPity}</p>
-        )}
+      {/* alone del colore del pacchetto */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `radial-gradient(ellipse at 50% 45%, ${tema.a}40, transparent 62%)`,
+        }}
+      />
+      <button
+        className="absolute right-4 top-4 z-30 rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-bold uppercase tracking-widest hover:bg-white/15"
+        onClick={() => {
+          setFase("carosello");
+          setRivelate(carte.map((_, i) => i));
+          setRiepilogo(true);
+        }}
+        data-testid="scopri-tutte"
+      >
+        {it.negozio.salta}
+      </button>
 
+      <div className="relative mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-3 px-4 py-6 text-center">
         {fase === "chiuso" && (
           <>
-            <p className="text-sm muted">{it.negozio.taglia}</p>
+            <h2 className="display text-3xl font-black sm:text-4xl" style={{ color: tema.accento }}>
+              {nome}
+            </h2>
             <div
-              className="relative w-[min(78vw,380px,56vh)] select-none"
-              style={{ aspectRatio: "240 / 340" }}
+              className="relative w-[min(72vw,360px,46vh)] select-none"
+              style={{ aspectRatio: "240 / 420" }}
             >
               <motion.div
                 className="absolute inset-0"
-                animate={{ rotate: [0, -1.2, 1.2, 0] }}
-                transition={{ duration: 3.2, repeat: Infinity }}
+                initial={{ y: 40, opacity: 0, scale: 0.9 }}
+                animate={{ y: [0, -8, 0], rotate: [0, -1.4, 1.4, 0], opacity: 1, scale: 1 }}
+                transition={{
+                  y: { duration: 3.4, repeat: Infinity, ease: "easeInOut" },
+                  rotate: { duration: 4.6, repeat: Infinity, ease: "easeInOut" },
+                  default: { duration: 0.6 },
+                }}
               >
-                <PackArt tipo={apertura.tipo} nome={nome} className="size-full" />
+                <PackArt tipo={apertura.tipo} nome={nome} carte={n} className="size-full" />
               </motion.div>
               {/* linea di strappo: tratteggiata, poi luminosa dove hai già tagliato */}
               <div
@@ -148,7 +192,7 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                   style={{ width: `calc((100% - 3rem) * ${taglio})` }}
                 />
                 <span
-                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl drop-shadow-[0_2px_6px_rgb(0_0_0/0.8)]"
+                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_2px_6px_rgb(0_0_0/0.8)]"
                   style={{ left: `calc(1.5rem + (100% - 3rem) * ${taglio})` }}
                   aria-hidden="true"
                 >
@@ -156,99 +200,163 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 </span>
               </div>
             </div>
+            <p className="max-w-md text-sm font-bold uppercase tracking-wider text-white/80">
+              {it.negozio.taglia}
+            </p>
             <p className="text-xs muted">{it.negozio.tagliaAiuto}</p>
           </>
         )}
 
-        {fase === "aperto" && corrente && (
+        {fase === "carosello" && (
           <>
-            <div
-              className="relative grid w-[min(80vw,340px,41vh)] place-items-center"
-              style={{ aspectRatio: "5 / 7.6" }}
+            <p className="display text-sm tracking-[0.3em] text-white/70" aria-live="polite">
+              {fmt(it.negozio.cartaN, { n: indice + 1, tot: n })}
+            </p>
+            <motion.div
+              className="relative w-full touch-pan-y select-none"
+              style={{ height: "min(62vh, 560px)", perspective: 1600 }}
+              onPanEnd={(_, info) => {
+                if (info.offset.x < -50) setIndice((i) => Math.min(n - 1, i + 1));
+                else if (info.offset.x > 50) setIndice((i) => Math.max(0, i - 1));
+              }}
+              onWheel={(e) => {
+                const ora = Date.now();
+                if (ora < bloccoRuota.current) return;
+                const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+                if (Math.abs(d) < 12) return;
+                bloccoRuota.current = ora + 350;
+                setIndice((i) => Math.min(n - 1, Math.max(0, i + (d > 0 ? 1 : -1))));
+              }}
+              data-testid="carosello"
             >
-              {/* busta strappata */}
+              {/* busta strappata che esce di scena */}
               <motion.div
-                className="absolute inset-x-[-8%] bottom-[-26%] z-0"
+                className="pointer-events-none absolute left-1/2 top-[8%] z-0 w-[min(46vw,300px,32vh)] -translate-x-1/2"
                 initial={{ y: 0, opacity: 1 }}
-                animate={{ y: 140, opacity: 0.0 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
+                animate={{ y: 520, opacity: 0 }}
+                transition={{ delay: 0.5, duration: 0.9, ease: "easeIn" }}
               >
                 <PackArt tipo={apertura.tipo} nome={nome} parte="corpo" className="w-full" />
               </motion.div>
               <motion.div
-                className="absolute left-1/2 top-[-34%] z-0 w-[84%] -translate-x-1/2"
-                initial={{ y: 0, rotate: 0, opacity: 1 }}
-                animate={{ y: -180, x: 120, rotate: 28, opacity: 0 }}
+                className="pointer-events-none absolute left-1/2 top-[-4%] z-0 w-[min(46vw,300px,32vh)] -translate-x-1/2"
+                initial={{ y: 0, x: 0, rotate: 0, opacity: 1 }}
+                animate={{ y: -260, x: 220, rotate: 34, opacity: 0 }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
               >
                 <PackArt tipo={apertura.tipo} nome={nome} parte="cima" className="w-full" />
               </motion.div>
-              <motion.span
-                aria-hidden="true"
-                className="absolute inset-0 z-0 rounded-full"
-                style={{ background: `radial-gradient(circle, ${tema.accento}, transparent 65%)` }}
-                initial={{ opacity: 0.9, scale: 0.4 }}
-                animate={{ opacity: 0, scale: 2.4 }}
-                transition={{ duration: 1 }}
-              />
-              <AnimatePresence mode="wait">
-                <motion.button
-                  key={indice}
-                  type="button"
-                  className="relative z-10 block w-full cursor-pointer [perspective:900px]"
-                  initial={{ y: 320, scale: 0.55, opacity: 0, rotate: 6 }}
-                  animate={{ y: 0, scale: 1, opacity: 1, rotate: 0 }}
-                  exit={{ x: -420, rotate: -16, opacity: 0, transition: { duration: 0.4 } }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 140,
-                    damping: 16,
-                    delay: indice === 0 ? 0.55 : 0,
-                  }}
-                  onClick={avanti}
-                  data-testid="carta-corrente"
-                  aria-label={girata ? corrente.carta.nome : it.negozio.cartaCoperta}
-                >
+
+              {carte.map((c, i) => {
+                const d = i - indice;
+                const k = lim(d);
+                const segno = Math.sign(d);
+                const aperta = rivelate.includes(i);
+                const attiva = d === 0;
+                const colore = GLOW[c.rarita] ?? GLOW.comune;
+                return (
                   <motion.div
-                    animate={{ rotateY: girata ? 0 : 180 }}
-                    transition={{ duration: 0.55 }}
-                    style={{ transformStyle: "preserve-3d" }}
-                    className="relative"
+                    key={i}
+                    className="absolute left-1/2 top-[3%] w-[min(56vw,330px,38vh)]"
+                    style={{ marginLeft: "calc(min(56vw, 330px, 38vh) / -2)", zIndex: 50 - k }}
+                    initial={{ y: 420, x: "0%", scale: 0.5, opacity: 0, rotateY: 0 }}
+                    animate={{
+                      y: 0,
+                      x: `${segno * X[k]}%`,
+                      scale: SCALA[k],
+                      rotateY: attiva ? 0 : -segno * 14,
+                      opacity: Math.abs(d) > 5 ? 0 : 1,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 130,
+                      damping: 18,
+                      delay: fase === "carosello" && indice === 0 ? 0.35 + i * 0.07 : 0,
+                    }}
+                    onClick={() => !attiva && vai(i)}
+                    data-testid={attiva ? "carta-corrente" : undefined}
                   >
-                    <div style={{ backfaceVisibility: "hidden" }}>
+                    <motion.div
+                      className="relative"
+                      animate={{ rotateY: aperta ? 0 : 180 }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      style={{ transformStyle: "preserve-3d" }}
+                    >
+                      <div style={{ backfaceVisibility: "hidden" }}>
+                        <div
+                          className="rounded-2xl"
+                          style={{
+                            boxShadow:
+                              aperta && attiva
+                                ? `0 0 70px 8px ${colore}`
+                                : "0 18px 40px rgb(0 0 0 / 0.6)",
+                          }}
+                        >
+                          <DuelloCard carta={c.carta} />
+                        </div>
+                        {aperta && (
+                          <span
+                            className={`absolute -right-2 top-16 z-10 rotate-6 rounded-md px-2 py-0.5 text-xs font-black uppercase shadow-lg ${
+                              c.nuova ? "bg-amber-300 text-black" : "bg-white/90 text-black"
+                            }`}
+                          >
+                            {c.nuova ? it.negozio.nuova : it.negozio.doppioneBreve}
+                          </span>
+                        )}
+                      </div>
+                      {/* dorso */}
                       <div
-                        className="rounded-2xl"
+                        className="absolute inset-0 grid place-items-center overflow-hidden rounded-2xl border-[3px] border-white/70"
                         style={{
-                          boxShadow: girata
-                            ? `0 0 60px 10px ${GLOW[corrente.rarita] ?? GLOW.comune}`
-                            : undefined,
+                          transform: "rotateY(180deg)",
+                          backfaceVisibility: "hidden",
+                          background: `radial-gradient(circle at 50% 38%, ${tema.a}, ${tema.b} 78%)`,
+                          boxShadow: "0 18px 40px rgb(0 0 0 / 0.6)",
                         }}
                       >
-                        <DuelloCard carta={corrente.carta} />
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 opacity-30"
+                          style={{
+                            backgroundImage:
+                              "radial-gradient(circle, #fff 1.2px, transparent 1.6px)",
+                            backgroundSize: "14px 14px",
+                          }}
+                        />
+                        <span className="relative grid aspect-square w-[58%] place-items-center rounded-full border-4 border-white/80 bg-black/55 text-center shadow-[0_0_30px_rgb(0_0_0/0.5)]">
+                          <span>
+                            <Icon name="bolt" className="size-[2.4rem] text-white" />
+                            <span className="display block text-xl font-black leading-none">
+                              ARENA
+                              <br />
+                              ANIME
+                            </span>
+                          </span>
+                        </span>
                       </div>
-                    </div>
-                    <div
-                      className="absolute inset-0 grid place-items-center overflow-hidden rounded-2xl border-2 border-white/40"
-                      style={{
-                        transform: "rotateY(180deg)",
-                        backfaceVisibility: "hidden",
-                        background: `radial-gradient(circle at 50% 38%, ${tema.a}, ${tema.b} 72%)`,
-                        boxShadow:
-                          "inset 0 0 0 6px rgb(0 0 0 / 0.25), inset 0 0 0 8px rgb(255 255 255 / 0.35)",
-                      }}
-                    >
-                      <span className="display grid size-20 place-items-center rounded-full border-2 border-white/70 bg-black/50 text-4xl font-black text-white">
-                        <Icon name="bolt" className="size-10" />
-                      </span>
-                    </div>
+                    </motion.div>
                   </motion.div>
-                </motion.button>
-              </AnimatePresence>
-            </div>
-            <div className="h-12 text-sm font-bold" aria-live="polite">
+                );
+              })}
+              {girata && rara && (
+                <motion.span
+                  key={`flash${indice}`}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-1/2 top-[40%] z-[60] size-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${GLOW[corrente.rarita]}aa, transparent 65%)`,
+                  }}
+                  initial={{ opacity: 0.9, scale: 0.3 }}
+                  animate={{ opacity: 0, scale: 1.6 }}
+                  transition={{ duration: 0.9 }}
+                />
+              )}
+            </motion.div>
+
+            <div className="h-8 text-sm font-bold" aria-live="polite">
               {girata && (
                 <>
-                  <span style={{ color: GLOW[corrente.rarita] }} className="display text-xl">
+                  <span style={{ color: GLOW[corrente.rarita] }} className="display text-2xl">
                     {NOMI_RARITA[corrente.rarita]}
                   </span>{" "}
                   {corrente.nuova ? (
@@ -261,62 +369,65 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 </>
               )}
             </div>
+            {/* avanzamento: i bollini delle carte rare si accendono */}
+            <ul className="flex gap-2" aria-hidden="true">
+              {carte.map((c, i) => {
+                const speciale = c.rarita === "epica" || c.rarita === "leggendaria";
+                return (
+                  <li
+                    key={i}
+                    className="size-2.5 rounded-full transition-all"
+                    style={{
+                      background:
+                        i === indice
+                          ? "#fff"
+                          : speciale && i < indice
+                            ? GLOW[c.rarita]
+                            : "rgb(255 255 255 / 0.22)",
+                      transform: i === indice ? "scale(1.5)" : undefined,
+                      boxShadow: speciale && i <= indice ? `0 0 8px ${GLOW[c.rarita]}` : undefined,
+                    }}
+                  />
+                );
+              })}
+            </ul>
             <div className="flex items-center gap-2">
               <button className="btn btn-primary" onClick={avanti} data-testid="avanti">
-                {!girata
-                  ? it.negozio.scopri
-                  : indice + 1 >= carte.length
-                    ? it.negozio.fine
-                    : it.negozio.prossima}
-              </button>
-              <button
-                className="btn"
-                onClick={() => setFase("riepilogo")}
-                data-testid="scopri-tutte"
-              >
-                {it.negozio.scopriTutte}
+                {indice + 1 >= n ? it.negozio.fine : it.negozio.prossima}
               </button>
             </div>
-            <p className="text-xs muted">
-              {indice + 1} / {carte.length}
-            </p>
-            <ul className="flex gap-1.5" aria-hidden="true">
-              {carte.slice(0, indice).map((c, i) => (
-                <li
-                  key={i}
-                  className="size-10 overflow-hidden rounded-md border-2"
-                  style={{ borderColor: GLOW[c.rarita] }}
-                >
-                  {SHOW_IMAGES && c.carta.immagine_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={c.carta.immagine_url}
-                      alt=""
-                      referrerPolicy="no-referrer"
-                      className="size-full object-cover object-top"
-                    />
-                  )}
-                </li>
-              ))}
-            </ul>
+            <p className="text-xs muted">{it.negozio.scorri}</p>
           </>
         )}
+      </div>
 
-        {tutte && (
-          <>
-            <ul className="grid w-full grid-cols-2 justify-items-center gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      {riepilogo && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute inset-0 z-40 grid place-items-center overflow-y-auto bg-black/80 p-4"
+        >
+          <div className="panel w-full max-w-4xl space-y-4 p-5 text-center sm:p-7">
+            <p className="eyebrow justify-center">{nome}</p>
+            <h3 className="display text-3xl font-black" data-testid="riepilogo-apertura">
+              {fmt(it.negozio.riepilogo, {
+                n: carte.filter((c) => c.nuova).length,
+                m: apertura.rimborsati,
+              })}
+            </h3>
+            <ul className="grid grid-cols-2 justify-items-center gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {carte.map((c, i) => (
                 <motion.li
                   key={i}
-                  className="w-full max-w-[220px]"
-                  initial={{ opacity: 0, y: 40 }}
+                  className="w-full max-w-[200px]"
+                  initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.12 }}
+                  transition={{ delay: i * 0.08 }}
                   data-testid="carta-pacchetto"
                 >
                   <div
                     className="rounded-2xl"
-                    style={{ boxShadow: `0 0 28px ${GLOW[c.rarita]}88` }}
+                    style={{ boxShadow: `0 0 24px ${GLOW[c.rarita]}88` }}
                   >
                     <DuelloCard carta={c.carta} />
                   </div>
@@ -332,25 +443,17 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                 </motion.li>
               ))}
             </ul>
-            <div className="space-y-3" data-testid="riepilogo-apertura">
-              <p>
-                {fmt(it.negozio.riepilogo, {
-                  n: carte.filter((c) => c.nuova).length,
-                  m: apertura.rimborsati,
-                })}
-              </p>
-              <div className="flex justify-center gap-2">
-                <button className="btn btn-primary" onClick={onChiudi}>
-                  {it.negozio.chiudi}
-                </button>
-                <Link href="/album" className="btn">
-                  {it.negozio.vaiAlbum}
-                </Link>
-              </div>
+            <div className="flex justify-center gap-2">
+              <button className="btn btn-primary" onClick={onChiudi}>
+                {it.negozio.chiudi}
+              </button>
+              <Link href="/album" className="btn">
+                {it.negozio.vaiAlbum}
+              </Link>
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

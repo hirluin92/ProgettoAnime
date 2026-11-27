@@ -104,7 +104,7 @@ export default function NegozioView() {
               style={{ background: COLORI[t.id] }}
             />
             <div className="pack-vetrina relative mx-auto w-[78%] max-w-[210px] will-change-transform">
-              <PackArt tipo={t.id} nome={t.nome} className="w-full" />
+              <PackArt tipo={t.id} nome={t.nome} carte={t.carte} className="w-full" />
             </div>
             <div className="relative">
               <h2 className="display text-2xl font-black" style={{ color: COLORI[t.id] }}>

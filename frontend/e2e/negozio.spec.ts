@@ -33,11 +33,8 @@ test("negozio: probabilità visibili, apertura carta per carta, saldo e album ag
   await page.mouse.move(box.x + box.width / 2, y, { steps: 8 });
   await page.mouse.move(box.x + box.width - 10, y, { steps: 8 });
   await page.mouse.up();
-  // le carte escono una per una: scopri e passa alla successiva
-  for (let i = 0; i < 4; i++) {
-    await page.getByTestId("avanti").click(); // scopri
-    await page.getByTestId("avanti").click(); // prossima / riepilogo
-  }
+  // le carte escono in un carosello: avanti fino al riepilogo
+  for (let i = 0; i < 4; i++) await page.getByTestId("avanti").click();
   await expect(page.getByTestId("carta-pacchetto")).toHaveCount(4);
   await expect(page.getByTestId("riepilogo-apertura")).toBeVisible();
   await page.getByRole("button", { name: "Continua" }).click();
