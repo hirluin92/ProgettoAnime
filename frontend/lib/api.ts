@@ -1,4 +1,4 @@
-import it from "@/i18n/it.json";
+import it from "../i18n/it.json";
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 export const SHOW_IMAGES = process.env.NEXT_PUBLIC_SHOW_IMAGES !== "false";
