@@ -555,8 +555,8 @@ export default function DuelloGame({
       for (const e of rivela) {
         if (skip.current) break;
         setCaption(
-          fmt(it.duello.rivela, {
-            chi: e.lato === 0 ? it.duello.tu : it.duello.cpu,
+          fmt(e.lato === 0 ? it.duello.rivelaTu : it.duello.rivela, {
+            chi: it.duello.cpu,
             carta: e.carta_view!.nome,
             n: (e.corsia ?? 0) + 1,
           }) + (e.carta_view!.mossa !== "-" ? ` — ${e.carta_view!.testo_mossa}` : ""),

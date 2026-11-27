@@ -52,7 +52,7 @@ export default function RankedHome() {
   return (
     <main className="mx-auto max-w-5xl space-y-5 p-4 pt-6" data-testid="ranked">
       <header className="space-y-1">
-        <span className="eyebrow">{profile.name}</span>
+        <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
         <h1 className="display text-4xl font-black">{it.ranked.titolo}</h1>
         <p className="max-w-2xl text-sm muted">{it.ranked.intro}</p>
       </header>

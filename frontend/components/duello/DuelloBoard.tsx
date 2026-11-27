@@ -235,7 +235,7 @@ export default function DuelloBoard({
                 ))}
               </div>
               <button
-                className={`btn relative text-xs ${selCarta ? "btn-primary" : ""}`}
+                className={`btn relative text-xs ${selCarta ? "btn-primary" : ""} ${stato.finita ? "hidden" : ""}`}
                 disabled={
                   !selCarta ||
                   occupato ||
@@ -257,15 +257,20 @@ export default function DuelloBoard({
       </div>
 
       <div
-        className="min-h-6 text-center text-sm font-bold text-amber-200"
+        className="min-h-6 text-center text-sm font-bold leading-snug text-amber-200"
         aria-live="polite"
         data-testid="duello-caption"
       >
-        {caption ?? (stato.finita ? "" : selCarta ? it.duello.sceltaCorsia : it.duello.sceltaCarta)}
+        {caption ??
+          (stato.finita
+            ? ""
+            : selCarta
+              ? `${selCarta.nome}: ${selCarta.testo_mossa.replace(/^(Al rivelarsi|Continuo):\s*/i, "")} · ${selCarta.testo_passiva.replace(/^(Al rivelarsi|Continuo):\s*/i, "")} — ${it.duello.sceltaCorsia}`
+              : it.duello.sceltaCarta)}
       </div>
 
       {!stato.finita && (
-        <section className="space-y-2">
+        <section className="sticky bottom-[3.75rem] z-30 -mx-1 space-y-2 rounded-2xl border bg-[#0a0818] p-2 shadow-[0_-12px_30px_rgb(0_0_0/0.6)] sm:bottom-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-sm font-black" data-testid="duello-energia">
               <Icon name="bolt" className="size-[1em] text-amber-300" /> {it.duello.energia}:{" "}
@@ -289,10 +294,11 @@ export default function DuelloBoard({
               </button>
             </div>
           </div>
-          <div className="-mx-3 flex snap-x gap-2 overflow-x-auto px-3 pb-2">
+          <div className="flex snap-x gap-2 overflow-x-auto px-1 pb-1 pt-2">
             {inMano.map((c) => (
-              <div key={c.id} className="w-44 shrink-0 snap-start sm:w-52">
+              <div key={c.id} className="w-28 shrink-0 snap-start sm:w-32 lg:w-36">
                 <DuelloCard
+                  mano
                   carta={c}
                   selected={sel === c.id}
                   dim={c.costo > stato.energia - speso}

@@ -471,6 +471,7 @@
     "annulla": "Togli",
     "inAttesa": "Svelo le carte…",
     "rivela": "{chi} gioca {carta} in corsia {n}",
+    "rivelaTu": "Giochi {carta} in corsia {n}",
     "costo": "Costo",
     "potenza": "Potenza",
     "alRivelarsi": "Al rivelarsi",

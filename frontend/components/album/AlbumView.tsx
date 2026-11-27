@@ -70,7 +70,7 @@ export default function AlbumView() {
   return (
     <main className="mx-auto max-w-[88rem] space-y-5 p-4 pt-6" data-testid="album">
       <header className="space-y-1">
-        <span className="eyebrow">{profile.name}</span>
+        <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
         <h1 className="display text-4xl font-black">{it.album.titolo}</h1>
         <p className="text-sm muted" data-testid="album-conta">
           {fmt(it.album.possiedi, { n: album.posseduti, tot: album.totale })}
