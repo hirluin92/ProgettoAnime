@@ -19,7 +19,14 @@ export default defineConfig({
         RATE_LIMIT_PER_MIN: "0",
       },
     },
-    { command: "npm run dev", url: "http://localhost:3000", reuseExistingServer: true },
+    {
+      // in CI si prova il sito compilato come in produzione: il server di sviluppo ricompila le pagine
+      // mentre i test girano (Fast Refresh) e a volte ricarica la pagina nel mezzo di un clic
+      command: process.env.CI ? "npm run build && npm run start" : "npm run dev",
+      url: "http://localhost:3000",
+      reuseExistingServer: true,
+      timeout: 300_000,
+    },
   ],
   use: { baseURL: "http://localhost:3000" },
 });
