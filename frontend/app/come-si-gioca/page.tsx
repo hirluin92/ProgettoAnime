@@ -54,7 +54,7 @@ export default function ComeSiGiocaPage() {
           </p>
         </section>
       </main>
-      <LinkSfide senza="/come-si-gioca" />
+      <LinkSfide />
       <JsonLd
         dati={{
           "@context": "https://schema.org",

@@ -395,30 +395,36 @@ export default function Home() {
             <p className="text-sm font-bold muted">{it.home.sottoCta}</p>
           </div>
 
-          <p
-            className="reveal flex flex-wrap gap-x-5 gap-y-1 text-sm font-black uppercase tracking-wide"
+          {/* i tre secondari: pulsanti veri, a rilievo, con l'emblema nel colore della modalità */}
+          <ul
+            className="reveal grid max-w-xl grid-cols-3 gap-2.5 sm:gap-3"
             style={{ ["--i" as string]: 4 }}
           >
-            <Link
-              href="/ranked"
-              className="inline-flex min-h-11 items-center gap-1.5 underline decoration-2 underline-offset-4 hover:text-white"
-            >
-              <Icon name="crown" /> {it.home.ctaRanked}
-            </Link>
-            <Link
-              href="/negozio"
-              className="inline-flex min-h-11 items-center gap-1.5 underline decoration-2 underline-offset-4 hover:text-white"
-            >
-              <Icon name="cards" /> {it.home.ctaNegozio}
-            </Link>
-            <a
-              href="#amici"
-              className="inline-flex min-h-11 items-center gap-1.5 underline decoration-2 underline-offset-4 hover:text-white"
-              data-testid="cta-quiz-amici"
-            >
-              <Icon name="music" /> {it.home.ctaQuizAmici}
-            </a>
-          </p>
+            {(
+              [
+                { href: "/ranked", icona: "crown", tinta: "#9a86ff", testo: it.home.ctaRanked },
+                { href: "/negozio", icona: "coin", tinta: "#ffd21f", testo: it.home.ctaNegozio },
+                {
+                  href: "#amici",
+                  icona: "music",
+                  tinta: "#ff5fa8",
+                  testo: it.home.ctaQuizAmici,
+                  testId: "cta-quiz-amici",
+                },
+              ] as { href: string; icona: string; tinta: string; testo: string; testId?: string }[]
+            ).map((v) => (
+              <li key={v.href}>
+                <Link
+                  href={v.href}
+                  data-testid={v.testId}
+                  className="btn h-full min-h-[4.75rem] w-full flex-col gap-1 px-1.5 py-2 text-[0.92rem] leading-tight sm:min-h-14 sm:flex-row sm:gap-2 sm:px-3 sm:text-base"
+                >
+                  <Emblema nome={v.icona} tinta={v.tinta} className="size-9 sm:size-10" />
+                  <span>{v.testo}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <Tavola heroes={heroes} />

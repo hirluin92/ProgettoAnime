@@ -49,11 +49,9 @@ function Regole({ onOk }: { onOk: () => void }) {
           </li>
         ))}
       </ol>
-      <p className="text-sm font-bold">
-        <Link href="/come-si-gioca" className="inline-flex min-h-11 items-center underline muted">
-          {it.linkUtili.comeSiGioca}
-        </Link>
-      </p>
+      <Link href="/come-si-gioca" className="btn w-full text-base">
+        <Icon name="shield" /> {it.linkUtili.comeSiGioca}
+      </Link>
       <button
         className="btn btn-primary min-h-14 w-full text-xl"
         onClick={onOk}

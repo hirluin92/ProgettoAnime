@@ -207,6 +207,18 @@ body {
   h2 {
     font-style: italic;
   }
+  /* Anton non ha un vero corsivo: il browser inclina i glifi e l'ultima lettera sporge a destra dalla
+     scatola del testo. Safari su iPhone taglia ciò che sporge quando l'elemento sta su un livello
+     suo (barra in vetro, animazioni, clip-path, overflow nascosto). Ogni testo inclinato si prende
+     quindi a destra lo spazio dello sbalzo: la lettera resta dentro la scatola e niente la taglia. */
+  h1,
+  h2,
+  .corsivo,
+  .display.italic,
+  .text-grad,
+  .onoma {
+    padding-inline-end: 0.18em;
+  }
 
   ::selection {
     background: var(--rosso);

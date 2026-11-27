@@ -8,11 +8,10 @@ const VOCI = [
   { href: "/sfide/scorcio", testo: it.linkUtili.scorcio, icona: "moon" },
   { href: "/sfide/personaggio", testo: it.linkUtili.personaggio, icona: "shield" },
   { href: "/duello/giorno", testo: it.linkUtili.giorno, icona: "trophy" },
-  { href: "/come-si-gioca", testo: it.linkUtili.comeSiGioca, icona: "swords" },
 ] as const;
 
-/** Collegamenti con testo descrittivo verso ogni sfida e verso le regole (resi dal server). */
-export default function LinkSfide({ senza }: { senza?: string }) {
+/** Collegamenti con testo descrittivo verso le sfide del giorno: SOLO le sfide (reso dal server). */
+export default function LinkSfide() {
   return (
     <section
       className="mx-auto mt-14 max-w-7xl px-4 sm:px-5"
@@ -24,7 +23,7 @@ export default function LinkSfide({ senza }: { senza?: string }) {
         {it.linkUtili.titolo}
       </h2>
       <ul className="mt-5 grid gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
-        {VOCI.filter((v) => v.href !== senza).map((v) => (
+        {VOCI.map((v) => (
           <li key={v.href} className="border-b-[1.5px] border-[var(--line)]">
             <Link
               href={v.href}

@@ -40,7 +40,7 @@ export function Marchio({ size = 34, className = "" }: { size?: number; classNam
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <Logo size={size} />
       <span
-        className="display italic leading-none text-carta"
+        className="display corsivo italic leading-none text-carta"
         style={{ fontSize: size * 0.72, letterSpacing: "0.04em" }}
       >
         {APP_NAME}
