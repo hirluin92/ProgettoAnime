@@ -263,12 +263,19 @@ def inizia(ranked_id: str, body: IniziaIn) -> DuelloState:
     if ses is None or ses.usata:
         raise HTTPException(404, "partita classificata non trovata o già iniziata")
     mazzo = _valida_draft(ses.seed, body.picks)
-    ses.usata = True
+    ses.usata = True  # (impostato subito: due richieste insieme non creano due partite)
     leg, riv = _legami()
     stato = nuovo(ses.seed, mazzo, ses.mazzo_opp, leg, riv)
     with session_scope() as s:
-        row = s.get(ProfileRow, ses.pid)
+        row = s.get(ProfileRow, ses.pid, with_for_update=True)
         mmr = row.mmr if row else MMR_INIZIALE
+        prov = 0
+        if row is not None:
+            # chi abbandona una partita persa non deve restare impunito: la sconfitta si registra
+            # subito e a fine partita si corregge con il risultato vero
+            prov = nuovo_mmr(row.mmr, ses.opp.mmr, 0.0, row.ranked_partite) - row.mmr
+            row.mmr += prov
+            row.ranked_partite += 1
     p = Partita(
         id=secrets.token_urlsafe(9),
         stato=stato,
@@ -277,7 +284,7 @@ def inizia(ranked_id: str, body: IniziaIn) -> DuelloState:
         mazzo=mazzo,
         profile_id=ses.pid,
         personale=True,  # niente ELO «contro CPU»: qui conta l'MMR
-        ranked={"rid": ranked_id, "opp": ses.opp.model_dump(), "mmr": mmr},
+        ranked={"rid": ranked_id, "opp": ses.opp.model_dump(), "mmr": mmr, "prov": prov},
     )
     PARTITE[p.id] = p
     return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
@@ -289,9 +296,11 @@ def chiudi(profile_id: str, vinto: bool | None, mazzo: list[Carta], info: dict) 
     esito = 0.5 if vinto is None else (1.0 if vinto else 0.0)
     sett = settimana_di()
     with session_scope() as s:
-        row = s.get(ProfileRow, profile_id)
+        row = s.get(ProfileRow, profile_id, with_for_update=True)
         if row is None:
             raise HTTPException(404, "profilo non trovato")
+        row.mmr -= int(info.get("prov", 0))  # si toglie la sconfitta provvisoria dell'inizio
+        row.ranked_partite -= 1 if "prov" in info else 0
         prima = row.mmr
         lega_p, div_p = lega_di(prima)
         in_piaz = row.ranked_partite < PIAZZAMENTO
@@ -355,7 +364,7 @@ def ritira(profile_id: str, body: RitiraIn) -> RitiraOut:
         raise HTTPException(422, "soglia sconosciuta")
     sett = settimana_di()
     with session_scope() as s:
-        row = s.get(ProfileRow, profile_id)
+        row = s.get(ProfileRow, profile_id, with_for_update=True)
         if row is None:
             raise HTTPException(404, "profilo non trovato")
         w = s.scalar(

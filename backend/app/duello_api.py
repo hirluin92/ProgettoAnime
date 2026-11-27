@@ -2,6 +2,7 @@
 
 import random
 import secrets
+import threading
 import time
 import zlib
 from dataclasses import dataclass, field
@@ -302,6 +303,7 @@ class Partita:
     scala: str | None = None  # id della corsa della Scala (roguelike)
     scala_esito: Any = None
     giocate: int = 0  # carte giocate dal giocatore: senza, nessun premio
+    lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
     giorno: str | None = None  # rompicapo del giorno: giorno e nome del giocatore
     nome: str | None = None
     creata: float = field(default_factory=time.time)
@@ -426,6 +428,11 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
     p = PARTITE.get(partita_id)
     if p is None:
         raise HTTPException(404, "partita non trovata o scaduta")
+    with p.lock:  # due richieste insieme sulla stessa partita non devono sovrapporsi
+        return _turno(p, body)
+
+
+def _turno(p: Partita, body: TurnoIn) -> TurnoOut:
     s = p.stato
     if s.finita:
         raise HTTPException(409, "la partita è finita")
@@ -453,7 +460,10 @@ def turno(partita_id: str, body: TurnoIn) -> TurnoOut:
             if p.scala and p.scala_esito is None:
                 from app.scala_duelli import chiudi as chiudi_scala
 
-                p.scala_esito = chiudi_scala(p.scala, vinto)
+                try:
+                    p.scala_esito = chiudi_scala(p.scala, vinto)
+                except HTTPException:  # corsa scaduta: il duello si chiude comunque
+                    p.scala = None
             if p.ranked and p.profile_id and p.ranked_esito is None:
                 from app.ranked import chiudi
 

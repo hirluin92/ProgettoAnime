@@ -10,4 +10,4 @@ COPY alembic.ini ./
 ENV PATH="/srv/.venv/bin:$PATH" PORT=8080
 EXPOSE 8080
 # Un'istanza sola: lo stato delle stanze sta in memoria (vedi PIANO_MVP.md, sezione 3).
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --proxy-headers --forwarded-allow-ips='*'"]

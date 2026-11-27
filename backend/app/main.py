@@ -1,12 +1,13 @@
 import os
 import random
+import re
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, TypeAdapter
+from pydantic import BaseModel, Field, TypeAdapter, field_validator
 
 from app.account import router as account_router
 from app.album import router as album_router
@@ -170,6 +171,16 @@ class CreateRoomRequest(BaseModel):
     name: str = Field(min_length=1, max_length=24)
     streamer_channel: str | None = Field(None, max_length=40)
     chat_threshold: int | None = Field(None, ge=1, le=100)
+
+    @field_validator("streamer_channel")
+    @classmethod
+    def _canale_valido(cls, v: str | None) -> str | None:
+        if v is None or not v.strip():
+            return None
+        c = v.strip().lstrip("#").lower()
+        if not re.fullmatch(r"[a-z0-9_]{3,25}", c):
+            raise ValueError("nome del canale non valido")
+        return c
 
 
 class CreatedRoom(BaseModel):

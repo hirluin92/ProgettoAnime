@@ -147,3 +147,22 @@ def test_leaderboard_only_lists_accounts_after_placement(tmp_path) -> None:  # t
         row.ranked_partite, row.mmr = 5, 1650  # type: ignore[union-attr]
     c = client.get(f"/api/ranked/{pid}").json()["classifica"]
     assert [r["nome"] for r in c] == ["Elena"] and c[0]["lega"] == "Diamante"
+
+
+def test_abbandonare_una_partita_costa_la_sconfitta(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'ra.db'}")
+    pid = giocatore("Abbandono")
+    prima = client.get(f"/api/ranked/{pid}").json()
+    st = client.post(f"/api/ranked/{pid}/start").json()
+    d = client.get(f"/api/duello/draft?seed={st['seed']}").json()
+    picks = [{"id": d["mani"][i][0]["id"], "hand": i} for i in range(8)]
+    assert (
+        client.post(
+            f"/api/ranked/partita/{st['ranked_id']}/inizia", json={"picks": picks}
+        ).status_code
+        == 200
+    )
+    # si chiude il sito senza finire: l'MMR è già sceso e la partita conta
+    dopo = client.get(f"/api/ranked/{pid}").json()
+    assert dopo["mmr"] < prima["mmr"]
+    assert dopo["partite"] == prima["partite"] + 1

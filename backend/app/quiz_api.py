@@ -277,7 +277,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
                 riga.tentativi, serie_prima(s, pid, "animedle", day) + 1
             )
             riga.crediti = crediti
-            profilo = s.get(ProfileRow, pid)
+            profilo = s.get(ProfileRow, pid, with_for_update=True)
             assert profilo is not None
             profilo.crediti += crediti
         finito = giusto or riga.tentativi >= massimo
@@ -514,7 +514,7 @@ def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
             serie = serie_prima(s, pid, gioco, day) + 1
             crediti = zoom.crediti_vittoria(riga.tentativi, serie)
             riga.crediti = crediti
-            profilo = s.get(ProfileRow, pid)
+            profilo = s.get(ProfileRow, pid, with_for_update=True)
             assert profilo is not None
             profilo.crediti += crediti
         finito = giusto or riga.tentativi >= massimo

@@ -144,3 +144,13 @@ def test_login_is_rate_limited(tmp_path) -> None:  # type: ignore[no-untyped-def
         ).status_code
         == 200
     )
+
+
+def test_blocco_tentativi_non_cresce_all_infinito(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    from app import account
+
+    account._falliti.clear()
+    for i in range(5100):
+        account._falliti[f"ip|nome{i}"] = [0.0]  # tentativi vecchissimi: scaduti
+    account._registra_fallimento("ip|nuovo")
+    assert len(account._falliti) == 1 and "ip|nuovo" in account._falliti

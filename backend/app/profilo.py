@@ -311,7 +311,7 @@ def assegna_premio(
         return None
     giorno = oggi()
     with session_scope() as s:
-        row = s.get(ProfileRow, profile_id)
+        row = s.get(ProfileRow, profile_id, with_for_update=True)
         if row is None or not premio_consentito(s, profile_id, giorno):
             return None
         prima = livello_per_xp(row.xp)
@@ -371,7 +371,7 @@ def assegna_premio_scala(
     if not profile_id or not UUID_RE.match(profile_id):
         return None
     with session_scope() as s:
-        row = s.get(ProfileRow, profile_id)
+        row = s.get(ProfileRow, profile_id, with_for_update=True)
         if row is None or not premio_consentito(s, profile_id, oggi()):
             return None
         prima = livello_per_xp(row.xp)
@@ -427,7 +427,7 @@ def assegna_premio_duello(
     if not profile_id or not UUID_RE.match(profile_id):
         return None
     with session_scope() as s:
-        row = s.get(ProfileRow, profile_id)
+        row = s.get(ProfileRow, profile_id, with_for_update=True)
         if row is None or not premio_consentito(s, profile_id, oggi()):
             return None
         prima = livello_per_xp(row.xp)

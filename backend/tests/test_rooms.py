@@ -101,3 +101,9 @@ def test_streamer_room_has_chat_player_and_channel_limit() -> None:
         ).status_code
         == 409
     )
+
+
+def test_nome_del_canale_streamer_e_validato() -> None:
+    for brutto in ("a", "ab cd", "canale!", "x" * 30, "#a b"):
+        r = client.post("/api/rooms", json={"name": "S", "streamer_channel": brutto})
+        assert r.status_code == 422, brutto
