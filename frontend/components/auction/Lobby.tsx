@@ -1,7 +1,7 @@
 "use client";
 
 import Icon from "@/components/Icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
 import ImpostazioniQuiz from "@/components/quiz/ImpostazioniQuiz";
 import it from "@/i18n/it.json";
@@ -22,6 +22,19 @@ export default function Lobby({
   const [s, setS] = useState<RoomSettings>(room.settings);
   const [copied, setCopied] = useState(false);
   const [imp, setImp] = useState(false);
+  // arrivando dal pulsante «Quiz musicale con gli amici» della home: si parte già in modalità quiz
+  useEffect(() => {
+    if (room.host_id !== me || new URLSearchParams(window.location.search).get("modo") !== "quiz")
+      return;
+    if (room.settings.modalita !== "quiz") {
+      const next = { ...room.settings, modalita: "quiz" as const, quiz_tipo: "sigla" as const };
+      setS(next);
+      socket.send({ type: "update_settings", settings: next });
+    }
+    setImp(true);
+    window.history.replaceState(null, "", window.location.pathname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const upd = (patch: Partial<RoomSettings>) => {
     const next = { ...s, ...patch };
     setS(next);

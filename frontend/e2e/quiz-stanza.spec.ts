@@ -85,3 +85,14 @@ test("quiz tra amici: funziona con più di 2 giocatori (4 in classifica)", async
     "Carla",
   );
 });
+
+test("home: «Crea una stanza per il quiz musicale» apre la lobby già in modalità quiz sulle sigle", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByLabel("Il tuo nome").fill("Anna");
+  await page.getByTestId("crea-quiz").click();
+  await expect(page.getByTestId("quiz-impostazioni-finestra")).toBeVisible();
+  await page.getByTestId("quiz-impostazioni-fatto").click();
+  await expect(page.getByTestId("quiz-riepilogo")).toContainText("Sigle");
+});
