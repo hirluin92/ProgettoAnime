@@ -38,6 +38,10 @@ export interface FeedbackAnimedle {
   fonte: IndizioTesto;
   stagione: IndizioTesto;
 }
+export interface IndizioAnimedle {
+  k: string;
+  v: string;
+}
 export interface AnimedleStato {
   giorno: string;
   tentativi_max: number;
@@ -46,6 +50,7 @@ export interface AnimedleStato {
   vinto: boolean;
   serie: number;
   crediti: number;
+  indizi: IndizioAnimedle[];
   bersaglio: SoluzioneAnime | null;
 }
 export interface AnimedleEsito {
@@ -54,8 +59,12 @@ export interface AnimedleEsito {
   tentativo: number;
   finito: boolean;
   crediti: number;
+  indizi: IndizioAnimedle[];
   bersaglio: SoluzioneAnime | null;
 }
+
+/** Dopo quanti errori si sbloccano gli indizi di Animedle (come il server). */
+export const SOGLIE_INDIZI_ANIMEDLE = [3, 5, 6];
 
 /** Minuscolo, senza accenti né punteggiatura: come fa il server per confrontare i titoli. */
 export const normalizza = (s: string) =>

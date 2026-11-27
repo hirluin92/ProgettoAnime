@@ -58,6 +58,11 @@ class SoluzioneAnime(Model):
     cover: str
 
 
+class AnimedleIndizio(Model):
+    k: str
+    v: str
+
+
 class AnimedleStato(Model):
     giorno: str
     tentativi_max: int
@@ -66,6 +71,7 @@ class AnimedleStato(Model):
     vinto: bool
     serie: int
     crediti: int
+    indizi: list[AnimedleIndizio] = []
     bersaglio: SoluzioneAnime | None = None
 
 
@@ -82,12 +88,17 @@ class AnimedleEsito(Model):
     tentativo: int
     finito: bool
     crediti: int
+    indizi: list[AnimedleIndizio] = []
     bersaglio: SoluzioneAnime | None = None
 
 
 class Nuovo(Model):
     token: str
     tentativi_max: int
+
+
+def _indizi_animedle(t: dict[str, Any], errori: int) -> list[AnimedleIndizio]:
+    return [AnimedleIndizio(**i) for i in animedle.indizi(t, errori)]
 
 
 def soluzione(a: dict[str, Any]) -> SoluzioneAnime:
@@ -175,6 +186,9 @@ def animedle_stato(profile_id: str | None = None) -> AnimedleStato:
         stato.finito = riga.vinto or riga.tentativi >= animedle.TENTATIVI_MAX
         stato.crediti = riga.crediti
         stato.serie = prima + 1 if riga.vinto else prima
+        stato.indizi = _indizi_animedle(
+            animedle.bersaglio_giorno(day), riga.tentativi - (1 if riga.vinto else 0)
+        )
         if stato.finito:
             stato.bersaglio = soluzione(animedle.bersaglio_giorno(day))
     return stato
@@ -222,6 +236,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
             tentativo=body.n,
             finito=finito,
             crediti=0,
+            indizi=_indizi_animedle(t, body.n - (1 if giusto else 0)),
             bersaglio=soluzione(t) if finito else None,
         )
 
@@ -237,6 +252,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
             tentativo=body.n,
             finito=finito,
             crediti=0,
+            indizi=_indizi_animedle(t, body.n - (1 if giusto else 0)),
             bersaglio=soluzione(t) if finito else None,
         )
 
@@ -262,6 +278,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
             tentativo=riga.tentativi,
             finito=finito,
             crediti=crediti,
+            indizi=_indizi_animedle(t, riga.tentativi - (1 if giusto else 0)),
             bersaglio=soluzione(t) if finito else None,
         )
 
@@ -318,7 +335,8 @@ class ZoomStato(Model):
 
 
 class ZoomGuess(Model):
-    risposta_id: int
+    risposta_id: int = 0
+    salta: bool = False  # passa il turno senza rispondere: conta come tentativo e sblocca di più
     profile_id: str | None = None
     token: str | None = None
     n: int = Field(default=1, ge=1, le=50)
@@ -446,7 +464,7 @@ def _bersaglio_token(gioco: str, token: str) -> dict[str, Any]:
 @router.post("/zoom/{gioco}/guess")
 def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
     _gioco_ok(gioco)
-    if zoom.risposta_per_id(gioco, body.risposta_id) is None:
+    if not body.salta and zoom.risposta_per_id(gioco, body.risposta_id) is None:
         raise HTTPException(404, "risposta sconosciuta")
     massimo = zoom.TENTATIVI_MAX
     pid = _profilo_ok(body.profile_id)
@@ -457,7 +475,7 @@ def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
         if body.token is not None
         else zoom.bersaglio_giorno(gioco, day)
     )
-    giusto = body.risposta_id == t["id"]
+    giusto = not body.salta and body.risposta_id == t["id"]
 
     if libero or pid is None:  # allenamento, o senza profilo: niente crediti
         n = body.n

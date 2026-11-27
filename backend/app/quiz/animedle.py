@@ -64,3 +64,20 @@ def feedback(g: dict[str, Any], t: dict[str, Any]) -> dict[str, Any]:
         "fonte": _testo(g["fonte"], t["fonte"]),
         "stagione": _testo(g["stagione"], t["stagione"]),
     }
+
+
+# Indizi extra: dopo quanti errori si sbloccano.
+SOGLIA_INIZIALE = 3
+SOGLIA_COPERTINA = 5
+SOGLIA_PAROLE = 6
+
+
+def indizi(t: dict[str, Any], errori: int) -> list[dict[str, str]]:
+    """Indizi che si sbloccano con gli errori: iniziale, copertina sfocata, numero di parole."""
+    titolo = str(t["titolo_en"] or t["titolo"])
+    scala = [
+        (SOGLIA_INIZIALE, "iniziale", titolo[:1].upper()),
+        (SOGLIA_COPERTINA, "copertina", str(t["cover"])),
+        (SOGLIA_PAROLE, "parole", str(len(titolo.split()))),
+    ]
+    return [{"k": k, "v": v} for n, k, v in scala if errori >= n]
