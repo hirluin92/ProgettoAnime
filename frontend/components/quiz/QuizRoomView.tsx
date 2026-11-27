@@ -69,7 +69,8 @@ export default function QuizRoomView({
     if (codice === "locked" || codice === "done" || codice === "closed") setMsg(errore);
   }, [errore, codice]);
   useEffect(() => {
-    if (esito && !esito.giusto) setMsg(it.quiz.stanza.sbagliata);
+    if (esito && !esito.giusto)
+      setMsg(esito.stessa_serie ? it.quiz.stanza.serieGiusta : it.quiz.stanza.sbagliata);
   }, [esito]);
 
   const classifica = useMemo(() => q.punteggi, [q.punteggi]);

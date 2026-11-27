@@ -31,18 +31,18 @@ def test_livello_cresce_col_tempo_e_la_soluzione_resta_nascosta() -> None:
 def test_risposte_punti_blocco_e_bonus_posizione() -> None:
     p = partita()
     giusto = p.corrente.target["id"]
-    assert p.rispondi("a", giusto + 999999, 1001.0) is False  # sbagliata: blocco
+    assert p.rispondi("a", giusto + 999999, 1001.0) == "no"  # sbagliata: blocco
     with pytest.raises(QuizErrore) as e:
         p.rispondi("a", giusto, 1002.0)
     assert e.value.code == "locked"
-    assert p.rispondi("b", giusto, 1002.0) is True  # primo: bonus 50
-    assert p.rispondi("c", giusto, 1010.0) is True  # secondo: bonus 25, meno tempo
+    assert p.rispondi("b", giusto, 1002.0) == "giusto"  # primo: bonus 50
+    assert p.rispondi("c", giusto, 1010.0) == "giusto"  # secondo: bonus 25, meno tempo
     assert p.giusti["b"] > p.giusti["c"] >= 100 + 25
     assert p.punti["b"] == p.giusti["b"]
     with pytest.raises(QuizErrore):
         p.rispondi("b", giusto, 1011.0)  # già indovinato
     # passato il blocco si può riprovare
-    assert p.rispondi("a", giusto, 1001.0 + BLOCCO + 1) is True
+    assert p.rispondi("a", giusto, 1001.0 + BLOCCO + 1) == "giusto"
     with pytest.raises(QuizErrore):
         p.rispondi("z", giusto, 1003.0)  # non gioca
 
@@ -130,3 +130,17 @@ def test_domanda_sigla_ha_audio_e_secondi_crescenti() -> None:
     p.tick(1020.0, ["a"])
     sol = p.view(1020.0).soluzione
     assert sol is not None and "·" in sol.dettaglio
+
+
+def test_altra_stagione_blocca_meno_e_si_segnala() -> None:
+    from app.quiz.dati import anime
+    from app.rooms.quiz import BLOCCO_SERIE, Domanda
+
+    per_titolo = {a["titolo"]: a for a in anime()}
+    s1 = per_titolo["Re:Zero kara Hajimeru Isekai Seikatsu"]
+    s2 = per_titolo["Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season"]
+    p = partita(n=3)
+    p.domande[0] = Domanda("scorcio", s1)
+    assert p.rispondi("a", s2["id"], 1001.0) == "serie"
+    assert p.blocchi["a"] == 1001.0 + BLOCCO_SERIE
+    assert p.rispondi("b", s1["id"], 1002.0) == "giusto"

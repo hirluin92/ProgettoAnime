@@ -8,7 +8,14 @@ import hashlib
 from typing import Any
 
 from app.quiz.animedle import BONUS_SERIE, BONUS_SERIE_MAX, indice_giorno
-from app.quiz.dati import anime_per_id, personaggi_per_id, pool_anime, pool_personaggi, sigle
+from app.quiz.dati import (
+    anime_per_id,
+    personaggi_per_id,
+    pool_anime,
+    pool_personaggi,
+    sigle,
+    stessa_serie,
+)
 
 TENTATIVI_MAX = 6
 CREDITI_BASE = 40
@@ -101,3 +108,11 @@ def da_chiave(gioco: str, k: int) -> dict[str, Any] | None:
     if gioco == "sigla":
         return sigle()[k] if 0 <= k < len(sigle()) else None
     return risposta_per_id(gioco, k)
+
+
+def risposta_vicina(gioco: str, t: dict[str, Any], risposta_id: int) -> bool:
+    """La risposta sbagliata è un'altra stagione della stessa serie (non vale per i personaggi)."""
+    if gioco == "personaggio":
+        return False
+    r = risposta_per_id(gioco, risposta_id)
+    return r is not None and stessa_serie(t, r)

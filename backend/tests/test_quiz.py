@@ -294,3 +294,54 @@ def test_animedle_indizi_via_api_e_salto_nei_giochi(tmp_path) -> None:  # type: 
         "/api/quiz/zoom/scorcio/guess", json={"salta": True, "token": n["token"], "n": 2}
     ).json()
     assert e["tentativo"] == 2 and len(e["indizi"]) == 1
+
+
+def test_stessa_serie_altre_stagioni() -> None:
+    from app.quiz.dati import stessa_serie
+
+    per_titolo = {a["titolo"]: a for a in anime()}
+    s1 = per_titolo["Re:Zero kara Hajimeru Isekai Seikatsu"]
+    s2 = per_titolo["Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season"]
+    altro = per_titolo["Shingeki no Kyojin"]
+    assert stessa_serie(s1, s2) and stessa_serie(s2, s1)
+    assert not stessa_serie(s1, s1) and not stessa_serie(s1, altro)
+
+
+def test_altra_stagione_viene_segnalata_nelle_sfide() -> None:
+    from app.quiz_api import firma
+
+    per_titolo = {a["titolo"]: a for a in anime()}
+    s1 = per_titolo["Re:Zero kara Hajimeru Isekai Seikatsu"]
+    s2 = per_titolo["Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season"]
+    altro = per_titolo["Shingeki no Kyojin"]
+
+    # scorcio (token fabbricato sul bersaglio «prima stagione»)
+    tok = firma("scorcio", s1["id"])
+    r = client.post(
+        "/api/quiz/zoom/scorcio/guess", json={"risposta_id": s2["id"], "token": tok, "n": 1}
+    ).json()
+    assert not r["giusto"] and r["stessa_serie"]
+    r = client.post(
+        "/api/quiz/zoom/scorcio/guess", json={"risposta_id": altro["id"], "token": tok, "n": 1}
+    ).json()
+    assert not r["giusto"] and not r["stessa_serie"]
+    r = client.post(
+        "/api/quiz/zoom/scorcio/guess", json={"risposta_id": s1["id"], "token": tok, "n": 1}
+    ).json()
+    assert r["giusto"] and not r["stessa_serie"]
+
+    # Animedle in allenamento
+    tok = firma("animedle", s1["id"])
+    r = client.post(
+        "/api/quiz/animedle/guess", json={"anime_id": s2["id"], "token": tok, "n": 1}
+    ).json()
+    assert not r["giusto"] and r["stessa_serie"]
+
+    # i personaggi non hanno stagioni
+    p = client.post("/api/quiz/zoom/personaggio/nuovo").json()
+    r = client.post(
+        "/api/quiz/zoom/personaggio/guess", json={"risposta_id": 1, "token": p["token"], "n": 1}
+    )
+    assert r.status_code in (200, 404)
+    if r.status_code == 200:
+        assert not r.json()["stessa_serie"]

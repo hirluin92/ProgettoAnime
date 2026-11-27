@@ -988,9 +988,14 @@
         "blocco": {
           "title": "Blocco",
           "type": "number"
+        },
+        "stessa_serie": {
+          "default": false,
+          "title": "Stessa Serie",
+          "type": "boolean"
         }
       },
-      "required": ["type", "giusto", "blocco"],
+      "required": ["type", "giusto", "blocco", "stessa_serie"],
       "title": "QuizEsito",
       "type": "object"
     },

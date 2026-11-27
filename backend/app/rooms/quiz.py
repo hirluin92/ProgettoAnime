@@ -10,12 +10,13 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from app.quiz import zoom
-from app.quiz.dati import pool_anime, pool_personaggi, sigle
+from app.quiz.dati import pool_anime, pool_personaggi, sigle, stessa_serie
 from app.rooms.models import QuizIndizio, QuizPunteggio, QuizSoluzione, QuizView
 
 LIVELLI = 6
 RIVELAZIONE = 6.0  # secondi di pausa a fine domanda
 BLOCCO = 4.0  # secondi di attesa dopo una risposta sbagliata
+BLOCCO_SERIE = 2.0  # se almeno era un'altra stagione della stessa serie
 BONUS_POSIZIONE = (50, 25, 10)
 TIPI = ("scorcio", "personaggio", "indizi", "sigla")
 
@@ -47,6 +48,13 @@ class Domanda:
 
     def giusta(self, risposta_id: int) -> bool:
         return bool(risposta_id == self.target["id"])
+
+    def vicina(self, risposta_id: int) -> bool:
+        """Sbagliata ma della stessa serie (solo per le domande su un anime)."""
+        if self.kind == "personaggio":
+            return False
+        r = zoom.risposta_per_id("scorcio", risposta_id)
+        return r is not None and stessa_serie(self.target, r)
 
     def soluzione(self) -> QuizSoluzione:
         t = self.target
@@ -142,8 +150,8 @@ class QuizPartita:
             return LIVELLI - 1
         return max(0, min(LIVELLI - 1, int((adesso - self.inizio) / self.tempo * LIVELLI)))
 
-    def rispondi(self, pid: str, risposta_id: int, adesso: float) -> bool:
-        """True se la risposta è giusta. Alza un errore se non si può rispondere ora."""
+    def rispondi(self, pid: str, risposta_id: int, adesso: float) -> str:
+        """Esito: «giusto», «serie» (altra stagione della stessa serie) o «no»."""
         if self.fase != "domanda" or adesso >= self.scadenza:
             raise QuizErrore("closed", "La domanda è chiusa")
         if pid not in self.punti:
@@ -154,15 +162,16 @@ class QuizPartita:
         if attesa > 0:
             raise QuizErrore("locked", f"Aspetta ancora {attesa:.0f} secondi")
         if not self.corrente.giusta(risposta_id):
-            self.blocchi[pid] = adesso + BLOCCO
-            return False
+            vicina = self.corrente.vicina(risposta_id)
+            self.blocchi[pid] = adesso + (BLOCCO_SERIE if vicina else BLOCCO)
+            return "serie" if vicina else "no"
         resto = max(0.0, self.scadenza - adesso) / self.tempo
         posizione = len(self.giusti)
         bonus = BONUS_POSIZIONE[posizione] if posizione < len(BONUS_POSIZIONE) else 0
         guadagno = 100 + round(100 * resto) + bonus
         self.giusti[pid] = guadagno
         self.punti[pid] += guadagno
-        return True
+        return "giusto"
 
     def tick(self, adesso: float, attivi: list[str]) -> bool:
         """Fa avanzare le fasi. True se qualcosa è cambiato (da trasmettere)."""

@@ -581,6 +581,7 @@
       "voto": "Voto"
     },
     "stanza": {
+      "serieGiusta": "Serie giusta, ma un'altra stagione: riprova tra poco.",
       "tipo": "Giochi",
       "tipi": {
         "misto": "Misto",
@@ -631,7 +632,13 @@
       "parole": "Parole nel titolo"
     },
     "prossimoIndizio": "Prossimo indizio dopo {n} tentativi sbagliati.",
-    "sbagliato": "{nome}: non è questo. L'immagine si scopre un po' di più.",
+    "sbagliato": {
+      "sigla": "{nome}: non è questa. Ora ascolti qualche secondo in più.",
+      "scorcio": "{nome}: non è questo. L'immagine si scopre un po' di più.",
+      "personaggio": "{nome}: non è questo. L'immagine si scopre un po' di più."
+    },
+    "stessaSerie": "{nome}: la serie è quella giusta, ma è un'altra stagione o un altro film! Prova con un'altra.",
+    "stessaSerieBreve": "Stessa serie",
     "indizi": {
       "anno": "Anno",
       "fonte": "Origine",

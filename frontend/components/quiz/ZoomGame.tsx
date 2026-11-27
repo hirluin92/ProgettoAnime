@@ -43,6 +43,8 @@ function valoreIndizio(i: IndizioZoom): string {
   return i.v;
 }
 
+type Tentativo = VoceAnime & { vicina?: boolean };
+
 const chiave = (g: string, giorno: string) => `arena.zoom.${g}.${giorno}`;
 
 export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: boolean }) {
@@ -50,7 +52,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
   const testi = it.quiz[gioco];
   const [stato, setStato] = useState<ZoomStato | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [errori, setErrori] = useState<VoceAnime[]>([]);
+  const [errori, setErrori] = useState<Tentativo[]>([]);
   const [indizi, setIndizi] = useState<IndizioZoom[]>([]);
   const [finito, setFinito] = useState(false);
   const [vinto, setVinto] = useState(false);
@@ -101,7 +103,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
       setSoluzione(s.bersaglio);
       setIndizi(s.indizi);
       const salvato = window.localStorage.getItem(chiave(gioco, s.giorno));
-      if (salvato) setErrori(JSON.parse(salvato) as VoceAnime[]);
+      if (salvato) setErrori(JSON.parse(salvato) as Tentativo[]);
     } catch (e) {
       setMessaggio((e as Error).message);
     }
@@ -138,13 +140,15 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         }),
       });
       setIndizi(e.indizi);
-      const scelto: VoceAnime = v ?? {
+      const scelto: Tentativo = v ?? {
         id: -(errori.length + 1),
         nome: it.quiz.saltato,
         alt: "",
         k: "",
         anno: 0,
+        vicina: false,
       };
+      scelto.vicina = !!e.stessa_serie;
       const nuovi = e.giusto ? errori : [...errori, scelto];
       setErrori(nuovi);
       if (!libero && stato.giorno)
@@ -159,7 +163,14 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         if (!libero && profile)
           setStato(await api<ZoomStato>(`/api/quiz/zoom/${gioco}/stato?profile_id=${profile.id}`));
       } else if (!e.giusto)
-        setMessaggio(v ? it.quiz.sbagliato.replace("{nome}", v.nome) : it.quiz.saltoFatto[gioco]);
+        setMessaggio(
+          !v
+            ? it.quiz.saltoFatto[gioco]
+            : (e.stessa_serie ? it.quiz.stessaSerie : it.quiz.sbagliato[gioco]).replace(
+                "{nome}",
+                v.nome,
+              ),
+        );
     } catch (e) {
       setMessaggio((e as Error).message);
     }
@@ -314,10 +325,15 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
               <li
                 key={e.id}
                 className={`chip ${
-                  e.id < 0 ? "muted" : "text-rose-200 line-through decoration-rose-300/60"
+                  e.id < 0
+                    ? "muted"
+                    : e.vicina
+                      ? "text-amber-200"
+                      : "text-rose-200 line-through decoration-rose-300/60"
                 }`}
               >
                 {e.nome}
+                {e.vicina && <b className="ml-1 text-[0.7rem]">· {it.quiz.stessaSerieBreve}</b>}
               </li>
             ))}
           </ul>

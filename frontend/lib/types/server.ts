@@ -246,6 +246,7 @@ export type Giornata1 = number;
 export type Type12 = "quiz_esito";
 export type Giusto1 = boolean;
 export type Blocco = number;
+export type StessaSerie = boolean;
 export type Type13 = "error";
 export type Code1 = string;
 export type Message = string;
@@ -622,6 +623,7 @@ export interface QuizEsito {
   type: Type12;
   giusto: Giusto1;
   blocco: Blocco;
+  stessa_serie: StessaSerie;
 }
 export interface ErrorMsg {
   type: Type13;

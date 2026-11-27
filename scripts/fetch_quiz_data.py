@@ -24,6 +24,7 @@ query ($page: Int) { Page(page: $page, perPage: 50) {
     id title { romaji english } synonyms seasonYear season format episodes source genres
     averageScore popularity nextAiringEpisode { episode } studios(isMain: true) { nodes { name } }
     coverImage { large } bannerImage
+    relations { edges { relationType node { id type } } }
   } } }
 """
 Q_PERS = """
@@ -62,14 +63,40 @@ def chiama(query: str, page: int) -> dict:
 LATINO = re.compile(r"^[\x20-\x7eÀ-ſ]+$")
 
 
+SERIE = {"PREQUEL", "SEQUEL", "PARENT", "SIDE_STORY"}  # relazioni che tengono unita una serie
+
+
+def assegna_serie(out: list[dict], legami: list[tuple[int, int]]) -> None:
+    """Raggruppa le stagioni della stessa serie (anche passando per anime fuori dall'elenco)."""
+    padre: dict[int, int] = {}
+
+    def trova(x: int) -> int:
+        padre.setdefault(x, x)
+        while padre[x] != x:
+            padre[x] = padre[padre[x]]
+            x = padre[x]
+        return x
+
+    for a, b in legami:
+        ra, rb = trova(a), trova(b)
+        if ra != rb:
+            padre[max(ra, rb)] = min(ra, rb)
+    for a in out:
+        a["serie"] = trova(a["id"])
+
+
 def anime() -> list[dict]:
     out: list[dict] = []
+    legami: list[tuple[int, int]] = []
     pagina = 1
     while len(out) < N_ANIME:
         p = chiama(Q_ANIME, pagina)
         for m in p["media"]:
             if not m.get("seasonYear") or not m.get("format"):
                 continue
+            for e in (m.get("relations") or {}).get("edges") or []:
+                if e["relationType"] in SERIE and e["node"]["type"] == "ANIME":
+                    legami.append((m["id"], e["node"]["id"]))
             titoli = [t for t in (m["title"]["romaji"], m["title"]["english"]) if t]
             if not titoli:
                 continue
@@ -97,7 +124,9 @@ def anime() -> list[dict]:
             break
         pagina += 1
         time.sleep(1.2)
-    return out[:N_ANIME]
+    out = out[:N_ANIME]
+    assegna_serie(out, legami)
+    return out
 
 
 def personaggi() -> list[dict]:

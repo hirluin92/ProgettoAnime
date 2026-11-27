@@ -60,6 +60,7 @@ export interface AnimedleEsito {
   finito: boolean;
   crediti: number;
   indizi: IndizioAnimedle[];
+  stessa_serie?: boolean;
   bersaglio: SoluzioneAnime | null;
 }
 
@@ -148,6 +149,7 @@ export interface ZoomEsito {
   finito: boolean;
   crediti: number;
   indizi: IndizioZoom[];
+  stessa_serie?: boolean;
   bersaglio: SoluzioneZoom | null;
 }
 export interface ZoomNuovo {

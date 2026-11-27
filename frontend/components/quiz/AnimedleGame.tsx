@@ -27,6 +27,7 @@ import {
 interface Riga {
   anime: VoceAnime;
   feedback: FeedbackAnimedle;
+  serie?: boolean; // stessa serie, altra stagione
 }
 
 const COLONNE = [
@@ -88,7 +89,14 @@ function RigaView({ r }: { r: Riga }) {
         animate={{ opacity: 1, x: 0 }}
         className="flex items-center rounded-xl border bg-white/[0.06] px-2 text-[0.8rem] font-extrabold leading-tight"
       >
-        <span className="line-clamp-3">{r.anime.nome}</span>
+        <span className="min-w-0">
+          <span className="line-clamp-3">{r.anime.nome}</span>
+          {r.serie && (
+            <span className="mt-0.5 block text-[0.65rem] font-black uppercase tracking-wide text-amber-300">
+              {it.quiz.stessaSerieBreve}
+            </span>
+          )}
+        </span>
       </motion.div>
       {(["anno", "episodi", "voto"] as const).map((c, i) => (
         <Cella key={c} i={i} esito={f[c].esito} vicino={f[c].vicino}>
@@ -204,7 +212,9 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           n: righe.length + 1,
         }),
       });
-      const nuove = [...righe, { anime: a, feedback: esito.feedback }];
+      const nuove = [...righe, { anime: a, feedback: esito.feedback, serie: !!esito.stessa_serie }];
+      if (esito.stessa_serie && !esito.finito)
+        setErrore(it.quiz.stessaSerie.replace("{nome}", a.nome));
       setRighe(nuove);
       setIndizi(esito.indizi);
       if (!libero && stato.giorno)
@@ -336,7 +346,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           <AnimeSearch onScegli={(a) => void prova(a)} esclusi={provati} testId="animedle-cerca" />
         )}
         {errore && (
-          <p role="alert" className="text-rose-300">
+          <p role="alert" className="text-amber-200">
             {errore}
           </p>
         )}

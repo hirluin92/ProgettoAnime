@@ -85,6 +85,7 @@ class QuizEsito(Model):
     type: Literal["quiz_esito"] = "quiz_esito"
     giusto: bool
     blocco: float  # secondi di attesa prima di poter riprovare (0 se giusto)
+    stessa_serie: bool = False  # era un'altra stagione della stessa serie
 
 
 class UpdateSettings(Model):
