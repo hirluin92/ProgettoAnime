@@ -586,12 +586,14 @@
         "misto": "Misto",
         "scorcio": "Scorcio",
         "personaggio": "Chi è?",
-        "indizi": "Indizi"
+        "indizi": "Indizi",
+        "sigla": "Sigle"
       },
       "titolo": {
         "scorcio": "Quale anime è?",
         "personaggio": "Chi è questo personaggio?",
-        "indizi": "Indovina l'anime dagli indizi"
+        "indizi": "Indovina l'anime dagli indizi",
+        "sigla": "Di quale anime è questa sigla?"
       },
       "round": "Domande",
       "tempo": "Secondi per domanda",

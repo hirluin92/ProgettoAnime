@@ -36,7 +36,9 @@ class RoomSettings(Model):
     difficolta: Literal["normale", "difficile", "epico"] = "normale"
     regole: Literal["classico", "duello"] = "classico"  # combattimento del torneo
     turno_duello: int = Field(default=30, ge=10, le=90)  # secondi per turno nei duelli
-    quiz_tipo: Literal["misto", "scorcio", "personaggio", "indizi"] = "misto"  # giochi del quiz
+    quiz_tipo: Literal["misto", "scorcio", "personaggio", "indizi", "sigla"] = (
+        "misto"  # giochi del quiz
+    )
     quiz_round: int = Field(default=8, ge=3, le=20)  # domande del quiz
     quiz_tempo: int = Field(default=25, ge=10, le=60)  # secondi per domanda
 
@@ -196,12 +198,14 @@ class QuizView(Model):
 
     round: int  # 1-based
     totali: int
-    kind: Literal["scorcio", "personaggio", "indizi"]
+    kind: Literal["scorcio", "personaggio", "indizi", "sigla"]
     fase: Literal["domanda", "rivelazione", "fine"]
     immagine: str | None
     fx: float
     fy: float
     livello: int  # quanto è svelata la domanda (0-5)
+    audio: str | None = None  # anteprima della sigla (solo domande «sigla»)
+    audio_secondi: int = 0  # quanti secondi se ne possono ascoltare a questo livello
     indizi: list[QuizIndizio]
     scadenza: float
     punteggi: list[QuizPunteggio]
