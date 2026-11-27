@@ -60,6 +60,17 @@ test("sfide: Animedle in allenamento con partita nuova", async ({ page }) => {
 for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
   test(`sfide: ${gioco} del giorno, un errore, vittoria e crediti`, async ({ page }) => {
     test.setTimeout(90_000);
+    // registra i nodi di guadagno creati dalla pagina (per controllare il volume dell'audio)
+    await page.addInitScript(() => {
+      const w = window as unknown as { __gains: GainNode[] };
+      w.__gains = [];
+      const orig = AudioContext.prototype.createGain;
+      AudioContext.prototype.createGain = function (this: AudioContext) {
+        const g = orig.call(this);
+        w.__gains.push(g);
+        return g;
+      };
+    });
     await page.goto("/profilo");
     await page.getByLabel("Come ti chiami?").fill(`Zoom${gioco[0]}${Date.now() % 100000}`);
     await page.getByRole("button", { name: "Crea il profilo" }).click();
@@ -93,10 +104,28 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
       await expect(page.getByTestId("ascolto")).toBeVisible();
       // il volume si regola e l'audio lo segue (e viene ricordato)
       await impostaCursore(page, "ascolto-volume", 30);
+      await expect(page.getByTestId("ascolto")).toHaveAttribute("data-volume-applicato", "0.3");
+      // si preme play: l'audio parte davvero e il volume è applicato al nodo di guadagno
+      await page.getByTestId("ascolto-play").click();
       await expect
-        .poll(() => page.evaluate(() => document.querySelector("audio")!.volume))
+        .poll(() => page.evaluate(() => document.querySelector("audio")!.currentTime))
+        .toBeGreaterThan(0.2);
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () => (window as unknown as { __gains: GainNode[] }).__gains?.[0]?.gain.value,
+          ),
+        )
         .toBeCloseTo(0.3, 1);
-      expect(await page.evaluate(() => localStorage.getItem("arena.volume"))).toBe("0.3");
+      await impostaCursore(page, "ascolto-volume", 60);
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () => (window as unknown as { __gains: GainNode[] }).__gains?.[0]?.gain.value,
+          ),
+        )
+        .toBeCloseTo(0.6, 1);
+      expect(await page.evaluate(() => localStorage.getItem("arena.volume"))).toBe("0.6");
     }
     // si può saltare un turno: conta come tentativo e sblocca di più
     await page.getByTestId("zoom-salta").click();

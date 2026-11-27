@@ -1,6 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createRoom, impostaCursore, joinRoom } from "./helpers";
 
+type ConGuadagni = { __gains: GainNode[] };
+
 interface Sol {
   id: number;
   nome: string;
@@ -66,6 +68,19 @@ test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, 
   test.setTimeout(120_000);
   const { host, code } = await createRoom(browser, "Anna");
   const ospite = await joinRoom(browser, code, "Bruno");
+  // registra i nodi di guadagno creati dalla pagina (volume dell'audio)
+  await host.page.addInitScript(() => {
+    const w = window as unknown as ConGuadagni;
+    w.__gains = [];
+    const orig = AudioContext.prototype.createGain;
+    AudioContext.prototype.createGain = function (this: AudioContext) {
+      const g = orig.call(this);
+      w.__gains.push(g);
+      return g;
+    };
+  });
+  await host.page.reload();
+  await expect(host.page.getByTestId("room-code")).toBeVisible();
 
   await host.page.getByLabel("Modalità").selectOption("quiz");
   await host.page.getByTestId("quiz-tipo-sigla").click();
@@ -88,6 +103,15 @@ test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, 
   await expect(host.page.getByTestId("ascolto-loop")).toContainText("spento");
   // di partenza la canzone suona intera, una volta sola (qui 5 secondi: il tetto impostato)
   await expect(host.page.getByTestId("ascolto")).toContainText("5 secondi, una volta sola");
+  // la canzone parte da sola e scorre (senza toccare nulla il volume non blocca l'audio)
+  await expect
+    .poll(() => host.page.evaluate(() => document.querySelector("audio")!.currentTime))
+    .toBeGreaterThan(0.3);
+  // toccando la barra del volume si attiva il controllo di guadagno e l'audio continua
+  await impostaCursore(host.page, "ascolto-volume", 40);
+  await expect
+    .poll(() => host.page.evaluate(() => (window as unknown as ConGuadagni).__gains[0]?.gain.value))
+    .toBeCloseTo(0.4, 1);
   const sol = await soluzione(host.page, code);
   await rispondi(host.page, sol.artista!, "Artista");
   await expect(host.page.getByTestId("quiz-giusto")).toContainText("Giusto");
