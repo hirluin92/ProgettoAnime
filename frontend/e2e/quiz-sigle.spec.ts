@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createRoom, impostaCursore, joinRoom } from "./helpers";
+import { attendiViaQuiz, createRoom, impostaCursore, joinRoom } from "./helpers";
 
 type ConGuadagni = { __gains: GainNode[] };
 
@@ -41,6 +41,7 @@ test("quiz sulle sigle: titolo e artista danno punti parziali, l'anime il pieno,
     await expect(host.page.getByTestId("quiz-stanza")).toContainText(`Domanda ${giro} di 3`, {
       timeout: 20_000,
     });
+    await attendiViaQuiz(host.page, ospite.page);
     const sol = await soluzione(host.page, code);
     if (giro === 1) {
       // prima solo il titolo del brano, poi l'artista: punti ridotti e la domanda resta aperta
@@ -112,6 +113,7 @@ test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, 
   await expect
     .poll(() => host.page.evaluate(() => (window as unknown as ConGuadagni).__gains[0]?.gain.value))
     .toBeCloseTo(0.4, 1);
+  await attendiViaQuiz(host.page, ospite.page);
   const sol = await soluzione(host.page, code);
   await rispondi(host.page, sol.artista!, "Artista");
   await expect(host.page.getByTestId("quiz-giusto")).toContainText("Giusto");

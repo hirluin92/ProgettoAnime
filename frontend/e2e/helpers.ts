@@ -103,6 +103,12 @@ export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boo
   await page.getByTestId("fight").click();
 }
 
+/** Nel quiz ogni domanda parte dopo un conto alla rovescia: si aspetta che sia finito su ogni pagina. */
+export async function attendiViaQuiz(...pagine: Page[]) {
+  for (const p of pagine)
+    await expect(p.getByTestId("quiz-countdown")).toHaveCount(0, { timeout: 15_000 });
+}
+
 /** Imposta un cursore (input range) e avvisa React, come farebbe un trascinamento. */
 export async function impostaCursore(page: Page, testId: string, valore: number) {
   await page.getByTestId(testId).evaluate((el, v) => {

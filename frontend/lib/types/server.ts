@@ -158,6 +158,7 @@ export type Immagine = string | null;
 export type Fx = number;
 export type Fy = number;
 export type Livello = number;
+export type Inizio = number;
 export type Audio = string | null;
 export type AudioSecondi = number;
 export type Loop = boolean;
@@ -490,6 +491,7 @@ export interface QuizView {
   fx: Fx;
   fy: Fy;
   livello: Livello;
+  inizio: Inizio;
   audio: Audio;
   audio_secondi: AudioSecondi;
   loop: Loop;

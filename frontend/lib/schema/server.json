@@ -1125,6 +1125,11 @@
           "title": "Livello",
           "type": "integer"
         },
+        "inizio": {
+          "default": 0.0,
+          "title": "Inizio",
+          "type": "number"
+        },
         "audio": {
           "anyOf": [
             {
@@ -1203,6 +1208,7 @@
         "fx",
         "fy",
         "livello",
+        "inizio",
         "audio",
         "audio_secondi",
         "loop",

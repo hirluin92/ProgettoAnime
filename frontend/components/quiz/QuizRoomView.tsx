@@ -54,8 +54,12 @@ export default function QuizRoomView({
     return () => clearInterval(t);
   }, []);
 
+  // prima del via c'è un conto alla rovescia uguale per tutti: audio e immagini hanno il tempo di caricare
+  const alVia = q.inizio - (adesso + offset);
+  const inPreparazione = q.fase === "domanda" && alVia > 0;
   const resto = Math.max(0, q.scadenza - (adesso + offset));
   const durata = q.fase === "domanda" ? room.settings.quiz_tempo : 6;
+  const barra = inPreparazione ? 1 : Math.min(1, resto / durata);
   const blocco =
     esito && !esito.giusto ? Math.max(0, esito.blocco - (Date.now() - esito.at) / 1000) : 0;
   const bloccato = blocco > 0 && q.fase === "domanda";
@@ -108,7 +112,7 @@ export default function QuizRoomView({
             <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
               <div
                 className={`h-full rounded-full ${chiusa ? "bg-white/30" : "bg-gradient-to-r from-cyan-300 to-pink-500"}`}
-                style={{ width: `${Math.min(100, (resto / durata) * 100)}%` }}
+                style={{ width: `${barra * 100}%` }}
               />
             </div>
           </div>
@@ -170,13 +174,22 @@ export default function QuizRoomView({
                   src={q.audio}
                   livello={livello}
                   intero={chiusa}
-                  autoplay
+                  autoplay={!inPreparazione}
                   tetto={q.audio_secondi || undefined}
                   loopIniziale={q.loop}
                   progressivo={q.audio_progressivo}
                 />
               ) : (
                 <p className="text-center text-sm muted">{it.quiz.stanza.soloIndizi}</p>
+              )}
+              {inPreparazione && (
+                <p
+                  className="display rounded-2xl border bg-black/50 py-3 text-center text-3xl font-black text-amber-200"
+                  role="status"
+                  data-testid="quiz-countdown"
+                >
+                  {fmt(it.quiz.stanza.siParte, { n: Math.ceil(alVia) })}
+                </p>
               )}
               {q.indizi.length > 0 && (
                 <ul className="flex flex-wrap justify-center gap-2" data-testid="quiz-indizi">
@@ -221,7 +234,7 @@ export default function QuizRoomView({
                     personaggi={ritratto}
                     sigle={q.kind === "sigla"}
                     tipi={q.tipi}
-                    disabilitato={bloccato}
+                    disabilitato={bloccato || inPreparazione}
                     testId="quiz-cerca"
                   />
                   {bloccato && (
