@@ -88,7 +88,7 @@ export default function AccountPanel({
         ? it.account.accedi
         : it.account.dimenticata;
   return (
-    <section className="panel space-y-3 p-5" data-testid={`account-${modo}`}>
+    <section className="panel max-w-xl space-y-3 p-5" data-testid={`account-${modo}`}>
       <h2 className="text-2xl font-extrabold">{titolo}</h2>
       {modo === "registra" && <p className="text-sm muted">{it.account.proteggiTesto}</p>}
       <input

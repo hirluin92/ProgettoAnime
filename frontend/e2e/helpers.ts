@@ -118,3 +118,11 @@ export async function impostaCursore(page: Page, testId: string, valore: number)
     input.dispatchEvent(new Event("input", { bubbles: true }));
   }, valore);
 }
+
+/** Il nome esatto, ma senza distinguere l'apostrofo dritto da quello tipografico (nei titoli ce ne sono di entrambi). */
+export function esatto(nome: string): RegExp {
+  const sicuro = nome
+    .replace(/[.*+?^${}()|[\]\\]/g, (m) => `\\${m}`)
+    .replace(/['\u2019]/g, "['\u2019]");
+  return new RegExp(`^${sicuro}$`);
+}

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { attendiViaQuiz, createRoom, impostaCursore, joinRoom } from "./helpers";
+import { attendiViaQuiz, esatto, createRoom, impostaCursore, joinRoom } from "./helpers";
 
 async function soluzione(page: Page, code: string) {
   const r = await page.request.get(`http://localhost:8000/api/dev/quiz-soluzione/${code}`);
@@ -9,7 +9,7 @@ async function soluzione(page: Page, code: string) {
 async function rispondi(page: Page, nome: string) {
   const cerca = page.getByTestId("quiz-cerca");
   await cerca.fill(nome);
-  await page.getByTestId("anime-voce").getByText(nome, { exact: true }).first().click();
+  await page.getByTestId("anime-voce").getByText(esatto(nome)).first().click();
 }
 
 test("quiz tra amici: due giocatori rispondono, blocco dopo l'errore, classifica finale", async ({

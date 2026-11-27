@@ -149,11 +149,11 @@ export default function Lobby({
                   )}
                 </ul>
                 <button
-                  className="btn btn-primary"
+                  className="btn"
                   onClick={() => setImp(true)}
                   data-testid="quiz-impostazioni"
                 >
-                  {it.quiz.imp.apri}
+                  <Icon name="dots" className="size-[1.1em]" /> {it.quiz.imp.apri}
                 </button>
               </div>
               <p className="text-sm muted">{it.quiz.stanza.spiega}</p>

@@ -7,7 +7,24 @@ export default function InfoPage() {
       <h1 className="text-5xl font-black leading-none">
         {it.info.titolo} {APP_NAME}
       </h1>
-      <section>
+      <nav aria-label={it.info.indice} className="flex flex-wrap gap-2">
+        <a href="#duello" className="chip">
+          {it.info.duelloTitolo}
+        </a>
+        <a href="#regole" className="chip">
+          {it.info.regole}
+        </a>
+        <a href="#disclaimer" className="chip">
+          {it.info.disclaimer}
+        </a>
+        <a href="#rimozione" className="chip">
+          {it.info.rimozione}
+        </a>
+        <a href="#cookie" className="chip">
+          {it.info.cookie}
+        </a>
+      </nav>
+      <section id="duello" className="scroll-mt-24">
         <h2 className="text-2xl font-extrabold text-gold">{it.info.duelloTitolo}</h2>
         <ul className="list-disc space-y-1 pl-5">
           {it.info.duelloElenco.map((r) => (
@@ -15,7 +32,7 @@ export default function InfoPage() {
           ))}
         </ul>
       </section>
-      <section>
+      <section id="regole" className="scroll-mt-24">
         <h2 className="text-2xl font-extrabold text-gold">{it.info.regole}</h2>
         <ul className="list-disc pl-5">
           {it.info.regoleElenco.map((r) => (
@@ -23,12 +40,12 @@ export default function InfoPage() {
           ))}
         </ul>
       </section>
-      <section>
+      <section id="disclaimer" className="scroll-mt-24">
         <h2 className="text-2xl font-extrabold text-gold">{it.info.disclaimer}</h2>
         <p>{it.footer}</p>
         <p>{it.info.noImmagini}</p>
       </section>
-      <section>
+      <section id="rimozione" className="scroll-mt-24">
         <h2 className="text-2xl font-extrabold text-gold">{it.info.rimozione}</h2>
         <p>
           {it.info.rimozioneTesto}{" "}
@@ -37,7 +54,7 @@ export default function InfoPage() {
           </a>
         </p>
       </section>
-      <section>
+      <section id="cookie" className="scroll-mt-24">
         <h2 className="text-2xl font-extrabold text-gold">{it.info.cookie}</h2>
         <p>{it.info.cookieTesto}</p>
       </section>

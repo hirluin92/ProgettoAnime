@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { attendiViaQuiz, createRoom, impostaCursore, joinRoom } from "./helpers";
+import { attendiViaQuiz, esatto, createRoom, impostaCursore, joinRoom } from "./helpers";
 
 type ConGuadagni = { __gains: GainNode[] };
 
@@ -18,7 +18,7 @@ async function soluzione(page: Page, code: string) {
 // `tipo` serve quando un anime si chiama come una canzone (es. «Date A Live»)
 async function rispondi(page: Page, nome: string, tipo?: "Anime" | "Brano" | "Artista") {
   await page.getByTestId("quiz-cerca").fill(nome);
-  let voci = page.getByTestId("anime-voce").filter({ has: page.getByText(nome, { exact: true }) });
+  let voci = page.getByTestId("anime-voce").filter({ has: page.getByText(esatto(nome)) });
   if (tipo) voci = voci.filter({ hasText: tipo });
   await voci.first().click();
 }
