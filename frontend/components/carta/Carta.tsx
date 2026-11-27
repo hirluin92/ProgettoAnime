@@ -47,6 +47,8 @@ export interface CartaProps {
   testId?: string;
   ariaLabel?: string;
   className?: string;
+  /** inclinazione 3D che segue il puntatore, con la lamina che scorre (carte grandi) */
+  tilt?: boolean;
   /** contenuto extra sopra l'arte (es. illustrazione di ripiego) */
   arte?: ReactNode;
   title?: string;
@@ -74,6 +76,7 @@ export default function Carta({
   className = "",
   arte,
   title,
+  tilt,
 }: CartaProps) {
   const pal = paletteFor(anime);
   const rarita = raritaDi(rating);
@@ -81,6 +84,24 @@ export default function Carta({
   const conImmagine = SHOW_IMAGES && !!immagine && !rotta;
   const delta = potenza !== undefined && base !== undefined ? potenza - base : 0;
   const mini = misura === "mini";
+  // inclinazione: solo variabili CSS (--rx, --ry, --mx, --my), nessun render di React
+  const inclina = (e: React.PointerEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    const st = e.currentTarget.style;
+    st.setProperty("--rx", `${((0.5 - y) * 14).toFixed(1)}deg`);
+    st.setProperty("--ry", `${((x - 0.5) * 16).toFixed(1)}deg`);
+    st.setProperty("--mx", x.toFixed(2));
+    st.setProperty("--my", y.toFixed(2));
+    st.setProperty("--gl", "1");
+  };
+  const raddrizza = (e: React.PointerEvent<HTMLElement>) => {
+    const st = e.currentTarget.style;
+    st.setProperty("--rx", "0deg");
+    st.setProperty("--ry", "0deg");
+    st.setProperty("--gl", "0");
+  };
   const corpo = (
     <span className="carta-corpo block">
       <span className="carta-quadro block">
@@ -106,6 +127,7 @@ export default function Carta({
         {(rarita === "epica" || rarita === "leggendaria") && !mini && (
           <i className="carta-lucido" aria-hidden="true" />
         )}
+        {tilt && <i className="carta-foil" aria-hidden="true" />}
         {costo !== undefined && !mini && <span className="carta-costo">{costo}</span>}
         {potenza !== undefined && (
           <span className="carta-pot" data-delta={delta > 0 ? "su" : delta < 0 ? "giu" : undefined}>
@@ -145,6 +167,10 @@ export default function Carta({
     "data-scelta": scelta ? "" : undefined,
     "data-spenta": spenta ? "" : undefined,
     "data-fermo": fermo ? "" : undefined,
+    "data-tilt": tilt ? "" : undefined,
+    ...(tilt
+      ? { onPointerMove: inclina, onPointerLeave: raddrizza, onPointerCancel: raddrizza }
+      : {}),
     "data-testid": testId,
     title,
   };

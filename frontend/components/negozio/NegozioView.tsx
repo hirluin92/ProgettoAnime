@@ -7,7 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
-import PackArt from "@/components/negozio/PackArt";
+import Bustina3D from "@/components/negozio/Bustina3D";
 import PackOpening from "@/components/negozio/PackOpening";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
@@ -70,7 +70,7 @@ export default function NegozioView() {
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
         <div className="vuoto">
-          <Moneta grande className="size-14" />
+          <Moneta tre className="size-14" />
           <p className="font-bold text-carta">{it.negozio.senzaProfilo}</p>
           <Link href="/profilo" className="btn btn-primary">
             {it.nav.profilo}
@@ -88,7 +88,7 @@ export default function NegozioView() {
           <p className="max-w-xl text-[0.95rem] font-medium muted">{it.negozio.intro}</p>
         </div>
         <div className="saldo">
-          <Moneta grande gira className="size-16 shrink-0" key={profile.crediti} />
+          <Moneta tre gira className="size-16 shrink-0" key={profile.crediti} />
           <div>
             <div className="num text-3xl leading-none" data-testid="saldo">
               {fmt(it.negozio.crediti, { n: profile.crediti })}
@@ -125,21 +125,20 @@ export default function NegozioView() {
           return (
             <li
               key={t.id}
-              className="panel gruppo-busta group relative isolate flex flex-col items-center overflow-hidden px-4 pb-5 pt-6"
+              className="panel gruppo-busta group relative isolate flex flex-col items-center px-3 pb-5 pt-3"
               style={{ ["--accent" as string]: COLORI[t.id] }}
               data-testid={`pacchetto-${t.id}`}
             >
-              {/* fondo a retino nella tinta della bustina */}
-              <span
-                aria-hidden="true"
-                className="retino absolute inset-x-0 top-0 -z-10 h-72 opacity-30 transition-opacity group-hover:opacity-70"
-                style={{
-                  WebkitMaskImage: "radial-gradient(ellipse at 50% 45%, #000, transparent 70%)",
-                  maskImage: "radial-gradient(ellipse at 50% 45%, #000, transparent 70%)",
-                }}
-              />
-              <div className="pack-vetrina relative w-[62%] max-w-[210px] drop-shadow-[6px_6px_0_#000] sm:w-[78%]">
-                <PackArt tipo={t.id} nome={t.nome} carte={t.carte} className="w-full" />
+              {/* la teca di vetro: dentro, la bustina è un oggetto che dondola e segue il puntatore */}
+              <div className="teca flex w-full justify-center px-4 pb-9 pt-6">
+                <div className="w-[52%] max-w-[190px] sm:w-[70%]">
+                  <Bustina3D
+                    tipo={t.id}
+                    nome={t.nome}
+                    carte={t.carte}
+                    indice={negozio.tipi.indexOf(t)}
+                  />
+                </div>
               </div>
               <div className="relative mt-3 flex w-full flex-1 flex-col gap-3">
                 <p className="text-center text-[0.95rem] font-bold">

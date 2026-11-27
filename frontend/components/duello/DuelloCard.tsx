@@ -17,6 +17,7 @@ interface Props {
   dim?: boolean;
   onClick?: () => void;
   testId?: string;
+  tilt?: boolean; // anche le carte «mano» possono inclinarsi (apertura delle bustine)
 }
 
 /** La carta del Duello: è la carta unica del sito (components/carta/Carta) con costo, potenza ed effetti. */
@@ -28,6 +29,7 @@ export default function DuelloCard({
   dim,
   onClick,
   testId,
+  tilt,
 }: Props) {
   return (
     <Carta
@@ -41,6 +43,7 @@ export default function DuelloCard({
       forma={mano ? null : carta.forma}
       sotto={`${ARCH_NOMI[carta.arch] ?? carta.arch} · ${NOMI_RARITA[raritaDi(carta.rating)]}`}
       misura={mano ? "mano" : "piena"}
+      tilt={!mano || tilt}
       scelta={selected}
       className={dim ? "opacity-45" : ""}
       onClick={onClick}

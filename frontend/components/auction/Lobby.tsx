@@ -45,7 +45,7 @@ export default function Lobby({
   return (
     <section className="space-y-5 pt-6">
       {/* il biglietto d'invito: carta stampata, una casella per lettera, bordo perforato */}
-      <div className="su-carta reveal relative mx-auto max-w-2xl -rotate-1 border-2 border-black bg-carta p-5 text-center text-nero shadow-[8px_8px_0_var(--accent)] sm:p-7">
+      <div className="su-carta biglietto reveal relative mx-auto max-w-2xl -rotate-1 border-2 border-black bg-carta p-5 text-center text-nero sm:p-7">
         <i
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-2"

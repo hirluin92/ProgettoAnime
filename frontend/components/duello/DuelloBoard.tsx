@@ -26,6 +26,23 @@ function Vuoto({ attivo }: { attivo?: boolean }) {
   );
 }
 
+/** Il mazzo come pila di carte coperte: più carte restano, più è alta. */
+function PilaMazzo({ n }: { n: number }) {
+  const strati = Math.min(4, Math.max(0, Math.ceil(n / 2)));
+  if (n <= 0) return null;
+  return (
+    <span className="pila w-6 sm:w-7" aria-hidden="true" title={String(n)}>
+      {Array.from({ length: strati }, (_, i) => (
+        <i
+          key={i}
+          style={{ transform: `translate(${(strati - i) * 2}px, ${(strati - i) * 2.5}px)` }}
+        />
+      ))}
+      <CartaRetro />
+    </span>
+  );
+}
+
 /** Gemme a rombo: piene quelle disponibili, vuote quelle spese. */
 function Gemme({ tot, piene, piccolo }: { tot: number; piene: number; piccolo?: boolean }) {
   return (
@@ -129,6 +146,7 @@ export default function DuelloBoard({
             </div>
             <div className="muted">{fmt(it.duello.mazzoRimasto, { n: stato.mazzo })}</div>
           </div>
+          <PilaMazzo n={stato.mazzo} />
           <div className="flex pl-2" aria-hidden="true">
             {Array.from({ length: Math.min(5, stato.mano_cpu) }, (_, i) => (
               <span key={i} className="-ml-2 w-6 sm:w-7" style={{ rotate: `${(i - 2) * 5}deg` }}>
@@ -319,7 +337,7 @@ export default function DuelloBoard({
       )}
 
       {!stato.finita && (
-        <section className="sticky bottom-[3.75rem] z-30 space-y-1.5 rounded-[5px] border-2 border-carta bg-[#131217] p-2 shadow-[0_-5px_0_#000] sm:bottom-2 md:p-3">
+        <section className="vetro sticky bottom-[3.75rem] z-30 space-y-1.5 rounded-[6px] !overflow-visible p-2 [--vetro:#15141a] sm:bottom-2 md:p-3">
           <div
             className={`line-clamp-2 min-h-[2.4em] text-[0.8rem] font-bold leading-[1.2] sm:text-sm ${
               caption ? "text-[#ffd21f]" : "text-[#dcd5c5]"

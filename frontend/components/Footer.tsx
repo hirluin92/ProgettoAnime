@@ -45,7 +45,7 @@ export default function Footer() {
           backgroundSize: "9px 9px",
         }}
       />
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 text-sm sm:grid-cols-2 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.6fr_1.2fr]">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-7 px-5 py-10 text-sm lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.6fr_1.2fr] [&>*:first-child]:col-span-2 [&>*:last-child]:col-span-2 [&>*:nth-child(4)]:col-span-2 lg:[&>*]:!col-span-1">
         <div className="space-y-3">
           <Marchio size={38} />
           <p className="max-w-xs text-[0.95rem] font-bold text-carta">{it.footerMotto}</p>
@@ -54,13 +54,13 @@ export default function Footer() {
           <nav key={c.titolo} aria-label={c.titolo} className="space-y-2">
             <div className="eyebrow">{c.titolo}</div>
             <ul
-              className={`grid gap-x-4 ${c.voci.length > 4 ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-1"}`}
+              className={`grid gap-x-4 ${c.voci.length > 4 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-1" : "grid-cols-1"}`}
             >
               {c.voci.map((v) => (
                 <li key={v.href}>
                   <Link
                     href={v.href}
-                    className="inline-flex min-h-11 items-center font-bold text-[#cfc8b8] hover:text-white hover:underline"
+                    className="inline-flex min-h-11 items-center font-bold text-[#b5aea0] hover:text-white hover:underline"
                   >
                     {v.label}
                   </Link>

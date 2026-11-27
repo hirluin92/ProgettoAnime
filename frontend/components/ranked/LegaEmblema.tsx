@@ -58,11 +58,19 @@ export default function LegaEmblema({
   const punte = n >= 4 ? 5 : n >= 2 ? 3 : 0;
   return (
     <svg
-      viewBox="0 0 200 224"
+      viewBox="0 0 212 236"
       className={className}
       role="img"
       aria-label={`${lega} ${divisione ?? ""}`}
     >
+      <defs>
+        <linearGradient id="lega-luce" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="0.42" stopColor="#fff" stopOpacity="0.12" />
+          <stop offset="0.43" stopColor="#fff" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.18" />
+        </linearGradient>
+      </defs>
       <g strokeLinejoin="round">
         {/* esplosione dietro (Diamante e Campione) */}
         {n >= 4 && (
@@ -102,8 +110,12 @@ export default function LegaEmblema({
           />
         )}
         {/* ombra sfalsata e sagoma */}
-        <path d={SAGOME[n]} fill={NERO} transform="translate(7 8)" />
+        <path d={SAGOME[n]} fill={NERO} transform="translate(9 12)" />
+        <path d={SAGOME[n]} fill={c} stroke={NERO} strokeWidth="5" transform="translate(0 6)" />
+        <path d={SAGOME[n]} fill={NERO} opacity="0.35" transform="translate(0 6)" />
         <path d={SAGOME[n]} fill={c} stroke={NERO} strokeWidth="5" />
+        {/* faccetta di luce in alto a sinistra */}
+        <path d={SAGOME[n]} fill="url(#lega-luce)" />
         <path d={INTERNI[n]} fill={NERO} />
         {/* retino dentro lo scudo */}
         <path d={INTERNI[n]} fill={c} opacity="0.16" />
