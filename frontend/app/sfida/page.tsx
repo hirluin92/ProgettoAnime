@@ -1,5 +1,6 @@
 "use client";
 
+import { Medaglia } from "@/components/Icon";
 import { useCallback, useEffect, useState } from "react";
 import QuickGame, { type Played } from "@/components/QuickGame";
 import it from "@/i18n/it.json";
@@ -93,7 +94,7 @@ export default function Sfida() {
             }`}
           >
             <span className="display w-7 text-xl font-black text-gold">
-              {["🥇", "🥈", "🥉"][i] ?? `${i + 1}.`}
+              <Medaglia pos={i} />
             </span>
             <span className="min-w-0 flex-1 truncate font-bold">{r.name}</span>
             <span className="display text-xl font-black tabular-nums">{r.score}</span>

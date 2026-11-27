@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useState } from "react";
 import ArenaBanner from "@/components/ArenaBanner";
 import ChatPlanVotes from "@/components/ChatPlanVotes";
@@ -78,7 +79,7 @@ export default function PlanView({
         {humans.map((p) => (
           <li key={p.id} className="chip">
             <span className="size-2.5 rounded-full" style={{ background: p.color }} />
-            {p.name} {p.ready ? "✓" : "…"}
+            {p.name} <Icon name={p.ready ? "check" : "dots"} />
           </li>
         ))}
       </ul>

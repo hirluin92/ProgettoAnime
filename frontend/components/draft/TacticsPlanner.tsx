@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import FormationPicker from "@/components/draft/FormationPicker";
 import it from "@/i18n/it.json";
 import { BONUS, FASI, MALUS, TATTICA_INFO, TATTICHE, type Tattica } from "@/lib/battle/tattiche";
@@ -38,7 +39,7 @@ export default function TacticsPlanner({
           {TATTICHE.map((t) => (
             <span key={t}>
               <b>
-                {TATTICA_INFO[t].icona} {TATTICA_INFO[t].nome}
+                <Icon name={TATTICA_INFO[t].icona} /> {TATTICA_INFO[t].nome}
               </b>{" "}
               <span className="muted">
                 {it.tattiche.batte} {TATTICA_INFO[TATTICA_INFO[t].batte].nome}
@@ -79,7 +80,7 @@ export default function TacticsPlanner({
                         : "border-white/15 bg-white/5 hover:bg-white/10"
                     }`}
                   >
-                    <span className="text-xl">{TATTICA_INFO[t].icona}</span>
+                    <Icon name={TATTICA_INFO[t].icona} className="size-6" />
                     {TATTICA_INFO[t].nome}
                   </button>
                 );

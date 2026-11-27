@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SHOW_IMAGES } from "@/lib/api";
@@ -225,7 +226,7 @@ export default function BattleScene({
                         : ""
                   }
                 >
-                  {iconaTattica(s.fase.A)} {nomeTattica(s.fase.A)}
+                  <Icon name={iconaTattica(s.fase.A)} /> {nomeTattica(s.fase.A)}
                 </span>
                 <span className="opacity-50">vs</span>
                 <span
@@ -237,7 +238,7 @@ export default function BattleScene({
                         : ""
                   }
                 >
-                  {nomeTattica(s.fase.B)} {iconaTattica(s.fase.B)}
+                  {nomeTattica(s.fase.B)} <Icon name={iconaTattica(s.fase.B)} />
                 </span>
               </div>
             )}
@@ -262,7 +263,7 @@ export default function BattleScene({
             data-testid="arena-info"
             className="px-4 text-center text-[0.68rem] font-bold uppercase tracking-widest text-cyan-100/80"
           >
-            {arena.icona} {arena.nome} ·{" "}
+            <Icon name={arena.icona} /> {arena.nome} ·{" "}
             <span className="normal-case tracking-normal">{arena.descrizione}</span>
           </p>
         )}
@@ -497,8 +498,8 @@ export default function BattleScene({
               <ul className="flex flex-wrap gap-2">
                 {result.rivalita.map((r) => (
                   <li key={`${r.a}-${r.b}`} className="chip">
-                    ⚔ {A.members[r.a].nome} vs {B.members[r.b].nome} · {r.nome} ·{" "}
-                    {it.rivalita.testo}
+                    <Icon name="swords" /> {A.members[r.a].nome} vs {B.members[r.b].nome} · {r.nome}{" "}
+                    · {it.rivalita.testo}
                   </li>
                 ))}
               </ul>

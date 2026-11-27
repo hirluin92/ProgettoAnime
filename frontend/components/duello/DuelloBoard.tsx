@@ -1,15 +1,39 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, type ReactNode } from "react";
 import it from "@/i18n/it.json";
 import { ARCH_NOMI } from "@/lib/battle/labels";
-import { costoIn, postiMax, type CartaView, type MossaIn, type StatoView } from "@/lib/duello";
+import { temaLuogo } from "@/lib/luoghiTema";
+import {
+  costoIn,
+  postiMax,
+  type CartaView,
+  type LuogoView,
+  type MossaIn,
+  type StatoView,
+} from "@/lib/duello";
 import DuelloCard, { DuelloTile } from "./DuelloCard";
 
 interface Mossa {
   carta: CartaView;
   corsia: number;
+}
+
+const griglia = (l: LuogoView) => ({
+  gridTemplateColumns: `repeat(${postiMax(l)}, minmax(0, 1fr))`,
+});
+
+function Vuoto({ attivo }: { attivo?: boolean }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`aspect-square rounded-xl border-2 border-dashed ${
+        attivo ? "border-amber-300/50 bg-amber-300/[0.06]" : "border-white/15 bg-white/[0.03]"
+      }`}
+    />
+  );
 }
 
 export const fmt = (s: string, v: Record<string, string | number>) =>
@@ -102,25 +126,55 @@ export default function DuelloBoard({
           const mie = stato.corsie[k][0];
           const loro = stato.corsie[k][1];
           const prossime = pending.filter((m) => m.corsia === k);
+          const tema = temaLuogo(l.id);
           const migliore = tu > cpu ? "tu" : cpu > tu ? "cpu" : "";
           return (
             <section
               key={l.id + k}
-              className={`panel flex flex-col gap-1.5 p-1.5 ${migliore === "tu" ? "ring-1 ring-emerald-400/70" : migliore === "cpu" ? "ring-1 ring-red-400/70" : ""}`}
+              className={`panel relative flex flex-col gap-2 overflow-hidden p-2.5 ${migliore === "tu" ? "ring-2 ring-emerald-400/70" : migliore === "cpu" ? "ring-2 ring-red-400/70" : ""}`}
               data-testid={`corsia-${k}`}
             >
-              <div className="text-center">
-                <div className="display text-base font-extrabold leading-none">{l.nome}</div>
-                <p className="mt-0.5 text-xs leading-tight muted">{l.regola}</p>
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background: `radial-gradient(ellipse at 50% 0%, ${tema.accento}33, transparent 60%), linear-gradient(180deg, ${tema.da}, ${tema.a})`,
+                }}
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.09]"
+                style={{ color: tema.accento }}
+              >
+                <Icon name={tema.simbolo} className="size-48" />
+              </span>
+              <div className="relative text-center">
+                <div
+                  className="display flex items-center justify-center gap-2 text-xl font-black leading-none"
+                  style={{ color: tema.accento }}
+                >
+                  <Icon name={tema.simbolo} className="size-[1.1em]" />
+                  {l.nome}
+                </div>
+                <p className="mt-1 text-xs leading-snug text-white/80">{l.regola}</p>
                 {l.favorisce.length > 0 && (
-                  <p className="text-xs text-amber-300">
-                    {fmt(it.duello.favorisce, {
-                      a: l.favorisce.map((a) => ARCH_NOMI[a] ?? a).join(", "),
-                    })}
+                  <p className="mt-1 flex flex-wrap justify-center gap-1">
+                    {l.favorisce.map((a) => (
+                      <span
+                        key={a}
+                        className="rounded-full px-2 py-0.5 text-[0.7rem] font-bold text-black"
+                        style={{ background: tema.accento }}
+                      >
+                        +1 {ARCH_NOMI[a] ?? a}
+                      </span>
+                    ))}
                   </p>
                 )}
               </div>
-              <div className="grid min-h-[56px] grid-cols-4 content-start gap-1.5 md:min-h-[92px]">
+              <div
+                className="relative grid min-h-[56px] content-start gap-1.5 md:min-h-[92px]"
+                style={griglia(l)}
+              >
                 {loro.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -130,17 +184,25 @@ export default function DuelloBoard({
                     onClick={() => setDettaglio(i.carta)}
                   />
                 ))}
+                {Array.from({ length: Math.max(0, postiMax(l) - loro.length) }, (_, n) => (
+                  <Vuoto key={`vl${n}`} />
+                ))}
               </div>
-              <div className="flex items-center justify-between rounded-lg bg-black/50 px-3 py-1.5 text-xl font-black">
+              <div className="relative flex items-center justify-between rounded-xl border border-white/10 bg-black/65 px-4 py-1.5 text-2xl font-black shadow-inner">
                 <span className="text-emerald-300" data-testid={`tot-tu-${k}`}>
                   {tu}
                 </span>
-                <span className="text-xs muted">vs</span>
+                <span className="display text-sm tracking-widest muted">
+                  {tu > cpu ? "◀ VANTAGGIO" : cpu > tu ? "SVANTAGGIO ▶" : "PARI"}
+                </span>
                 <span className="text-red-300" data-testid={`tot-cpu-${k}`}>
                   {cpu}
                 </span>
               </div>
-              <div className="grid min-h-[56px] grid-cols-4 content-start gap-1.5 md:min-h-[92px]">
+              <div
+                className="relative grid min-h-[56px] content-start gap-1.5 md:min-h-[92px]"
+                style={griglia(l)}
+              >
                 {mie.map((i) => (
                   <DuelloTile
                     key={i.uid}
@@ -168,9 +230,12 @@ export default function DuelloBoard({
                     </motion.div>
                   ))}
                 </AnimatePresence>
+                {Array.from({ length: Math.max(0, posti(k)) }, (_, n) => (
+                  <Vuoto key={`vm${n}`} attivo={!!selCarta} />
+                ))}
               </div>
               <button
-                className={`btn text-xs ${selCarta ? "btn-primary" : ""}`}
+                className={`btn relative text-xs ${selCarta ? "btn-primary" : ""}`}
                 disabled={
                   !selCarta ||
                   occupato ||
@@ -203,7 +268,8 @@ export default function DuelloBoard({
         <section className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-sm font-black" data-testid="duello-energia">
-              ⚡ {it.duello.energia}: {stato.energia - speso}/{stato.energia}
+              <Icon name="bolt" className="size-[1em] text-amber-300" /> {it.duello.energia}:{" "}
+              {stato.energia - speso}/{stato.energia}
             </span>
             <div className="flex gap-2">
               {occupato && onSalta && (

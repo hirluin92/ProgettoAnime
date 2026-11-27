@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import CharacterCard from "@/components/battle/CharacterCard";
 import it from "@/i18n/it.json";
 import { potenza, toneOf, type Option, type Placed } from "@/lib/draft";
@@ -59,7 +60,7 @@ export default function SlotBoard({
                   />
                 </div>
               ) : (
-                <div className="grid aspect-[3/4.2] w-full max-w-[230px] place-items-center rounded-xl">
+                <div className="grid aspect-[3/4.2] w-full max-w-[230px] place-items-center rounded-xl bg-[radial-gradient(circle_at_50%_40%,rgb(255_255_255/0.07),transparent_70%)]">
                   {placing && selected ? (
                     <div className="space-y-1">
                       <AffinityChip aff={selected.affinita[role]} big />
@@ -71,7 +72,10 @@ export default function SlotBoard({
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs text-white/35">{it.veloce.vuoto}</span>
+                    <span className="flex flex-col items-center gap-2 text-xs text-white/45">
+                      <Icon name="shield" className="size-10 text-white/20" />
+                      {it.veloce.vuoto}
+                    </span>
                   )}
                 </div>
               )}

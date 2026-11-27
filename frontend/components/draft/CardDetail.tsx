@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useEffect } from "react";
 import CharacterCard from "@/components/battle/CharacterCard";
 import it from "@/i18n/it.json";
@@ -46,7 +47,9 @@ export function CardDetail({ o, cost, bare }: { o: Option | null; cost?: number;
           <div className="min-w-0 space-y-1.5">
             {c.mossa && (
               <p>
-                <b className="text-amber-200">⚡ {c.mossa.nome}</b>
+                <b className="text-amber-200">
+                  <Icon name="bolt" /> {c.mossa.nome}
+                </b>
                 {c.mossa.effetto && (
                   <span className="muted">
                     {" "}

@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -105,14 +106,29 @@ function ModeCard({
         style={{ background: accent }}
       />
       <span
-        className="relative grid size-14 shrink-0 place-items-center rounded-2xl text-2xl shadow-lg"
-        style={{ background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.35))` }}
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-5 right-10 opacity-[0.08] transition-opacity group-hover:opacity-[0.16]"
+        style={{ color: accent }}
       >
-        {icon}
+        <Icon name={icon} className="size-28" />
+      </span>
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[3px]"
+        style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
+      />
+      <span
+        className="relative grid size-16 shrink-0 place-items-center rounded-2xl text-white shadow-lg ring-1 ring-white/30"
+        style={{
+          background: `linear-gradient(135deg, ${accent}, rgb(0 0 0 / 0.45))`,
+          boxShadow: `0 8px 24px ${accent}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
+        }}
+      >
+        <Icon name={icon} className="size-8" />
       </span>
       <span className="relative min-w-0 flex-1">
         <span className="display block text-2xl font-extrabold leading-none">{title}</span>
-        <span className="mt-1.5 block text-sm leading-snug muted">{text}</span>
+        <span className="mt-1.5 block text-[0.95rem] leading-snug muted">{text}</span>
       </span>
       <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg transition-all group-hover:translate-x-1 group-hover:bg-white/20">
         →
@@ -190,62 +206,21 @@ export default function Home() {
             <Fan heroes={heroes} compact />
           </div>
 
-          <section className="panel reveal space-y-3.5 p-5 sm:p-6" style={{ ["--i" as string]: 3 }}>
-            <div>
-              <h2 className="text-2xl font-extrabold">{it.home.titolo}</h2>
-              <p className="text-xs muted">{it.home.creaSotto}</p>
-            </div>
-            <input
-              aria-label={it.home.tuoNome}
-              placeholder={it.home.tuoNome}
-              className="field w-full"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm muted">
-              <input
-                type="checkbox"
-                className="size-4 accent-pink-500"
-                checked={streamer}
-                onChange={(e) => setStreamer(e.target.checked)}
-              />
-              {it.home.stanzaStreamer}
-            </label>
-            {streamer && (
-              <input
-                aria-label={it.home.canale}
-                placeholder={it.home.canale}
-                className="field w-full"
-                value={channel}
-                onChange={(e) => setChannel(e.target.value)}
-              />
-            )}
-            <button
-              className="btn btn-primary w-full text-lg"
-              disabled={!name.trim() || (streamer && !channel.trim())}
-              onClick={create}
+          <div className="reveal flex flex-wrap gap-3" style={{ ["--i" as string]: 3 }}>
+            <Link
+              href="/duello"
+              className="btn btn-primary px-6 text-base"
+              data-testid="cta-duello"
             >
-              {it.home.creaStanza}
-            </button>
-            <div className="flex flex-wrap gap-2 pt-1">
-              <input
-                aria-label={it.home.codice}
-                placeholder={it.home.codice}
-                maxLength={5}
-                className="field min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em] placeholder:tracking-normal"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
-              <button className="btn flex-1" disabled={code.trim().length < 5} onClick={join}>
-                {it.home.entraCodice}
-              </button>
-            </div>
-            {error && (
-              <p role="alert" className="text-rose-400">
-                {error}
-              </p>
-            )}
-          </section>
+              <Icon name="swords" className="size-[1.2em]" /> {it.home.ctaDuello}
+            </Link>
+            <Link href="/ranked" className="btn px-5 text-base">
+              <Icon name="crown" className="size-[1.2em]" /> {it.home.ctaRanked}
+            </Link>
+            <Link href="/negozio" className="btn px-5 text-base">
+              <Icon name="cards" className="size-[1.2em]" /> {it.home.ctaNegozio}
+            </Link>
+          </div>
         </div>
 
         <div className="hidden lg:block">
@@ -258,47 +233,113 @@ export default function Home() {
         <div className="grid gap-4 md:grid-cols-3">
           <ModeCard
             href="/duello"
-            icon="⚔️"
+            icon="swords"
             title={it.home.duelloTitolo}
             text={it.home.duelloTesto}
             accent="#ff3d81"
           />
           <ModeCard
             href="/ranked"
-            icon="👑"
+            icon="crown"
             title={it.home.rankedTitolo}
             text={it.home.rankedTesto}
             accent="#7a5cff"
           />
           <ModeCard
             href="/veloce"
-            icon="⚡"
+            icon="bolt"
             title={it.home.veloceTitolo}
             text={it.home.veloceTesto}
             accent="#ff8a3d"
           />
           <ModeCard
             href="/scala"
-            icon="🪜"
+            icon="ladder"
             title={it.home.scalaTitolo}
             text={it.home.scalaTesto}
             accent="#35e0ff"
           />
           <ModeCard
             href="/duello/giorno"
-            icon="🏆"
+            icon="trophy"
             title={it.home.sfidaTitolo}
             text={it.home.sfidaTesto}
             accent="#ffd45a"
           />
           <ModeCard
             href="/album"
-            icon="🃏"
+            icon="cards"
             title={it.home.albumTitolo}
             text={it.home.albumTesto}
             accent="#3ddc97"
           />
         </div>
+      </section>
+
+      <section className="mt-16 grid items-center gap-8 lg:grid-cols-[1fr_1.1fr]" id="amici">
+        <div className="space-y-3">
+          <h2 className="eyebrow">{it.home.amiciEyebrow}</h2>
+          <p className="display text-4xl font-black leading-none sm:text-5xl">
+            {it.home.amiciTitolo}
+          </p>
+          <p className="max-w-md muted">{it.home.amiciTesto}</p>
+        </div>
+        <section className="panel space-y-3.5 p-5 sm:p-6">
+          <div>
+            <h2 className="text-2xl font-extrabold">{it.home.titolo}</h2>
+            <p className="text-xs muted">{it.home.creaSotto}</p>
+          </div>
+          <input
+            aria-label={it.home.tuoNome}
+            placeholder={it.home.tuoNome}
+            className="field w-full"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm muted">
+            <input
+              type="checkbox"
+              className="size-4 accent-pink-500"
+              checked={streamer}
+              onChange={(e) => setStreamer(e.target.checked)}
+            />
+            {it.home.stanzaStreamer}
+          </label>
+          {streamer && (
+            <input
+              aria-label={it.home.canale}
+              placeholder={it.home.canale}
+              className="field w-full"
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+            />
+          )}
+          <button
+            className="btn btn-primary w-full text-lg"
+            disabled={!name.trim() || (streamer && !channel.trim())}
+            onClick={create}
+          >
+            {it.home.creaStanza}
+          </button>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <input
+              aria-label={it.home.codice}
+              placeholder={it.home.codice}
+              maxLength={5}
+              className="field min-w-[10rem] flex-1 text-center uppercase tracking-[0.3em] placeholder:tracking-normal"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <button className="btn flex-1" disabled={code.trim().length < 5} onClick={join}>
+              {it.home.entraCodice}
+            </button>
+          </div>
+          {error && (
+            <p role="alert" className="text-rose-400">
+              {error}
+            </p>
+          )}
+        </section>
       </section>
 
       <section className="mt-20 space-y-6">

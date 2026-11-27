@@ -118,7 +118,7 @@ export default function DuelliView({ room, socket }: { room: RoomView; socket: R
                 </span>
                 <span className="muted">
                   {d.b
-                    ? `${d.corsie_vinte[0]}–${d.corsie_vinte[1]} · ${d.finito ? "✓" : `T${d.turno}`}`
+                    ? `${d.corsie_vinte[0]}–${d.corsie_vinte[1]} · ${d.finito ? "fine" : `T${d.turno}`}`
                     : ""}
                 </span>
               </li>

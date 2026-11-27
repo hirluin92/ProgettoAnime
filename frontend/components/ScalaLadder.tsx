@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useState } from "react";
 import BattleScene from "@/components/battle/BattleScene";
 import PremioPanel from "@/components/PremioPanel";
@@ -70,7 +71,7 @@ export default function ScalaLadder({ first }: { first: ScalaResult }) {
               <ul className="flex flex-wrap gap-1.5">
                 {presi.map((p, i) => (
                   <li key={i} className="chip text-cyan-200">
-                    ⬆ {p}
+                    <Icon name="arrowup" /> {p}
                   </li>
                 ))}
               </ul>
@@ -129,7 +130,7 @@ export default function ScalaLadder({ first }: { first: ScalaResult }) {
                     >
                       {prossimo.forza_tua}
                     </b>{" "}
-                    · {ARENE_INFO[prossimo.arena]?.icona} {prossimo.arena_nome}
+                    · <Icon name={ARENE_INFO[prossimo.arena]?.icona ?? ""} /> {prossimo.arena_nome}
                   </p>
                   <ul className="flex flex-wrap gap-1.5 text-xs">
                     {prossimo.membri.map((m) => (

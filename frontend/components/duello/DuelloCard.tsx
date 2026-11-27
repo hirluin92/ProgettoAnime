@@ -70,17 +70,17 @@ export default function DuelloCard({
         </span>
         <span className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#0c0920] to-transparent" />
         <div className="absolute inset-x-0 bottom-0 px-2.5 pb-1">
-          <div className="display text-lg font-black leading-none drop-shadow">{carta.nome}</div>
+          <div className="display text-xl font-black leading-none drop-shadow">{carta.nome}</div>
           <div className="text-xs font-semibold text-white/70">
             {ARCH_NOMI[carta.arch]} · {r.name}
           </div>
         </div>
       </div>
       <div className="space-y-1.5 px-2.5 py-2">
-        <p className="text-[13px] leading-snug">
+        <p className="text-[0.8rem] leading-snug">
           <b className="text-amber-300">{it.duello.alRivelarsi}:</b> {pulisci(carta.testo_mossa)}
         </p>
-        <p className="text-[13px] leading-snug">
+        <p className="text-[0.8rem] leading-snug">
           <b className="text-sky-300">{it.duello.continuo}:</b> {pulisci(carta.testo_passiva)}
         </p>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import it from "@/i18n/it.json";
 import { iconaTattica, nomeTattica } from "@/lib/battle/tattiche";
 import type { FaseOut } from "@/lib/draft";
@@ -27,8 +28,9 @@ export default function FaseReport({ r, n }: { r: FaseOut; n: number }) {
         {it.tattiche.fasiRisultato.replace("{n}", String(n))}
       </h4>
       <p className="text-sm">
-        {it.tattiche.tue}: {iconaTattica(r.tue[i])} {nomeTattica(r.tue[i])} · {it.tattiche.cpu}:{" "}
-        {iconaTattica(r.cpu[i])} {nomeTattica(r.cpu[i])} — <b>{r.confronti[i]}</b>
+        {it.tattiche.tue}: <Icon name={iconaTattica(r.tue[i])} /> {nomeTattica(r.tue[i])} ·{" "}
+        {it.tattiche.cpu}: <Icon name={iconaTattica(r.cpu[i])} /> {nomeTattica(r.cpu[i])} —{" "}
+        <b>{r.confronti[i]}</b>
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         {(["A", "B"] as const).map((l) => (

@@ -1,5 +1,6 @@
 "use client";
 
+import Icon from "@/components/Icon";
 import { useState } from "react";
 import it from "@/i18n/it.json";
 import { BOSSES } from "@/lib/raid";
@@ -69,7 +70,11 @@ export default function Lobby({
             <span className="min-w-0">
               <span className="block truncate font-bold">{p.name}</span>
               <span className="block text-xs muted">
-                {p.id === room.host_id && <>👑 {it.stanza.host} </>}
+                {p.id === room.host_id && (
+                  <>
+                    <Icon name="crown" /> {it.stanza.host}{" "}
+                  </>
+                )}
                 {!p.connected && <>({it.stanza.assente})</>}
               </span>
             </span>
