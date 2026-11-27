@@ -35,7 +35,7 @@ test("raid cooperativo: squadra comune contro un boss", async ({ browser }) => {
   await host.page.getByLabel("Boss").selectOption("freezer");
   await host.page.getByLabel("Difficoltà").selectOption("normale");
   await host.page.getByLabel("Piano di battaglia (s)").fill("0");
-  await host.page.getByRole("button", { name: "Avvia l'asta" }).click();
+  await host.page.getByRole("button", { name: "Avvia il raid" }).click();
   for (const p of [host, guest]) await expect(p.page.getByTestId("specchio")).toBeVisible();
 
   await Promise.all([gioca(host.page), gioca(guest.page)]);

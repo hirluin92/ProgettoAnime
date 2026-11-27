@@ -312,7 +312,13 @@ export default function Lobby({
             className="btn btn-primary text-lg sm:col-span-3"
             onClick={() => socket.send({ type: "start" })}
           >
-            {it.stanza.avvia}
+            {s.modalita === "quiz"
+              ? it.quiz.stanza.avviaQuiz
+              : s.modalita === "specchio"
+                ? it.stanza.avviaDraft
+                : s.modalita === "raid"
+                  ? it.stanza.avviaRaid
+                  : it.stanza.avvia}
           </button>
         </div>
       ) : (
