@@ -144,3 +144,69 @@ def test_arrendersi_chiude_la_sfida(tmp_path) -> None:  # type: ignore[no-untype
     sol = client.post("/api/quiz/animedle/arrenditi", json={"profile_id": pid}).json()
     st = client.get("/api/quiz/animedle/stato", params={"profile_id": pid}).json()
     assert st["finito"] and not st["vinto"] and st["bersaglio"]["id"] == sol["id"]
+
+
+# ---------- giochi a immagine ----------
+def test_zoom_bersaglio_punto_e_indizi() -> None:
+    from app.quiz import zoom
+
+    for g in zoom.GIOCHI:
+        t = zoom.bersaglio_giorno(g, "2026-03-03")
+        assert t == zoom.bersaglio_giorno(g, "2026-03-03")
+        fx, fy = zoom.punto(g, t)
+        assert 0 <= fx <= 100 and 0 <= fy <= 100
+        assert zoom.indizi(g, t, 0) == [] and zoom.indizi(g, t, 1) == []
+        assert len(zoom.indizi(g, t, 5)) >= 3  # gli indizi crescono con gli errori
+        assert zoom.immagine(g, t).startswith("https://")
+    assert zoom.crediti_vittoria(1, 1) == 40 and zoom.crediti_vittoria(6, 1) == 10
+
+
+def test_elenco_personaggi() -> None:
+    r = client.get("/api/quiz/personaggi/elenco").json()
+    assert len(r) >= 400 and {"id", "nome", "alt", "k"} <= set(r[0])
+
+
+def test_zoom_allenamento_e_token(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'z1.db'}")
+    for g in ("scorcio", "personaggio"):
+        n = client.post(f"/api/quiz/zoom/{g}/nuovo").json()
+        assert n["immagine"].startswith("https://") and n["tentativi_max"] == 6
+        sol = client.post(f"/api/quiz/zoom/{g}/arrenditi", json={"token": n["token"]}).json()
+        ok = client.post(
+            f"/api/quiz/zoom/{g}/guess",
+            json={"risposta_id": sol["id"], "token": n["token"], "n": 2},
+        ).json()
+        assert ok["giusto"] and ok["finito"] and ok["bersaglio"]["id"] == sol["id"]
+        assert client.post(
+            f"/api/quiz/zoom/{g}/guess", json={"risposta_id": 1, "token": "9." + "0" * 16}
+        ).status_code in (404, 422)
+    assert client.post("/api/quiz/zoom/inventato/nuovo").status_code == 404
+
+
+def test_zoom_del_giorno_con_profilo(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from app.quiz import zoom
+
+    configure(f"sqlite:///{tmp_path / 'z2.db'}")
+    pid = nuovo_profilo()
+    st = client.get("/api/quiz/zoom/scorcio/stato", params={"profile_id": pid}).json()
+    t = zoom.bersaglio_giorno("scorcio", st["giorno"])
+    assert st["indizi"] == [] and st["bersaglio"] is None and st["immagine"] == t["banner"]
+    altro = next(a for a in pool_anime() if a["id"] != t["id"])
+    for k in range(1, 3):
+        r = client.post(
+            "/api/quiz/zoom/scorcio/guess", json={"risposta_id": altro["id"], "profile_id": pid}
+        ).json()
+        assert not r["giusto"] and r["tentativo"] == k
+    assert len(r["indizi"]) == 1  # al secondo errore compare l'anno
+    vinta = client.post(
+        "/api/quiz/zoom/scorcio/guess", json={"risposta_id": t["id"], "profile_id": pid}
+    ).json()
+    assert vinta["giusto"] and vinta["crediti"] == 28  # 3° tentativo: 40 - 2*6
+    assert client.get(f"/api/profile/{pid}").json()["crediti"] == 28
+    again = client.post(
+        "/api/quiz/zoom/scorcio/guess", json={"risposta_id": t["id"], "profile_id": pid}
+    )
+    assert again.status_code == 409
+    # il personaggio è un gioco a parte: la sua sfida è ancora aperta
+    stp = client.get("/api/quiz/zoom/personaggio/stato", params={"profile_id": pid}).json()
+    assert not stp["finito"] and stp["tentativi_fatti"] == 0

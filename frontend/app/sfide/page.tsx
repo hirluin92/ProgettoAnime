@@ -6,7 +6,7 @@ import Icon from "@/components/Icon";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { useProfile } from "@/lib/profile";
-import type { AnimedleStato } from "@/lib/quiz";
+import type { AnimedleStato, ZoomStato } from "@/lib/quiz";
 
 function Carta({
   href,
@@ -76,6 +76,8 @@ function Carta({
 export default function SfidePage() {
   const { profile, loading } = useProfile();
   const [animedle, setAnimedle] = useState<AnimedleStato | null>(null);
+  const [scorcio, setScorcio] = useState<ZoomStato | null>(null);
+  const [personaggio, setPersonaggio] = useState<ZoomStato | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -83,20 +85,30 @@ export default function SfidePage() {
     api<AnimedleStato>(`/api/quiz/animedle/stato${q}`)
       .then(setAnimedle)
       .catch(() => undefined);
+    api<ZoomStato>(`/api/quiz/zoom/scorcio/stato${q}`)
+      .then(setScorcio)
+      .catch(() => undefined);
+    api<ZoomStato>(`/api/quiz/zoom/personaggio/stato${q}`)
+      .then(setPersonaggio)
+      .catch(() => undefined);
   }, [loading, profile]);
 
-  const statoAnimedle = animedle
-    ? {
-        fatto: animedle.finito,
-        testo: animedle.finito
-          ? animedle.vinto
-            ? it.quiz.vinta
-            : it.quiz.persa
-          : animedle.tentativi_fatti > 0
-            ? `${animedle.tentativi_fatti}/${animedle.tentativi_max}`
-            : it.quiz.daFare,
-      }
-    : null;
+  const stato = (
+    s: { finito: boolean; vinto: boolean; tentativi_fatti: number; tentativi_max: number } | null,
+  ) =>
+    s
+      ? {
+          fatto: s.finito,
+          testo: s.finito
+            ? s.vinto
+              ? it.quiz.vinta
+              : it.quiz.persa
+            : s.tentativi_fatti > 0
+              ? `${s.tentativi_fatti}/${s.tentativi_max}`
+              : it.quiz.daFare,
+        }
+      : null;
+  const statoAnimedle = stato(animedle);
 
   return (
     <main className="mx-auto max-w-6xl space-y-6 p-4 pt-8" data-testid="sfide">
@@ -120,6 +132,24 @@ export default function SfidePage() {
           accento="#35e0ff"
           stato={statoAnimedle}
           testId="sfida-animedle"
+        />
+        <Carta
+          href="/sfide/scorcio"
+          icona="moon"
+          titolo={it.quiz.scorcio.titolo}
+          testo={it.quiz.scorcioTesto}
+          accento="#ff6fb0"
+          stato={stato(scorcio)}
+          testId="sfida-scorcio"
+        />
+        <Carta
+          href="/sfide/personaggio"
+          icona="shield"
+          titolo={it.quiz.personaggio.titolo}
+          testo={it.quiz.personaggioTesto}
+          accento="#3ddc97"
+          stato={stato(personaggio)}
+          testId="sfida-personaggio"
         />
         <Carta
           href="/duello/giorno"

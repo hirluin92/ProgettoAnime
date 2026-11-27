@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
-import { caricaElenco, normalizza, type VoceAnime } from "@/lib/quiz";
+import { caricaElenco, caricaPersonaggi, normalizza, type VoceAnime } from "@/lib/quiz";
 
 // Campo di ricerca con suggerimenti: si scrive un titolo (anche in giapponese romanizzato o sigla)
 // e si sceglie dall'elenco. Funziona con tastiera (frecce e Invio) e con il tocco.
@@ -13,11 +13,13 @@ export default function AnimeSearch({
   esclusi,
   disabilitato,
   testId = "anime-ricerca",
+  personaggi,
 }: {
   onScegli: (a: VoceAnime) => void;
   esclusi?: Set<number>;
   disabilitato?: boolean;
   testId?: string;
+  personaggi?: boolean;
 }) {
   const [elenco, setElenco] = useState<VoceAnime[]>([]);
   const [q, setQ] = useState("");
@@ -26,10 +28,8 @@ export default function AnimeSearch({
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    caricaElenco(api)
-      .then(setElenco)
-      .catch(() => undefined);
-  }, []);
+    (personaggi ? caricaPersonaggi(api) : caricaElenco(api)).then(setElenco).catch(() => undefined);
+  }, [personaggi]);
 
   const risultati = useMemo(() => {
     const n = normalizza(q);
@@ -59,8 +59,8 @@ export default function AnimeSearch({
         role="combobox"
         aria-expanded={aperto && risultati.length > 0}
         aria-controls="anime-lista"
-        aria-label={it.quiz.cerca}
-        placeholder={it.quiz.cerca}
+        aria-label={personaggi ? it.quiz.cercaPersonaggio : it.quiz.cerca}
+        placeholder={personaggi ? it.quiz.cercaPersonaggio : it.quiz.cerca}
         autoComplete="off"
         disabled={disabilitato}
         className="field w-full text-lg"
@@ -107,7 +107,9 @@ export default function AnimeSearch({
                   <b className="block truncate">{a.nome}</b>
                   {a.alt && <span className="block truncate text-xs muted">{a.alt}</span>}
                 </span>
-                <span className="shrink-0 text-xs tabular-nums muted">{a.anno}</span>
+                {a.anno > 0 && (
+                  <span className="shrink-0 text-xs tabular-nums muted">{a.anno}</span>
+                )}
               </button>
             </li>
           ))}

@@ -85,3 +85,69 @@ export function quadratini(f: FeedbackAnimedle): string {
     )
     .join("");
 }
+
+export const FORMATI: Record<string, string> = { TV: "TV", MOVIE: "Film" };
+export const FONTI: Record<string, string> = {
+  MANGA: "Manga",
+  LIGHT_NOVEL: "Light novel",
+  ORIGINAL: "Originale",
+  VISUAL_NOVEL: "Visual novel",
+  VIDEO_GAME: "Videogioco",
+  OTHER: "Altro",
+  NOVEL: "Romanzo",
+  WEB_NOVEL: "Web novel",
+  ANIME: "Anime",
+};
+export const STAGIONI: Record<string, string> = {
+  WINTER: "Inverno",
+  SPRING: "Primavera",
+  SUMMER: "Estate",
+  FALL: "Autunno",
+};
+
+export type GiocoZoom = "scorcio" | "personaggio";
+export interface IndizioZoom {
+  k: string;
+  v: string;
+}
+export interface SoluzioneZoom {
+  id: number;
+  nome: string;
+  dettaglio: string;
+  immagine: string;
+}
+export interface ZoomStato {
+  giorno: string;
+  tentativi_max: number;
+  tentativi_fatti: number;
+  finito: boolean;
+  vinto: boolean;
+  serie: number;
+  crediti: number;
+  immagine: string;
+  fx: number;
+  fy: number;
+  indizi: IndizioZoom[];
+  bersaglio: SoluzioneZoom | null;
+}
+export interface ZoomEsito {
+  giusto: boolean;
+  tentativo: number;
+  finito: boolean;
+  crediti: number;
+  indizi: IndizioZoom[];
+  bersaglio: SoluzioneZoom | null;
+}
+export interface ZoomNuovo {
+  token: string;
+  tentativi_max: number;
+  immagine: string;
+  fx: number;
+  fy: number;
+}
+
+let cachePersonaggi: Promise<VoceAnime[]> | null = null;
+export function caricaPersonaggi(api: <T>(p: string) => Promise<T>): Promise<VoceAnime[]> {
+  cachePersonaggi ??= api<VoceAnime[]>("/api/quiz/personaggi/elenco");
+  return cachePersonaggi;
+}
