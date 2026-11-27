@@ -325,7 +325,7 @@
         },
         "quiz_tipo": {
           "default": "misto",
-          "enum": ["misto", "scorcio", "personaggio", "indizi"],
+          "enum": ["misto", "scorcio", "personaggio", "indizi", "sigla"],
           "title": "Quiz Tipo",
           "type": "string"
         },

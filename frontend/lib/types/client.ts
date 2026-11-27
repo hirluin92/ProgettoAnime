@@ -101,7 +101,7 @@ export type Boss = string;
 export type Difficolta = "normale" | "difficile" | "epico";
 export type Regole = "classico" | "duello";
 export type TurnoDuello = number;
-export type QuizTipo = "misto" | "scorcio" | "personaggio" | "indizi";
+export type QuizTipo = "misto" | "scorcio" | "personaggio" | "indizi" | "sigla";
 export type QuizRound = number;
 export type QuizTempo = number;
 

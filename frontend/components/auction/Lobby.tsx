@@ -122,7 +122,7 @@ export default function Lobby({
                   onChange={(e) => upd({ quiz_tipo: e.target.value as RoomSettings["quiz_tipo"] })}
                   data-testid="quiz-tipo"
                 >
-                  {(["misto", "scorcio", "personaggio", "indizi"] as const).map((t) => (
+                  {(["misto", "scorcio", "personaggio", "indizi", "sigla"] as const).map((t) => (
                     <option key={t} value={t}>
                       {it.quiz.stanza.tipi[t]}
                     </option>

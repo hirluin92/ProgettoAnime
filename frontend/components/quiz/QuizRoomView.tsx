@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
 import Icon, { Medaglia } from "@/components/Icon";
 import AnimeSearch from "@/components/quiz/AnimeSearch";
+import Ascolto from "@/components/quiz/Ascolto";
 import it from "@/i18n/it.json";
 import type { RoomView } from "@/lib/messages";
 import { FONTI } from "@/lib/quiz";
@@ -128,6 +129,8 @@ export default function QuizRoomView({
                     }}
                   />
                 </div>
+              ) : q.audio ? (
+                <Ascolto src={q.audio} livello={livello} intero={chiusa} autoplay />
               ) : (
                 <p className="text-center text-sm muted">{it.quiz.stanza.soloIndizi}</p>
               )}

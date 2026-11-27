@@ -10,7 +10,7 @@ def partita(tipo: str = "misto", n: int = 4, tempo: int = 20) -> QuizPartita:
 def test_domande_deterministiche_e_senza_ripetizioni() -> None:
     p1, p2 = partita(n=8), partita(n=8)
     assert [d.target["id"] for d in p1.domande] == [d.target["id"] for d in p2.domande]
-    assert {d.kind for d in p1.domande} == {"scorcio", "personaggio", "indizi"}
+    assert {d.kind for d in p1.domande} == {"scorcio", "personaggio", "indizi", "sigla"}
     anime = [d.target["id"] for d in p1.domande if d.kind != "personaggio"]
     assert len(anime) == len(set(anime))
 
@@ -117,3 +117,16 @@ def test_stanza_quiz_con_gestore_locale() -> None:
 
     room = asyncio.run(go())
     assert room.phase == "lobby" and "quiz" not in room.extras
+
+
+def test_domanda_sigla_ha_audio_e_secondi_crescenti() -> None:
+    p = partita(tipo="sigla", n=3, tempo=20)
+    v = p.view(1000.0)
+    assert v.kind == "sigla" and v.audio and v.audio.startswith("https://") and v.immagine is None
+    assert v.audio_secondi == 1
+    assert p.view(1019.0).audio_secondi == 30
+    # la soluzione (anime, brano, artista) resta nascosta finché la domanda è aperta
+    assert v.soluzione is None
+    p.tick(1020.0, ["a"])
+    sol = p.view(1020.0).soluzione
+    assert sol is not None and "·" in sol.dettaglio

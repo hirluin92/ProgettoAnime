@@ -34,6 +34,14 @@ def personaggi_per_id() -> dict[int, dict[str, Any]]:
     return {p["id"]: p for p in personaggi()}
 
 
+@lru_cache
+def sigle() -> list[dict[str, Any]]:
+    """Le sigle con il loro anime: id e dati dell'anime, più brano, artista e anteprima audio."""
+    per_id = anime_per_id()
+    grezze = json.loads((DATA / "sigle.json").read_text(encoding="utf-8"))
+    return [{**per_id[x["anime_id"]], **x} for x in grezze if x["anime_id"] in per_id]
+
+
 def pool_anime() -> list[dict[str, Any]]:
     return anime()[:POOL_ANIME]
 

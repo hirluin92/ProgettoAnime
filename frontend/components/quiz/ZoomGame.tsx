@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
 import Icon from "@/components/Icon";
 import AnimeSearch from "@/components/quiz/AnimeSearch";
+import Ascolto from "@/components/quiz/Ascolto";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { useProfile } from "@/lib/profile";
@@ -21,7 +22,7 @@ import {
 } from "@/lib/quiz";
 
 // Quanto è ingrandita l'immagine dopo 0, 1, 2… errori (1 = intera) e quanta sfocatura resta.
-const ZOOM: Record<GiocoZoom, number[]> = {
+const ZOOM: Record<Exclude<GiocoZoom, "sigla">, number[]> = {
   scorcio: [5, 3.8, 2.8, 2, 1.5, 1.2, 1],
   personaggio: [4.2, 3.3, 2.5, 1.9, 1.4, 1.15, 1],
 };
@@ -54,6 +55,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
   const [vinto, setVinto] = useState(false);
   const [crediti, setCrediti] = useState(0);
   const [soluzione, setSoluzione] = useState<SoluzioneZoom | null>(null);
+  const [audio, setAudio] = useState<string | null>(null);
   const [messaggio, setMessaggio] = useState<string | null>(null);
   const [copiato, setCopiato] = useState(false);
   const massimo = stato?.tentativi_max ?? 6;
@@ -70,6 +72,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
       if (libero) {
         const n = await api<ZoomNuovo>(`/api/quiz/zoom/${gioco}/nuovo`, { method: "POST" });
         setToken(n.token);
+        setAudio(n.audio ?? null);
         setStato({
           giorno: "",
           tentativi_max: n.tentativi_max,
@@ -89,6 +92,7 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
       const q = profile ? `?profile_id=${profile.id}` : "";
       const s = await api<ZoomStato>(`/api/quiz/zoom/${gioco}/stato${q}`);
       setStato(s);
+      setAudio(s.audio ?? null);
       setFinito(s.finito);
       setVinto(s.vinto);
       setCrediti(s.crediti);
@@ -108,8 +112,13 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
   const provati = useMemo(() => new Set(errori.map((e) => e.id)), [errori]);
   // errori fatti: se la partita è vinta l'ultimo tentativo non conta come errore
   const nErrori = errori.length;
-  const livello = finito ? ZOOM[gioco].length - 1 : Math.min(nErrori, ZOOM[gioco].length - 2);
-  const zoom = ZOOM[gioco][livello];
+  const livello =
+    gioco === "sigla"
+      ? Math.min(nErrori, 5)
+      : finito
+        ? ZOOM[gioco].length - 1
+        : Math.min(nErrori, ZOOM[gioco].length - 2);
+  const zoom = gioco === "sigla" ? 1 : ZOOM[gioco][livello];
 
   const prova = async (v: VoceAnime) => {
     if (!stato || finito) return;
@@ -210,30 +219,36 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
           )}
         </div>
 
-        {/* l'immagine si scopre a ogni errore */}
-        <div
-          className={`relative mx-auto overflow-hidden rounded-2xl border-2 border-white/25 bg-black shadow-2xl ${
-            ritratto ? "aspect-[3/4] max-w-sm" : "aspect-[19/6] w-full"
-          }`}
-          data-testid="zoom-immagine"
-          data-zoom={zoom}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={stato.immagine}
-            alt=""
-            referrerPolicy="no-referrer"
-            draggable={false}
-            className="absolute inset-0 size-full select-none object-cover"
-            style={{
-              transform: `scale(${zoom})`,
-              transformOrigin: `${stato.fx}% ${stato.fy}%`,
-              filter: `blur(${finito ? 0 : SFOCA[livello]}px)`,
-              transition: "transform 0.9s cubic-bezier(0.22,1,0.36,1), filter 0.9s ease",
-            }}
-          />
-          <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_60px_rgb(0_0_0/0.55)]" />
-        </div>
+        {gioco === "sigla" ? (
+          audio && <Ascolto src={audio} livello={livello} intero={finito} />
+        ) : (
+          <>
+            {/* l'immagine si scopre a ogni errore */}
+            <div
+              className={`relative mx-auto overflow-hidden rounded-2xl border-2 border-white/25 bg-black shadow-2xl ${
+                ritratto ? "aspect-[3/4] max-w-sm" : "aspect-[19/6] w-full"
+              }`}
+              data-testid="zoom-immagine"
+              data-zoom={zoom}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={stato.immagine}
+                alt=""
+                referrerPolicy="no-referrer"
+                draggable={false}
+                className="absolute inset-0 size-full select-none object-cover"
+                style={{
+                  transform: `scale(${zoom})`,
+                  transformOrigin: `${stato.fx}% ${stato.fy}%`,
+                  filter: `blur(${finito ? 0 : SFOCA[livello]}px)`,
+                  transition: "transform 0.9s cubic-bezier(0.22,1,0.36,1), filter 0.9s ease",
+                }}
+              />
+              <span className="pointer-events-none absolute inset-0 shadow-[inset_0_0_60px_rgb(0_0_0/0.55)]" />
+            </div>
+          </>
+        )}
 
         {indizi.length > 0 && (
           <ul className="flex flex-wrap justify-center gap-2" data-testid="zoom-indizi">

@@ -1063,7 +1063,7 @@
           "type": "integer"
         },
         "kind": {
-          "enum": ["scorcio", "personaggio", "indizi"],
+          "enum": ["scorcio", "personaggio", "indizi", "sigla"],
           "title": "Kind",
           "type": "string"
         },
@@ -1093,6 +1093,23 @@
         },
         "livello": {
           "title": "Livello",
+          "type": "integer"
+        },
+        "audio": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio"
+        },
+        "audio_secondi": {
+          "default": 0,
+          "title": "Audio Secondi",
           "type": "integer"
         },
         "indizi": {
@@ -1133,6 +1150,8 @@
         "fx",
         "fy",
         "livello",
+        "audio",
+        "audio_secondi",
         "indizi",
         "scadenza",
         "punteggi",
@@ -1304,7 +1323,7 @@
         },
         "quiz_tipo": {
           "default": "misto",
-          "enum": ["misto", "scorcio", "personaggio", "indizi"],
+          "enum": ["misto", "scorcio", "personaggio", "indizi", "sigla"],
           "title": "Quiz Tipo",
           "type": "string"
         },

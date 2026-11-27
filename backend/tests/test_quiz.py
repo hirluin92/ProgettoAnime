@@ -155,9 +155,13 @@ def test_zoom_bersaglio_punto_e_indizi() -> None:
         assert t == zoom.bersaglio_giorno(g, "2026-03-03")
         fx, fy = zoom.punto(g, t)
         assert 0 <= fx <= 100 and 0 <= fy <= 100
-        assert zoom.indizi(g, t, 0) == [] and zoom.indizi(g, t, 1) == []
+        assert zoom.indizi(g, t, 0) == []
+        assert g == "sigla" or zoom.indizi(g, t, 1) == []
         assert len(zoom.indizi(g, t, 5)) >= 3  # gli indizi crescono con gli errori
-        assert zoom.immagine(g, t).startswith("https://")
+        if g == "sigla":
+            assert zoom.audio(g, t).startswith("https://") and zoom.immagine(g, t) == ""
+        else:
+            assert zoom.immagine(g, t).startswith("https://") and zoom.audio(g, t) is None
     assert zoom.crediti_vittoria(1, 1) == 40 and zoom.crediti_vittoria(6, 1) == 10
 
 
@@ -168,9 +172,10 @@ def test_elenco_personaggi() -> None:
 
 def test_zoom_allenamento_e_token(tmp_path) -> None:  # type: ignore[no-untyped-def]
     configure(f"sqlite:///{tmp_path / 'z1.db'}")
-    for g in ("scorcio", "personaggio"):
+    for g in ("scorcio", "personaggio", "sigla"):
         n = client.post(f"/api/quiz/zoom/{g}/nuovo").json()
-        assert n["immagine"].startswith("https://") and n["tentativi_max"] == 6
+        assert (n["audio"] if g == "sigla" else n["immagine"]).startswith("https://")
+        assert n["tentativi_max"] == 6
         sol = client.post(f"/api/quiz/zoom/{g}/arrenditi", json={"token": n["token"]}).json()
         ok = client.post(
             f"/api/quiz/zoom/{g}/guess",
@@ -210,3 +215,31 @@ def test_zoom_del_giorno_con_profilo(tmp_path) -> None:  # type: ignore[no-untyp
     # il personaggio è un gioco a parte: la sua sfida è ancora aperta
     stp = client.get("/api/quiz/zoom/personaggio/stato", params={"profile_id": pid}).json()
     assert not stp["finito"] and stp["tentativi_fatti"] == 0
+
+
+def test_sigle_dati_e_secondi() -> None:
+    from app.quiz import zoom
+    from app.quiz.dati import sigle
+
+    assert len(sigle()) >= 50
+    assert all(s["anteprima"].startswith("https://") and s["tipo"] in ("OP", "ED") for s in sigle())
+    assert [zoom.secondi_sigla(e) for e in range(8)] == [1, 2, 4, 8, 16, 30, 30, 30]
+    t = zoom.bersaglio_giorno("sigla", "2026-05-05")
+    ind = zoom.indizi("sigla", t, 3)
+    assert [i["k"] for i in ind] == ["tipo", "anno", "artista"]
+
+
+def test_sigla_del_giorno_con_profilo(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from app.quiz import zoom
+
+    configure(f"sqlite:///{tmp_path / 'z3.db'}")
+    pid = nuovo_profilo()
+    st = client.get("/api/quiz/zoom/sigla/stato", params={"profile_id": pid}).json()
+    t = zoom.bersaglio_giorno("sigla", st["giorno"])
+    assert st["audio"] == t["anteprima"] and st["immagine"] == "" and st["indizi"] == []
+    vinta = client.post(
+        "/api/quiz/zoom/sigla/guess", json={"risposta_id": t["id"], "profile_id": pid}
+    ).json()
+    assert vinta["giusto"] and vinta["crediti"] == 40
+    sol = vinta["bersaglio"]
+    assert t["brano"] in sol["dettaglio"] and t["artista"] in sol["dettaglio"]

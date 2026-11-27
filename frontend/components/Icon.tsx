@@ -80,6 +80,13 @@ const LINEA: Record<string, ReactNode> = {
       <path d="M12 9.5v5M10 12h4" />
     </>
   ),
+  music: (
+    <>
+      <path d="M9 18V5l11-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="17" cy="16" r="3" />
+    </>
+  ),
   check: <path d="M4 12.5l5 5L20 6.5" />,
   x: <path d="M6 6l12 12M18 6 6 18" />,
   arrowup: <path d="M12 20V5M5 12l7-7 7 7" />,

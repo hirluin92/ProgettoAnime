@@ -105,7 +105,9 @@ export const STAGIONI: Record<string, string> = {
   FALL: "Autunno",
 };
 
-export type GiocoZoom = "scorcio" | "personaggio";
+export type GiocoZoom = "scorcio" | "personaggio" | "sigla";
+/** Secondi di anteprima ascoltabili dopo 0, 1, 2… errori (come il server). */
+export const SECONDI_SIGLA = [1, 2, 4, 8, 16, 30];
 export interface IndizioZoom {
   k: string;
   v: string;
@@ -128,6 +130,7 @@ export interface ZoomStato {
   fx: number;
   fy: number;
   indizi: IndizioZoom[];
+  audio?: string | null;
   bersaglio: SoluzioneZoom | null;
 }
 export interface ZoomEsito {
@@ -144,6 +147,7 @@ export interface ZoomNuovo {
   immagine: string;
   fx: number;
   fy: number;
+  audio?: string | null;
 }
 
 let cachePersonaggi: Promise<VoceAnime[]> | null = null;

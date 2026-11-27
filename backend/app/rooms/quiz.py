@@ -10,14 +10,14 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from app.quiz import zoom
-from app.quiz.dati import pool_anime, pool_personaggi
+from app.quiz.dati import pool_anime, pool_personaggi, sigle
 from app.rooms.models import QuizIndizio, QuizPunteggio, QuizSoluzione, QuizView
 
 LIVELLI = 6
 RIVELAZIONE = 6.0  # secondi di pausa a fine domanda
 BLOCCO = 4.0  # secondi di attesa dopo una risposta sbagliata
 BONUS_POSIZIONE = (50, 25, 10)
-TIPI = ("scorcio", "personaggio", "indizi")
+TIPI = ("scorcio", "personaggio", "indizi", "sigla")
 
 
 class QuizErrore(Exception):
@@ -50,6 +50,12 @@ class Domanda:
 
     def soluzione(self) -> QuizSoluzione:
         t = self.target
+        if self.kind == "sigla":
+            return QuizSoluzione(
+                nome=t["titolo_en"] or t["titolo"],
+                dettaglio=f"{t['brano']} · {t['artista']} ({t['tipo']})",
+                immagine=t["cover"],
+            )
         if self.kind == "personaggio":
             dett = f"{t['anime']} · {t['anno']}" if t["anno"] else str(t["anime"])
             return QuizSoluzione(nome=t["nome"], dettaglio=dett, immagine=t["img"])
@@ -59,21 +65,26 @@ class Domanda:
             immagine=t["cover"],
         )
 
+    def audio(self) -> str | None:
+        return str(self.target["anteprima"]) if self.kind == "sigla" else None
+
     def immagine(self) -> str | None:
-        if self.kind == "indizi":
+        if self.kind in ("indizi", "sigla"):
             return None
         return zoom.immagine(
             "personaggio" if self.kind == "personaggio" else "scorcio", self.target
         )
 
     def punto(self) -> tuple[float, float]:
-        if self.kind == "indizi":
+        if self.kind in ("indizi", "sigla"):
             return 50.0, 50.0
         return zoom.punto("personaggio" if self.kind == "personaggio" else "scorcio", self.target)
 
     def indizi(self, livello: int) -> list[QuizIndizio]:
         if self.kind == "indizi":
             return [QuizIndizio(**i) for i in indizi_anime(self.target, livello)]
+        if self.kind == "sigla":
+            return [QuizIndizio(**i) for i in zoom.indizi("sigla", self.target, livello)]
         gioco = "personaggio" if self.kind == "personaggio" else "scorcio"
         return [QuizIndizio(**i) for i in zoom.indizi(gioco, self.target, livello)]
 
@@ -101,10 +112,11 @@ class QuizPartita:
         kinds = list(TIPI) if tipo == "misto" else [tipo]
         anime = rng.sample(pool_anime(), min(n, len(pool_anime())))
         pers = rng.sample(pool_personaggi(), min(n, len(pool_personaggi())))
+        brani = rng.sample(sigle(), min(n, len(sigle())))
         domande: list[Domanda] = []
         for i in range(n):
             k = kinds[i % len(kinds)] if tipo == "misto" else tipo
-            t = pers[i] if k == "personaggio" else anime[i]
+            t = pers[i] if k == "personaggio" else brani[i] if k == "sigla" else anime[i]
             if k == "scorcio" and not t["banner"]:
                 k = "indizi"
             domande.append(Domanda(k, t))
@@ -184,6 +196,8 @@ class QuizPartita:
             fx=fx,
             fy=fy,
             livello=liv,
+            audio=d.audio(),
+            audio_secondi=zoom.secondi_sigla(liv) if d.kind == "sigla" else 0,
             indizi=d.indizi(liv),
             scadenza=self.scadenza,
             punteggi=[

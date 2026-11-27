@@ -78,6 +78,7 @@ export default function SfidePage() {
   const [animedle, setAnimedle] = useState<AnimedleStato | null>(null);
   const [scorcio, setScorcio] = useState<ZoomStato | null>(null);
   const [personaggio, setPersonaggio] = useState<ZoomStato | null>(null);
+  const [sigla, setSigla] = useState<ZoomStato | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -90,6 +91,9 @@ export default function SfidePage() {
       .catch(() => undefined);
     api<ZoomStato>(`/api/quiz/zoom/personaggio/stato${q}`)
       .then(setPersonaggio)
+      .catch(() => undefined);
+    api<ZoomStato>(`/api/quiz/zoom/sigla/stato${q}`)
+      .then(setSigla)
       .catch(() => undefined);
   }, [loading, profile]);
 
@@ -150,6 +154,15 @@ export default function SfidePage() {
           accento="#3ddc97"
           stato={stato(personaggio)}
           testId="sfida-personaggio"
+        />
+        <Carta
+          href="/sfide/sigla"
+          icona="music"
+          titolo={it.quiz.sigla.titolo}
+          testo={it.quiz.siglaTesto}
+          accento="#ff8a3d"
+          stato={stato(sigla)}
+          testId="sfida-sigla"
         />
         <Carta
           href="/duello/giorno"

@@ -586,12 +586,14 @@
         "misto": "Misto",
         "scorcio": "Scorcio",
         "personaggio": "Chi è?",
-        "indizi": "Indizi"
+        "indizi": "Indizi",
+        "sigla": "Sigle"
       },
       "titolo": {
         "scorcio": "Quale anime è?",
         "personaggio": "Chi è questo personaggio?",
-        "indizi": "Indovina l'anime dagli indizi"
+        "indizi": "Indovina l'anime dagli indizi",
+        "sigla": "Di quale anime è questa sigla?"
       },
       "round": "Domande",
       "tempo": "Secondi per domanda",
@@ -617,7 +619,9 @@
       "generi": "Generi",
       "ruolo": "Ruolo",
       "genere": "Genere",
-      "iniziale": "L'anime inizia con"
+      "iniziale": "L'anime inizia con",
+      "tipo": "Tipo",
+      "artista": "Artista"
     },
     "scorcio": {
       "titolo": "Scorcio",
@@ -627,6 +631,17 @@
       "titolo": "Chi è?",
       "intro": "Un dettaglio ingrandito di un personaggio: a ogni errore l'immagine si allarga e arrivano degli indizi. Come si chiama?"
     },
+    "sigla": {
+      "titolo": "Sigla",
+      "intro": "Ascolta l'inizio di una sigla: a ogni errore se ne sente di più e arrivano degli indizi. Di quale anime è?",
+      "ascolta": "Ascolta",
+      "ferma": "Ferma",
+      "secondi": "Ascolti i primi {n} secondi",
+      "tutta": "Ora puoi ascoltarla tutta",
+      "noAudio": "Il browser ha bloccato l'audio: premi il pulsante per ascoltare.",
+      "credito": "Anteprime audio di Apple Music (iTunes)."
+    },
+    "siglaTesto": "Indovina l'anime da pochi secondi della sua sigla. 6 tentativi.",
     "scorcioTesto": "Indovina l'anime da un dettaglio ingrandito del suo banner. 6 tentativi.",
     "personaggioTesto": "Indovina il personaggio da un dettaglio ingrandito del suo volto. 6 tentativi.",
     "tentativi": "Tentativi: {n}/{max}",
