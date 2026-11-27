@@ -533,21 +533,6 @@
   "costo_delta": 1
  },
  {
-  "base": "shinji-ikari",
-  "slug": "berserk",
-  "forma": "EVA-01 Berserk",
-  "rating_delta": 3,
-  "mossa": {
-   "nome": "Furia Berserk",
-   "effetto": "strike"
-  },
-  "passiva": {
-   "nome": "Controllo Perso",
-   "effetto": "rage"
-  },
-  "costo_delta": 1
- },
- {
   "base": "sousuke-aizen",
   "slug": "forma-finale",
   "forma": "Forma Finale",

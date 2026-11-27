@@ -140,11 +140,6 @@
   "nome": "Eroe e mostro"
  },
  {
-  "a": "spike-spiegel",
-  "b": "vicious",
-  "nome": "Vecchi compagni"
- },
- {
   "a": "eren-yeager",
   "b": "reiner-braun",
   "nome": "Nemici giurati"
@@ -158,10 +153,5 @@
   "a": "natsu-dragneel",
   "b": "zeref",
   "nome": "Fratelli nemici"
- },
- {
-  "a": "asuka-langley",
-  "b": "rei-ayanami",
-  "nome": "Rivalità di piloti"
  }
 ]

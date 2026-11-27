@@ -211,3 +211,6 @@ Fatto dal 2026-11-26 (V4, vedi M18-M29 sopra): Duello a corsie, rompicapo del gi
 
 ## Piano di battaglia spegnibile (Veloce)
 Nel draft della Partita veloce un interruttore «Usa il piano di battaglia» (`piano-interruttore`) disattiva le tattiche: il server riceve `senza_tattiche: true` e simula senza tattiche per entrambi i lati (nessun bonus/malus, nemmeno per la CPU). Carica e formazione restano. Sfida del giorno e Scala non cambiano (il piano resta obbligatorio, per la classifica). Se ne riparlerà: possibile ripensare o rimuovere il piano.
+
+## Meno anime, anime sulle carte
+Tolti Spy x Family, Evangelion e Cowboy Bebop (219 personaggi, 15 anime; tolti anche da `scripts/nuovi_personaggi.py`). Ogni carta mostra il nome dell'anime sulla targa e, al passaggio del mouse, un riepilogo (nome, anime, ruolo e mossa, valore, potenza, costo).

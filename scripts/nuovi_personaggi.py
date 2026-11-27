@@ -101,15 +101,6 @@ king|TAN|Motore del Re|stun|Aura del Più Forte|aura_atk|classe-s
 zombieman|TIR|Pistola Zombie|strike|Immortale|regen|classe-s
 puri-puri-prisoner|BRU|Gabbia Selvaggia|stun|Sacrificio d'Eroe|laststand|classe-s
 boros|MAG|Cannone Collasso|aoe|Dominatore Spaziale|armor|
-anya-forger|SUP|Telepatia|buff|Lettura del Pensiero|dodge|famiglia-forger
-loid-forger|ASS|Spia Perfetta|pierce|Maestro del Travestimento|dodge|famiglia-forger
-yor-forger|ASS|Principessa Spina|execute|Assassina Dorata|crit|famiglia-forger
-bond-forger|TAN|Premonizione|barrier|Cane Veggente|dodge|famiglia-forger
-damian-desmond|MAG|Scatto Presuntuoso|strike|Figlio del Ministro|rage|
-yuri-briar|ASS|Pugno Fraterno|strike|Agente Segreto|firststrike|
-becky-blackbell|GUA|Merenda Condivisa|heal|Amica Fedele|regen|
-franky-franklin|SUP|Informatore|debuff|Amico Pasticcione|energy|
-sylvia-sherwood|SUP|Capo Operativa|buff|Servizio WISE|aura_atk|
 erza-scarlet|BRU|Armatura Heaven's Wheel|multi|Regina delle Fate|armor|team-natsu
 natsu-dragneel|BRU|Pugno del Drago di Fuoco|strike|Dragon Slayer|rage|team-natsu
 lucy-heartfilia|EVO|Spiriti Stellari|multi|Maga Celeste|energy|team-natsu
@@ -135,22 +126,6 @@ charmy-pappitson|GUA|Cucina Magica|heal|Fame Eterna|regen|toro-nero
 mimosa-vermillion|GUA|Magia delle Piante|healall|Gentilezza Reale|regen|cavalieri-magici
 finral-roulacase|SUP|Portale Spaziale|haste|Teletrasporto|dodge|toro-nero
 nacht-faust|MAG|Ombra Oscura|multi|Magia dell'Ombra|dodge|toro-nero
-shinji-ikari|BRU|EVA-01 Berserk|strike|Il Terzo Bambino|laststand|piloti-eva
-rei-ayanami|SUP|AT Field|barrier|Il Primo Bambino|dodge|piloti-eva
-asuka-langley|ASS|EVA-02 Assalto|pierce|Pilota d'Élite|rage|piloti-eva
-misato-katsuragi|TIR|Comando Operativo|buff|Maggiore NERV|aura_atk|nerv
-kaworu-nagisa|MAG|Campo AT Assoluto|stun|Il Quinto Bambino|armor|piloti-eva
-ritsuko-akagi|GUA|Sistema MAGI|heal|Dottoressa NERV|energy|nerv
-ryoji-kaji|ASS|Spia Doppia|debuff|Doppiogiochista|dodge|nerv
-gendo-ikari|TAN|Piano Completo|buff|Comandante NERV|aura_atk|nerv
-pen-pen|TAN|Pinguino Corazzato|barrier|Mascotte NERV|regen|nerv
-spike-spiegel|ASS|Jeet Kune Do|multi|Cowboy Spaziale|dodge|equipaggio-bebop
-faye-valentine|TIR|Pistola Cobra|snipe|Fortuna Truffaldina|crit|equipaggio-bebop
-jet-black|TAN|Presa del Cacciatore|stun|Lupo Solitario|armor|equipaggio-bebop
-edward-wong|SUP|Hacker Geniale|debuff|Mente Eccentrica|energy|equipaggio-bebop
-ein|SUP|Super Cane Dati|haste|Fiuto Infallibile|dodge|equipaggio-bebop
-vicious|ASS|Katana Maledetta|execute|Drago Rosso|lifesteal|
-julia|GUA|Voce Perduta|heal|Amore del Passato|regen|
 """
 
 # id -> (nome, stat, [bonus a 2, 3, 4 membri] in %)
@@ -196,11 +171,8 @@ ANIME_NUOVI = {
     "death-note": "Death Note",
     "chainsaw-man": "Chainsaw Man",
     "one-punch-man": "One Punch Man",
-    "spy-x-family": "Spy x Family",
     "fairy-tail": "Fairy Tail",
     "black-clover": "Black Clover",
-    "evangelion": "Evangelion",
-    "cowboy-bebop": "Cowboy Bebop",
 }
 
 DUOS_NUOVI = [
@@ -209,9 +181,6 @@ DUOS_NUOVI = [
     ("natsu-dragneel", "gray-fullbuster", "Litigano ma si fidano"),
     ("asta", "yuno", "Amici e rivali"),
     ("izuku-midoriya", "all-might", "Maestro e allievo"),
-    ("loid-forger", "yor-forger", "Genitori finti"),
-    ("shinji-ikari", "rei-ayanami", "Piloti legati"),
-    ("spike-spiegel", "faye-valentine", "Cacciatori di taglie"),
     ("levi-ackerman", "erwin-smith", "Comandante e braccio destro"),
     ("denji", "power", "Compagni di caccia"),
 ]
@@ -220,11 +189,9 @@ RIVALITA_NUOVE = [
     ("ichigo-kurosaki", "sousuke-aizen", "Il traditore"),
     ("izuku-midoriya", "katsuki-bakugo", "Rivali d'infanzia"),
     ("saitama", "garou", "Eroe e mostro"),
-    ("spike-spiegel", "vicious", "Vecchi compagni"),
     ("eren-yeager", "reiner-braun", "Nemici giurati"),
     ("hisoka-morow", "chrollo-lucilfer", "Duello del Ragno"),
     ("natsu-dragneel", "zeref", "Fratelli nemici"),
-    ("asuka-langley", "rei-ayanami", "Rivalità di piloti"),
 ]
 
 # forme alternative dei nuovi personaggi: (base, slug, nome forma, Δ voto, mossa, effetto, passiva, effetto, Δ costo)
@@ -241,7 +208,6 @@ FORME_NUOVE = [
     ("asta", "demone", "Forma Demone", 3, "Taglio Demoniaco", "pierce", "Forma Demone", "rage", 1),
     ("denji", "chainsaw-man", "Chainsaw Man", 3, "Demone Motosega", "multi", "Rigenerazione Infernale", "regen", 1),
     ("saitama", "serio", "Serio", 2, "Pugno Serio", "execute", "Serietà Assoluta", "armor", 1),
-    ("shinji-ikari", "berserk", "EVA-01 Berserk", 3, "Furia Berserk", "strike", "Controllo Perso", "rage", 1),
     ("sousuke-aizen", "forma-finale", "Forma Finale", 3, "Hogyoku Fuso", "aoe", "Corpo Perfetto", "regen", 1),
 ]
 
@@ -341,15 +307,6 @@ PERSONAGGI = [
     ["zombieman", "Zombieman", "one-punch-man", "Tank", ["REGEN"], 78, "https://s4.anilist.co/file/anilistcdn/character/large/n133835-7dbqvi4YzpRC.png"],
     ["puri-puri-prisoner", "Puri-Puri Prisoner", "one-punch-man", "Supporto II", ["MELEE"], 70, "https://s4.anilist.co/file/anilistcdn/character/large/n86029-iomUtQtGfJOU.png"],
     ["boros", "Boros", "one-punch-man", "Capitano", ["ENERGY", "GIANT"], 91, "https://s4.anilist.co/file/anilistcdn/character/large/n89263-GPItRQ64F27D.png"],
-    ["anya-forger", "Anya Forger", "spy-x-family", "Supporto", ["PSYCHIC"], 93, "https://s4.anilist.co/file/anilistcdn/character/large/b138100-4Li0tWRCa5bQ.png"],
-    ["loid-forger", "Loid Forger", "spy-x-family", "Capitano", ["STEALTH"], 94, "https://s4.anilist.co/file/anilistcdn/character/large/b138101-7NCB0Md8zA6G.png"],
-    ["yor-forger", "Yor Forger", "spy-x-family", "Danno", ["MELEE"], 95, "https://s4.anilist.co/file/anilistcdn/character/large/b138102-ZOAu9jI2d5ke.png"],
-    ["bond-forger", "Bond Forger", "spy-x-family", "Supporto II", ["PSYCHIC"], 80, "https://s4.anilist.co/file/anilistcdn/character/large/b169679-EFPubVtZFYom.jpg"],
-    ["damian-desmond", "Damian Desmond", "spy-x-family", "Vice", ["MELEE"], 72, "https://s4.anilist.co/file/anilistcdn/character/large/b150424-4B4psF6I4dgO.png"],
-    ["yuri-briar", "Yuri Briar", "spy-x-family", "Vice", ["MELEE"], 76, "https://s4.anilist.co/file/anilistcdn/character/large/b150425-mP852peLh9eS.jpg"],
-    ["becky-blackbell", "Becky Blackbell", "spy-x-family", "Guaritore", ["HEAL"], 62, "https://s4.anilist.co/file/anilistcdn/character/large/b150423-RxXwrHzeLCss.jpg"],
-    ["franky-franklin", "Franky Franklin", "spy-x-family", "Supporto II", ["ENERGY"], 62, "https://s4.anilist.co/file/anilistcdn/character/large/b157888-zkSfIT5Z8y2S.png"],
-    ["sylvia-sherwood", "Sylvia Sherwood", "spy-x-family", "Supporto", ["AURA"], 74, "https://s4.anilist.co/file/anilistcdn/character/large/b157887-P66pD0ilpmtZ.png"],
     ["erza-scarlet", "Erza Scarlet", "fairy-tail", "Vice", ["MELEE", "SUMMON"], 94, "https://s4.anilist.co/file/anilistcdn/character/large/b5189-GR1xdok9SFsN.jpg"],
     ["natsu-dragneel", "Natsu Dragneel", "fairy-tail", "Capitano", ["ELEMENT"], 94, "https://s4.anilist.co/file/anilistcdn/character/large/b5187-y1OEdRu9sPN2.png"],
     ["lucy-heartfilia", "Lucy Heartfilia", "fairy-tail", "Supporto", ["SUMMON"], 84, "https://s4.anilist.co/file/anilistcdn/character/large/b5186-izgXf2S86K9u.png"],
@@ -375,20 +332,4 @@ PERSONAGGI = [
     ["mimosa-vermillion", "Mimosa Vermillion", "black-clover", "Guaritore", ["HEAL"], 70, "https://s4.anilist.co/file/anilistcdn/character/large/b124438-nTvKfJaMD4d5.jpg"],
     ["finral-roulacase", "Finral Roulacase", "black-clover", "Supporto II", ["MOBILITY"], 68, "https://s4.anilist.co/file/anilistcdn/character/large/b124433-QyoZrgIUsSpd.png"],
     ["nacht-faust", "Nacht Faust", "black-clover", "Vice", ["STEALTH"], 80, "https://s4.anilist.co/file/anilistcdn/character/large/b187268-vkcrcTvjNSrA.png"],
-    ["shinji-ikari", "Shinji Ikari", "evangelion", "Capitano", ["TRANSFORM", "GIANT"], 90, "https://s4.anilist.co/file/anilistcdn/character/large/b89-ZtZhXkh1rITn.png"],
-    ["rei-ayanami", "Rei Ayanami", "evangelion", "Supporto", ["BARRIER"], 92, "https://s4.anilist.co/file/anilistcdn/character/large/86-cA1zL7fyls8E.jpg"],
-    ["asuka-langley", "Asuka Langley", "evangelion", "Danno", ["MELEE"], 93, "https://s4.anilist.co/file/anilistcdn/character/large/b94-d631a3Z2KPvd.png"],
-    ["misato-katsuragi", "Misato Katsuragi", "evangelion", "Vice", ["RANGE"], 85, "https://s4.anilist.co/file/anilistcdn/character/large/b1259-afTQkZ5SVMOn.png"],
-    ["kaworu-nagisa", "Kaworu Nagisa", "evangelion", "Supporto", ["BARRIER", "PSYCHIC"], 90, "https://s4.anilist.co/file/anilistcdn/character/large/b1261-HYRv3HpsSL92.jpg"],
-    ["ritsuko-akagi", "Ritsuko Akagi", "evangelion", "Guaritore", ["HEAL"], 72, "https://s4.anilist.co/file/anilistcdn/character/large/1251-gLa2Arv5E8a9.png"],
-    ["ryoji-kaji", "Ryoji Kaji", "evangelion", "Supporto II", ["STEALTH"], 76, "https://s4.anilist.co/file/anilistcdn/character/large/b1260-QCPCuARGDhqK.jpg"],
-    ["gendo-ikari", "Gendo Ikari", "evangelion", "Tank", ["AURA"], 84, "https://s4.anilist.co/file/anilistcdn/character/large/b1257-qByikcrE8KTG.png"],
-    ["pen-pen", "Pen Pen", "evangelion", "Supporto II", ["REGEN"], 60, "https://s4.anilist.co/file/anilistcdn/character/large/b1892-sjqNrZpbddu8.png"],
-    ["spike-spiegel", "Spike Spiegel", "cowboy-bebop", "Capitano", ["MELEE", "SPEED"], 94, "https://s4.anilist.co/file/anilistcdn/character/large/b1-ChxaldmieFlQ.png"],
-    ["faye-valentine", "Faye Valentine", "cowboy-bebop", "Danno", ["RANGE"], 86, "https://s4.anilist.co/file/anilistcdn/character/large/b2-0Iszg6Izgt4p.png"],
-    ["jet-black", "Jet Black", "cowboy-bebop", "Tank", ["MELEE"], 82, "https://s4.anilist.co/file/anilistcdn/character/large/b3-JjH9Si9UM1NZ.png"],
-    ["edward-wong", "Edward Wong", "cowboy-bebop", "Supporto", ["ENERGY"], 80, "https://s4.anilist.co/file/anilistcdn/character/large/b16-80wd87nl1Rue.png"],
-    ["ein", "Ein", "cowboy-bebop", "Supporto II", ["SPEED"], 66, "https://s4.anilist.co/file/anilistcdn/character/large/4.jpg"],
-    ["vicious", "Vicious", "cowboy-bebop", "Danno", ["MELEE"], 88, "https://s4.anilist.co/file/anilistcdn/character/large/b2734-aglO8RKNVxnn.jpg"],
-    ["julia", "Julia", "cowboy-bebop", "Supporto", ["HEAL"], 64, "https://s4.anilist.co/file/anilistcdn/character/large/b2735-0NRiXHK4PSWs.png"],
 ]
