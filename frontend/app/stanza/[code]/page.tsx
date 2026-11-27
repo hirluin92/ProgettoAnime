@@ -20,13 +20,15 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
   const { room, me, tournament, status, error, errorCode } = useRoom();
   const [name, setName] = useState("");
   const [started, setStarted] = useState(false);
+  // ogni pressione di «Entra» crea una connessione nuova con il nome scritto in quel momento
+  const [tentativo, setTentativo] = useState(0);
   const socketRef = useRef<RoomSocket | null>(null);
 
   const socket = useMemo(
     () => new RoomSocket(code, () => ({ type: "join", name, token: getToken(code) })),
     // il nome serve solo al primo ingresso
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [code, started],
+    [code, started, tentativo],
   );
   socketRef.current = socket;
 
@@ -102,6 +104,7 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
             disabled={!name.trim()}
             onClick={() => {
               useRoom.getState().clearError();
+              setTentativo((t) => t + 1);
               setStarted(true);
             }}
           >
