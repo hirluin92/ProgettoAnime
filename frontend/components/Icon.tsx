@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { PENNELLO } from "@/lib/pennello";
 
 // Icone disegnate a mano in SVG (stile lineare, 24×24), al posto delle emoji del sistema.
 const LINEA: Record<string, ReactNode> = {
@@ -158,6 +159,18 @@ export default function Icon({
   name: string;
   className?: string;
 }) {
+  // i simboli principali sono disegnati a pennello (contorni pieni a spessore variabile, lib/pennello.ts)
+  if (name in PENNELLO)
+    return (
+      <svg
+        viewBox="0 0 48 48"
+        className={`inline-block shrink-0 align-[-0.15em] ${className}`}
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d={PENNELLO[name]} />
+      </svg>
+    );
   const piena = name in PIENE;
   const corpo = piena ? PIENE[name] : LINEA[name];
   if (!corpo) return null;

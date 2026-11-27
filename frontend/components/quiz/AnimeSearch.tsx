@@ -27,6 +27,8 @@ export default function AnimeSearch({
   tipi?: string[]; // quali risposte sono ammesse (anime, brano, artista)
 }) {
   const [elenco, setElenco] = useState<Voce[]>([]);
+  const [nonCarica, setNonCarica] = useState(false);
+  const [riprova, setRiprova] = useState(0);
   const [q, setQ] = useState("");
   const [aperto, setAperto] = useState(false);
   const [sel, setSel] = useState(0);
@@ -48,11 +50,17 @@ export default function AnimeSearch({
             })),
           ]),
         )
-        .catch(() => undefined);
+        .then(() => setNonCarica(false))
+        .catch(() => setNonCarica(true));
       return;
     }
-    (personaggi ? caricaPersonaggi(api) : caricaElenco(api)).then(setElenco).catch(() => undefined);
-  }, [personaggi, sigle]);
+    (personaggi ? caricaPersonaggi(api) : caricaElenco(api))
+      .then((e) => {
+        setElenco(e);
+        setNonCarica(false);
+      })
+      .catch(() => setNonCarica(true));
+  }, [personaggi, sigle, riprova]);
 
   const risultati = useMemo(() => {
     const n = normalizza(q);
@@ -88,6 +96,14 @@ export default function AnimeSearch({
 
   return (
     <div className="relative">
+      {nonCarica && (
+        <p role="alert" className="mb-1 text-sm text-amber-200" data-testid="elenco-non-carica">
+          {it.quiz.elencoNonCarica}{" "}
+          <button type="button" className="underline" onClick={() => setRiprova((r) => r + 1)}>
+            {it.quiz.riprovaElenco}
+          </button>
+        </p>
+      )}
       <input
         ref={ref}
         role="combobox"

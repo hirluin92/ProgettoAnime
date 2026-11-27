@@ -159,6 +159,16 @@ Nato dal parere del committente («troppo pieno e piatto»). Tutto in `frontend/
 - **Meno roba per schermata:** home con una modalità grande, due medie e cinque tessere compatte (prima otto vignette uguali con retino), tre collegamenti di testo al posto di tre pulsanti nell'hero, tolta la striscia «caratteristiche»; via il retino dalle vignette delle Sfide; blocco «Come funziona» a voce bassa; footer a due colonne su telefono.
 - **Misure:** fotogrammi a 16,6-16,7 ms (p95 16,8) con CPU rallentata 4× su /negozio, /duello e home. `prefers-reduced-motion` ferma dondolii e inclinazioni. Nessun sensore di movimento usato (solo puntatore).
 
+### Seconda passata «wow» (ramo `feat/wow`, 2026-11-27, non ancora unito)
+Nata dal parere del committente («non mi fa dire wow; icone brutte; non vedo il vetro»). Stile in `frontend/app/wow.css` (terzo strato, dopo `profondita.css`).
+- **Simboli a pennello** (`lib/pennello.ts`, generato da uno script: contorni pieni a spessore variabile, punta che si assottiglia, schizzi). `Icon` li usa da solo per i nomi principali (swords, crown, trophy, sparkles, ladder, bolt, cards, coin, music, user, shield, clock, moon): cambiano in tutto il sito. `components/Emblema.tsx` li mette dentro un cerchio d'inchiostro (ensō) nel colore della modalità: è l'emblema grande di schede della home e Sfide.
+- **Scena d'inchiostro nella home** (`Tavola` in `components/Home.tsx`): ensō vermiglio, lama con la sua pennellata, schizzi, retino; tre carte che arrivano una dopo l'altra; piani in parallasse col puntatore. Il titolo arriva tagliato in due e si ricompone (`.taglio`).
+- **Vetro vero:** barra in alto, barra del telefono e plancia della mano usano `backdrop-filter` SOLO se `html[data-vetro]` (script in `app/layout.tsx`: almeno 4 core, niente «riduci movimento», niente risparmio dati); altrimenti restano opache. Teche delle bustine con riflessi davanti all'oggetto; saldo con riflesso che passa.
+- **Lamina olografica** sempre visibile su epiche e leggendarie (non sulle miniature); leggendarie con costa più alta.
+- **Apertura bustine:** le rarità alte si fanno attendere (la carta trema coperta), lampo a schermo sulla leggendaria. **Finale del Duello:** pennellata dietro il verdetto.
+- **Misura:** 16,6 ms a fotogramma (p95 16,8) scorrendo con CPU rallentata 4× e vetro attivo, su home, negozio e Duello (Chromium, non un telefono vero).
+- **Limite dichiarato:** figure umane illustrate (guerrieri, mani) non sono state disegnate: in SVG scritto a mano non raggiungono il livello richiesto. Per quel salto servono illustrazioni di un artista (o immagini prodotte dal committente) da inserire nella scena della home, nelle testate e nelle bustine.
+
 ### Idee lasciate come proposte
 Mascotte originale; onomatopee anche per ogni carta rivelata in corsia; bollino «premi da ritirare» sul Ranked (serve una chiamata in più); mosaico di ritratti AniList nella home; suoni nuovi; QR nel biglietto della lobby; nomi tematici per le bustine (li decide il backend).
 

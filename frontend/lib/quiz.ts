@@ -76,9 +76,33 @@ export const normalizza = (s: string) =>
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 
+/**
+ * Carica un elenco una volta sola e lo ricorda, ma NON ricorda i fallimenti (server che si sveglia,
+ * rete lenta): un errore non deve lasciare la ricerca vuota per tutta la sessione. Riprova qualche
+ * volta a distanza di un paio di secondi.
+ */
+export async function conRiprova<T>(
+  carica: () => Promise<T>,
+  tentativi = 5,
+  attesa = 2000,
+): Promise<T> {
+  for (let i = 1; ; i++) {
+    try {
+      return await carica();
+    } catch (e) {
+      if (i >= tentativi) throw e;
+      await new Promise((r) => setTimeout(r, attesa * i));
+    }
+  }
+}
+
 let cacheElenco: Promise<VoceAnime[]> | null = null;
 export function caricaElenco(api: <T>(p: string) => Promise<T>): Promise<VoceAnime[]> {
-  cacheElenco ??= api<VoceAnime[]>("/api/quiz/anime/elenco");
+  if (!cacheElenco) {
+    const p = conRiprova(() => api<VoceAnime[]>("/api/quiz/anime/elenco"));
+    p.catch(() => (cacheElenco = null));
+    cacheElenco = p;
+  }
   return cacheElenco;
 }
 
@@ -173,12 +197,20 @@ export interface VoceSigla {
 
 let cacheSigle: Promise<VoceSigla[]> | null = null;
 export function caricaSigle(api: <T>(p: string) => Promise<T>): Promise<VoceSigla[]> {
-  cacheSigle ??= api<VoceSigla[]>("/api/quiz/sigle/elenco");
+  if (!cacheSigle) {
+    const p = conRiprova(() => api<VoceSigla[]>("/api/quiz/sigle/elenco"));
+    p.catch(() => (cacheSigle = null));
+    cacheSigle = p;
+  }
   return cacheSigle;
 }
 
 let cachePersonaggi: Promise<VoceAnime[]> | null = null;
 export function caricaPersonaggi(api: <T>(p: string) => Promise<T>): Promise<VoceAnime[]> {
-  cachePersonaggi ??= api<VoceAnime[]>("/api/quiz/personaggi/elenco");
+  if (!cachePersonaggi) {
+    const p = conRiprova(() => api<VoceAnime[]>("/api/quiz/personaggi/elenco"));
+    p.catch(() => (cachePersonaggi = null));
+    cachePersonaggi = p;
+  }
   return cachePersonaggi;
 }

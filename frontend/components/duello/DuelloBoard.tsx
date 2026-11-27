@@ -337,7 +337,7 @@ export default function DuelloBoard({
       )}
 
       {!stato.finita && (
-        <section className="vetro sticky bottom-[3.75rem] z-30 space-y-1.5 rounded-[6px] !overflow-visible p-2 [--vetro:#15141a] sm:bottom-2 md:p-3">
+        <section className="vetro barra-vetro sticky bottom-[3.75rem] z-30 space-y-1.5 rounded-[6px] !overflow-visible p-2 [--vetro:#15141a] sm:bottom-2 md:p-3">
           <div
             className={`line-clamp-2 min-h-[2.4em] text-[0.8rem] font-bold leading-[1.2] sm:text-sm ${
               caption ? "text-[#ffd21f]" : "text-[#dcd5c5]"

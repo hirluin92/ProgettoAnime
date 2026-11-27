@@ -69,14 +69,17 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
   };
 
   // la carta al centro si gira da sola dopo un attimo
+  // le rarità alte si fanno attendere: la carta trema coperta per un attimo in più, poi il colpo
   useEffect(() => {
     if (fase !== "carosello") return;
+    const r0 = carte[indice]?.rarita;
+    const attesa = r0 === "leggendaria" ? 1300 : r0 === "epica" ? 800 : 0;
     const t = setTimeout(
       () => setRivelate((r) => (r.includes(indice) ? r : [...r, indice])),
-      indice === 0 ? 1500 : 450,
+      (indice === 0 ? 1500 : 450) + attesa,
     );
     return () => clearTimeout(t);
-  }, [fase, indice]);
+  }, [fase, indice, carte]);
 
   const vai = useCallback(
     (nuovo: number) => setIndice((i) => Math.min(n - 1, Math.max(0, nuovo === i ? i : nuovo))),
@@ -276,35 +279,46 @@ export default function PackOpening({ apertura, nome, onChiudi }: Props) {
                     onClick={() => !attiva && vai(i)}
                     data-testid={attiva ? "carta-corrente" : undefined}
                   >
-                    <motion.div
-                      className="relative"
-                      animate={{ rotateY: aperta ? 0 : 180 }}
-                      transition={{ duration: 0.6, ease: "easeInOut" }}
-                      style={{ transformStyle: "preserve-3d" }}
+                    <div
+                      className={
+                        attiva && !aperta && (c.rarita === "epica" || c.rarita === "leggendaria")
+                          ? "trema"
+                          : ""
+                      }
                     >
-                      <div style={{ backfaceVisibility: "hidden" }}>
-                        <DuelloCard mano tilt carta={c.carta} />
-                        {aperta && (
-                          <span
-                            className={`absolute -right-3 top-[22%] z-10 rotate-6 border-2 border-black px-2 py-0.5 text-xs font-black uppercase shadow-[3px_3px_0_#000] ${
-                              c.nuova ? "bg-[#ffd21f] text-black" : "bg-carta text-black"
-                            }`}
-                          >
-                            {c.nuova ? it.negozio.nuova : it.negozio.doppioneBreve}
-                          </span>
-                        )}
-                      </div>
-                      {/* dorso */}
-                      <div
-                        className="absolute inset-0"
-                        style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+                      <motion.div
+                        className="relative"
+                        animate={{ rotateY: aperta ? 0 : 180 }}
+                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                        style={{ transformStyle: "preserve-3d" }}
                       >
-                        <CartaRetro className="h-full [&>div]:aspect-auto [&>div]:h-full" />
-                      </div>
-                    </motion.div>
+                        <div style={{ backfaceVisibility: "hidden" }}>
+                          <DuelloCard mano tilt carta={c.carta} />
+                          {aperta && (
+                            <span
+                              className={`absolute -right-3 top-[22%] z-10 rotate-6 border-2 border-black px-2 py-0.5 text-xs font-black uppercase shadow-[3px_3px_0_#000] ${
+                                c.nuova ? "bg-[#ffd21f] text-black" : "bg-carta text-black"
+                              }`}
+                            >
+                              {c.nuova ? it.negozio.nuova : it.negozio.doppioneBreve}
+                            </span>
+                          )}
+                        </div>
+                        {/* dorso */}
+                        <div
+                          className="absolute inset-0"
+                          style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+                        >
+                          <CartaRetro className="h-full [&>div]:aspect-auto [&>div]:h-full" />
+                        </div>
+                      </motion.div>
+                    </div>
                   </motion.div>
                 );
               })}
+              {girata && corrente.rarita === "leggendaria" && (
+                <span key={`lampo${indice}`} aria-hidden="true" className="lampo-schermo" />
+              )}
               {girata && rara && (
                 <motion.span
                   key={`flash${indice}`}

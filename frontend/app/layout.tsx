@@ -9,6 +9,7 @@ import { APP_NAME } from "@/lib/constants";
 import { meta, SITO } from "@/lib/seo";
 import "./globals.css";
 import "./profondita.css";
+import "./wow.css";
 
 // Tre voci: testo (Zen Kaku Gothic New, chiaro anche piccolo), titoli (Anton, stretto e alto, da testata
 // di rivista), numeri e onomatopee (Dela Gothic One, grasso e rotondo).
@@ -58,10 +59,17 @@ export const viewport: Viewport = { themeColor: "#0e0d10" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="it">
+    <html lang="it" suppressHydrationWarning>
       <body
         className={`${body.variable} ${display.variable} ${numeri.variable} antialiased pb-16 sm:pb-0`}
       >
+        {/* vetro con sfocatura solo dove il dispositivo regge: lo decide questo script prima del primo disegno */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var n=navigator,c=n.connection;if((n.hardwareConcurrency||2)>=4&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!(c&&c.saveData)&&CSS.supports('backdrop-filter','blur(2px)'))document.documentElement.dataset.vetro='1'}catch(e){}",
+          }}
+        />
         <div className="aurora" aria-hidden="true">
           <i />
           <i />
