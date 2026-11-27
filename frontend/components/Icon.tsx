@@ -96,6 +96,13 @@ const LINEA: Record<string, ReactNode> = {
 
 const PIENE: Record<string, ReactNode> = {
   bolt: <path d="M13.5 2 4.5 14H11l-1 8 9-12.5h-6.5z" />,
+  play: <path d="M7.5 4.5v15l12.5-7.5z" />,
+  pause: (
+    <>
+      <rect x="6" y="4.5" width="4.5" height="15" rx="1.2" />
+      <rect x="13.5" y="4.5" width="4.5" height="15" rx="1.2" />
+    </>
+  ),
   crown: <path d="M2.5 8.5 7 12l5-7.5L17 12l4.5-3.5L19.5 20h-15z" />,
   star: <path d="M12 2.5l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17.3l-6.1 3.6 1.5-6.8L2.2 9.8l6.9-.7z" />,
   flame: (

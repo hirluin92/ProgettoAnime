@@ -63,3 +63,8 @@ def titoli_anime(a: dict[str, Any]) -> list[str]:
 def risposta_giusta_anime(a: dict[str, Any], testo: str) -> bool:
     n = normalizza(testo)
     return bool(n) and any(normalizza(t) == n for t in titoli_anime(a))
+
+
+def stessa_serie(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    """Due anime diversi che sono stagioni o film della stessa serie (es. Re:Zero 1 e 2)."""
+    return a["id"] != b["id"] and a.get("serie") is not None and a.get("serie") == b.get("serie")

@@ -69,7 +69,7 @@ from app.rooms.protocol import (
     TournamentResult,
     UpdateSettings,
 )  # fmt: skip
-from app.rooms.quiz import QuizErrore, QuizPartita
+from app.rooms.quiz import BLOCCO, BLOCCO_SERIE, QuizErrore, QuizPartita
 from app.rooms.raid_room import Raid
 from app.rooms.specchio import Specchio, SpecchioError
 from app.rooms.store import InMemoryRoomStore, RoomStore
@@ -600,10 +600,16 @@ class RoomManager:
         if room.phase != "quiz" or q is None:
             raise RoomError("not_quiz", "Non è il momento del quiz")
         try:
-            giusto = q.rispondi(pid, msg.risposta_id, now())
+            esito = q.rispondi(pid, msg.risposta_id, now())
         except QuizErrore as e:
             raise RoomError(e.code, e.message) from e
-        room.invii.append((pid, QuizEsito(giusto=giusto, blocco=0.0 if giusto else 4.0)))
+        blocco = {"giusto": 0.0, "serie": BLOCCO_SERIE, "no": BLOCCO}[esito]
+        room.invii.append(
+            (
+                pid,
+                QuizEsito(giusto=esito == "giusto", blocco=blocco, stessa_serie=esito == "serie"),
+            )
+        )
         # se hanno risposto tutti si chiude subito, altrimenti si aggiornano i punteggi
         q.tick(now(), self._quiz_attivi(room))
         return [RoomState(room=room.view())]

@@ -8,6 +8,8 @@ import { SECONDI_SIGLA } from "@/lib/quiz";
 // Lettore dell'anteprima di una sigla: si ascolta solo l'inizio, che si allunga a ogni errore.
 // L'audio è l'anteprima di 30 secondi ospitata da Apple: non viene copiata né scaricata.
 
+const mmss = (t: number) => `0:${String(Math.floor(t)).padStart(2, "0")}`;
+
 export default function Ascolto({
   src,
   livello,
@@ -22,6 +24,7 @@ export default function Ascolto({
   const ref = useRef<HTMLAudioElement>(null);
   const timer = useRef<number | undefined>(undefined);
   const [suona, setSuona] = useState(false);
+  const [tempo, setTempo] = useState(0); // secondi ascoltati, per la barra che scorre
   const [errore, setErrore] = useState(false);
   const secondi = intero ? 30 : SECONDI_SIGLA[Math.min(livello, SECONDI_SIGLA.length - 1)];
 
@@ -29,12 +32,14 @@ export default function Ascolto({
     window.clearTimeout(timer.current);
     ref.current?.pause();
     setSuona(false);
+    setTempo(0);
   };
   const avvia = () => {
     const a = ref.current;
     if (!a) return;
     window.clearTimeout(timer.current);
     a.currentTime = 0;
+    setTempo(0);
     a.play()
       .then(() => {
         setSuona(true);
@@ -43,6 +48,18 @@ export default function Ascolto({
       })
       .catch(() => setErrore(true));
   };
+
+  // mentre suona, la barra segue la posizione dell'audio
+  useEffect(() => {
+    if (!suona) return;
+    let id = 0;
+    const giro = () => {
+      setTempo(ref.current?.currentTime ?? 0);
+      id = requestAnimationFrame(giro);
+    };
+    id = requestAnimationFrame(giro);
+    return () => cancelAnimationFrame(id);
+  }, [suona]);
 
   // il livello sale (nuovo errore o tempo che passa): si riascolta dall'inizio
   useEffect(() => {
@@ -53,39 +70,57 @@ export default function Ascolto({
 
   return (
     <div className="panel space-y-3 p-5 text-center" data-testid="ascolto">
-      <audio ref={ref} src={src} preload="auto" onEnded={() => setSuona(false)} />
+      <audio ref={ref} src={src} preload="auto" onEnded={ferma} />
       <button
         type="button"
         onClick={suona ? ferma : avvia}
-        className="btn btn-primary mx-auto size-24 !rounded-full text-3xl"
+        className="btn btn-primary mx-auto size-24 !rounded-full"
         aria-label={suona ? it.quiz.sigla.ferma : it.quiz.sigla.ascolta}
         data-testid="ascolto-play"
       >
-        {suona ? (
-          <span className="flex gap-1.5" aria-hidden="true">
-            <i className="block h-8 w-2.5 animate-pulse rounded bg-white" />
-            <i className="block h-8 w-2.5 animate-pulse rounded bg-white [animation-delay:200ms]" />
-            <i className="block h-8 w-2.5 animate-pulse rounded bg-white [animation-delay:400ms]" />
-          </span>
-        ) : (
-          <Icon name="music" className="size-10" />
-        )}
+        <Icon
+          name={suona ? "pause" : "play"}
+          className={`size-11 ${suona ? "" : "translate-x-0.5"}`}
+        />
       </button>
       <p className="text-sm font-bold">
         {intero ? it.quiz.sigla.tutta : it.quiz.sigla.secondi.replace("{n}", String(secondi))}
       </p>
-      {/* i segmenti già sbloccati */}
-      <ul className="mx-auto flex max-w-sm gap-1" aria-hidden="true">
-        {SECONDI_SIGLA.map((s, i) => (
-          <li
-            key={s}
-            className={`h-2 flex-1 rounded-full ${
-              intero || i <= livello ? "bg-gradient-to-r from-cyan-300 to-pink-500" : "bg-white/15"
-            }`}
-            style={{ flexGrow: s === 1 ? 1 : Math.log2(s) + 1 }}
-          />
-        ))}
-      </ul>
+      {/* la barra: i segmenti sbloccati si riempiono mentre l'audio scorre, come in un lettore */}
+      <div className="mx-auto max-w-md space-y-1">
+        <ul
+          className="flex gap-1"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={secondi}
+          aria-valuenow={Math.round(tempo)}
+          data-testid="ascolto-barra"
+        >
+          {SECONDI_SIGLA.map((s, i) => {
+            const da = i === 0 ? 0 : SECONDI_SIGLA[i - 1];
+            const aperto = intero || i <= livello;
+            const riempi = Math.max(0, Math.min(1, (tempo - da) / (s - da)));
+            return (
+              <li
+                key={s}
+                className={`relative h-2.5 flex-1 overflow-hidden rounded-full ${
+                  aperto ? "bg-white/25" : "bg-white/10"
+                }`}
+                style={{ flexGrow: s === 1 ? 1 : Math.log2(s) + 1 }}
+              >
+                <span
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-cyan-300 to-pink-500"
+                  style={{ width: `${riempi * 100}%` }}
+                />
+              </li>
+            );
+          })}
+        </ul>
+        <div className="flex justify-between text-[0.7rem] tabular-nums muted">
+          <span>{mmss(tempo)}</span>
+          <span>{mmss(secondi)}</span>
+        </div>
+      </div>
       {errore && <p className="text-sm text-amber-200">{it.quiz.sigla.noAudio}</p>}
       <p className="text-[0.7rem] muted">{it.quiz.sigla.credito}</p>
     </div>

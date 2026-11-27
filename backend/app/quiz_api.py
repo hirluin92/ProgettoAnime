@@ -21,7 +21,14 @@ from app.db.session import session_scope
 from app.engine.models import Model
 from app.profilo import UUID_RE, oggi
 from app.quiz import animedle, zoom
-from app.quiz.dati import anime, anime_per_id, normalizza, personaggi, pool_anime
+from app.quiz.dati import (
+    anime,
+    anime_per_id,
+    normalizza,
+    personaggi,
+    pool_anime,
+    stessa_serie,
+)
 
 router = APIRouter(prefix="/api/quiz")
 
@@ -89,6 +96,7 @@ class AnimedleEsito(Model):
     finito: bool
     crediti: int
     indizi: list[AnimedleIndizio] = []
+    stessa_serie: bool = False  # sbagliato, ma è un'altra stagione della stessa serie
     bersaglio: SoluzioneAnime | None = None
 
 
@@ -237,6 +245,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
             finito=finito,
             crediti=0,
             indizi=_indizi_animedle(t, body.n - (1 if giusto else 0)),
+            stessa_serie=not giusto and stessa_serie(t, g),
             bersaglio=soluzione(t) if finito else None,
         )
 
@@ -253,6 +262,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
             finito=finito,
             crediti=0,
             indizi=_indizi_animedle(t, body.n - (1 if giusto else 0)),
+            stessa_serie=not giusto and stessa_serie(t, g),
             bersaglio=soluzione(t) if finito else None,
         )
 
@@ -279,6 +289,7 @@ def animedle_guess(body: AnimedleGuess) -> AnimedleEsito:
             finito=finito,
             crediti=crediti,
             indizi=_indizi_animedle(t, riga.tentativi - (1 if giusto else 0)),
+            stessa_serie=not giusto and stessa_serie(t, g),
             bersaglio=soluzione(t) if finito else None,
         )
 
@@ -348,6 +359,7 @@ class ZoomEsito(Model):
     finito: bool
     crediti: int
     indizi: list[IndizioZoom]
+    stessa_serie: bool = False  # sbagliato, ma è un'altra stagione della stessa serie
     bersaglio: SoluzioneZoom | None = None
 
 
@@ -476,6 +488,7 @@ def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
         else zoom.bersaglio_giorno(gioco, day)
     )
     giusto = not body.salta and body.risposta_id == t["id"]
+    vicina = not giusto and not body.salta and zoom.risposta_vicina(gioco, t, body.risposta_id)
 
     if libero or pid is None:  # allenamento, o senza profilo: niente crediti
         n = body.n
@@ -486,6 +499,7 @@ def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
             finito=finito,
             crediti=0,
             indizi=_indizi(gioco, t, n - (1 if giusto else 0)),
+            stessa_serie=vicina,
             bersaglio=_soluzione_zoom(gioco, t) if finito else None,
         )
 
@@ -510,6 +524,7 @@ def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
             finito=finito,
             crediti=crediti,
             indizi=_indizi(gioco, t, riga.tentativi - (1 if giusto else 0)),
+            stessa_serie=vicina,
             bersaglio=_soluzione_zoom(gioco, t) if finito else None,
         )
 
