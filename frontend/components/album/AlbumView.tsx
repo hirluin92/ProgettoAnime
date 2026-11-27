@@ -68,8 +68,8 @@ export default function AlbumView() {
   if (!album) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
 
   return (
-    <main className="mx-auto max-w-[88rem] space-y-5 p-4 pt-6" data-testid="album">
-      <header className="space-y-1">
+    <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="album">
+      <header className="testata space-y-1">
         <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
         <h1 className="display text-4xl font-black">{it.album.titolo}</h1>
         <p className="text-sm muted" data-testid="album-conta">

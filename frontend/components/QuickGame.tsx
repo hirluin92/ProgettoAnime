@@ -207,7 +207,7 @@ export default function QuickGame({
 
   if (played)
     return (
-      <main className="mx-auto max-w-6xl space-y-3 p-4">
+      <main className="mx-auto max-w-7xl space-y-3 p-4">
         <h1 className="text-5xl font-black leading-none">{title}</h1>
         {!senzaMissione && (
           <p className="text-sm muted">
@@ -254,7 +254,7 @@ export default function QuickGame({
 
   const swapping = !drafting;
   return (
-    <main className="mx-auto max-w-6xl space-y-4 p-4">
+    <main className="mx-auto max-w-7xl space-y-4 p-4">
       <div className="reveal space-y-1">
         <span className="eyebrow">{it.veloce.draft}</span>
         <h1 className="text-5xl font-black leading-none sm:text-6xl">{title}</h1>
@@ -314,182 +314,191 @@ export default function QuickGame({
         </div>
       </div>
 
-      {drafting && (
-        <>
-          <section className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-2xl font-extrabold">
-                {isMystery ? it.draft.cartaMisteriosa : it.draft.laTuaMano}
-              </h2>
-              {!isMystery && (
-                <button
-                  className="btn"
-                  data-testid="reroll"
-                  disabled={!canReroll}
-                  onClick={reroll}
-                  title={it.draft.rilancioHint}
-                >
-                  ↻ {it.draft.rilancia}
-                </button>
-              )}
-            </div>
-
-            {isMystery ? (
-              <div className="grid place-items-center gap-3 py-2">
-                {!revealed ? (
+      <div
+        className={
+          drafting
+            ? "grid gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:items-start"
+            : "space-y-4"
+        }
+      >
+        {drafting && (
+          <div className="min-w-0 space-y-4">
+            <section className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-2xl font-extrabold">
+                  {isMystery ? it.draft.cartaMisteriosa : it.draft.laTuaMano}
+                </h2>
+                {!isMystery && (
                   <button
-                    data-testid="mystery-card"
-                    onClick={() => {
-                      setRevealed(true);
-                      setSel(hand.cards[0]);
-                    }}
-                    className="panel panel-hover grid aspect-[3/4.2] w-44 place-items-center gap-1 text-center"
+                    className="btn"
+                    data-testid="reroll"
+                    disabled={!canReroll}
+                    onClick={reroll}
+                    title={it.draft.rilancioHint}
                   >
-                    <span className="display text-grad text-7xl font-black">?</span>
-                    <span className="eyebrow justify-center">{it.draft.scopri}</span>
-                    <span className="text-xs muted">
-                      {it.veloce.costo} {hand.mystery_cost}
-                    </span>
+                    ↻ {it.draft.rilancia}
                   </button>
-                ) : (
-                  <div className="reveal grid justify-items-center gap-2">
-                    <div className="w-44 sm:w-52">
-                      <CharacterCard character={hand.cards[0].character} fluid />
-                    </div>
-                    <span className="chip text-gold">
-                      {it.veloce.costo} {hand.mystery_cost}
-                    </span>
-                  </div>
                 )}
               </div>
-            ) : (
-              <>
-                <CardDetail o={focus ?? sel} />
-                <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
-                  {hand.cards.map((o) => {
-                    const good = ok(o);
-                    const picked = sel?.character.id === o.character.id;
-                    return (
-                      <li key={o.character.id} className="relative w-full min-w-0">
-                        <button
-                          type="button"
-                          aria-label={`${it.veloce.dettagli}: ${o.character.nome}`}
-                          className="absolute right-2 top-2 z-30 grid size-7 place-items-center rounded-full border border-white/40 bg-black/70 text-xs font-black text-white backdrop-blur transition hover:scale-110 hover:bg-black/90"
-                          onClick={() => setSheet(o)}
-                        >
-                          i
-                        </button>
-                        <button
-                          data-testid="option"
-                          disabled={!good}
-                          aria-pressed={picked}
-                          onClick={() => choose(o)}
-                          onMouseEnter={() => setFocus(o)}
-                          onFocus={() => setFocus(o)}
-                          onMouseLeave={() => setFocus(null)}
-                          aria-label={`${o.character.nome}, costo ${o.cost}`}
-                          className={`relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 focus-visible:z-20 disabled:opacity-40 disabled:hover:translate-y-0 ${
-                            picked ? "z-20 -translate-y-3 scale-105 ring-2 ring-cyan-300" : ""
-                          }`}
-                        >
-                          <CharacterCard character={o.character} fluid />
-                          <span className="chip text-gold">
-                            {it.veloce.costo} {o.cost}
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-                {hand.cards.some((o) => !ok(o)) && !blocked && (
-                  <p className="text-center text-xs muted" data-testid="draft-hint">
-                    {it.draft.noteBudget}
-                  </p>
-                )}
-              </>
-            )}
-          </section>
 
-          {blocked && (
-            <div
-              role="alert"
-              className="panel space-y-3 p-4 text-center"
-              data-testid="draft-blocked"
-            >
-              <p className="font-bold">{it.veloce.bloccato}</p>
-              <button className="btn btn-primary" onClick={() => void start()}>
-                {it.veloce.ricomincia}
-              </button>
-            </div>
-          )}
-        </>
-      )}
+              {isMystery ? (
+                <div className="grid place-items-center gap-3 py-2">
+                  {!revealed ? (
+                    <button
+                      data-testid="mystery-card"
+                      onClick={() => {
+                        setRevealed(true);
+                        setSel(hand.cards[0]);
+                      }}
+                      className="panel panel-hover grid aspect-[3/4.2] w-44 place-items-center gap-1 text-center"
+                    >
+                      <span className="display text-grad text-7xl font-black">?</span>
+                      <span className="eyebrow justify-center">{it.draft.scopri}</span>
+                      <span className="text-xs muted">
+                        {it.veloce.costo} {hand.mystery_cost}
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="reveal grid justify-items-center gap-2">
+                      <div className="w-44 sm:w-52">
+                        <CharacterCard character={hand.cards[0].character} fluid />
+                      </div>
+                      <span className="chip text-gold">
+                        {it.veloce.costo} {hand.mystery_cost}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <CardDetail o={focus ?? sel} />
+                  <ul className="grid grid-cols-2 justify-items-center gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5">
+                    {hand.cards.map((o) => {
+                      const good = ok(o);
+                      const picked = sel?.character.id === o.character.id;
+                      return (
+                        <li key={o.character.id} className="relative w-full min-w-0">
+                          <button
+                            type="button"
+                            aria-label={`${it.veloce.dettagli}: ${o.character.nome}`}
+                            className="absolute right-2 top-2 z-30 grid size-7 place-items-center rounded-full border border-white/40 bg-black/70 text-xs font-black text-white backdrop-blur transition hover:scale-110 hover:bg-black/90"
+                            onClick={() => setSheet(o)}
+                          >
+                            i
+                          </button>
+                          <button
+                            data-testid="option"
+                            disabled={!good}
+                            aria-pressed={picked}
+                            onClick={() => choose(o)}
+                            onMouseEnter={() => setFocus(o)}
+                            onFocus={() => setFocus(o)}
+                            onMouseLeave={() => setFocus(null)}
+                            aria-label={`${o.character.nome}, costo ${o.cost}`}
+                            className={`relative grid min-h-11 w-full grid-cols-[minmax(0,1fr)] justify-items-center gap-2 rounded-2xl p-1 transition duration-150 hover:z-20 hover:-translate-y-2 focus-visible:z-20 disabled:opacity-40 disabled:hover:translate-y-0 ${
+                              picked ? "z-20 -translate-y-3 scale-105 ring-2 ring-cyan-300" : ""
+                            }`}
+                          >
+                            <CharacterCard character={o.character} fluid />
+                            <span className="chip text-gold">
+                              {it.veloce.costo} {o.cost}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {hand.cards.some((o) => !ok(o)) && !blocked && (
+                    <p className="text-center text-xs muted" data-testid="draft-hint">
+                      {it.draft.noteBudget}
+                    </p>
+                  )}
+                </>
+              )}
+            </section>
 
-      <section aria-label={it.veloce.squadra} data-testid="recap" className="panel space-y-3 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-2xl font-extrabold">{it.veloce.squadra}</h2>
-          {drafting && sel && (
-            <p className="text-sm text-cyan-100" data-testid="place-hint">
-              {it.draft.scegliSlot.replace("{nome}", sel.character.nome)}
-            </p>
-          )}
-          {swapping && (
-            <p className="text-sm text-cyan-100" data-testid="swap-hint">
-              {swap ? it.draft.scambiato : it.draft.scambiaHint}
-            </p>
-          )}
-        </div>
-        <AffinityLegend />
-        <SlotBoard
-          roles={d.roles}
-          byRole={byRole}
-          selected={sel}
-          mode={drafting ? "place" : swapping && !swap && fasi.length === 0 ? "swap" : "idle"}
-          swapFirst={swapFirst}
-          onSlot={drafting ? place : onSwapSlot}
-        />
-        {swapping && (
-          <TacticsPlanner
-            live={
-              fasiLive
-                ? { giocate: fasi.length, busy, onGioca: (n) => void anteprima(n) }
-                : undefined
-            }
-            value={piano}
-            onChange={(f, t) => setPiano((p) => p.map((x, i) => (i === f ? t : x)))}
-            carica={carica}
-            onCarica={setCarica}
-            formazione={formazione}
-            onFormazione={setFormazione}
-          />
-        )}
-        {swapping && fasi.map((r, i) => <FaseReport key={i} r={r} n={i + 1} />)}
-        {swapping && (
-          <div className="flex flex-wrap gap-2 pt-1">
-            <button
-              className="btn btn-primary flex-1 text-lg"
-              data-testid="fight"
-              disabled={
-                busy || piano.some((t) => t === null) || (!!fasiLive && fasi.length < FASI - 1)
-              }
-              onClick={() => void fight()}
-            >
-              {it.draft.combatti}
-            </button>
-            {swap && (
-              <button
-                className="btn"
-                onClick={() => {
-                  setSwap(null);
-                  setSwapFirst(null);
-                }}
+            {blocked && (
+              <div
+                role="alert"
+                className="panel space-y-3 p-4 text-center"
+                data-testid="draft-blocked"
               >
-                {it.draft.annullaScambio}
-              </button>
+                <p className="font-bold">{it.veloce.bloccato}</p>
+                <button className="btn btn-primary" onClick={() => void start()}>
+                  {it.veloce.ricomincia}
+                </button>
+              </div>
             )}
           </div>
         )}
-      </section>
+
+        <section aria-label={it.veloce.squadra} data-testid="recap" className="panel space-y-3 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-2xl font-extrabold">{it.veloce.squadra}</h2>
+            {drafting && sel && (
+              <p className="text-sm text-cyan-100" data-testid="place-hint">
+                {it.draft.scegliSlot.replace("{nome}", sel.character.nome)}
+              </p>
+            )}
+            {swapping && (
+              <p className="text-sm text-cyan-100" data-testid="swap-hint">
+                {swap ? it.draft.scambiato : it.draft.scambiaHint}
+              </p>
+            )}
+          </div>
+          <AffinityLegend />
+          <SlotBoard
+            compatta={drafting}
+            roles={d.roles}
+            byRole={byRole}
+            selected={sel}
+            mode={drafting ? "place" : swapping && !swap && fasi.length === 0 ? "swap" : "idle"}
+            swapFirst={swapFirst}
+            onSlot={drafting ? place : onSwapSlot}
+          />
+          {swapping && (
+            <TacticsPlanner
+              live={
+                fasiLive
+                  ? { giocate: fasi.length, busy, onGioca: (n) => void anteprima(n) }
+                  : undefined
+              }
+              value={piano}
+              onChange={(f, t) => setPiano((p) => p.map((x, i) => (i === f ? t : x)))}
+              carica={carica}
+              onCarica={setCarica}
+              formazione={formazione}
+              onFormazione={setFormazione}
+            />
+          )}
+          {swapping && fasi.map((r, i) => <FaseReport key={i} r={r} n={i + 1} />)}
+          {swapping && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              <button
+                className="btn btn-primary flex-1 text-lg"
+                data-testid="fight"
+                disabled={
+                  busy || piano.some((t) => t === null) || (!!fasiLive && fasi.length < FASI - 1)
+                }
+                onClick={() => void fight()}
+              >
+                {it.draft.combatti}
+              </button>
+              {swap && (
+                <button
+                  className="btn"
+                  onClick={() => {
+                    setSwap(null);
+                    setSwapFirst(null);
+                  }}
+                >
+                  {it.draft.annullaScambio}
+                </button>
+              )}
+            </div>
+          )}
+        </section>
+      </div>
 
       {sheet && (
         <DetailSheet

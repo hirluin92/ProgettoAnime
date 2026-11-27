@@ -20,7 +20,10 @@ export function CardDetail({ o, cost, bare }: { o: Option | null; cost?: number;
       data-testid="card-detail"
     >
       {!c || !o ? (
-        <p className="muted sm:col-span-3">{it.veloce.passaSopra}</p>
+        <p className="muted sm:col-span-3">
+          <span className="[@media(hover:none)]:hidden">{it.veloce.passaSopra}</span>
+          <span className="hidden [@media(hover:none)]:inline">{it.veloce.passaSopraTocco}</span>
+        </p>
       ) : (
         <>
           <div className="min-w-0">

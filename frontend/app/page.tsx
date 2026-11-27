@@ -187,7 +187,7 @@ export default function Home() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-5 pb-6 pt-8 sm:pt-14">
+    <main className="mx-auto max-w-7xl px-5 pb-6 pt-8 sm:pt-14">
       <section className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
         <div className="min-w-0 space-y-7">
           <header className="space-y-4">

@@ -274,8 +274,8 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
   if (loading || !stato) return <main className="p-6">{errore ?? it.stanza.connessione}</main>;
 
   return (
-    <main className="mx-auto max-w-6xl space-y-5 p-4 pt-6" data-testid="animedle">
-      <header className="flex flex-wrap items-end justify-between gap-3">
+    <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="animedle">
+      <header className="testata flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
           <span className="eyebrow">{libero ? it.quiz.allenamento : it.quiz.delGiorno}</span>
           <h1 className="display text-5xl font-black">{it.quiz.animedle.titolo}</h1>

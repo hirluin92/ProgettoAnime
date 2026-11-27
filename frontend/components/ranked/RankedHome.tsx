@@ -50,8 +50,8 @@ export default function RankedHome() {
   const campione = st.divisione === null;
   const pr = progressoGradino(st.mmr);
   return (
-    <main className="mx-auto max-w-6xl space-y-5 p-4 pt-6" data-testid="ranked">
-      <header className="space-y-1">
+    <main className="mx-auto max-w-7xl space-y-5 p-4 pt-6" data-testid="ranked">
+      <header className="testata space-y-1">
         <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
         <h1 className="display text-4xl font-black">{it.ranked.titolo}</h1>
         <p className="max-w-2xl text-sm muted">{it.ranked.intro}</p>

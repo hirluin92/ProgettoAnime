@@ -125,8 +125,8 @@ export default function SfidePage() {
   const statoAnimedle = stato(animedle);
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 p-4 pt-8" data-testid="sfide">
-      <header className="space-y-1">
+    <main className="mx-auto max-w-7xl space-y-6 p-4 pt-8" data-testid="sfide">
+      <header className="testata space-y-1">
         <span className="eyebrow">
           {profile ? fmt(it.nav.ciao, { nome: profile.name }) : it.quiz.delGiorno}
         </span>
