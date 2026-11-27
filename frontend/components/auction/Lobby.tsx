@@ -311,6 +311,7 @@ export default function Lobby({
           )}
           <button
             className="btn btn-primary text-lg sm:col-span-3"
+            disabled={room.players.length < 2}
             onClick={() => socket.send({ type: "start" })}
           >
             {s.modalita === "quiz"
@@ -321,6 +322,11 @@ export default function Lobby({
                   ? it.stanza.avviaRaid
                   : it.stanza.avvia}
           </button>
+          {room.players.length < 2 && (
+            <p className="text-center text-sm muted sm:col-span-3" data-testid="lobby-attesa">
+              {fmt(it.stanza.attendiGiocatori, { n: room.players.length })}
+            </p>
+          )}
         </div>
       ) : (
         <p>{it.stanza.attendiHost}</p>

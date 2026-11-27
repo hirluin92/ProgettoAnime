@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Icon from "@/components/Icon";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
+import { fmt } from "@/components/duello/DuelloBoard";
 import { useProfile } from "@/lib/profile";
 import type { AnimedleStato, ZoomStato } from "@/lib/quiz";
 
@@ -126,7 +127,9 @@ export default function SfidePage() {
   return (
     <main className="mx-auto max-w-6xl space-y-6 p-4 pt-8" data-testid="sfide">
       <header className="space-y-1">
-        <span className="eyebrow">{profile?.name ?? it.quiz.delGiorno}</span>
+        <span className="eyebrow">
+          {profile ? fmt(it.nav.ciao, { nome: profile.name }) : it.quiz.delGiorno}
+        </span>
         <h1 className="display text-5xl font-black">{it.quiz.titolo}</h1>
         <p className="max-w-2xl text-[0.95rem] muted">{it.quiz.intro}</p>
         {animedle && animedle.serie > 0 && (
@@ -136,7 +139,7 @@ export default function SfidePage() {
           </p>
         )}
       </header>
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 md:[&>*:last-child]:col-span-2 lg:grid-cols-6 lg:[&>*:nth-child(-n+3)]:col-span-2 lg:[&>*:nth-child(n+4)]:col-span-3">
         <Carta
           href="/sfide/animedle"
           icona="sparkles"

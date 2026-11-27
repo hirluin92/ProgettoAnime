@@ -73,7 +73,7 @@ export default function NegozioView() {
     <main className="mx-auto max-w-6xl space-y-5 p-4 pt-6" data-testid="negozio">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1">
-          <span className="eyebrow">{profile.name}</span>
+          <span className="eyebrow">{fmt(it.nav.ciao, { nome: profile.name })}</span>
           <h1 className="display text-5xl font-black">{it.negozio.titolo}</h1>
           <p className="max-w-xl text-[0.95rem] muted">{it.negozio.intro}</p>
         </div>

@@ -13,6 +13,7 @@ interface Props {
   carta: CartaView;
   potenza?: number; // potenza attuale in campo (con gli effetti)
   compact?: boolean;
+  mano?: boolean; // carta in mano: più bassa, senza testi (gli effetti si leggono alla selezione)
   selected?: boolean;
   dim?: boolean;
   onClick?: () => void;
@@ -23,6 +24,7 @@ export default function DuelloCard({
   carta,
   potenza,
   compact,
+  mano,
   selected,
   dim,
   onClick,
@@ -35,7 +37,7 @@ export default function DuelloCard({
   const body = (
     <div
       className="flex h-full flex-col overflow-hidden rounded-[13px] bg-[#0c0920]"
-      style={{ aspectRatio: compact ? undefined : "5 / 7.4" }}
+      style={{ aspectRatio: compact ? undefined : mano ? "5 / 6.2" : "5 / 7.4" }}
     >
       <div
         className="relative min-h-[80px] flex-1"
@@ -55,28 +57,34 @@ export default function DuelloCard({
           </span>
         )}
         <span
-          className="absolute left-1.5 top-1.5 grid size-9 place-items-center rounded-full border-2 border-white/80 bg-sky-500 text-lg font-black text-white shadow-lg"
+          className={`absolute left-1.5 top-1.5 grid place-items-center rounded-full border-2 border-white/80 bg-sky-500 font-black text-white shadow-lg ${
+            mano ? "size-7 text-base" : "size-9 text-lg"
+          }`}
           title={it.duello.costo}
         >
           {carta.costo}
         </span>
         <span
-          className={`absolute right-1.5 top-1.5 grid size-10 place-items-center rounded-xl border-2 border-white/80 text-2xl font-black text-white shadow-lg ${
-            delta > 0 ? "bg-emerald-600" : delta < 0 ? "bg-red-600" : "bg-black/80"
-          }`}
+          className={`absolute right-1.5 top-1.5 grid place-items-center rounded-xl border-2 border-white/80 font-black text-white shadow-lg ${
+            mano ? "size-8 text-xl" : "size-10 text-2xl"
+          } ${delta > 0 ? "bg-emerald-600" : delta < 0 ? "bg-red-600" : "bg-black/80"}`}
           title={it.duello.potenza}
         >
           {p}
         </span>
         <span className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#0c0920] to-transparent" />
         <div className="absolute inset-x-0 bottom-0 px-2.5 pb-1">
-          <div className="display text-xl font-black leading-none drop-shadow">{carta.nome}</div>
+          <div
+            className={`display font-black leading-none drop-shadow ${mano ? "text-base" : "text-xl"}`}
+          >
+            {carta.nome}
+          </div>
           <div className="text-xs font-semibold text-white/70">
             {ARCH_NOMI[carta.arch]} · {r.name}
           </div>
         </div>
       </div>
-      <div className="space-y-1.5 px-2.5 py-2">
+      <div className={`space-y-1.5 px-2.5 py-2 ${mano ? "hidden" : ""}`}>
         <p className="text-[0.8rem] leading-snug">
           <b className="text-amber-300">{it.duello.alRivelarsi}:</b> {pulisci(carta.testo_mossa)}
         </p>

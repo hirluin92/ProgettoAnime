@@ -39,8 +39,8 @@ export default function DuelliView({ room, socket }: { room: RoomView; socket: R
         if (!vivo) return;
         const c = e.carta_view as { nome: string; mossa: string; testo_mossa: string };
         setCaption(
-          fmt(it.duello.rivela, {
-            chi: e.lato === 0 ? it.duello.tu : nome(duello.avversario),
+          fmt(e.lato === 0 ? it.duello.rivelaTu : it.duello.rivela, {
+            chi: nome(duello.avversario),
             carta: c.nome,
             n: (e.corsia as number) + 1,
           }) + (c.mossa !== "-" ? ` — ${c.testo_mossa}` : ""),
