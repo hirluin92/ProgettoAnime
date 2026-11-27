@@ -227,6 +227,24 @@ RIVALITA_NUOVE = [
     ("asuka-langley", "rei-ayanami", "Rivalità di piloti"),
 ]
 
+# forme alternative dei nuovi personaggi: (base, slug, nome forma, Δ voto, mossa, effetto, passiva, effetto, Δ costo)
+FORME_NUOVE = [
+    ("ichigo-kurosaki", "bankai", "Bankai", 3, "Getsuga Tensho Finale", "strike", "Velocità del Bankai", "firststrike", 1),
+    ("ichigo-kurosaki", "hollow", "Hollow", 2, "Cero Hollow", "pierce", "Maschera Hollow", "rage", 1),
+    ("izuku-midoriya", "full-cowl", "Full Cowl 100%", 1, "Delaware Smash", "strike", "Full Cowl", "rage", 0),
+    ("all-might", "forma-magra", "Forma Magra", -12, "Pugno Sfinito", "strike", "Cuore d'Eroe", "laststand", -3),
+    ("eren-yeager", "titano-fondatore", "Titano Fondatore", 3, "Boato della Terra", "aoe", "Ordine dei Giganti", "aura_atk", 1),
+    ("killua-zoldyck", "fulmine-divino", "Godspeed", 3, "Fulmine Divino", "pierce", "Modalità Fulmine", "firststrike", 1),
+    ("gon-freecss", "adulto", "Forma Adulta", 4, "Jajanken Adulto", "strike", "Aura Sconfinata", "aura_atk", 1),
+    ("natsu-dragneel", "dragon-force", "Dragon Force", 3, "Pugno Fiamma Esplosiva", "strike", "Forza del Drago", "rage", 1),
+    ("erza-scarlet", "armatura-purgatorio", "Armatura Purgatorio", 2, "Lama Infuocata", "multi", "Armatura Purgatorio", "armor", 1),
+    ("asta", "demone", "Forma Demone", 3, "Taglio Demoniaco", "pierce", "Forma Demone", "rage", 1),
+    ("denji", "chainsaw-man", "Chainsaw Man", 3, "Demone Motosega", "multi", "Rigenerazione Infernale", "regen", 1),
+    ("saitama", "serio", "Serio", 2, "Pugno Serio", "execute", "Serietà Assoluta", "armor", 1),
+    ("shinji-ikari", "berserk", "EVA-01 Berserk", 3, "Furia Berserk", "strike", "Controllo Perso", "rage", 1),
+    ("sousuke-aizen", "forma-finale", "Forma Finale", 3, "Hogyoku Fuso", "aoe", "Corpo Perfetto", "regen", 1),
+]
+
 # id -> (nome, anime, ruolo, tag, voto, immagine)
 PERSONAGGI = [
     ["izuku-midoriya", "Izuku Midoriya", "my-hero-academia", "Capitano", ["MELEE", "SPEED", "AURA"], 93, "https://s4.anilist.co/file/anilistcdn/character/large/b89028-8w1I9o1ISHMg.png"],

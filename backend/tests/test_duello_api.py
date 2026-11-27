@@ -122,9 +122,14 @@ def test_full_game_against_each_level(tmp_path) -> None:  # type: ignore[no-unty
 
 def test_reveal_events_carry_card_data(tmp_path) -> None:  # type: ignore[no-untyped-def]
     configure(f"sqlite:///{tmp_path / 'du2.db'}")
-    g = avvia(9)
-    st = client.post(f"/api/duello/{g['id']}/turno", json={"mosse": []}).json()["stato"]
-    carta = min(st["mano"], key=lambda c: c["costo"])
+    # un seme in cui, dopo il primo turno a vuoto, in mano c'è una carta che si può pagare
+    # (cambiando il mazzo delle carte cambiano le mani dei semi: non si fissa un seme)
+    for seme in range(9, 60):
+        g = avvia(seme)
+        st = client.post(f"/api/duello/{g['id']}/turno", json={"mosse": []}).json()["stato"]
+        carta = min(st["mano"], key=lambda c: c["costo"])
+        if carta["costo"] <= st["energia"]:
+            break
     assert carta["costo"] <= st["energia"]
     r = client.post(
         f"/api/duello/{g['id']}/turno", json={"mosse": [{"carta": carta["id"], "corsia": 1}]}

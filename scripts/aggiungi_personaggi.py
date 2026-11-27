@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from nuovi_personaggi import DUOS_NUOVI, PERSONAGGI, RIVALITA_NUOVE  # noqa: E402
+from nuovi_personaggi import DUOS_NUOVI, FORME_NUOVE, PERSONAGGI, RIVALITA_NUOVE  # noqa: E402
 
 BASE = Path(__file__).resolve().parent.parent / "backend" / "data"
 
@@ -49,4 +49,20 @@ if __name__ == "__main__":
             if frozenset((a, b)) not in gia:
                 dati.append({"a": a, "b": b, "nome": nome})
         salva(file, dati, indent=1 if file == "rivalita.json" else 2)
-    print(f"aggiunti {nuovi} personaggi; totale {len(chars)}")
+    forme = carica("forme.json")
+    gia_f = {(f["base"], f["slug"]) for f in forme}
+    for base, slug, nome, dv, mn, me, pn, pe, dc in FORME_NUOVE:
+        if (base, slug) not in gia_f:
+            forme.append(
+                {
+                    "base": base,
+                    "slug": slug,
+                    "forma": nome,
+                    "rating_delta": dv,
+                    "mossa": {"nome": mn, "effetto": me},
+                    "passiva": {"nome": pn, "effetto": pe},
+                    "costo_delta": dc,
+                }
+            )
+    salva("forme.json", forme, indent=1)
+    print(f"aggiunti {nuovi} personaggi; totale {len(chars)}; forme {len(forme)}")
