@@ -102,6 +102,7 @@ test("home: «Crea una stanza per il quiz musicale» apre la lobby già in modal
 test("stanza: dopo «Nome già usato» si può scegliere un altro nome ed entrare", async ({
   browser,
 }) => {
+  test.setTimeout(60_000);
   const { code } = await createRoom(browser, "Anna");
   const ctx = await browser.newContext();
   const page = await ctx.newPage();

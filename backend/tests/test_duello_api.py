@@ -45,26 +45,24 @@ def mosse_valide(stato: dict, rnd: random.Random) -> list[dict]:  # type: ignore
 
 
 def finisci(gid: str, stato: dict, vuote: bool = False) -> dict:  # type: ignore[type-arg]
-    """Gioca i 6 turni: a ogni turno la carta più economica che si può pagare (o niente)."""
+    """Gioca i 6 turni: a ogni turno prova le carte dalla più economica, in ogni corsia."""
     out: dict = {}  # type: ignore[type-arg]
     for _ in range(6):
-        mosse = []
+        out = {}
         if not vuote:
-            gia = len(stato["corsie"][0][0])
-            carte = sorted(stato["mano"], key=lambda c: c["costo"])
-            for c in carte:
-                if (
-                    c["costo"] <= stato["energia"]
-                    and gia < 3
-                    and stato["luoghi"][0]["id"]
-                    not in (
-                        "gravita",
-                        "ghiaccio",
+            for c in sorted(stato["mano"], key=lambda c: c["costo"]):
+                for corsia in range(3):
+                    r = client.post(
+                        f"/api/duello/{gid}/turno",
+                        json={"mosse": [{"carta": c["id"], "corsia": corsia}]},
                     )
-                ):
-                    mosse = [{"carta": c["id"], "corsia": 0}]
+                    if r.status_code == 200:
+                        out = r.json()
+                        break
+                if out:
                     break
-        out = client.post(f"/api/duello/{gid}/turno", json={"mosse": mosse}).json()
+        if not out:
+            out = client.post(f"/api/duello/{gid}/turno", json={"mosse": []}).json()
         stato = out["stato"]
     return out
 
