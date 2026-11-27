@@ -169,7 +169,6 @@ export default function Ascolto({
     window.clearTimeout(timer.current);
     const resto = Math.max(0, (Number.isFinite(a.duration) ? a.duration : 30) - a.currentTime);
     timer.current = window.setTimeout(ferma, (resto + 0.5) * 1000);
-     
   }, [intero]);
 
   // se si torna sulla pagina (schermo riacceso, altra app) l'audio sospeso riparte
