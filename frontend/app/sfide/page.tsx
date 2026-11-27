@@ -1,0 +1,135 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Icon from "@/components/Icon";
+import it from "@/i18n/it.json";
+import { api } from "@/lib/api";
+import { useProfile } from "@/lib/profile";
+import type { AnimedleStato } from "@/lib/quiz";
+
+function Carta({
+  href,
+  icona,
+  titolo,
+  testo,
+  accento,
+  stato,
+  testId,
+}: {
+  href: string;
+  icona: string;
+  titolo: string;
+  testo: string;
+  accento: string;
+  stato?: { testo: string; fatto: boolean } | null;
+  testId?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      data-testid={testId}
+      className="panel panel-hover group relative flex flex-col gap-3 overflow-hidden p-5"
+    >
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[3px]"
+        style={{ background: `linear-gradient(90deg, transparent, ${accento}, transparent)` }}
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-4 right-4 opacity-[0.08]"
+        style={{ color: accento }}
+      >
+        <Icon name={icona} className="size-32" />
+      </span>
+      <span
+        className="relative grid size-14 place-items-center rounded-2xl text-white ring-1 ring-white/30"
+        style={{
+          background: `linear-gradient(135deg, ${accento}, rgb(0 0 0 / 0.45))`,
+          boxShadow: `0 8px 24px ${accento}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
+        }}
+      >
+        <Icon name={icona} className="size-7" />
+      </span>
+      <div className="relative space-y-1">
+        <h2 className="display text-3xl font-black leading-none">{titolo}</h2>
+        <p className="text-[0.95rem] leading-snug muted">{testo}</p>
+      </div>
+      <div className="relative mt-auto flex items-center justify-between pt-2">
+        {stato ? (
+          <span
+            className={`chip ${stato.fatto ? "text-emerald-300" : "text-amber-200"}`}
+            data-testid={testId ? `${testId}-stato` : undefined}
+          >
+            {stato.testo}
+          </span>
+        ) : (
+          <span />
+        )}
+        <span className="btn btn-primary min-h-10 px-4 text-sm">{it.quiz.gioca} →</span>
+      </div>
+    </Link>
+  );
+}
+
+export default function SfidePage() {
+  const { profile, loading } = useProfile();
+  const [animedle, setAnimedle] = useState<AnimedleStato | null>(null);
+
+  useEffect(() => {
+    if (loading) return;
+    const q = profile ? `?profile_id=${profile.id}` : "";
+    api<AnimedleStato>(`/api/quiz/animedle/stato${q}`)
+      .then(setAnimedle)
+      .catch(() => undefined);
+  }, [loading, profile]);
+
+  const statoAnimedle = animedle
+    ? {
+        fatto: animedle.finito,
+        testo: animedle.finito
+          ? animedle.vinto
+            ? it.quiz.vinta
+            : it.quiz.persa
+          : animedle.tentativi_fatti > 0
+            ? `${animedle.tentativi_fatti}/${animedle.tentativi_max}`
+            : it.quiz.daFare,
+      }
+    : null;
+
+  return (
+    <main className="mx-auto max-w-6xl space-y-6 p-4 pt-8" data-testid="sfide">
+      <header className="space-y-1">
+        <span className="eyebrow">{profile?.name ?? it.quiz.delGiorno}</span>
+        <h1 className="display text-5xl font-black">{it.quiz.titolo}</h1>
+        <p className="max-w-2xl text-[0.95rem] muted">{it.quiz.intro}</p>
+        {animedle && animedle.serie > 0 && (
+          <p className="chip mt-2">
+            <Icon name="flame" className="size-4 text-orange-400" />
+            {it.quiz.serie.replace("{n}", String(animedle.serie))}
+          </p>
+        )}
+      </header>
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <Carta
+          href="/sfide/animedle"
+          icona="sparkles"
+          titolo={it.quiz.animedle.titolo}
+          testo={it.quiz.animedleTesto}
+          accento="#35e0ff"
+          stato={statoAnimedle}
+          testId="sfida-animedle"
+        />
+        <Carta
+          href="/duello/giorno"
+          icona="trophy"
+          titolo={it.quiz.rompicapo}
+          testo={it.quiz.rompicapoTesto}
+          accento="#ffd45a"
+          testId="sfida-rompicapo"
+        />
+      </div>
+    </main>
+  );
+}

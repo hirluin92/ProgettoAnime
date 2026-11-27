@@ -19,6 +19,7 @@ from app.engine.simulate import simulate
 from app.pacchetti import router as pacchetti_router
 from app.profilo import router as profilo_router
 from app.quick import router as quick_router
+from app.quiz_api import router as quiz_router
 from app.ranked import router as ranked_router
 from app.rooms.manager import RoomError, manager, serve_socket
 from app.rooms.protocol import ClientMessage, ErrorMsg, Join, Spectate
@@ -47,6 +48,7 @@ app.include_router(profilo_router)
 app.include_router(scala_router)
 app.include_router(duello_router)
 app.include_router(account_router)
+app.include_router(quiz_router)
 app.include_router(album_router)
 app.include_router(pacchetti_router)
 app.include_router(ranked_router)

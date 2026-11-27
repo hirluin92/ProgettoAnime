@@ -83,6 +83,7 @@ const LINEA: Record<string, ReactNode> = {
   check: <path d="M4 12.5l5 5L20 6.5" />,
   x: <path d="M6 6l12 12M18 6 6 18" />,
   arrowup: <path d="M12 20V5M5 12l7-7 7 7" />,
+  arrowdown: <path d="M12 4v15M5 12l7 7 7-7" />,
   dots: <path d="M6 12h.01M12 12h.01M18 12h.01" strokeWidth="3" />,
 };
 
