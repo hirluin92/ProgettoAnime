@@ -718,6 +718,9 @@
       "noAudio": "Il browser ha bloccato l'audio: premi il pulsante per ascoltare.",
       "intera": "Ascolti {n} secondi, una volta sola",
       "interaLoop": "Ascolti {n} secondi, in loop",
+      "volume": "Volume",
+      "silenzia": "Silenzia",
+      "riattiva": "Riattiva l'audio",
       "loopOn": "In loop: attivo",
       "loopOff": "In loop: spento",
       "credito": "Anteprime audio di Apple Music (iTunes)."

@@ -33,6 +33,16 @@ export default function Ascolto({
   const [tempo, setTempo] = useState(0); // secondi ascoltati, per la barra che scorre
   const [errore, setErrore] = useState(false);
   const [loop, setLoop] = useState(!!loopIniziale);
+  // il volume si ricorda tra una partita e l'altra
+  const [volume, setVolume] = useState(0.8);
+  useEffect(() => {
+    const v = Number(window.localStorage.getItem("arena.volume"));
+    if (v > 0 || window.localStorage.getItem("arena.volume") === "0") setVolume(Math.min(1, v));
+  }, []);
+  useEffect(() => {
+    if (ref.current) ref.current.volume = volume;
+    window.localStorage.setItem("arena.volume", String(volume));
+  }, [volume]);
   const loopRef = useRef(loop);
   loopRef.current = loop;
   const secondi = intero
@@ -151,6 +161,27 @@ export default function Ascolto({
           <span>{mmss(secondi)}</span>
         </div>
       </div>
+      <label className="mx-auto flex max-w-xs items-center gap-3 text-xs muted">
+        <button
+          type="button"
+          onClick={() => setVolume((v) => (v > 0 ? 0 : 0.8))}
+          aria-label={volume > 0 ? it.quiz.sigla.silenzia : it.quiz.sigla.riattiva}
+          className="grid size-8 shrink-0 place-items-center rounded-full bg-white/10 hover:bg-white/20"
+        >
+          <Icon name={volume > 0 ? "volume" : "mute"} className="size-4 text-white" />
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={Math.round(volume * 100)}
+          onChange={(e) => setVolume(Number(e.target.value) / 100)}
+          className="h-2 flex-1 cursor-pointer accent-[#7a86ff]"
+          aria-label={it.quiz.sigla.volume}
+          data-testid="ascolto-volume"
+        />
+        <span className="w-9 text-right tabular-nums">{Math.round(volume * 100)}%</span>
+      </label>
       {loopIniziale !== undefined && !intero && (
         <button
           type="button"

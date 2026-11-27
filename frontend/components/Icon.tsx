@@ -87,6 +87,18 @@ const LINEA: Record<string, ReactNode> = {
       <circle cx="17" cy="16" r="3" />
     </>
   ),
+  volume: (
+    <>
+      <path d="M4 9.5v5h4l5 4v-13l-5 4z" />
+      <path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11" />
+    </>
+  ),
+  mute: (
+    <>
+      <path d="M4 9.5v5h4l5 4v-13l-5 4z" />
+      <path d="M17 9.5l4 5M21 9.5l-4 5" />
+    </>
+  ),
   check: <path d="M4 12.5l5 5L20 6.5" />,
   x: <path d="M6 6l12 12M18 6 6 18" />,
   arrowup: <path d="M12 20V5M5 12l7-7 7 7" />,

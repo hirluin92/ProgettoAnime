@@ -13,9 +13,12 @@ async function soluzione(page: Page, code: string) {
   return (await r.json()) as Sol;
 }
 
-async function rispondi(page: Page, nome: string) {
+// `tipo` serve quando un anime si chiama come una canzone (es. «Date A Live»)
+async function rispondi(page: Page, nome: string, tipo?: "Anime" | "Brano" | "Artista") {
   await page.getByTestId("quiz-cerca").fill(nome);
-  await page.getByTestId("anime-voce").getByText(nome, { exact: true }).first().click();
+  let voci = page.getByTestId("anime-voce").filter({ has: page.getByText(nome, { exact: true }) });
+  if (tipo) voci = voci.filter({ hasText: tipo });
+  await voci.first().click();
 }
 
 test("quiz sulle sigle: titolo e artista danno punti parziali, l'anime il pieno, serie di risposte", async ({
@@ -39,15 +42,15 @@ test("quiz sulle sigle: titolo e artista danno punti parziali, l'anime il pieno,
     const sol = await soluzione(host.page, code);
     if (giro === 1) {
       // prima solo il titolo del brano, poi l'artista: punti ridotti e la domanda resta aperta
-      await rispondi(host.page, sol.brano!);
+      await rispondi(host.page, sol.brano!, "Brano");
       await expect(host.page.getByTestId("quiz-msg")).toContainText("Brano giusto");
-      await rispondi(host.page, sol.artista!);
+      await rispondi(host.page, sol.artista!, "Artista");
       await expect(host.page.getByTestId("quiz-msg")).toContainText("Artista giusto");
       await expect(host.page.getByTestId("quiz-componenti")).toContainText("Brano");
     }
-    await rispondi(host.page, sol.nome);
+    await rispondi(host.page, sol.nome, "Anime");
     await expect(host.page.getByTestId("quiz-giusto")).toContainText("Giusto");
-    await rispondi(ospite.page, sol.nome);
+    await rispondi(ospite.page, sol.nome, "Anime");
     await expect(host.page.getByTestId("quiz-soluzione")).toBeVisible({ timeout: 10_000 });
     if (giro === 2) {
       // due domande indovinate di fila: la serie compare in classifica
@@ -86,8 +89,8 @@ test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, 
   // di partenza la canzone suona intera, una volta sola (qui 5 secondi: il tetto impostato)
   await expect(host.page.getByTestId("ascolto")).toContainText("5 secondi, una volta sola");
   const sol = await soluzione(host.page, code);
-  await rispondi(host.page, sol.artista!);
+  await rispondi(host.page, sol.artista!, "Artista");
   await expect(host.page.getByTestId("quiz-giusto")).toContainText("Giusto");
-  await rispondi(ospite.page, sol.artista!);
+  await rispondi(ospite.page, sol.artista!, "Artista");
   await expect(host.page.getByTestId("quiz-soluzione")).toBeVisible({ timeout: 10_000 });
 });
