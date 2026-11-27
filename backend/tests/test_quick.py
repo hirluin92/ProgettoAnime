@@ -78,6 +78,17 @@ def test_play_flow_and_swap(tmp_path) -> None:  # type: ignore[no-untyped-def]
     assert s[0]["id"] == first[6]["id"] and s[6]["id"] == first[0]["id"]
 
 
+def test_piano_di_battaglia_spegnibile(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'q3.db'}")
+    body = cheapest_picks(9)
+    senza = {**body, "tattiche": [], "senza_tattiche": True}
+    r = client.post("/api/quick/play", json=senza)
+    assert r.status_code == 200, r.text
+    assert r.json()["result"]["tattiche"] == {}  # nessuna tattica, nemmeno per la CPU
+    # acceso, un piano incompleto resta un errore
+    assert client.post("/api/quick/play", json={**body, "tattiche": []}).status_code == 422
+
+
 def test_validation_rejects_cheating(tmp_path) -> None:  # type: ignore[no-untyped-def]
     configure(f"sqlite:///{tmp_path / 'q2.db'}")
     seed = 9

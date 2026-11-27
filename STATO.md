@@ -208,3 +208,6 @@ Fatto dal 2026-11-26 (V4, vedi M18-M29 sopra): Duello a corsie, rompicapo del gi
 - Controlli: backend `uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pytest`; frontend `npx tsc --noEmit && npm run lint && npm test && npm run test:e2e`.
 - Dopo modifiche ai modelli Pydantic: `cd backend && uv run python ../scripts/gen_schema.py` poi `cd frontend && npm run gen:types`.
 - CI: `"/c/Program Files/GitHub CLI/gh.exe" run list`.
+
+## Piano di battaglia spegnibile (Veloce)
+Nel draft della Partita veloce un interruttore «Usa il piano di battaglia» (`piano-interruttore`) disattiva le tattiche: il server riceve `senza_tattiche: true` e simula senza tattiche per entrambi i lati (nessun bonus/malus, nemmeno per la CPU). Carica e formazione restano. Sfida del giorno e Scala non cambiano (il piano resta obbligatorio, per la classifica). Se ne riparlerà: possibile ripensare o rimuovere il piano.

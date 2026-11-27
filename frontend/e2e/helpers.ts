@@ -31,7 +31,10 @@ export async function joinRoom(browser: Browser, code: string, name: string): Pr
 }
 
 /** Gioca un draft v3 completo: carta più economica consentita di ogni mano, slot con l'affinità migliore. */
-export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boolean } = {}) {
+export async function playDraft(
+  page: Page,
+  opts: { reroll?: boolean; swap?: boolean; senzaPiano?: boolean } = {},
+) {
   const placeBest = async () => {
     const free = page.getByTestId("slot-free");
     await expect(free.first()).toBeEnabled();
@@ -84,6 +87,13 @@ export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boo
     await slots.nth(0).click();
     await slots.nth(6).click();
     await expect(page.getByTestId("swap-hint")).toContainText("Scambio fatto");
+  }
+  if (opts.senzaPiano) {
+    // piano di battaglia spento: spariscono le tattiche e si combatte subito
+    await page.getByTestId("piano-interruttore").click();
+    await expect(page.getByTestId("tactic-0-assalto")).toHaveCount(0);
+    await page.getByTestId("fight").click();
+    return;
   }
   await page.getByTestId("carica-carica").click();
   // tattiche: nella Veloce si gioca una fase alla volta (con il resoconto), altrove tutte insieme

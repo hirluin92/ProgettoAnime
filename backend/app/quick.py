@@ -96,7 +96,8 @@ class PlayRequest(Model):
     seed: int
     picks: list[PickIn] = Field(min_length=ROUNDS, max_length=ROUNDS)  # in ordine di giro
     swap: list[str] | None = Field(default=None, min_length=2, max_length=2)  # scambio finale
-    tattiche: list[str] = Field(min_length=tat.FASI, max_length=tat.FASI)  # una per fase
+    tattiche: list[str] = Field(default_factory=list, max_length=tat.FASI)  # una per fase
+    senza_tattiche: bool = False  # piano di battaglia disattivato: nessuna tattica, né tua né CPU
     carica: Literal["subito", "carica"] = "subito"  # quando lanciare la mossa finale
     formazione: str = "classica"
     profile_id: str | None = None  # se presente: XP, obiettivi, collezione e stagione
@@ -190,7 +191,15 @@ def get_draft(seed: int | None = None) -> DraftOptions:
 
 @router.post("/play")
 def play(req: PlayRequest) -> PlayResponse:
-    res = run_quick(req.seed, req.picks, req.swap, req.tattiche, req.carica, req.formazione)
+    res = run_quick(
+        req.seed,
+        req.picks,
+        req.swap,
+        req.tattiche,
+        req.carica,
+        req.formazione,
+        req.senza_tattiche,
+    )
     res.premio = premio_per(res, "veloce", req.profile_id)
     return res
 
@@ -277,10 +286,11 @@ def run_quick(
     tattiche: list[str],
     carica: str = "subito",
     formazione: str = "classica",
+    senza_tattiche: bool = False,
 ) -> PlayResponse:
     """Valida le scelte, fa il draft della CPU e simula lo scontro (salvato nel database)."""
     members, spent = validate_picks(seed, picks, swap)
-    if not tat.valida(tattiche):
+    if not senza_tattiche and not tat.valida(tattiche):
         raise HTTPException(422, "tattiche non valide")
     if formazione not in FORMAZIONI:
         raise HTTPException(422, "formazione non valida")
@@ -290,7 +300,7 @@ def run_quick(
         team_b,
         seed * 7 + 1,
         load_ruleset(),
-        tattiche={"A": tattiche, "B": tat.cpu_tattiche(seed, tattiche)},
+        tattiche=None if senza_tattiche else {"A": tattiche, "B": tat.cpu_tattiche(seed, tattiche)},
         arena=arena_per_seme(seed).id,
         carica={"A": carica, "B": tat.cpu_carica(seed)},
         formazione={"A": formazione, "B": cpu_formazione(seed)},

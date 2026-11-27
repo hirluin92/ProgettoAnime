@@ -14,6 +14,7 @@ const play = (
   tattiche: string[],
   carica: string,
   formazione: string,
+  senzaTattiche: boolean,
 ) =>
   api<Played>("/api/quick/play", {
     method: "POST",
@@ -22,6 +23,7 @@ const play = (
       picks,
       swap,
       tattiche,
+      senza_tattiche: senzaTattiche,
       carica,
       formazione,
       profile_id: getProfileId(),
@@ -35,6 +37,7 @@ export default function Veloce() {
       load={load}
       play={play}
       fasiLive
+      pianoOpzionale
       after={
         <button className="btn btn-primary" onClick={() => window.location.reload()}>
           {it.veloce.rigioca}

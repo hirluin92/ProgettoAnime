@@ -50,7 +50,9 @@ interface Props {
     tattiche: string[],
     carica: Carica,
     formazione: string,
+    senzaTattiche: boolean,
   ) => Promise<Played>;
+  pianoOpzionale?: boolean; // Veloce: il piano di battaglia si può spegnere
   after?: ReactNode;
   header?: ReactNode;
   senzaMissione?: boolean; // per la Scala: niente missione né spese mostrate
@@ -65,7 +67,9 @@ export default function QuickGame({
   header,
   senzaMissione,
   fasiLive,
+  pianoOpzionale,
 }: Props) {
+  const [usaPiano, setUsaPiano] = useState(true);
   const [d, setD] = useState<DraftOptions | null>(null);
   const [placed, setPlaced] = useState<Placed[]>([]);
   const [h, setH] = useState(0); // indice della mano corrente
@@ -199,7 +203,17 @@ export default function QuickGame({
     setBusy(true);
     try {
       const picks = placed.map((p) => ({ id: p.option.character.id, role: p.role, hand: p.hand }));
-      setPlayed(await play(d, picks, swap, piano as string[], carica, formazione));
+      setPlayed(
+        await play(
+          d,
+          picks,
+          swap,
+          usaPiano ? (piano as string[]) : [],
+          carica,
+          formazione,
+          !usaPiano,
+        ),
+      );
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -478,8 +492,10 @@ export default function QuickGame({
           />
           {swapping && (
             <TacticsPlanner
+              piano={usaPiano}
+              onPiano={pianoOpzionale ? setUsaPiano : undefined}
               live={
-                fasiLive
+                fasiLive && usaPiano
                   ? { giocate: fasi.length, busy, onGioca: (n) => void anteprima(n) }
                   : undefined
               }
@@ -498,7 +514,9 @@ export default function QuickGame({
                 className="btn btn-primary min-h-14 flex-1 text-xl"
                 data-testid="fight"
                 disabled={
-                  busy || piano.some((t) => t === null) || (!!fasiLive && fasi.length < FASI - 1)
+                  busy ||
+                  (usaPiano &&
+                    (piano.some((t) => t === null) || (!!fasiLive && fasi.length < FASI - 1)))
                 }
                 onClick={() => void fight()}
               >

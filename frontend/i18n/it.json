@@ -337,6 +337,9 @@
   },
   "tattiche": {
     "titolo": "Piano di battaglia",
+    "usa": "Usa il piano di battaglia",
+    "usaAcceso": "Acceso: scegli una tattica per ogni fase.",
+    "usaSpento": "Spento: nessuna tattica, né per te né per la CPU. Lo scontro è deciso solo dalle squadre.",
     "descrizione": "Scegli una tattica per ognuna delle 3 fasi. La CPU sceglie in segreto e legge i tuoi schemi: non essere prevedibile.",
     "batte": "batte",
     "effetto": "Chi vince il confronto infligge il +{bonus}% di danno nella fase, chi perde il -{malus}%. Se sono uguali, nessun effetto.",
