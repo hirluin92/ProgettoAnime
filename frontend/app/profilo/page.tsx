@@ -121,7 +121,7 @@ export default function ProfiloPage() {
             </div>
           </div>
         </div>
-        <div className="min-w-0 flex-1 space-y-2">
+        <div className="min-w-[14rem] flex-1 space-y-2">
           <div>
             <span className="eyebrow">{profile.titolo}</span>
             <h1 className="truncate text-5xl font-black leading-none">{profile.name}</h1>
@@ -146,7 +146,7 @@ export default function ProfiloPage() {
             {profile.xp} / {profile.xp_prossimo} {it.profilo.xp}
           </p>
         </div>
-        <dl className="grid grid-cols-2 gap-3 text-center sm:grid-cols-6">
+        <dl className="grid w-full grid-cols-3 gap-3 text-center sm:grid-cols-6">
           {[
             [it.profilo.partite, profile.partite],
             [it.profilo.vittorie, profile.vittorie],

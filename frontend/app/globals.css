@@ -5,7 +5,7 @@
   --surface: #0f0c22;
   --surface-2: #171335;
   --ink: #f6f3ff;
-  --muted: #a9a3c7;
+  --muted: #c3bde3;
   --line: rgb(255 255 255 / 0.1);
   --pink: #ff3d81;
   --orange: #ff8a3d;
@@ -30,6 +30,8 @@
 html {
   color-scheme: dark;
   scroll-behavior: smooth;
+  /* scala fluida: tutto in rem (testi e contenitori) cresce sugli schermi grandi */
+  font-size: clamp(16px, 0.5vw + 10px, 21px);
 }
 
 body {
@@ -207,7 +209,8 @@ body::before {
     backdrop-filter: blur(14px);
     box-shadow:
       0 24px 60px -12px rgb(0 0 0 / 0.6),
-      inset 0 1px 0 rgb(255 255 255 / 0.07);
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      inset 0 -30px 50px -30px rgb(139 92 255 / 0.12);
   }
   .panel-hover {
     transition:

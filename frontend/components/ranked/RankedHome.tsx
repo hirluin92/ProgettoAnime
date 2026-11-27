@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { fmt } from "@/components/duello/DuelloBoard";
+import LegaEmblema from "@/components/ranked/LegaEmblema";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { useProfile } from "@/lib/profile";
@@ -56,19 +57,12 @@ export default function RankedHome() {
       </header>
 
       <section className="panel flex flex-wrap items-center gap-6 p-5">
-        <div
-          className="grid size-28 shrink-0 place-items-center rounded-full border-4 text-center"
-          style={{ borderColor: colore, boxShadow: `0 0 30px ${colore}55` }}
-        >
-          <div>
-            <div className="display text-2xl font-black leading-none" style={{ color: colore }}>
-              {st.in_piazzamento ? "?" : st.lega}
-            </div>
-            {!st.in_piazzamento && st.divisione && (
-              <div className="display text-3xl font-black">{st.divisione}</div>
-            )}
-          </div>
-        </div>
+        <LegaEmblema
+          lega={st.lega}
+          divisione={st.divisione}
+          ignota={st.in_piazzamento}
+          className="w-32 shrink-0 drop-shadow-[0_10px_24px_rgb(0_0_0/0.6)]"
+        />
         <div className="min-w-0 flex-1 space-y-2">
           <div className="display text-3xl font-black" data-testid="ranked-lega">
             {st.in_piazzamento ? it.ranked.titolo : nomeLega(st.lega, st.divisione)}
@@ -110,6 +104,22 @@ export default function RankedHome() {
             </Link>
           )}
         </div>
+      </section>
+
+      <section className="panel p-5" aria-label="Le leghe">
+        <ul className="flex flex-wrap items-end justify-around gap-2">
+          {Object.keys(COLORI_LEGA).map((l) => (
+            <li
+              key={l}
+              className={`text-center transition-opacity ${l === st.lega && !st.in_piazzamento ? "opacity-100" : "opacity-45"}`}
+            >
+              <LegaEmblema lega={l} divisione={null} className="mx-auto w-16 sm:w-20" />
+              <div className="display text-sm font-black" style={{ color: COLORI_LEGA[l] }}>
+                {l}
+              </div>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {errore && (
