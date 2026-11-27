@@ -576,6 +576,27 @@
     "allenamento": "Allenamento",
     "nuova": "Nuova partita",
     "cerca": "Scrivi il titolo di un anime…",
+    "cercaPersonaggio": "Scrivi il nome di un personaggio…",
+    "sbagliato": "{nome}: non è questo. L'immagine si scopre un po' di più.",
+    "indizi": {
+      "anno": "Anno",
+      "fonte": "Origine",
+      "studio": "Studio",
+      "generi": "Generi",
+      "ruolo": "Ruolo",
+      "genere": "Genere",
+      "iniziale": "L'anime inizia con"
+    },
+    "scorcio": {
+      "titolo": "Scorcio",
+      "intro": "Un pezzetto ingrandito e sfocato di un banner: a ogni errore si scopre di più. Quale anime è? Dopo gli errori compaiono anche degli indizi."
+    },
+    "personaggio": {
+      "titolo": "Chi è?",
+      "intro": "Un dettaglio ingrandito di un personaggio: a ogni errore l'immagine si allarga e arrivano degli indizi. Come si chiama?"
+    },
+    "scorcioTesto": "Indovina l'anime da un dettaglio ingrandito del suo banner. 6 tentativi.",
+    "personaggioTesto": "Indovina il personaggio da un dettaglio ingrandito del suo volto. 6 tentativi.",
     "tentativi": "Tentativi: {n}/{max}",
     "serie": "Serie: {n} giorni",
     "arrenditi": "Mi arrendo, mostrami la risposta",

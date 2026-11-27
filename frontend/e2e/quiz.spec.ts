@@ -55,3 +55,46 @@ test("sfide: Animedle in allenamento con partita nuova", async ({ page }) => {
   await page.getByTestId("animedle-nuovo").click();
   await expect(page.getByTestId("animedle-riga")).toHaveCount(0);
 });
+
+for (const gioco of ["scorcio", "personaggio"] as const) {
+  test(`sfide: ${gioco} del giorno, un errore, vittoria e crediti`, async ({ page }) => {
+    test.setTimeout(90_000);
+    await page.goto("/profilo");
+    await page.getByLabel("Come ti chiami?").fill(`Zoom${gioco[0]}${Date.now() % 100000}`);
+    await page.getByRole("button", { name: "Crea il profilo" }).click();
+    await expect(page.getByTestId("profilo")).toBeVisible();
+
+    const sol = (await (
+      await page.request.post(`http://localhost:8000/api/quiz/zoom/${gioco}/arrenditi`, {
+        data: {},
+      })
+    ).json()) as { id: number; nome: string };
+    const elenco = (await (
+      await page.request.get(
+        gioco === "scorcio"
+          ? "http://localhost:8000/api/quiz/anime/elenco"
+          : "http://localhost:8000/api/quiz/personaggi/elenco",
+      )
+    ).json()) as Voce[];
+    // un nome diverso che non contenga quello giusto (così la lista non li mescola)
+    const sbagliato = elenco.find((v) => v.id !== sol.id && !v.nome.includes(sol.nome))!;
+
+    await page.goto(`/sfide/${gioco}`);
+    await expect(page.getByTestId(`quiz-${gioco}`)).toBeVisible();
+    const cerca = page.getByTestId("zoom-cerca");
+    const prova = async (nome: string) => {
+      await cerca.fill(nome);
+      await page.getByTestId("anime-voce").getByText(nome, { exact: true }).first().click();
+    };
+    const zoomIniziale = Number(await page.getByTestId("zoom-immagine").getAttribute("data-zoom"));
+    await prova(sbagliato.nome);
+    await expect(page.getByTestId("zoom-errori")).toContainText(sbagliato.nome);
+    await expect
+      .poll(async () => Number(await page.getByTestId("zoom-immagine").getAttribute("data-zoom")))
+      .toBeLessThan(zoomIniziale);
+
+    await prova(sol.nome);
+    await expect(page.getByTestId("zoom-fine")).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByTestId("zoom-crediti")).toContainText("34 crediti");
+  });
+}

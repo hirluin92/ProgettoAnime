@@ -20,8 +20,8 @@ from app.db.models import ProfileRow, QuizGiorno
 from app.db.session import session_scope
 from app.engine.models import Model
 from app.profilo import UUID_RE, oggi
-from app.quiz import animedle
-from app.quiz.dati import anime, anime_per_id, normalizza, pool_anime
+from app.quiz import animedle, zoom
+from app.quiz.dati import anime, anime_per_id, normalizza, personaggi, pool_anime
 
 router = APIRouter(prefix="/api/quiz")
 
@@ -186,18 +186,16 @@ def animedle_nuovo() -> Nuovo:
     return Nuovo(token=firma("animedle", a["id"]), tentativi_max=animedle.TENTATIVI_MAX)
 
 
-def _riga_oggi(s, pid: str, day: str) -> QuizGiorno:  # type: ignore[no-untyped-def]
+def _riga_oggi(s, pid: str, day: str, gioco: str = "animedle") -> QuizGiorno:  # type: ignore[no-untyped-def]
     riga = s.scalar(
         select(QuizGiorno).where(
-            QuizGiorno.profile_id == pid, QuizGiorno.gioco == "animedle", QuizGiorno.day == day
+            QuizGiorno.profile_id == pid, QuizGiorno.gioco == gioco, QuizGiorno.day == day
         )
     )
     if riga is None:
         if s.get(ProfileRow, pid) is None:
             raise HTTPException(404, "profilo non trovato")
-        riga = QuizGiorno(
-            profile_id=pid, gioco="animedle", day=day, tentativi=0, vinto=False, crediti=0
-        )
+        riga = QuizGiorno(profile_id=pid, gioco=gioco, day=day, tentativi=0, vinto=False, crediti=0)
         s.add(riga)
         s.flush()
     return riga  # type: ignore[no-any-return]
@@ -288,3 +286,219 @@ def animedle_arrenditi(body: Arrenditi) -> SoluzioneAnime:
             if not riga.vinto:
                 riga.tentativi = animedle.TENTATIVI_MAX
     return soluzione(animedle.bersaglio_giorno(day))
+
+
+# ---------- giochi a immagine: scorcio e personaggio misterioso ----------
+class IndizioZoom(Model):
+    k: str
+    v: str
+
+
+class SoluzioneZoom(Model):
+    id: int
+    nome: str
+    dettaglio: str
+    immagine: str
+
+
+class ZoomStato(Model):
+    giorno: str
+    tentativi_max: int
+    tentativi_fatti: int
+    finito: bool
+    vinto: bool
+    serie: int
+    crediti: int
+    immagine: str
+    fx: float
+    fy: float
+    indizi: list[IndizioZoom]
+    bersaglio: SoluzioneZoom | None = None
+
+
+class ZoomGuess(Model):
+    risposta_id: int
+    profile_id: str | None = None
+    token: str | None = None
+    n: int = Field(default=1, ge=1, le=50)
+
+
+class ZoomEsito(Model):
+    giusto: bool
+    tentativo: int
+    finito: bool
+    crediti: int
+    indizi: list[IndizioZoom]
+    bersaglio: SoluzioneZoom | None = None
+
+
+class ZoomNuovo(Model):
+    token: str
+    tentativi_max: int
+    immagine: str
+    fx: float
+    fy: float
+
+
+def _gioco_ok(gioco: str) -> str:
+    if gioco not in zoom.GIOCHI:
+        raise HTTPException(404, "gioco sconosciuto")
+    return gioco
+
+
+def _soluzione_zoom(gioco: str, t: dict[str, Any]) -> SoluzioneZoom:
+    if gioco == "scorcio":
+        dett = f"{t['titolo']} · {t['anno']}"
+        img = t["cover"]
+    else:
+        dett = f"{t['anime']} · {t['anno']}" if t["anno"] else str(t["anime"])
+        img = t["img"]
+    return SoluzioneZoom(
+        id=t["id"], nome=zoom.nome_bersaglio(gioco, t), dettaglio=dett, immagine=img
+    )
+
+
+def _indizi(gioco: str, t: dict[str, Any], errori: int) -> list[IndizioZoom]:
+    return [IndizioZoom(**i) for i in zoom.indizi(gioco, t, errori)]
+
+
+@router.get("/personaggi/elenco")
+def elenco_personaggi() -> list[VoceAnime]:
+    out = []
+    for p in personaggi():
+        chiavi = " | ".join(dict.fromkeys(normalizza(n) for n in [p["nome"], *p["alt"]] if n))
+        out.append(VoceAnime(id=p["id"], nome=p["nome"], alt=p["anime"], k=chiavi, anno=0))
+    return out
+
+
+@router.get("/zoom/{gioco}/stato")
+def zoom_stato(gioco: str, profile_id: str | None = None) -> ZoomStato:
+    _gioco_ok(gioco)
+    day = oggi()
+    t = zoom.bersaglio_giorno(gioco, day)
+    fx, fy = zoom.punto(gioco, t)
+    stato = ZoomStato(
+        giorno=day,
+        tentativi_max=zoom.TENTATIVI_MAX,
+        tentativi_fatti=0,
+        finito=False,
+        vinto=False,
+        serie=0,
+        crediti=0,
+        immagine=zoom.immagine(gioco, t),
+        fx=fx,
+        fy=fy,
+        indizi=[],
+    )
+    pid = _profilo_ok(profile_id)
+    if pid is None:
+        return stato
+    with session_scope() as s:
+        riga = s.scalar(
+            select(QuizGiorno).where(
+                QuizGiorno.profile_id == pid, QuizGiorno.gioco == gioco, QuizGiorno.day == day
+            )
+        )
+        prima = serie_prima(s, pid, gioco, day)
+        if riga is None:
+            stato.serie = prima
+            return stato
+        stato.tentativi_fatti = riga.tentativi
+        stato.vinto = riga.vinto
+        stato.finito = riga.vinto or riga.tentativi >= zoom.TENTATIVI_MAX
+        stato.crediti = riga.crediti
+        stato.serie = prima + 1 if riga.vinto else prima
+        stato.indizi = _indizi(gioco, t, riga.tentativi - (1 if riga.vinto else 0))
+        if stato.finito:
+            stato.bersaglio = _soluzione_zoom(gioco, t)
+    return stato
+
+
+@router.post("/zoom/{gioco}/nuovo")
+def zoom_nuovo(gioco: str) -> ZoomNuovo:
+    _gioco_ok(gioco)
+    t = random.choice(zoom.pool(gioco))
+    fx, fy = zoom.punto(gioco, t)
+    return ZoomNuovo(
+        token=firma(gioco, t["id"]),
+        tentativi_max=zoom.TENTATIVI_MAX,
+        immagine=zoom.immagine(gioco, t),
+        fx=fx,
+        fy=fy,
+    )
+
+
+def _bersaglio_token(gioco: str, token: str) -> dict[str, Any]:
+    bid = leggi_firma(gioco, token)
+    t = zoom.risposta_per_id(gioco, bid) if bid is not None else None
+    if t is None:
+        raise HTTPException(422, "partita non valida")
+    return t
+
+
+@router.post("/zoom/{gioco}/guess")
+def zoom_guess(gioco: str, body: ZoomGuess) -> ZoomEsito:
+    _gioco_ok(gioco)
+    if zoom.risposta_per_id(gioco, body.risposta_id) is None:
+        raise HTTPException(404, "risposta sconosciuta")
+    massimo = zoom.TENTATIVI_MAX
+    pid = _profilo_ok(body.profile_id)
+    libero = body.token is not None
+    day = oggi()
+    t = (
+        _bersaglio_token(gioco, body.token)
+        if body.token is not None
+        else zoom.bersaglio_giorno(gioco, day)
+    )
+    giusto = body.risposta_id == t["id"]
+
+    if libero or pid is None:  # allenamento, o senza profilo: niente crediti
+        n = body.n
+        finito = giusto or n >= massimo
+        return ZoomEsito(
+            giusto=giusto,
+            tentativo=n,
+            finito=finito,
+            crediti=0,
+            indizi=_indizi(gioco, t, n - (1 if giusto else 0)),
+            bersaglio=_soluzione_zoom(gioco, t) if finito else None,
+        )
+
+    with session_scope() as s:
+        riga = _riga_oggi(s, pid, day, gioco)
+        if riga.vinto or riga.tentativi >= massimo:
+            raise HTTPException(409, "la sfida di oggi è già finita")
+        riga.tentativi += 1
+        crediti = 0
+        if giusto:
+            riga.vinto = True
+            serie = serie_prima(s, pid, gioco, day) + 1
+            crediti = zoom.crediti_vittoria(riga.tentativi, serie)
+            riga.crediti = crediti
+            profilo = s.get(ProfileRow, pid)
+            assert profilo is not None
+            profilo.crediti += crediti
+        finito = giusto or riga.tentativi >= massimo
+        return ZoomEsito(
+            giusto=giusto,
+            tentativo=riga.tentativi,
+            finito=finito,
+            crediti=crediti,
+            indizi=_indizi(gioco, t, riga.tentativi - (1 if giusto else 0)),
+            bersaglio=_soluzione_zoom(gioco, t) if finito else None,
+        )
+
+
+@router.post("/zoom/{gioco}/arrenditi")
+def zoom_arrenditi(gioco: str, body: Arrenditi) -> SoluzioneZoom:
+    _gioco_ok(gioco)
+    if body.token is not None:
+        return _soluzione_zoom(gioco, _bersaglio_token(gioco, body.token))
+    day = oggi()
+    pid = _profilo_ok(body.profile_id)
+    if pid is not None:
+        with session_scope() as s:
+            riga = _riga_oggi(s, pid, day, gioco)
+            if not riga.vinto:
+                riga.tentativi = zoom.TENTATIVI_MAX
+    return _soluzione_zoom(gioco, zoom.bersaglio_giorno(gioco, day))

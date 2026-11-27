@@ -10,6 +10,9 @@ import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
 import { useProfile } from "@/lib/profile";
 import {
+  FONTI,
+  FORMATI,
+  STAGIONI,
   quadratini,
   type AnimedleEsito,
   type AnimedleStato,
@@ -34,25 +37,6 @@ const COLONNE = [
   "stagione",
 ] as const;
 const NOMI = it.quiz.animedle.colonne as Record<string, string>;
-const FORMATI: Record<string, string> = { TV: "TV", MOVIE: "Film" };
-const FONTI: Record<string, string> = {
-  MANGA: "Manga",
-  LIGHT_NOVEL: "Light novel",
-  ORIGINAL: "Originale",
-  VISUAL_NOVEL: "Visual novel",
-  VIDEO_GAME: "Videogioco",
-  OTHER: "Altro",
-  NOVEL: "Romanzo",
-  WEB_NOVEL: "Web novel",
-  ANIME: "Anime",
-};
-const STAGIONI: Record<string, string> = {
-  WINTER: "Inverno",
-  SPRING: "Primavera",
-  SUMMER: "Estate",
-  FALL: "Autunno",
-};
-
 function colore(esito: string, vicino?: boolean) {
   if (esito === "uguale") return "bg-emerald-500/85 border-emerald-200/60";
   if (esito === "parziale" || vicino) return "bg-amber-500/85 border-amber-200/60";
