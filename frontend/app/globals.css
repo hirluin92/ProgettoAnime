@@ -519,6 +519,32 @@ body::before {
     }
   }
 
+  .pack-shine {
+    animation: pack-shine 4.2s ease-in-out infinite;
+  }
+  @keyframes pack-shine {
+    0%,
+    55% {
+      transform: translateX(0) skewX(-18deg);
+    }
+    100% {
+      transform: translateX(520px) skewX(-18deg);
+    }
+  }
+  .pack-vetrina {
+    transition: transform 0.4s var(--ease);
+    animation: float 6s ease-in-out infinite;
+  }
+  li:hover > .pack-vetrina {
+    transform: scale(1.06) rotate(-2deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pack-shine,
+    .pack-vetrina {
+      animation: none;
+    }
+  }
+
   .pulse-ring {
     animation: ring 1.6s ease-out infinite;
   }

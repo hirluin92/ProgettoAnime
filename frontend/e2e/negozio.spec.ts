@@ -24,9 +24,21 @@ test("negozio: probabilità visibili, apertura carta per carta, saldo e album ag
 
   await page.getByTestId("apri-argento").click();
   await expect(page.getByTestId("apertura")).toBeVisible();
-  const carte = page.getByTestId("carta-pacchetto");
-  await expect(carte).toHaveCount(4);
-  for (let i = 0; i < 4; i++) await carte.nth(i).click();
+  // si strappa la busta trascinando il mouse lungo la linea tratteggiata
+  const taglio = page.getByTestId("taglio");
+  const box = (await taglio.boundingBox())!;
+  const y = box.y + box.height / 2;
+  await page.mouse.move(box.x + 40, y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2, y, { steps: 8 });
+  await page.mouse.move(box.x + box.width - 10, y, { steps: 8 });
+  await page.mouse.up();
+  // le carte escono una per una: scopri e passa alla successiva
+  for (let i = 0; i < 4; i++) {
+    await page.getByTestId("avanti").click(); // scopri
+    await page.getByTestId("avanti").click(); // prossima / riepilogo
+  }
+  await expect(page.getByTestId("carta-pacchetto")).toHaveCount(4);
   await expect(page.getByTestId("riepilogo-apertura")).toBeVisible();
   await page.getByRole("button", { name: "Continua" }).click();
   // 250 spesi, più eventuali doppioni rimborsati

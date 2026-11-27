@@ -560,7 +560,14 @@
     "chiudi": "Continua",
     "riepilogo": "Carte nuove: {n} · Crediti restituiti: {m}",
     "vaiAlbum": "Vedi nell'album",
-    "garanziaPity": "Leggendaria garantita!"
+    "garanziaPity": "Leggendaria garantita!",
+    "taglia": "Strappa la busta: trascina il mouse lungo la linea tratteggiata, da sinistra a destra.",
+    "tagliaEtichetta": "Taglia il pacchetto",
+    "tagliaAiuto": "Da tastiera: premi Invio sulla linea.",
+    "cartaCoperta": "Carta coperta",
+    "scopri": "Scopri",
+    "prossima": "Prossima carta",
+    "fine": "Vedi il riepilogo"
   },
   "ranked": {
     "titolo": "Classificata",
