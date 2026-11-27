@@ -3,7 +3,7 @@
 Aggiornato: 2026-11-27. **Leggi questo file all'inizio di ogni sessione.** Regole di lavoro in `CLAUDE.md`, specifica in `PIANO_MVP.md`, piano V2 in `PROPOSTA_V2.md`.
 
 ## Cos'è
-**Inkiri** (prima «Arena Anime»): gioco web d'asta e draft di personaggi anime reali (5 anime, 100 personaggi). Concorrente da superare: Anime Auction Coliseum. L'utente è italiano, Windows 11, vuole che io faccia tutto da solo senza chiedere; tutto il testo in italiano.
+**Inkiri** (prima «Arena Anime»): gioco web d'asta e draft di personaggi anime reali (18 anime, 244 personaggi). Concorrente da superare: Anime Auction Coliseum. L'utente è italiano, Windows 11, vuole che io faccia tutto da solo senza chiedere; tutto il testo in italiano.
 
 ## Dove sta online (nessun segreto qui)
 | Parte | Dove | Note |
@@ -171,6 +171,10 @@ Nata dal parere del committente («non mi fa dire wow; icone brutte; non vedo il
 
 ### Idee lasciate come proposte
 Mascotte originale; onomatopee anche per ogni carta rivelata in corsia; bollino «premi da ritirare» sul Ranked (serve una chiamata in più); mosaico di ritratti AniList nella home; suoni nuovi; QR nel biglietto della lobby; nomi tematici per le bustine (li decide il backend).
+
+## Più carte: 13 anime nuovi (2026-11-27)
+Da 100 a **244 personaggi** (267 carte con le 23 forme) e da 5 a **18 anime**: My Hero Academia, L'attacco dei Giganti, Fullmetal Alchemist, Hunter x Hunter, Bleach, Death Note, Chainsaw Man, One Punch Man, Spy x Family, Fairy Tail, Black Clover, Evangelion, Cowboy Bebop. I dati stanno in `scripts/nuovi_personaggi.py` (personaggi, schede di combattimento, tratti di squadra, duo e rivalità); `scripts/aggiungi_personaggi.py` li aggiunge a `characters.json`/`duos.json`/`rivalita.json` (idempotente) e `scripts/gen_schede.py` rigenera `schede.json`/`tratti.json` **conservando i prezzi** già misurati. Le immagini sono collegamenti AniList (144 controllati: tutte raggiungibili). Il prezzo («costo» del Veloce) di tutte le carte è stato rimisurato con `balance_v2.py 12000 --scrivi` (media 6,9; correlazione voto/vittorie 0,83); `balance_duello.py` resta sano (primo giocatore 50,6%). Rarità ora: 85 leggendarie, 77 epiche, 57 rare, 25 comuni (prima solo 8 comuni): i pacchetti base danno finalmente carte comuni vere. Tokyo Ghoul non è stato aggiunto (la scheda AniList non risponde). Gotenks resta senza immagine (non esiste su AniList). Obito: su AniList è «Tobi» (id 3149), immagine aggiunta a mano.
+Trappola: rigenerare `schede.json` con `gen_schede.py` **senza** conservare i prezzi li azzera (tutto a 6): ora li conserva.
 
 ## Da fare (in ordine di valore)
 Fatto dal 2026-11-26 (V4, vedi M18-M29 sopra): Duello a corsie, rompicapo del giorno, ELO, Veloce migliorato, torneo a duelli nelle stanze, account, album/mazzi, crediti/pacchetti, ranked a leghe, Scala roguelike, voto della chat, home aggiornata. Online: Vercel (frontend) e Render (backend, deploy manuale) alla data di M29.

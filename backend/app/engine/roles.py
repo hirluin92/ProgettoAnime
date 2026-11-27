@@ -29,6 +29,19 @@ ANIME_NOMI: dict[str, str] = {
     "dragon-ball": "Dragon Ball",
     "demon-slayer": "Demon Slayer",
     "jujutsu-kaisen": "Jujutsu Kaisen",
+    "my-hero-academia": "My Hero Academia",
+    "attack-on-titan": "L'attacco dei Giganti",
+    "fullmetal-alchemist": "Fullmetal Alchemist",
+    "hunter-x-hunter": "Hunter x Hunter",
+    "bleach": "Bleach",
+    "death-note": "Death Note",
+    "chainsaw-man": "Chainsaw Man",
+    "one-punch-man": "One Punch Man",
+    "spy-x-family": "Spy x Family",
+    "fairy-tail": "Fairy Tail",
+    "black-clover": "Black Clover",
+    "evangelion": "Evangelion",
+    "cowboy-bebop": "Cowboy Bebop",
 }
 
 # Le etichette storiche: restano nei dati come descrizione, non hanno effetto sul combattimento.

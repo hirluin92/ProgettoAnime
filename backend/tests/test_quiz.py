@@ -377,3 +377,16 @@ def test_bersaglio_del_giorno_dipende_dal_segreto(monkeypatch) -> None:  # type:
     assert a == [animedle.bersaglio_giorno(g)["id"] for g in giorni]  # stabile
     monkeypatch.setenv("QUIZ_SECRET", "due")
     assert a != [animedle.bersaglio_giorno(g)["id"] for g in giorni]
+
+
+def test_normalizza_apostrofo_tipografico_come_il_frontend() -> None:
+    from app.quiz.dati import normalizza
+
+    # l'apostrofo (dritto o tipografico) separa le parole, come fa il frontend: così scrivendo
+    # il titolo intero i suggerimenti lo trovano
+    voluto = "frieren beyond journey s end season 2"
+    assert normalizza("Frieren: Beyond Journey’s End Season 2") == voluto
+    assert normalizza("Frieren: Beyond Journey's End Season 2") == voluto
+    assert normalizza("Hell’s Paradise") == normalizza("Hell's Paradise") == "hell s paradise"
+    assert normalizza("Fullmetal Alchemist: Brotherhood") == "fullmetal alchemist brotherhood"
+    assert normalizza("Ōkami-san") == "okami san"

@@ -66,7 +66,7 @@ def tot(s: Stato, corsia: int = 0) -> tuple[int, int]:
 def test_cards_from_all_characters_and_forms() -> None:
     tutte = [*load_characters().values(), *load_forms().values()]
     carte = [carta_da(x) for x in tutte]
-    assert len(carte) == 123 and len({x.id for x in carte}) == len(carte)
+    assert len(carte) == len(tutte) and len({x.id for x in carte}) == len(carte)
     for x in carte:
         assert 1 <= x.potenza <= 11 and 1 <= x.costo <= 6 and 1 <= x.magnitudo <= 3
         assert descr_mossa(x.mossa, x.magnitudo) and descr_passiva(x.passiva, x.magnitudo), x.id

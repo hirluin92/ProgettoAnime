@@ -88,5 +88,55 @@
     "a": "toji-fushiguro",
     "b": "megumi-fushiguro",
     "nome": "Padre e figlio"
+  },
+  {
+    "a": "killua-zoldyck",
+    "b": "gon-freecss",
+    "nome": "Migliori amici"
+  },
+  {
+    "a": "edward-elric",
+    "b": "alphonse-elric",
+    "nome": "Fratelli Elric"
+  },
+  {
+    "a": "natsu-dragneel",
+    "b": "gray-fullbuster",
+    "nome": "Litigano ma si fidano"
+  },
+  {
+    "a": "asta",
+    "b": "yuno",
+    "nome": "Amici e rivali"
+  },
+  {
+    "a": "izuku-midoriya",
+    "b": "all-might",
+    "nome": "Maestro e allievo"
+  },
+  {
+    "a": "loid-forger",
+    "b": "yor-forger",
+    "nome": "Genitori finti"
+  },
+  {
+    "a": "shinji-ikari",
+    "b": "rei-ayanami",
+    "nome": "Piloti legati"
+  },
+  {
+    "a": "spike-spiegel",
+    "b": "faye-valentine",
+    "nome": "Cacciatori di taglie"
+  },
+  {
+    "a": "levi-ackerman",
+    "b": "erwin-smith",
+    "nome": "Comandante e braccio destro"
+  },
+  {
+    "a": "denji",
+    "b": "power",
+    "nome": "Compagni di caccia"
   }
 ]

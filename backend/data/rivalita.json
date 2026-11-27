@@ -118,5 +118,50 @@
   "a": "zenitsu-agatsuma",
   "b": "kokushibo",
   "nome": "Il fulmine contro la Luna"
+ },
+ {
+  "a": "light-yagami",
+  "b": "l-lawliet",
+  "nome": "Gatto e topo"
+ },
+ {
+  "a": "ichigo-kurosaki",
+  "b": "sousuke-aizen",
+  "nome": "Il traditore"
+ },
+ {
+  "a": "izuku-midoriya",
+  "b": "katsuki-bakugo",
+  "nome": "Rivali d'infanzia"
+ },
+ {
+  "a": "saitama",
+  "b": "garou",
+  "nome": "Eroe e mostro"
+ },
+ {
+  "a": "spike-spiegel",
+  "b": "vicious",
+  "nome": "Vecchi compagni"
+ },
+ {
+  "a": "eren-yeager",
+  "b": "reiner-braun",
+  "nome": "Nemici giurati"
+ },
+ {
+  "a": "hisoka-morow",
+  "b": "chrollo-lucilfer",
+  "nome": "Duello del Ragno"
+ },
+ {
+  "a": "natsu-dragneel",
+  "b": "zeref",
+  "nome": "Fratelli nemici"
+ },
+ {
+  "a": "asuka-langley",
+  "b": "rei-ayanami",
+  "nome": "Rivalità di piloti"
  }
 ]
