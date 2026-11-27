@@ -44,7 +44,7 @@ export type ClientMsg =
   | { type: "assign_role"; role: string }
   | { type: "pick"; character_id: string; role: string }
   | { type: "plan"; tattiche: string[] | null; carica: "subito" | "carica"; formazione: string }
-  | { type: "quiz_risposta"; risposta_id: number }
+  | { type: "quiz_risposta"; risposta_id: number; tipo?: "anime" | "brano" | "artista" }
   | { type: "quiz_lobby" }
   | { type: "duello_mosse"; mosse: { carta: string; corsia: number }[] }
   | { type: "update_settings"; settings: import("./types/server").RoomSettings };

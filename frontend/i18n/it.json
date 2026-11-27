@@ -581,6 +581,14 @@
       "voto": "Voto"
     },
     "stanza": {
+      "tipoRisposta": {
+        "anime": "Anime",
+        "brano": "Brano",
+        "artista": "Artista"
+      },
+      "cercaSigla": "Scrivi l'anime, il titolo del brano o l'artista…",
+      "parzialeGiusto": "{cosa} giusto! +{n} punti",
+      "serieDi": "{n} domande indovinate di fila: bonus punti!",
       "serieGiusta": "Serie giusta, ma un'altra stagione: riprova tra poco.",
       "tipo": "Giochi",
       "tipi": {
@@ -598,7 +606,7 @@
       },
       "round": "Domande",
       "tempo": "Secondi per domanda",
-      "spiega": "Chi indovina prima prende più punti. Una risposta sbagliata ti blocca per 4 secondi. L'immagine si scopre col passare del tempo.",
+      "spiega": "Chi indovina prima prende più punti. Una risposta sbagliata ti blocca per 4 secondi. L'immagine si scopre col passare del tempo. Nelle sigle l'anime vale il punteggio pieno, il solo titolo del brano o il solo artista danno meno punti. Indovinare più domande di fila dà un bonus.",
       "domanda": "Domanda {n} di {tot}",
       "fine": "Classifica finale",
       "soloIndizi": "Niente immagine: gli indizi arrivano col tempo.",

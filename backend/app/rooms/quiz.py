@@ -18,6 +18,9 @@ RIVELAZIONE = 6.0  # secondi di pausa a fine domanda
 BLOCCO = 4.0  # secondi di attesa dopo una risposta sbagliata
 BLOCCO_SERIE = 2.0  # se almeno era un'altra stagione della stessa serie
 BONUS_POSIZIONE = (50, 25, 10)
+BONUS_SERIE = 20  # per ogni domanda indovinata di fila prima di questa
+BONUS_SERIE_MAX = 100
+PARZIALE = {"brano": 0.5, "artista": 0.4}  # quota dei punti per il solo titolo o il solo artista
 TIPI = ("scorcio", "personaggio", "indizi", "sigla")
 
 
@@ -55,6 +58,18 @@ class Domanda:
             return False
         r = zoom.risposta_per_id("scorcio", risposta_id)
         return r is not None and stessa_serie(self.target, r)
+
+    def controlla(self, tipo: str, risposta_id: int) -> str:
+        """«giusto», «serie» (altra stagione) o «no» per una risposta anime, brano o artista."""
+        t = self.target
+        if tipo == "anime" or self.kind != "sigla":
+            if tipo != "anime" and self.kind != "sigla":
+                raise QuizErrore("bad_type", "In questa domanda si risponde solo con l'anime")
+            if self.giusta(risposta_id):
+                return "giusto"
+            return "serie" if self.vicina(risposta_id) else "no"
+        chiave = "brano_idx" if tipo == "brano" else "artista_idx"
+        return "giusto" if risposta_id == t[chiave] else "no"
 
     def soluzione(self) -> QuizSoluzione:
         t = self.target
@@ -111,6 +126,12 @@ class QuizPartita:
         default_factory=dict
     )  # giocatore -> punti presi in questa domanda
     blocchi: dict[str, float] = field(default_factory=dict)
+    parziali: dict[str, dict[str, int]] = field(
+        default_factory=dict
+    )  # pid -> {brano|artista: punti}
+    serie: dict[str, int] = field(default_factory=dict)  # domande di fila indovinate (anime)
+    serie_prima: dict[str, int] = field(default_factory=dict)  # la serie a inizio domanda
+    ultimo: dict[str, tuple[str, int]] = field(default_factory=dict)  # pid -> (componente, punti)
 
     @classmethod
     def nuova(
@@ -130,6 +151,7 @@ class QuizPartita:
             domande.append(Domanda(k, t))
         p = cls(domande, tempo, list(giocatori), adesso)
         p.punti = dict.fromkeys(giocatori, 0)
+        p.serie = dict.fromkeys(giocatori, 0)
         p._apri(adesso)
         return p
 
@@ -140,6 +162,8 @@ class QuizPartita:
         self.scadenza = adesso + self.tempo
         self.giusti = {}
         self.blocchi = {}
+        self.parziali = {}
+        self.serie_prima = dict(self.serie)
 
     @property
     def corrente(self) -> Domanda:
@@ -150,27 +174,43 @@ class QuizPartita:
             return LIVELLI - 1
         return max(0, min(LIVELLI - 1, int((adesso - self.inizio) / self.tempo * LIVELLI)))
 
-    def rispondi(self, pid: str, risposta_id: int, adesso: float) -> str:
-        """Esito: «giusto», «serie» (altra stagione della stessa serie) o «no»."""
+    def rispondi(self, pid: str, risposta_id: int, adesso: float, tipo: str = "anime") -> str:
+        """Esito: «giusto» (anime), «parziale» (solo brano o artista), «serie» o «no».
+
+        L'anime vale tutti i punti (tempo, posizione, serie di risposte); il titolo del brano o il
+        solo artista ne danno una parte, una volta ciascuno per domanda.
+        """
         if self.fase != "domanda" or adesso >= self.scadenza:
             raise QuizErrore("closed", "La domanda è chiusa")
         if pid not in self.punti:
             raise QuizErrore("not_player", "Non stai giocando")
-        if pid in self.giusti:
-            raise QuizErrore("done", "Hai già indovinato")
+        if tipo == "anime" and pid in self.giusti:
+            raise QuizErrore("done", "Hai già indovinato l'anime")
+        if tipo != "anime" and tipo in self.parziali.get(pid, {}):
+            raise QuizErrore("done", "Questa parte l'hai già indovinata")
         attesa = self.blocchi.get(pid, 0.0) - adesso
         if attesa > 0:
             raise QuizErrore("locked", f"Aspetta ancora {attesa:.0f} secondi")
-        if not self.corrente.giusta(risposta_id):
-            vicina = self.corrente.vicina(risposta_id)
-            self.blocchi[pid] = adesso + (BLOCCO_SERIE if vicina else BLOCCO)
-            return "serie" if vicina else "no"
+        esito = self.corrente.controlla(tipo, risposta_id)
+        if esito != "giusto":
+            self.blocchi[pid] = adesso + (BLOCCO_SERIE if esito == "serie" else BLOCCO)
+            return esito
         resto = max(0.0, self.scadenza - adesso) / self.tempo
+        base = 100 + round(100 * resto)
+        if tipo != "anime":
+            guadagno = round(base * PARZIALE[tipo])
+            self.parziali.setdefault(pid, {})[tipo] = guadagno
+            self.punti[pid] += guadagno
+            self.ultimo[pid] = (tipo, guadagno)
+            return "parziale"
         posizione = len(self.giusti)
         bonus = BONUS_POSIZIONE[posizione] if posizione < len(BONUS_POSIZIONE) else 0
-        guadagno = 100 + round(100 * resto) + bonus
+        serie = self.serie_prima.get(pid, 0)
+        guadagno = base + bonus + min(BONUS_SERIE_MAX, BONUS_SERIE * serie)
         self.giusti[pid] = guadagno
         self.punti[pid] += guadagno
+        self.serie[pid] = serie + 1
+        self.ultimo[pid] = ("anime", guadagno)
         return "giusto"
 
     def tick(self, adesso: float, attivi: list[str]) -> bool:
@@ -178,6 +218,9 @@ class QuizPartita:
         if self.fase == "domanda":
             tutti = bool(attivi) and all(p in self.giusti for p in attivi)
             if tutti or adesso >= self.scadenza:
+                for pid in self.punti:  # chi non ha indovinato perde la serie
+                    if pid not in self.giusti:
+                        self.serie[pid] = 0
                 self.fase = "rivelazione"
                 self.scadenza = adesso + RIVELAZIONE
                 return True
@@ -214,7 +257,10 @@ class QuizPartita:
                     id=p,
                     punti=self.punti[p],
                     giusto=p in self.giusti,
-                    guadagno=self.giusti.get(p, 0),
+                    guadagno=self.giusti.get(p, 0) + sum(self.parziali.get(p, {}).values()),
+                    serie=self.serie.get(p, 0),
+                    brano="brano" in self.parziali.get(p, {}),
+                    artista="artista" in self.parziali.get(p, {}),
                 )
                 for p in ordine
             ],

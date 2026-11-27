@@ -112,7 +112,11 @@ def quiz_soluzione(code: str) -> dict[str, str | int]:
     q = room.extras.get("quiz") if room else None
     if q is None:
         raise HTTPException(404, "nessun quiz in corso")
-    return {"id": q.corrente.target["id"], "nome": q.corrente.soluzione().nome}
+    t = q.corrente.target
+    out: dict[str, str | int] = {"id": t["id"], "nome": q.corrente.soluzione().nome}
+    if q.corrente.kind == "sigla":
+        out |= {"brano": t["brano_lat"], "artista": t["artista_lat"]}
+    return out
 
 
 @app.post("/api/dev/regala-carte/{profile_id}")

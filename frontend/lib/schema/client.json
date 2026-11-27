@@ -222,9 +222,15 @@
         "risposta_id": {
           "title": "Risposta Id",
           "type": "integer"
+        },
+        "tipo": {
+          "default": "anime",
+          "enum": ["anime", "brano", "artista"],
+          "title": "Tipo",
+          "type": "string"
         }
       },
-      "required": ["type", "risposta_id"],
+      "required": ["type", "risposta_id", "tipo"],
       "title": "QuizRisposta",
       "type": "object"
     },

@@ -164,6 +164,9 @@ export type Id5 = string;
 export type Punti1 = number;
 export type Giusto = boolean;
 export type Guadagno = number;
+export type Serie = number;
+export type Brano = boolean;
+export type Artista = boolean;
 export type Punteggi = QuizPunteggio[];
 export type Nome5 = string;
 export type Dettaglio = string;
@@ -247,6 +250,8 @@ export type Type12 = "quiz_esito";
 export type Giusto1 = boolean;
 export type Blocco = number;
 export type StessaSerie = boolean;
+export type Componente = string;
+export type Punti2 = number;
 export type Type13 = "error";
 export type Code1 = string;
 export type Message = string;
@@ -489,6 +494,9 @@ export interface QuizPunteggio {
   punti: Punti1;
   giusto: Giusto;
   guadagno: Guadagno;
+  serie: Serie;
+  brano: Brano;
+  artista: Artista;
 }
 export interface QuizSoluzione {
   nome: Nome5;
@@ -624,6 +632,8 @@ export interface QuizEsito {
   giusto: Giusto1;
   blocco: Blocco;
   stessa_serie: StessaSerie;
+  componente: Componente;
+  punti: Punti2;
 }
 export interface ErrorMsg {
   type: Type13;

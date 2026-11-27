@@ -189,8 +189,11 @@ class QuizSoluzione(Model):
 class QuizPunteggio(Model):
     id: str
     punti: int
-    giusto: bool  # ha già indovinato questa domanda
-    guadagno: int  # punti presi in questa domanda
+    giusto: bool  # ha già indovinato l'anime in questa domanda
+    guadagno: int  # punti presi in questa domanda (anime + titolo + artista)
+    serie: int = 0  # domande indovinate di fila (anime)
+    brano: bool = False  # ha indovinato il titolo del brano (solo sigle)
+    artista: bool = False  # ha indovinato l'artista (solo sigle)
 
 
 class QuizView(Model):

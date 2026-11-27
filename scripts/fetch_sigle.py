@@ -183,6 +183,8 @@ if __name__ == "__main__":
                 "anime_id": a["id"],
                 "brano": t["trackName"],
                 "artista": t["artistName"],
+                "brano_lat": brano,  # titolo e artista in caratteri latini (per cercarli e scriverli)
+                "artista_lat": artista,
                 "tipo": tipo,
                 "anteprima": t["previewUrl"],
                 "apple": t["trackViewUrl"],

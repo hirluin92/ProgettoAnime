@@ -542,3 +542,33 @@ def zoom_arrenditi(gioco: str, body: Arrenditi) -> SoluzioneZoom:
             if not riga.vinto:
                 riga.tentativi = zoom.TENTATIVI_MAX
     return _soluzione_zoom(gioco, zoom.bersaglio_giorno(gioco, day))
+
+
+# ---------- elenco di brani e artisti (per rispondere alle sigle nel quiz) ----------
+class VoceSigla(Model):
+    tipo: str  # brano | artista
+    id: int
+    nome: str
+    alt: str
+    k: str
+
+
+@router.get("/sigle/elenco")
+def elenco_sigle() -> list[VoceSigla]:
+    from app.quiz.dati import artisti, sigle
+
+    out = [
+        VoceSigla(
+            tipo="brano",
+            id=s["brano_idx"],
+            nome=s["brano_lat"],
+            alt=s["artista_lat"],
+            k=" | ".join(dict.fromkeys(normalizza(x) for x in (s["brano_lat"], s["brano"]) if x)),
+        )
+        for s in sigle()
+    ]
+    out += [
+        VoceSigla(tipo="artista", id=i, nome=a, alt="", k=normalizza(a))
+        for i, a in enumerate(artisti())
+    ]
+    return out

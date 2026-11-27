@@ -85,6 +85,7 @@ export type Carta = string;
 export type Corsia = number;
 export type Type10 = "quiz_risposta";
 export type RispostaId = number;
+export type Tipo = "anime" | "brano" | "artista";
 export type Type11 = "quiz_lobby";
 export type Type12 = "update_settings";
 export type Budget = number;
@@ -165,6 +166,7 @@ export interface MossaIn {
 export interface QuizRisposta {
   type: Type10;
   risposta_id: RispostaId;
+  tipo: Tipo;
 }
 /**
  * A fine quiz l'host riporta tutti in lobby per rigiocare.
