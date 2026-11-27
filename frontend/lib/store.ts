@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type {
   DuelloAggiornamento,
   PlayerView,
+  QuizEsito,
   RoomView,
   ServerMsg,
   TournamentView,
@@ -13,6 +14,8 @@ interface RoomStore {
   tournament: TournamentView | null;
   /** il tuo duello in corso (messaggio privato), con gli eventi dell'ultimo turno */
   duello: DuelloAggiornamento | null;
+  /** esito della tua ultima risposta al quiz (con l'istante di arrivo) */
+  quizEsito: (QuizEsito & { at: number }) | null;
   /** missione segreta (messaggio privato) */
   mission: { id: string; nome: string; descrizione: string } | null;
   status: "idle" | "connecting" | "open" | "closed";
@@ -36,6 +39,7 @@ export const useRoom = create<RoomStore>((set, get) => ({
   me: null,
   tournament: null,
   duello: null,
+  quizEsito: null,
   mission: null,
   status: "idle",
   error: null,
@@ -50,6 +54,7 @@ export const useRoom = create<RoomStore>((set, get) => ({
       me: null,
       tournament: null,
       duello: null,
+      quizEsito: null,
       mission: null,
       feed: [],
       error: null,
@@ -73,6 +78,9 @@ export const useRoom = create<RoomStore>((set, get) => ({
         return;
       case "duello":
         set({ duello: m, offset: m.now - Date.now() / 1000 });
+        return;
+      case "quiz_esito":
+        set({ quizEsito: { ...m, at: Date.now() } });
         return;
       case "mission":
         set({ mission: { id: m.id, nome: m.nome, descrizione: m.descrizione } });

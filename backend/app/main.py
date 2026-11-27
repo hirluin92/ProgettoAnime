@@ -103,6 +103,18 @@ def random_match() -> StoredMatch:
     return StoredMatch(id=repo.save_match(result), result=result)
 
 
+@app.get("/api/dev/quiz-soluzione/{code}")
+def quiz_soluzione(code: str) -> dict[str, str | int]:
+    """Solo per i test e2e: la risposta giusta della domanda di quiz in corso in una stanza."""
+    if os.environ.get("DEV_TOOLS") != "1":
+        raise HTTPException(404, "non disponibile")
+    room = manager.get(code.upper())
+    q = room.extras.get("quiz") if room else None
+    if q is None:
+        raise HTTPException(404, "nessun quiz in corso")
+    return {"id": q.corrente.target["id"], "nome": q.corrente.soluzione().nome}
+
+
 @app.post("/api/dev/regala-carte/{profile_id}")
 def regala_carte(profile_id: str) -> dict[str, int]:
     """Solo per i test e2e: aggiunge alla collezione 12 carte comuni o rare a basso costo."""

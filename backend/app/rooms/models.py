@@ -30,12 +30,15 @@ class RoomSettings(Model):
         default=45, ge=0, le=180
     )  # secondi per il piano di battaglia; 0 = salta
     formato: Literal["girone", "eliminazione"] = "girone"  # formato del torneo
-    modalita: Literal["asta", "specchio", "raid"] = "asta"  # asta, draft a specchio (2) o raid
+    modalita: Literal["asta", "specchio", "raid", "quiz"] = "asta"  # asta, specchio (2), raid, quiz
     pick_timeout: int = Field(default=20, ge=5, le=120)  # secondi per scelta (specchio, raid)
     boss: str = "kaido"  # boss del raid
     difficolta: Literal["normale", "difficile", "epico"] = "normale"
     regole: Literal["classico", "duello"] = "classico"  # combattimento del torneo
     turno_duello: int = Field(default=30, ge=10, le=90)  # secondi per turno nei duelli
+    quiz_tipo: Literal["misto", "scorcio", "personaggio", "indizi"] = "misto"  # giochi del quiz
+    quiz_round: int = Field(default=8, ge=3, le=20)  # domande del quiz
+    quiz_tempo: int = Field(default=25, ge=10, le=60)  # secondi per domanda
 
 
 class PlayerView(Model):
@@ -170,10 +173,45 @@ class DuelliView(Model):
     duelli: list[DuelloPubblico]
 
 
+class QuizIndizio(Model):
+    k: str
+    v: str
+
+
+class QuizSoluzione(Model):
+    nome: str
+    dettaglio: str
+    immagine: str
+
+
+class QuizPunteggio(Model):
+    id: str
+    punti: int
+    giusto: bool  # ha già indovinato questa domanda
+    guadagno: int  # punti presi in questa domanda
+
+
+class QuizView(Model):
+    """Il quiz in corso: domanda, quanto è svelata, punteggi. Soluzione solo a domanda chiusa."""
+
+    round: int  # 1-based
+    totali: int
+    kind: Literal["scorcio", "personaggio", "indizi"]
+    fase: Literal["domanda", "rivelazione", "fine"]
+    immagine: str | None
+    fx: float
+    fy: float
+    livello: int  # quanto è svelata la domanda (0-5)
+    indizi: list[QuizIndizio]
+    scadenza: float
+    punteggi: list[QuizPunteggio]
+    soluzione: QuizSoluzione | None
+
+
 class RoomView(Model):
     code: str
     phase: Literal[
-        "lobby", "ban", "auction", "draft", "plan", "duelli", "tournament", "raid_result"
+        "lobby", "ban", "auction", "draft", "plan", "duelli", "tournament", "raid_result", "quiz"
     ]
     host_id: str
     settings: RoomSettings
@@ -190,6 +228,7 @@ class RoomView(Model):
     tournament: TournamentView | None
     duelli: DuelliView | None = None
     chat_duello: ChatDuelloView | None = None
+    quiz: QuizView | None = None
     streamer_channel: str | None
     server_time: float
 

@@ -972,6 +972,175 @@
       "title": "PlayerView",
       "type": "object"
     },
+    "QuizEsito": {
+      "description": "Esito della risposta di un giocatore (messaggio privato).",
+      "properties": {
+        "type": {
+          "const": "quiz_esito",
+          "default": "quiz_esito",
+          "title": "Type",
+          "type": "string"
+        },
+        "giusto": {
+          "title": "Giusto",
+          "type": "boolean"
+        },
+        "blocco": {
+          "title": "Blocco",
+          "type": "number"
+        }
+      },
+      "required": ["type", "giusto", "blocco"],
+      "title": "QuizEsito",
+      "type": "object"
+    },
+    "QuizIndizio": {
+      "properties": {
+        "k": {
+          "title": "K",
+          "type": "string"
+        },
+        "v": {
+          "title": "V",
+          "type": "string"
+        }
+      },
+      "required": ["k", "v"],
+      "title": "QuizIndizio",
+      "type": "object"
+    },
+    "QuizPunteggio": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "punti": {
+          "title": "Punti",
+          "type": "integer"
+        },
+        "giusto": {
+          "title": "Giusto",
+          "type": "boolean"
+        },
+        "guadagno": {
+          "title": "Guadagno",
+          "type": "integer"
+        }
+      },
+      "required": ["id", "punti", "giusto", "guadagno"],
+      "title": "QuizPunteggio",
+      "type": "object"
+    },
+    "QuizSoluzione": {
+      "properties": {
+        "nome": {
+          "title": "Nome",
+          "type": "string"
+        },
+        "dettaglio": {
+          "title": "Dettaglio",
+          "type": "string"
+        },
+        "immagine": {
+          "title": "Immagine",
+          "type": "string"
+        }
+      },
+      "required": ["nome", "dettaglio", "immagine"],
+      "title": "QuizSoluzione",
+      "type": "object"
+    },
+    "QuizView": {
+      "description": "Il quiz in corso: domanda, quanto \u00e8 svelata, punteggi. Soluzione solo a domanda chiusa.",
+      "properties": {
+        "round": {
+          "title": "Round",
+          "type": "integer"
+        },
+        "totali": {
+          "title": "Totali",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": ["scorcio", "personaggio", "indizi"],
+          "title": "Kind",
+          "type": "string"
+        },
+        "fase": {
+          "enum": ["domanda", "rivelazione", "fine"],
+          "title": "Fase",
+          "type": "string"
+        },
+        "immagine": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Immagine"
+        },
+        "fx": {
+          "title": "Fx",
+          "type": "number"
+        },
+        "fy": {
+          "title": "Fy",
+          "type": "number"
+        },
+        "livello": {
+          "title": "Livello",
+          "type": "integer"
+        },
+        "indizi": {
+          "items": {
+            "$ref": "#/$defs/QuizIndizio"
+          },
+          "title": "Indizi",
+          "type": "array"
+        },
+        "scadenza": {
+          "title": "Scadenza",
+          "type": "number"
+        },
+        "punteggi": {
+          "items": {
+            "$ref": "#/$defs/QuizPunteggio"
+          },
+          "title": "Punteggi",
+          "type": "array"
+        },
+        "soluzione": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QuizSoluzione"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "round",
+        "totali",
+        "kind",
+        "fase",
+        "immagine",
+        "fx",
+        "fy",
+        "livello",
+        "indizi",
+        "scadenza",
+        "punteggi",
+        "soluzione"
+      ],
+      "title": "QuizView",
+      "type": "object"
+    },
     "RaidView": {
       "description": "Esito del raid: il boss affrontato e lo scontro (rivedibile).",
       "properties": {
@@ -1098,7 +1267,7 @@
         },
         "modalita": {
           "default": "asta",
-          "enum": ["asta", "specchio", "raid"],
+          "enum": ["asta", "specchio", "raid", "quiz"],
           "title": "Modalita",
           "type": "string"
         },
@@ -1132,6 +1301,26 @@
           "minimum": 10,
           "title": "Turno Duello",
           "type": "integer"
+        },
+        "quiz_tipo": {
+          "default": "misto",
+          "enum": ["misto", "scorcio", "personaggio", "indizi"],
+          "title": "Quiz Tipo",
+          "type": "string"
+        },
+        "quiz_round": {
+          "default": 8,
+          "maximum": 20,
+          "minimum": 3,
+          "title": "Quiz Round",
+          "type": "integer"
+        },
+        "quiz_tempo": {
+          "default": 25,
+          "maximum": 60,
+          "minimum": 10,
+          "title": "Quiz Tempo",
+          "type": "integer"
         }
       },
       "required": [
@@ -1148,7 +1337,10 @@
         "boss",
         "difficolta",
         "regole",
-        "turno_duello"
+        "turno_duello",
+        "quiz_tipo",
+        "quiz_round",
+        "quiz_tempo"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -1184,7 +1376,8 @@
             "plan",
             "duelli",
             "tournament",
-            "raid_result"
+            "raid_result",
+            "quiz"
           ],
           "title": "Phase",
           "type": "string"
@@ -1328,6 +1521,17 @@
           ],
           "default": null
         },
+        "quiz": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/QuizView"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "streamer_channel": {
           "anyOf": [
             {
@@ -1362,6 +1566,7 @@
         "tournament",
         "duelli",
         "chat_duello",
+        "quiz",
         "streamer_channel",
         "server_time"
       ],
@@ -1656,6 +1861,7 @@
       "lot_won": "#/$defs/LotWon",
       "mission": "#/$defs/Mission",
       "player_passed": "#/$defs/PlayerPassed",
+      "quiz_esito": "#/$defs/QuizEsito",
       "room_state": "#/$defs/RoomState",
       "tournament_result": "#/$defs/TournamentResult"
     },
@@ -1697,6 +1903,9 @@
     },
     {
       "$ref": "#/$defs/DuelloAggiornamento"
+    },
+    {
+      "$ref": "#/$defs/QuizEsito"
     },
     {
       "$ref": "#/$defs/ErrorMsg"
