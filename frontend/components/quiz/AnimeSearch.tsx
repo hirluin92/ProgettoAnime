@@ -16,6 +16,7 @@ export default function AnimeSearch({
   testId = "anime-ricerca",
   personaggi,
   sigle,
+  tipi,
 }: {
   onScegli: (a: Voce) => void;
   esclusi?: Set<number>;
@@ -23,6 +24,7 @@ export default function AnimeSearch({
   testId?: string;
   personaggi?: boolean;
   sigle?: boolean;
+  tipi?: string[]; // quali risposte sono ammesse (anime, brano, artista)
 }) {
   const [elenco, setElenco] = useState<Voce[]>([]);
   const [q, setQ] = useState("");
@@ -56,7 +58,10 @@ export default function AnimeSearch({
     const n = normalizza(q);
     if (n.length < 1) return [];
     const trovati = elenco.filter(
-      (a) => !((a.tipo ?? "anime") === "anime" && esclusi?.has(a.id)) && a.k.includes(n),
+      (a) =>
+        !((a.tipo ?? "anime") === "anime" && esclusi?.has(a.id)) &&
+        (!tipi || tipi.includes(a.tipo ?? "anime")) &&
+        a.k.includes(n),
     );
     // prima chi inizia con il testo, poi gli altri
     trovati.sort((x, y) => {
@@ -65,7 +70,7 @@ export default function AnimeSearch({
       return sx - sy;
     });
     return trovati.slice(0, 8);
-  }, [q, elenco, esclusi]);
+  }, [q, elenco, esclusi, tipi]);
 
   const scegli = (a: Voce) => {
     onScegli(a);

@@ -337,17 +337,35 @@
         },
         "quiz_round": {
           "default": 8,
-          "maximum": 20,
+          "maximum": 30,
           "minimum": 3,
           "title": "Quiz Round",
           "type": "integer"
         },
         "quiz_tempo": {
           "default": 25,
-          "maximum": 60,
+          "maximum": 600,
           "minimum": 10,
           "title": "Quiz Tempo",
           "type": "integer"
+        },
+        "quiz_clip": {
+          "default": 30,
+          "maximum": 30,
+          "minimum": 5,
+          "title": "Quiz Clip",
+          "type": "integer"
+        },
+        "quiz_loop": {
+          "default": true,
+          "title": "Quiz Loop",
+          "type": "boolean"
+        },
+        "quiz_chiede": {
+          "default": "tutto",
+          "enum": ["tutto", "anime", "brano", "artista"],
+          "title": "Quiz Chiede",
+          "type": "string"
         }
       },
       "required": [
@@ -367,7 +385,10 @@
         "turno_duello",
         "quiz_tipo",
         "quiz_round",
-        "quiz_tempo"
+        "quiz_tempo",
+        "quiz_clip",
+        "quiz_loop",
+        "quiz_chiede"
       ],
       "title": "RoomSettings",
       "type": "object"

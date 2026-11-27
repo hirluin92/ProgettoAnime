@@ -45,6 +45,9 @@ export type TurnoDuello = number;
 export type QuizTipo = "misto" | "scorcio" | "personaggio" | "indizi" | "sigla";
 export type QuizRound = number;
 export type QuizTempo = number;
+export type QuizClip = number;
+export type QuizLoop = boolean;
+export type QuizChiede = "tutto" | "anime" | "brano" | "artista";
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -156,6 +159,9 @@ export type Fy = number;
 export type Livello = number;
 export type Audio = string | null;
 export type AudioSecondi = number;
+export type Loop = boolean;
+export type Tipi = string[];
+export type Principale = string;
 export type K = string;
 export type V = string;
 export type Indizi = QuizIndizio[];
@@ -305,6 +311,9 @@ export interface RoomSettings {
   quiz_tipo: QuizTipo;
   quiz_round: QuizRound;
   quiz_tempo: QuizTempo;
+  quiz_clip: QuizClip;
+  quiz_loop: QuizLoop;
+  quiz_chiede: QuizChiede;
 }
 export interface PlayerView {
   id: Id;
@@ -480,6 +489,9 @@ export interface QuizView {
   livello: Livello;
   audio: Audio;
   audio_secondi: AudioSecondi;
+  loop: Loop;
+  tipi: Tipi;
+  principale: Principale;
   indizi: Indizi;
   scadenza: Scadenza1;
   punteggi: Punteggi;

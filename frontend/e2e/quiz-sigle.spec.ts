@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createRoom, joinRoom } from "./helpers";
+import { createRoom, impostaCursore, joinRoom } from "./helpers";
 
 interface Sol {
   id: number;
@@ -26,8 +26,9 @@ test("quiz sulle sigle: titolo e artista danno punti parziali, l'anime il pieno,
   const ospite = await joinRoom(browser, code, "Bruno");
 
   await host.page.getByLabel("Modalità").selectOption("quiz");
-  await host.page.getByTestId("quiz-tipo").selectOption("sigla");
-  await host.page.getByTestId("quiz-round").fill("3");
+  await host.page.getByTestId("quiz-tipo-sigla").click();
+  await impostaCursore(host.page, "quiz-round", 3);
+  await host.page.getByTestId("quiz-impostazioni-fatto").click();
   await host.page.getByRole("button", { name: "Avvia" }).click();
   await expect(host.page.getByTestId("quiz-componenti")).toBeVisible();
 
@@ -54,4 +55,38 @@ test("quiz sulle sigle: titolo e artista danno punti parziali, l'anime il pieno,
     }
   }
   await expect(host.page.getByTestId("quiz-podio")).toBeVisible({ timeout: 20_000 });
+});
+
+test("quiz sulle sigle: impostazioni di partita (solo artista, anteprima corta, una volta sola)", async ({
+  browser,
+}) => {
+  test.setTimeout(120_000);
+  const { host, code } = await createRoom(browser, "Anna");
+  const ospite = await joinRoom(browser, code, "Bruno");
+
+  await host.page.getByLabel("Modalità").selectOption("quiz");
+  await host.page.getByTestId("quiz-tipo-sigla").click();
+  await impostaCursore(host.page, "quiz-round", 3);
+  await impostaCursore(host.page, "quiz-clip", 5);
+  await host.page.getByTestId("quiz-loop-una").click();
+  await host.page.getByTestId("quiz-chiede-artista").click();
+  // il tempo si scrive in minuti e secondi
+  await host.page.getByTestId("quiz-tempo-input").fill("0:45");
+  await host.page.getByTestId("quiz-tempo-input").blur();
+  await host.page.getByTestId("quiz-impostazioni-fatto").click();
+  await expect(host.page.getByTestId("quiz-riepilogo")).toContainText("0:45");
+  await expect(host.page.getByTestId("quiz-riepilogo")).toContainText("Artista");
+  await host.page.getByRole("button", { name: "Avvia" }).click();
+
+  // si risponde solo con l'artista, a punteggio pieno; il loop parte spento
+  await expect(host.page.getByTestId("quiz-componenti")).toBeVisible();
+  await expect(host.page.getByTestId("quiz-componenti").locator("li")).toHaveCount(1);
+  await expect(host.page.getByTestId("quiz-componenti")).toContainText("Artista");
+  await expect(host.page.getByTestId("ascolto-loop")).toContainText("spento");
+  await expect(host.page.getByTestId("ascolto")).toContainText("primi 1 secondi");
+  const sol = await soluzione(host.page, code);
+  await rispondi(host.page, sol.artista!);
+  await expect(host.page.getByTestId("quiz-giusto")).toContainText("Giusto");
+  await rispondi(ospite.page, sol.artista!);
+  await expect(host.page.getByTestId("quiz-soluzione")).toBeVisible({ timeout: 10_000 });
 });

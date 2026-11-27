@@ -126,6 +126,9 @@ class QuizPartita:
         default_factory=dict
     )  # giocatore -> punti presi in questa domanda
     blocchi: dict[str, float] = field(default_factory=dict)
+    clip: int = 30  # secondi massimi di anteprima di una sigla
+    loop: bool = True
+    chiede: str = "tutto"  # nelle sigle: tutto | anime | brano | artista
     parziali: dict[str, dict[str, int]] = field(
         default_factory=dict
     )  # pid -> {brano|artista: punti}
@@ -135,7 +138,16 @@ class QuizPartita:
 
     @classmethod
     def nuova(
-        cls, seed: int, tipo: str, n: int, tempo: int, giocatori: list[str], adesso: float
+        cls,
+        seed: int,
+        tipo: str,
+        n: int,
+        tempo: int,
+        giocatori: list[str],
+        adesso: float,
+        clip: int = 30,
+        loop: bool = True,
+        chiede: str = "tutto",
     ) -> "QuizPartita":
         rng = random.Random(f"quiz:{seed}")
         kinds = list(TIPI) if tipo == "misto" else [tipo]
@@ -150,6 +162,7 @@ class QuizPartita:
                 k = "indizi"
             domande.append(Domanda(k, t))
         p = cls(domande, tempo, list(giocatori), adesso)
+        p.clip, p.loop, p.chiede = clip, loop, chiede
         p.punti = dict.fromkeys(giocatori, 0)
         p.serie = dict.fromkeys(giocatori, 0)
         p._apri(adesso)
@@ -164,6 +177,18 @@ class QuizPartita:
         self.blocchi = {}
         self.parziali = {}
         self.serie_prima = dict(self.serie)
+
+    def tipi(self, d: Domanda) -> list[str]:
+        """Come si può rispondere a una domanda: nelle sigle dipende dalle impostazioni."""
+        if d.kind != "sigla":
+            return ["anime"]
+        return ["anime", "brano", "artista"] if self.chiede == "tutto" else [self.chiede]
+
+    def principale(self, d: Domanda) -> str:
+        """La risposta che vale i punti pieni e chiude la domanda quando l'hanno data tutti."""
+        if d.kind != "sigla" or self.chiede in ("tutto", "anime"):
+            return "anime"
+        return self.chiede
 
     @property
     def corrente(self) -> Domanda:
@@ -184,9 +209,12 @@ class QuizPartita:
             raise QuizErrore("closed", "La domanda è chiusa")
         if pid not in self.punti:
             raise QuizErrore("not_player", "Non stai giocando")
-        if tipo == "anime" and pid in self.giusti:
-            raise QuizErrore("done", "Hai già indovinato l'anime")
-        if tipo != "anime" and tipo in self.parziali.get(pid, {}):
+        if tipo not in self.tipi(self.corrente):
+            raise QuizErrore("bad_type", "Questa risposta non vale in questa domanda")
+        principale = self.principale(self.corrente)
+        if tipo == principale and pid in self.giusti:
+            raise QuizErrore("done", "Hai già indovinato")
+        if tipo != principale and tipo in self.parziali.get(pid, {}):
             raise QuizErrore("done", "Questa parte l'hai già indovinata")
         attesa = self.blocchi.get(pid, 0.0) - adesso
         if attesa > 0:
@@ -197,7 +225,7 @@ class QuizPartita:
             return esito
         resto = max(0.0, self.scadenza - adesso) / self.tempo
         base = 100 + round(100 * resto)
-        if tipo != "anime":
+        if tipo != principale:
             guadagno = round(base * PARZIALE[tipo])
             self.parziali.setdefault(pid, {})[tipo] = guadagno
             self.punti[pid] += guadagno
@@ -210,7 +238,7 @@ class QuizPartita:
         self.giusti[pid] = guadagno
         self.punti[pid] += guadagno
         self.serie[pid] = serie + 1
-        self.ultimo[pid] = ("anime", guadagno)
+        self.ultimo[pid] = (tipo, guadagno)
         return "giusto"
 
     def tick(self, adesso: float, attivi: list[str]) -> bool:
@@ -249,7 +277,10 @@ class QuizPartita:
             fy=fy,
             livello=liv,
             audio=d.audio(),
-            audio_secondi=zoom.secondi_sigla(liv) if d.kind == "sigla" else 0,
+            audio_secondi=min(self.clip, zoom.secondi_sigla(liv)) if d.kind == "sigla" else 0,
+            loop=self.loop,
+            tipi=self.tipi(d),
+            principale=self.principale(d),
             indizi=d.indizi(liv),
             scadenza=self.scadenza,
             punteggi=[

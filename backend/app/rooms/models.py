@@ -39,8 +39,11 @@ class RoomSettings(Model):
     quiz_tipo: Literal["misto", "scorcio", "personaggio", "indizi", "sigla"] = (
         "misto"  # giochi del quiz
     )
-    quiz_round: int = Field(default=8, ge=3, le=20)  # domande del quiz
-    quiz_tempo: int = Field(default=25, ge=10, le=60)  # secondi per domanda
+    quiz_round: int = Field(default=8, ge=3, le=30)  # domande del quiz
+    quiz_tempo: int = Field(default=25, ge=10, le=600)  # secondi per domanda (fino a 10:00)
+    quiz_clip: int = Field(default=30, ge=5, le=30)  # secondi massimi di anteprima di una sigla
+    quiz_loop: bool = True  # le sigle si ripetono in loop (i giocatori lo possono cambiare)
+    quiz_chiede: Literal["tutto", "anime", "brano", "artista"] = "tutto"  # cosa si indovina
 
 
 class PlayerView(Model):
@@ -209,6 +212,9 @@ class QuizView(Model):
     livello: int  # quanto è svelata la domanda (0-5)
     audio: str | None = None  # anteprima della sigla (solo domande «sigla»)
     audio_secondi: int = 0  # quanti secondi se ne possono ascoltare a questo livello
+    loop: bool = True  # di partenza l'anteprima si ripete in loop
+    tipi: list[str] = []  # come si può rispondere: anime, brano, artista
+    principale: str = "anime"  # la risposta che chiude la domanda
     indizi: list[QuizIndizio]
     scadenza: float
     punteggi: list[QuizPunteggio]

@@ -82,6 +82,9 @@ export default function QuizRoomView({
       setMsg(esito.stessa_serie ? it.quiz.stanza.serieGiusta : it.quiz.stanza.sbagliata);
   }, [esito]);
 
+  // cosa ho già indovinato in questa domanda (la risposta principale è `giusto`)
+  const fatto = (k: string) =>
+    k === q.principale ? !!sono?.giusto : k === "brano" ? !!sono?.brano : !!sono?.artista;
   const classifica = useMemo(() => q.punteggi, [q.punteggi]);
   const podio = classifica.slice(0, 3);
 
@@ -163,7 +166,14 @@ export default function QuizRoomView({
                   />
                 </div>
               ) : q.audio ? (
-                <Ascolto src={q.audio} livello={livello} intero={chiusa} autoplay />
+                <Ascolto
+                  src={q.audio}
+                  livello={livello}
+                  intero={chiusa}
+                  autoplay
+                  tetto={q.audio_secondi || undefined}
+                  loopIniziale={q.loop}
+                />
               ) : (
                 <p className="text-center text-sm muted">{it.quiz.stanza.soloIndizi}</p>
               )}
@@ -183,56 +193,52 @@ export default function QuizRoomView({
               )}
               {q.kind === "sigla" && !chiusa && (
                 <ul className="flex flex-wrap justify-center gap-2" data-testid="quiz-componenti">
-                  {(
-                    [
-                      ["anime", !!sono?.giusto],
-                      ["brano", !!sono?.brano],
-                      ["artista", !!sono?.artista],
-                    ] as const
-                  ).map(([k, fatto]) => (
-                    <li
-                      key={k}
-                      className={`chip px-3 py-1 ${fatto ? "text-emerald-300" : "muted"}`}
-                      data-fatto={fatto}
-                    >
-                      {fatto && <Icon name="check" className="size-3.5" />}
-                      {it.quiz.stanza.tipoRisposta[k]}
-                    </li>
-                  ))}
+                  {q.tipi
+                    .map((k) => [k, fatto(k)] as const)
+                    .map(([k, fatto]) => (
+                      <li
+                        key={k}
+                        className={`chip px-3 py-1 ${fatto ? "text-emerald-300" : "muted"}`}
+                        data-fatto={fatto}
+                      >
+                        {fatto && <Icon name="check" className="size-3.5" />}
+                        {(it.quiz.stanza.tipoRisposta as Record<string, string>)[k]}
+                      </li>
+                    ))}
                 </ul>
               )}
-              {!chiusa &&
-                (!sono?.giusto || (q.kind === "sigla" && !(sono.brano && sono.artista))) && (
-                  <div className="space-y-1">
-                    <AnimeSearch
-                      onScegli={(a) =>
-                        socket.send({
-                          type: "quiz_risposta",
-                          risposta_id: a.id,
-                          tipo: a.tipo ?? "anime",
-                        })
-                      }
-                      personaggi={ritratto}
-                      sigle={q.kind === "sigla"}
-                      disabilitato={bloccato}
-                      testId="quiz-cerca"
-                    />
-                    {bloccato && (
-                      <p className="text-sm text-amber-200">
-                        {fmt(it.quiz.stanza.blocco, { n: Math.ceil(blocco) })}
-                      </p>
-                    )}
-                    {!bloccato && msg && (
-                      <p
-                        className={`text-sm ${msgOk ? "text-emerald-300" : "text-amber-200"}`}
-                        role="status"
-                        data-testid="quiz-msg"
-                      >
-                        {msg}
-                      </p>
-                    )}
-                  </div>
-                )}
+              {!chiusa && q.tipi.some((k) => !fatto(k)) && (
+                <div className="space-y-1">
+                  <AnimeSearch
+                    onScegli={(a) =>
+                      socket.send({
+                        type: "quiz_risposta",
+                        risposta_id: a.id,
+                        tipo: a.tipo ?? "anime",
+                      })
+                    }
+                    personaggi={ritratto}
+                    sigle={q.kind === "sigla"}
+                    tipi={q.tipi}
+                    disabilitato={bloccato}
+                    testId="quiz-cerca"
+                  />
+                  {bloccato && (
+                    <p className="text-sm text-amber-200">
+                      {fmt(it.quiz.stanza.blocco, { n: Math.ceil(blocco) })}
+                    </p>
+                  )}
+                  {!bloccato && msg && (
+                    <p
+                      className={`text-sm ${msgOk ? "text-emerald-300" : "text-amber-200"}`}
+                      role="status"
+                      data-testid="quiz-msg"
+                    >
+                      {msg}
+                    </p>
+                  )}
+                </div>
+              )}
               {!chiusa && sono?.giusto && (
                 <p
                   className="text-center text-xl font-extrabold text-emerald-300"
