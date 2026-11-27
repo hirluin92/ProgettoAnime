@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Icon from "@/components/Icon";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
+import { fmt } from "@/components/duello/DuelloBoard";
 import { useProfile } from "@/lib/profile";
 import type { AnimedleStato, ZoomStato } from "@/lib/quiz";
 
