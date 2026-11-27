@@ -600,6 +600,7 @@ class RoomManager:
             st.quiz_clip,
             st.quiz_loop,
             st.quiz_chiede,
+            st.quiz_progressivo,
         )
         return [RoomState(room=room.view())]
 

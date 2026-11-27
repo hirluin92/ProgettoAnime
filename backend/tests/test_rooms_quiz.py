@@ -120,7 +120,7 @@ def test_stanza_quiz_con_gestore_locale() -> None:
 
 
 def test_domanda_sigla_ha_audio_e_secondi_crescenti() -> None:
-    p = partita(tipo="sigla", n=3, tempo=20)
+    p = QuizPartita.nuova(7, "sigla", 3, 20, ["a", "b", "c"], 1000.0, progressivo=True)
     v = p.view(1000.0)
     assert v.kind == "sigla" and v.audio and v.audio.startswith("https://") and v.immagine is None
     assert v.audio_secondi == 1
@@ -232,9 +232,24 @@ def test_impostazioni_cosa_si_indovina_nelle_sigle() -> None:
         and r.view(1000.0).principale == "anime"
     )
 
-    # durata massima dell'anteprima
-    corta = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0, clip=5)
+    # durata massima dell'anteprima (modalità progressiva: cresce col tempo)
+    corta = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0, clip=5, progressivo=True)
     assert corta.view(1019.0).audio_secondi == 5 and corta.view(1000.0).audio_secondi == 1
-    assert corta.view(1000.0).loop is True
-    senza = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0, loop=False)
-    assert senza.view(1000.0).loop is False
+    assert corta.view(1000.0).audio_progressivo is True
+    con_loop = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0, loop=True)
+    assert con_loop.view(1000.0).loop is True
+    senza = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0)
+    assert senza.view(1000.0).loop is False  # di partenza: una volta sola
+
+
+def test_canzone_intera_per_tutto_il_tempo_a_disposizione() -> None:
+    # di partenza la canzone suona intera, una volta, per il tempo per rispondere (max 30 s)
+    p = QuizPartita.nuova(11, "sigla", 3, 25, ["a"], 1000.0)
+    assert p.view(1000.0).audio_secondi == 25 and p.view(1024.0).audio_secondi == 25
+    assert p.view(1000.0).audio_progressivo is False and p.view(1000.0).loop is False
+    # tempo più lungo dell'anteprima: suona 30 s (la durata del campione Apple)
+    lungo = QuizPartita.nuova(11, "sigla", 3, 120, ["a"], 1000.0)
+    assert lungo.view(1000.0).audio_secondi == 30
+    # un tetto più basso accorcia l'ascolto
+    tetto = QuizPartita.nuova(11, "sigla", 3, 25, ["a"], 1000.0, clip=10)
+    assert tetto.view(1000.0).audio_secondi == 10

@@ -17,6 +17,7 @@ export default function Ascolto({
   autoplay,
   tetto,
   loopIniziale,
+  progressivo = true,
 }: {
   src: string;
   livello: number; // 0..5: errori fatti (o livello del quiz)
@@ -24,6 +25,7 @@ export default function Ascolto({
   autoplay?: boolean;
   tetto?: number; // durata massima dell'anteprima (impostazione della partita)
   loopIniziale?: boolean; // se definito, compare il pulsante per ripetere in loop
+  progressivo?: boolean; // false: suona intera dall'inizio, una volta sola (di default nelle stanze)
 }) {
   const ref = useRef<HTMLAudioElement>(null);
   const timer = useRef<number | undefined>(undefined);
@@ -35,7 +37,9 @@ export default function Ascolto({
   loopRef.current = loop;
   const secondi = intero
     ? 30
-    : Math.min(tetto ?? 30, SECONDI_SIGLA[Math.min(livello, SECONDI_SIGLA.length - 1)]);
+    : progressivo
+      ? Math.min(tetto ?? 30, SECONDI_SIGLA[Math.min(livello, SECONDI_SIGLA.length - 1)])
+      : (tetto ?? 30);
 
   const ferma = () => {
     window.clearTimeout(timer.current);
@@ -74,12 +78,13 @@ export default function Ascolto({
     return () => cancelAnimationFrame(id);
   }, [suona]);
 
-  // il livello sale (nuovo errore o tempo che passa): si riascolta dall'inizio
+  // progressiva: a ogni livello (nuovo errore o tempo che passa) si riascolta dall'inizio;
+  // intera: parte una volta sola all'inizio della domanda
   useEffect(() => {
     if (autoplay) avvia();
     return ferma;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [livello, src, autoplay]);
+  }, [progressivo ? livello : 0, src, autoplay]);
 
   return (
     <div className="panel space-y-3 p-5 text-center" data-testid="ascolto">
@@ -102,7 +107,14 @@ export default function Ascolto({
         />
       </button>
       <p className="text-sm font-bold">
-        {intero ? it.quiz.sigla.tutta : it.quiz.sigla.secondi.replace("{n}", String(secondi))}
+        {intero
+          ? it.quiz.sigla.tutta
+          : (progressivo
+              ? it.quiz.sigla.secondi
+              : loop
+                ? it.quiz.sigla.interaLoop
+                : it.quiz.sigla.intera
+            ).replace("{n}", String(secondi))}
       </p>
       {/* la barra: i segmenti sbloccati si riempiono mentre l'audio scorre, come in un lettore */}
       <div className="mx-auto max-w-md space-y-1">
@@ -114,9 +126,9 @@ export default function Ascolto({
           aria-valuenow={Math.round(tempo)}
           data-testid="ascolto-barra"
         >
-          {SECONDI_SIGLA.map((s, i) => {
-            const da = i === 0 ? 0 : SECONDI_SIGLA[i - 1];
-            const aperto = intero || i <= livello;
+          {(progressivo ? SECONDI_SIGLA : [secondi]).map((s, i) => {
+            const da = !progressivo || i === 0 ? 0 : SECONDI_SIGLA[i - 1];
+            const aperto = intero || !progressivo || i <= livello;
             const riempi = Math.max(0, Math.min(1, (tempo - da) / (s - da)));
             return (
               <li
@@ -124,7 +136,7 @@ export default function Ascolto({
                 className={`relative h-2.5 flex-1 overflow-hidden rounded-full ${
                   aperto ? "bg-white/25" : "bg-white/10"
                 }`}
-                style={{ flexGrow: s === 1 ? 1 : Math.log2(s) + 1 }}
+                style={{ flexGrow: !progressivo ? 1 : s === 1 ? 1 : Math.log2(s) + 1 }}
               >
                 <span
                   className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-cyan-300 to-pink-500"

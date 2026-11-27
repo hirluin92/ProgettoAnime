@@ -143,6 +143,7 @@ export default function Lobby({
                   {(s.quiz_tipo === "sigla" || s.quiz_tipo === "misto") && (
                     <li className="chip">
                       {it.quiz.imp.chiede[s.quiz_chiede]} · {s.quiz_clip}s ·{" "}
+                      {s.quiz_progressivo ? it.quiz.imp.progressiva : it.quiz.imp.intera} ·{" "}
                       {s.quiz_loop ? it.quiz.imp.loop : it.quiz.imp.unaVolta}
                     </li>
                   )}

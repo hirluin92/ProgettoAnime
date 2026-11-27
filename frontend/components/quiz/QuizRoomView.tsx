@@ -173,6 +173,7 @@ export default function QuizRoomView({
                   autoplay
                   tetto={q.audio_secondi || undefined}
                   loopIniziale={q.loop}
+                  progressivo={q.audio_progressivo}
                 />
               ) : (
                 <p className="text-center text-sm muted">{it.quiz.stanza.soloIndizi}</p>
