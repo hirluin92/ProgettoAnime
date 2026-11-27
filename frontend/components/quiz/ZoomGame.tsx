@@ -120,21 +120,30 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         : Math.min(nErrori, ZOOM[gioco].length - 2);
   const zoom = gioco === "sigla" ? 1 : ZOOM[gioco][livello];
 
-  const prova = async (v: VoceAnime) => {
+  // `v` nullo = si salta il turno: conta come tentativo e sblocca di più
+  const prova = async (v: VoceAnime | null) => {
     if (!stato || finito) return;
     setMessaggio(null);
     try {
       const e = await api<ZoomEsito>(`/api/quiz/zoom/${gioco}/guess`, {
         method: "POST",
         body: JSON.stringify({
-          risposta_id: v.id,
+          risposta_id: v?.id ?? 0,
+          salta: v === null,
           profile_id: !libero && profile ? profile.id : undefined,
           token: libero ? token : undefined,
           n: errori.length + 1,
         }),
       });
       setIndizi(e.indizi);
-      const nuovi = e.giusto ? errori : [...errori, v];
+      const scelto: VoceAnime = v ?? {
+        id: -(errori.length + 1),
+        nome: it.quiz.saltato,
+        alt: "",
+        k: "",
+        anno: 0,
+      };
+      const nuovi = e.giusto ? errori : [...errori, scelto];
       setErrori(nuovi);
       if (!libero && stato.giorno)
         window.localStorage.setItem(chiave(gioco, stato.giorno), JSON.stringify(nuovi));
@@ -146,7 +155,8 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         if (e.crediti) void reload();
         if (!libero && profile)
           setStato(await api<ZoomStato>(`/api/quiz/zoom/${gioco}/stato?profile_id=${profile.id}`));
-      } else if (!e.giusto) setMessaggio(it.quiz.sbagliato.replace("{nome}", v.nome));
+      } else if (!e.giusto)
+        setMessaggio(v ? it.quiz.sbagliato.replace("{nome}", v.nome) : it.quiz.saltoFatto[gioco]);
     } catch (e) {
       setMessaggio((e as Error).message);
     }
@@ -273,6 +283,21 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
             testId="zoom-cerca"
           />
         )}
+        {!finito && (
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              className="btn"
+              onClick={() => void prova(null)}
+              disabled={errori.length + 1 >= massimo}
+              data-testid="zoom-salta"
+              title={it.quiz.saltaAiuto}
+            >
+              {it.quiz.salta[gioco]}
+            </button>
+            <span className="text-xs muted">{it.quiz.saltaAiuto}</span>
+          </div>
+        )}
         {messaggio && (
           <p role="status" className="text-center text-sm text-amber-200">
             {messaggio}
@@ -282,7 +307,12 @@ export default function ZoomGame({ gioco, libero }: { gioco: GiocoZoom; libero: 
         {errori.length > 0 && (
           <ul className="flex flex-wrap gap-1.5" data-testid="zoom-errori">
             {errori.map((e) => (
-              <li key={e.id} className="chip text-rose-200 line-through decoration-rose-300/60">
+              <li
+                key={e.id}
+                className={`chip ${
+                  e.id < 0 ? "muted" : "text-rose-200 line-through decoration-rose-300/60"
+                }`}
+              >
                 {e.nome}
               </li>
             ))}

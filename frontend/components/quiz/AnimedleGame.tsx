@@ -12,10 +12,12 @@ import { useProfile } from "@/lib/profile";
 import {
   FONTI,
   FORMATI,
+  SOGLIE_INDIZI_ANIMEDLE,
   STAGIONI,
   quadratini,
   type AnimedleEsito,
   type AnimedleStato,
+  type IndizioAnimedle,
   type FeedbackAnimedle,
   type SoluzioneAnime,
   type VoceAnime,
@@ -132,6 +134,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
   const [vinto, setVinto] = useState(false);
   const [crediti, setCrediti] = useState(0);
   const [soluzione, setSoluzione] = useState<SoluzioneAnime | null>(null);
+  const [indizi, setIndizi] = useState<IndizioAnimedle[]>([]);
   const [errore, setErrore] = useState<string | null>(null);
   const [copiato, setCopiato] = useState(false);
   const massimo = stato?.tentativi_max ?? 8;
@@ -143,6 +146,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
     setVinto(false);
     setCrediti(0);
     setSoluzione(null);
+    setIndizi([]);
     try {
       if (libero) {
         const n = await api<{ token: string; tentativi_max: number }>("/api/quiz/animedle/nuovo", {
@@ -157,6 +161,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
           vinto: false,
           serie: 0,
           crediti: 0,
+          indizi: [],
           bersaglio: null,
         });
         return;
@@ -168,6 +173,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
       setVinto(s.vinto);
       setCrediti(s.crediti);
       setSoluzione(s.bersaglio);
+      setIndizi(s.indizi);
       const salvato = window.localStorage.getItem(chiave(s.giorno));
       if (salvato) setRighe(JSON.parse(salvato) as Riga[]);
     } catch (e) {
@@ -179,6 +185,8 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
     if (!loading) void avvia();
   }, [loading, avvia]);
 
+  const ETICHETTE = it.quiz.indiziAnimedle as Record<string, string>;
+  const prossimaSoglia = SOGLIE_INDIZI_ANIMEDLE.find((n) => n > righe.length) ?? null;
   const provati = useMemo(() => new Set(righe.map((r) => r.anime.id)), [righe]);
 
   const prova = async (a: VoceAnime) => {
@@ -196,6 +204,7 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
       });
       const nuove = [...righe, { anime: a, feedback: esito.feedback }];
       setRighe(nuove);
+      setIndizi(esito.indizi);
       if (!libero && stato.giorno)
         window.localStorage.setItem(chiave(stato.giorno), JSON.stringify(nuove));
       if (esito.finito) {
@@ -322,6 +331,41 @@ export default function AnimedleGame({ libero }: { libero: boolean }) {
             <Icon name="arrowup" className="size-3.5" /> {it.quiz.animedle.legendaFreccia}
           </li>
         </ul>
+        {(indizi.length > 0 || (!finito && prossimaSoglia !== null)) && (
+          <div
+            className="space-y-2 rounded-2xl border bg-white/[0.04] p-3"
+            data-testid="animedle-indizi"
+          >
+            {indizi.length > 0 && (
+              <ul className="flex flex-wrap items-center gap-2">
+                {indizi.map((i) =>
+                  i.k === "copertina" ? (
+                    <li key={i.k} className="flex items-center gap-2">
+                      <b className="text-sm text-cyan-200">{ETICHETTE[i.k]}:</b>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={i.v}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        className="h-24 rounded-lg border border-white/20 object-cover"
+                        style={{ filter: `blur(${finito ? 0 : 7}px)` }}
+                      />
+                    </li>
+                  ) : (
+                    <li key={i.k} className="chip px-3 py-1 text-[0.9rem]">
+                      <b className="text-cyan-200">{ETICHETTE[i.k] ?? i.k}:</b> {i.v}
+                    </li>
+                  ),
+                )}
+              </ul>
+            )}
+            {!finito && prossimaSoglia !== null && (
+              <p className="text-xs muted">
+                {fmt(it.quiz.prossimoIndizio, { n: prossimaSoglia - righe.length })}
+              </p>
+            )}
+          </div>
+        )}
         {!finito && righe.length > 0 && (
           <button className="text-sm underline muted" onClick={() => void arrenditi()}>
             {it.quiz.arrenditi}

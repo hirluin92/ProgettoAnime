@@ -243,3 +243,54 @@ def test_sigla_del_giorno_con_profilo(tmp_path) -> None:  # type: ignore[no-unty
     assert vinta["giusto"] and vinta["crediti"] == 40
     sol = vinta["bersaglio"]
     assert t["brano"] in sol["dettaglio"] and t["artista"] in sol["dettaglio"]
+
+
+def test_animedle_indizi_progressivi() -> None:
+    t = pool_anime()[0]
+    assert animedle.indizi(t, 2) == []
+    assert [i["k"] for i in animedle.indizi(t, 3)] == ["iniziale"]
+    assert [i["k"] for i in animedle.indizi(t, 6)] == ["iniziale", "copertina", "parole"]
+    assert animedle.indizi(t, 3)[0]["v"] == (t["titolo_en"] or t["titolo"])[:1].upper()
+
+
+def test_animedle_indizi_via_api_e_salto_nei_giochi(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'q9.db'}")
+    nuovo = client.post("/api/quiz/animedle/nuovo").json()
+    sol = client.post("/api/quiz/animedle/arrenditi", json={"token": nuovo["token"]}).json()
+    altro = next(a for a in pool_anime() if a["id"] != sol["id"])
+    r = client.post(
+        "/api/quiz/animedle/guess",
+        json={"anime_id": altro["id"], "token": nuovo["token"], "n": 3},
+    ).json()
+    assert [i["k"] for i in r["indizi"]] == ["iniziale"]
+
+    # saltare conta come tentativo: nel gioco del giorno con profilo
+    pid = nuovo_profilo()
+    for k in range(1, 4):
+        e = client.post(
+            "/api/quiz/zoom/sigla/guess", json={"salta": True, "profile_id": pid}
+        ).json()
+        assert not e["giusto"] and e["tentativo"] == k and not e["finito"]
+    st = client.get("/api/quiz/zoom/sigla/stato", params={"profile_id": pid}).json()
+    assert st["tentativi_fatti"] == 3 and [i["k"] for i in st["indizi"]] == [
+        "tipo",
+        "anno",
+        "artista",
+    ]
+    for _ in range(3):
+        e = client.post(
+            "/api/quiz/zoom/sigla/guess", json={"salta": True, "profile_id": pid}
+        ).json()
+    assert e["finito"] and e["bersaglio"] is not None and e["crediti"] == 0
+    assert (
+        client.post(
+            "/api/quiz/zoom/sigla/guess", json={"salta": True, "profile_id": pid}
+        ).status_code
+        == 409
+    )
+    # in allenamento e senza profilo il salto passa il numero di tentativo
+    n = client.post("/api/quiz/zoom/scorcio/nuovo").json()
+    e = client.post(
+        "/api/quiz/zoom/scorcio/guess", json={"salta": True, "token": n["token"], "n": 2}
+    ).json()
+    assert e["tentativo"] == 2 and len(e["indizi"]) == 1

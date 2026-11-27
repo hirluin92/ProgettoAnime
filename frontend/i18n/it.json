@@ -611,6 +611,24 @@
     },
     "cerca": "Scrivi il titolo di un anime…",
     "cercaPersonaggio": "Scrivi il nome di un personaggio…",
+    "salta": {
+      "sigla": "Salta e ascolta di più",
+      "scorcio": "Salta e scopri di più",
+      "personaggio": "Salta e scopri di più"
+    },
+    "saltaAiuto": "Saltare conta come un tentativo.",
+    "saltato": "Saltato",
+    "saltoFatto": {
+      "sigla": "Saltato: ora ascolti più secondi.",
+      "scorcio": "Saltato: l'immagine si scopre un po' di più.",
+      "personaggio": "Saltato: l'immagine si scopre un po' di più."
+    },
+    "indiziAnimedle": {
+      "iniziale": "Il titolo inizia con",
+      "copertina": "La copertina (sfocata)",
+      "parole": "Parole nel titolo"
+    },
+    "prossimoIndizio": "Prossimo indizio dopo {n} tentativi sbagliati.",
     "sbagliato": "{nome}: non è questo. L'immagine si scopre un po' di più.",
     "indizi": {
       "anno": "Anno",

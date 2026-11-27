@@ -89,6 +89,10 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
     const immagine = page.getByTestId("zoom-immagine");
     const zoomIniziale = gioco === "sigla" ? 0 : Number(await immagine.getAttribute("data-zoom"));
     if (gioco === "sigla") await expect(page.getByTestId("ascolto")).toBeVisible();
+    // si può saltare un turno: conta come tentativo e sblocca di più
+    await page.getByTestId("zoom-salta").click();
+    await expect(page.getByTestId("zoom-errori")).toContainText("Saltato");
+    await expect(page.getByTestId("zoom-tentativi")).toContainText("1/6");
     await prova(sbagliato.nome);
     await expect(page.getByTestId("zoom-errori")).toContainText(sbagliato.nome);
     if (gioco !== "sigla")
@@ -98,6 +102,27 @@ for (const gioco of ["scorcio", "personaggio", "sigla"] as const) {
 
     await prova(sol.nome);
     await expect(page.getByTestId("zoom-fine")).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByTestId("zoom-crediti")).toContainText("34 crediti");
+    await expect(page.getByTestId("zoom-crediti")).toContainText("28 crediti");
   });
 }
+
+test("sfide: Animedle sblocca gli indizi dopo qualche errore", async ({ page }) => {
+  test.setTimeout(60_000);
+  const sol = (await (
+    await page.request.post("http://localhost:8000/api/quiz/animedle/arrenditi", { data: {} })
+  ).json()) as { id: number };
+  const elenco = (await (
+    await page.request.get("http://localhost:8000/api/quiz/anime/elenco")
+  ).json()) as Voce[];
+  const sbagliati = elenco.filter((v) => v.id !== sol.id).slice(0, 3);
+
+  await page.goto("/sfide/animedle");
+  await expect(page.getByTestId("animedle")).toBeVisible();
+  await expect(page.getByTestId("animedle-indizi")).toContainText("Prossimo indizio dopo 3");
+  for (const v of sbagliati) {
+    await page.getByTestId("animedle-cerca").fill(v.nome);
+    await page.getByTestId("anime-voce").getByText(v.nome, { exact: true }).first().click();
+  }
+  await expect(page.getByTestId("animedle-indizi")).toContainText("Il titolo inizia con");
+  await expect(page.getByTestId("animedle-indizi")).toContainText("Prossimo indizio dopo 2");
+});
