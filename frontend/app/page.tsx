@@ -156,7 +156,7 @@ export default function Home() {
     };
   }, []);
 
-  const create = async () => {
+  const create = async (modo?: "quiz") => {
     setError(null);
     try {
       const r = await api<{ code: string; token: string }>("/api/rooms", {
@@ -164,7 +164,7 @@ export default function Home() {
         body: JSON.stringify({ name, streamer_channel: streamer ? channel : null }),
       });
       saveToken(r.code, r.token);
-      router.push(`/stanza/${r.code}`);
+      router.push(modo === "quiz" ? `/stanza/${r.code}?modo=quiz` : `/stanza/${r.code}`);
     } catch (e) {
       setError((e as Error).message);
     }
@@ -220,6 +220,9 @@ export default function Home() {
             <Link href="/negozio" className="btn px-5 text-base">
               <Icon name="cards" className="size-[1.2em]" /> {it.home.ctaNegozio}
             </Link>
+            <a href="#amici" className="btn px-5 text-base" data-testid="cta-quiz-amici">
+              <Icon name="music" className="size-[1.2em]" /> {it.home.ctaQuizAmici}
+            </a>
           </div>
         </div>
 
@@ -317,9 +320,17 @@ export default function Home() {
           <button
             className="btn btn-primary w-full text-lg"
             disabled={!name.trim() || (streamer && !channel.trim())}
-            onClick={create}
+            onClick={() => void create()}
           >
             {it.home.creaStanza}
+          </button>
+          <button
+            className="btn w-full text-lg"
+            disabled={!name.trim() || (streamer && !channel.trim())}
+            onClick={() => void create("quiz")}
+            data-testid="crea-quiz"
+          >
+            <Icon name="music" className="size-[1.2em]" /> {it.home.creaQuiz}
           </button>
           <div className="flex flex-wrap gap-2 pt-1">
             <input
