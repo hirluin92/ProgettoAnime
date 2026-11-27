@@ -1,5 +1,6 @@
 "use client";
 
+import QuizRoomView from "@/components/quiz/QuizRoomView";
 import { use, useEffect, useMemo, useRef, useState } from "react";
 import AuctionView from "@/components/auction/AuctionView";
 import BanView from "@/components/auction/BanView";
@@ -124,6 +125,7 @@ export default function StanzaPage({ params }: { params: Promise<{ code: string 
       {room.phase === "raid_result" && <RaidResultView room={room} />}
       {room.phase === "plan" && <PlanView room={room} me={me} socket={socket} />}
       {room.phase === "duelli" && <DuelliView room={room} socket={socket} />}
+      {room.phase === "quiz" && room.quiz && <QuizRoomView room={room} me={me} socket={socket} />}
       {room.phase === "tournament" &&
         (tournament ? <Tournament room={room} t={tournament} /> : <p>{it.stanza.inAttesa}</p>)}
     </main>

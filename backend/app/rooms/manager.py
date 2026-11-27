@@ -59,6 +59,9 @@ from app.rooms.protocol import (
     Pass,
     Pick,
     Plan,
+    QuizEsito,
+    QuizLobby,
+    QuizRisposta,
     RoomState,
     ServerMessage,
     Spectate,
@@ -66,6 +69,7 @@ from app.rooms.protocol import (
     TournamentResult,
     UpdateSettings,
 )  # fmt: skip
+from app.rooms.quiz import QuizErrore, QuizPartita
 from app.rooms.raid_room import Raid
 from app.rooms.specchio import Specchio, SpecchioError
 from app.rooms.store import InMemoryRoomStore, RoomStore
@@ -138,9 +142,16 @@ class Room:
             tournament=self.tournament,
             duelli=self._duelli_view(),
             chat_duello=self._chat_duello_view(),
+            quiz=self._quiz_view(),
             streamer_channel=self.streamer_channel,
             server_time=now(),
         )  # fmt: skip
+
+    def _quiz_view(self) -> Any:
+        q: QuizPartita | None = self.extras.get("quiz")
+        if q is None or self.phase != "quiz":
+            return None
+        return q.view(now())
 
     def _chat_duello_view(self) -> ChatDuelloView | None:
         t: TorneoDuelli | None = self.extras.get("duelli")
@@ -323,6 +334,11 @@ class RoomManager:
                 return self._set_plan(room, pid, msg)
             case DuelloMosse():
                 return self._duello_mosse(room, pid, msg)
+            case QuizRisposta():
+                return self._quiz_risposta(room, pid, msg)
+            case QuizLobby():
+                self._require_host(room, pid)
+                return self._quiz_lobby(room)
             case AssignRole():
                 if msg.role not in ROLES:
                     raise BidError("bad_role", "Ruolo sconosciuto")
@@ -357,6 +373,8 @@ class RoomManager:
             return self._begin_specchio(room)
         if room.settings.modalita == "raid":
             return self._begin_raid(room)
+        if room.settings.modalita == "quiz":
+            return self._begin_quiz(room)
         pool = self.pool(room)
         humans = [p for p in room.players.values() if not p.is_chat]
         max_bans = room.settings.bans_per_player * len(humans)
@@ -566,6 +584,41 @@ class RoomManager:
     # ---- torneo a duelli ----
     def _mazzo_di(self, p: Player) -> list[Carta]:
         return [_tutte()[c.id][0] for r in ROLES if (c := p.slots[r]) is not None]
+
+    # ---------- quiz tra amici ----------
+    def _begin_quiz(self, room: Room) -> list[ServerMessage]:
+        st = room.settings
+        umani = [p.id for p in room.players.values() if not p.is_chat]
+        room.phase = "quiz"
+        room.extras["quiz"] = QuizPartita.nuova(
+            room.seed, st.quiz_tipo, st.quiz_round, st.quiz_tempo, umani, now()
+        )
+        return [RoomState(room=room.view())]
+
+    def _quiz_risposta(self, room: Room, pid: str, msg: QuizRisposta) -> list[ServerMessage]:
+        q: QuizPartita | None = room.extras.get("quiz")
+        if room.phase != "quiz" or q is None:
+            raise RoomError("not_quiz", "Non è il momento del quiz")
+        try:
+            giusto = q.rispondi(pid, msg.risposta_id, now())
+        except QuizErrore as e:
+            raise RoomError(e.code, e.message) from e
+        room.invii.append((pid, QuizEsito(giusto=giusto, blocco=0.0 if giusto else 4.0)))
+        # se hanno risposto tutti si chiude subito, altrimenti si aggiornano i punteggi
+        q.tick(now(), self._quiz_attivi(room))
+        return [RoomState(room=room.view())]
+
+    @staticmethod
+    def _quiz_attivi(room: Room) -> list[str]:
+        return [p.id for p in room.players.values() if not p.is_chat and p.connected]
+
+    def _quiz_lobby(self, room: Room) -> list[ServerMessage]:
+        q: QuizPartita | None = room.extras.get("quiz")
+        if q is None or q.fase != "fine":
+            raise RoomError("not_finished", "Il quiz non è finito")
+        room.extras.pop("quiz", None)
+        room.phase = "lobby"
+        return [RoomState(room=room.view())]
 
     async def _begin_duelli(self, room: Room) -> None:
         room.phase = "duelli"
@@ -811,6 +864,15 @@ class RoomManager:
                         out += [RoomState(room=room.view())]
                 elif room.phase == "duelli":
                     out += await self._duelli_tick(room)
+                elif room.phase == "quiz":
+                    q: QuizPartita | None = room.extras.get("quiz")
+                    if q is not None and (
+                        q.tick(now(), self._quiz_attivi(room))
+                        or q.fase == "domanda"
+                        and q.livello(now()) != room.extras.get("quiz_livello")
+                    ):
+                        room.extras["quiz_livello"] = q.livello(now())
+                        out += [RoomState(room=room.view())]
                 elif room.phase == "lobby":
                     out += self._prune_lobby(room)
                 if out:

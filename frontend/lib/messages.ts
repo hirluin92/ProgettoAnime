@@ -10,6 +10,7 @@ import type {
   LotWon,
   Mission,
   PlayerPassed,
+  QuizEsito,
   RoomState,
   TournamentResult,
 } from "./types/server";
@@ -27,9 +28,10 @@ export type ServerMsg =
   | AuctionFinished
   | TournamentResult
   | DuelloAggiornamento
+  | QuizEsito
   | ErrorMsg;
 
-export type { DuelloAggiornamento } from "./types/server";
+export type { DuelloAggiornamento, QuizEsito, QuizView } from "./types/server";
 export type { RoomView, PlayerView, LotView, TournamentView, RoomSettings } from "./types/server";
 
 export type ClientMsg =
@@ -42,6 +44,8 @@ export type ClientMsg =
   | { type: "assign_role"; role: string }
   | { type: "pick"; character_id: string; role: string }
   | { type: "plan"; tattiche: string[] | null; carica: "subito" | "carica"; formazione: string }
+  | { type: "quiz_risposta"; risposta_id: number }
+  | { type: "quiz_lobby" }
   | { type: "duello_mosse"; mosse: { carta: string; corsia: number }[] }
   | { type: "update_settings"; settings: import("./types/server").RoomSettings };
 

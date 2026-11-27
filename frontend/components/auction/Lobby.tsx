@@ -98,48 +98,6 @@ export default function Lobby({
         <div className="panel grid gap-3 p-5 sm:grid-cols-3">
           <h3 className="text-2xl font-extrabold sm:col-span-3">{it.stanza.regole}</h3>
           <label className="grid gap-1 text-sm font-bold">
-            {it.stanza.budget}
-            <input
-              aria-label={it.stanza.budget}
-              className="field"
-              type="number"
-              value={s.budget}
-              onChange={(e) => upd({ budget: num(e.target.value, 50) })}
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-bold">
-            {it.stanza.timer}
-            <input
-              aria-label={it.stanza.timer}
-              className="field"
-              type="number"
-              value={s.timer}
-              onChange={(e) => upd({ timer: num(e.target.value, 10) })}
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-bold">
-            {it.stanza.timerRuolo}
-            <input
-              aria-label={it.stanza.timerRuolo}
-              className="field"
-              type="number"
-              value={s.role_timeout}
-              onChange={(e) => upd({ role_timeout: num(e.target.value, 8) })}
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-bold">
-            {it.stanza.timerPiano}
-            <input
-              aria-label={it.stanza.timerPiano}
-              className="field"
-              type="number"
-              min={0}
-              max={180}
-              value={s.plan_timeout}
-              onChange={(e) => upd({ plan_timeout: num(e.target.value, 45) })}
-            />
-          </label>
-          <label className="grid gap-1 text-sm font-bold">
             {it.stanza.modalita}
             <select
               aria-label={it.stanza.modalita}
@@ -150,113 +108,205 @@ export default function Lobby({
               <option value="asta">{it.stanza.modAsta}</option>
               <option value="specchio">{it.stanza.modSpecchio}</option>
               <option value="raid">{it.raid.modRaid}</option>
+              <option value="quiz">{it.quiz.modQuiz}</option>
             </select>
           </label>
-          <label className="grid gap-1 text-sm font-bold">
-            {it.stanza.formato}
-            <select
-              aria-label={it.stanza.formato}
-              className="field"
-              value={s.formato}
-              onChange={(e) => upd({ formato: e.target.value as RoomSettings["formato"] })}
-            >
-              <option value="girone">{it.stanza.fmtGirone}</option>
-              <option value="eliminazione">{it.stanza.fmtElim}</option>
-            </select>
-          </label>
-          {s.modalita !== "raid" && (
-            <label className="grid gap-1 text-sm font-bold">
-              {it.stanza.combattimento}
-              <select
-                aria-label={it.stanza.combattimento}
-                className="field"
-                value={s.regole}
-                onChange={(e) => upd({ regole: e.target.value as RoomSettings["regole"] })}
-                data-testid="regole"
-              >
-                <option value="classico">{it.stanza.combClassico}</option>
-                <option value="duello">{it.stanza.combDuello}</option>
-              </select>
-            </label>
-          )}
-          {s.modalita !== "raid" && s.regole === "duello" && (
-            <label className="grid gap-1 text-sm font-bold">
-              {it.stanza.turnoDuello}
-              <input
-                aria-label={it.stanza.turnoDuello}
-                type="number"
-                min={10}
-                max={90}
-                className="field"
-                value={s.turno_duello}
-                onChange={(e) => upd({ turno_duello: num(e.target.value, 30) })}
-              />
-            </label>
-          )}
-          {s.modalita === "raid" && (
+          {s.modalita === "quiz" ? (
             <>
               <label className="grid gap-1 text-sm font-bold">
-                {it.raid.boss}
+                {it.quiz.stanza.tipo}
                 <select
-                  aria-label={it.raid.boss}
+                  aria-label={it.quiz.stanza.tipo}
                   className="field"
-                  value={s.boss}
-                  onChange={(e) => upd({ boss: e.target.value })}
+                  value={s.quiz_tipo}
+                  onChange={(e) => upd({ quiz_tipo: e.target.value as RoomSettings["quiz_tipo"] })}
+                  data-testid="quiz-tipo"
                 >
-                  {BOSSES.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.nome}
+                  {(["misto", "scorcio", "personaggio", "indizi"] as const).map((t) => (
+                    <option key={t} value={t}>
+                      {it.quiz.stanza.tipi[t]}
                     </option>
                   ))}
                 </select>
               </label>
               <label className="grid gap-1 text-sm font-bold">
-                {it.raid.difficoltaTitolo}
-                <select
-                  aria-label={it.raid.difficoltaTitolo}
+                {it.quiz.stanza.round}
+                <input
+                  aria-label={it.quiz.stanza.round}
                   className="field"
-                  value={s.difficolta}
-                  onChange={(e) =>
-                    upd({ difficolta: e.target.value as RoomSettings["difficolta"] })
-                  }
+                  type="number"
+                  min={3}
+                  max={20}
+                  value={s.quiz_round}
+                  onChange={(e) => upd({ quiz_round: num(e.target.value, 8) })}
+                  data-testid="quiz-round"
+                />
+              </label>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.quiz.stanza.tempo}
+                <input
+                  aria-label={it.quiz.stanza.tempo}
+                  className="field"
+                  type="number"
+                  min={10}
+                  max={60}
+                  value={s.quiz_tempo}
+                  onChange={(e) => upd({ quiz_tempo: num(e.target.value, 25) })}
+                />
+              </label>
+              <p className="text-sm muted sm:col-span-3">{it.quiz.stanza.spiega}</p>
+            </>
+          ) : (
+            <>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.stanza.budget}
+                <input
+                  aria-label={it.stanza.budget}
+                  className="field"
+                  type="number"
+                  value={s.budget}
+                  onChange={(e) => upd({ budget: num(e.target.value, 50) })}
+                />
+              </label>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.stanza.timer}
+                <input
+                  aria-label={it.stanza.timer}
+                  className="field"
+                  type="number"
+                  value={s.timer}
+                  onChange={(e) => upd({ timer: num(e.target.value, 10) })}
+                />
+              </label>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.stanza.timerRuolo}
+                <input
+                  aria-label={it.stanza.timerRuolo}
+                  className="field"
+                  type="number"
+                  value={s.role_timeout}
+                  onChange={(e) => upd({ role_timeout: num(e.target.value, 8) })}
+                />
+              </label>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.stanza.timerPiano}
+                <input
+                  aria-label={it.stanza.timerPiano}
+                  className="field"
+                  type="number"
+                  min={0}
+                  max={180}
+                  value={s.plan_timeout}
+                  onChange={(e) => upd({ plan_timeout: num(e.target.value, 45) })}
+                />
+              </label>
+              <label className="grid gap-1 text-sm font-bold">
+                {it.stanza.formato}
+                <select
+                  aria-label={it.stanza.formato}
+                  className="field"
+                  value={s.formato}
+                  onChange={(e) => upd({ formato: e.target.value as RoomSettings["formato"] })}
                 >
-                  {(["normale", "difficile", "epico"] as const).map((d) => (
-                    <option key={d} value={d}>
-                      {it.raid.difficolta[d]}
-                    </option>
-                  ))}
+                  <option value="girone">{it.stanza.fmtGirone}</option>
+                  <option value="eliminazione">{it.stanza.fmtElim}</option>
                 </select>
+              </label>
+              {s.modalita !== "raid" && (
+                <label className="grid gap-1 text-sm font-bold">
+                  {it.stanza.combattimento}
+                  <select
+                    aria-label={it.stanza.combattimento}
+                    className="field"
+                    value={s.regole}
+                    onChange={(e) => upd({ regole: e.target.value as RoomSettings["regole"] })}
+                    data-testid="regole"
+                  >
+                    <option value="classico">{it.stanza.combClassico}</option>
+                    <option value="duello">{it.stanza.combDuello}</option>
+                  </select>
+                </label>
+              )}
+              {s.modalita !== "raid" && s.regole === "duello" && (
+                <label className="grid gap-1 text-sm font-bold">
+                  {it.stanza.turnoDuello}
+                  <input
+                    aria-label={it.stanza.turnoDuello}
+                    type="number"
+                    min={10}
+                    max={90}
+                    className="field"
+                    value={s.turno_duello}
+                    onChange={(e) => upd({ turno_duello: num(e.target.value, 30) })}
+                  />
+                </label>
+              )}
+              {s.modalita === "raid" && (
+                <>
+                  <label className="grid gap-1 text-sm font-bold">
+                    {it.raid.boss}
+                    <select
+                      aria-label={it.raid.boss}
+                      className="field"
+                      value={s.boss}
+                      onChange={(e) => upd({ boss: e.target.value })}
+                    >
+                      {BOSSES.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.nome}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="grid gap-1 text-sm font-bold">
+                    {it.raid.difficoltaTitolo}
+                    <select
+                      aria-label={it.raid.difficoltaTitolo}
+                      className="field"
+                      value={s.difficolta}
+                      onChange={(e) =>
+                        upd({ difficolta: e.target.value as RoomSettings["difficolta"] })
+                      }
+                    >
+                      {(["normale", "difficile", "epico"] as const).map((d) => (
+                        <option key={d} value={d}>
+                          {it.raid.difficolta[d]}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </>
+              )}
+              {s.modalita !== "asta" && (
+                <label className="grid gap-1 text-sm font-bold">
+                  {it.stanza.tempoScelta}
+                  <input
+                    aria-label={it.stanza.tempoScelta}
+                    className="field"
+                    type="number"
+                    min={5}
+                    max={120}
+                    value={s.pick_timeout}
+                    onChange={(e) => upd({ pick_timeout: num(e.target.value, 20) })}
+                  />
+                </label>
+              )}
+              <label className="grid gap-1 text-sm font-bold">
+                {it.stanza.ban}
+                <input
+                  aria-label={it.stanza.ban}
+                  className="field"
+                  type="number"
+                  min={0}
+                  max={3}
+                  value={s.bans_per_player}
+                  onChange={(e) =>
+                    upd({ bans_per_player: Math.min(3, Math.max(0, num(e.target.value, 0))) })
+                  }
+                />
               </label>
             </>
           )}
-          {s.modalita !== "asta" && (
-            <label className="grid gap-1 text-sm font-bold">
-              {it.stanza.tempoScelta}
-              <input
-                aria-label={it.stanza.tempoScelta}
-                className="field"
-                type="number"
-                min={5}
-                max={120}
-                value={s.pick_timeout}
-                onChange={(e) => upd({ pick_timeout: num(e.target.value, 20) })}
-              />
-            </label>
-          )}
-          <label className="grid gap-1 text-sm font-bold">
-            {it.stanza.ban}
-            <input
-              aria-label={it.stanza.ban}
-              className="field"
-              type="number"
-              min={0}
-              max={3}
-              value={s.bans_per_player}
-              onChange={(e) =>
-                upd({ bans_per_player: Math.min(3, Math.max(0, num(e.target.value, 0))) })
-              }
-            />
-          </label>
           <button
             className="btn btn-primary text-lg sm:col-span-3"
             onClick={() => socket.send({ type: "start" })}

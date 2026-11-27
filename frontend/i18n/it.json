@@ -575,6 +575,38 @@
     "delGiorno": "Del giorno",
     "allenamento": "Allenamento",
     "nuova": "Nuova partita",
+    "modQuiz": "Quiz sugli anime",
+    "indiziAnime": {
+      "episodi": "Episodi",
+      "voto": "Voto"
+    },
+    "stanza": {
+      "tipo": "Giochi",
+      "tipi": {
+        "misto": "Misto",
+        "scorcio": "Scorcio",
+        "personaggio": "Chi è?",
+        "indizi": "Indizi"
+      },
+      "titolo": {
+        "scorcio": "Quale anime è?",
+        "personaggio": "Chi è questo personaggio?",
+        "indizi": "Indovina l'anime dagli indizi"
+      },
+      "round": "Domande",
+      "tempo": "Secondi per domanda",
+      "spiega": "Chi indovina prima prende più punti. Una risposta sbagliata ti blocca per 4 secondi. L'immagine si scopre col passare del tempo.",
+      "domanda": "Domanda {n} di {tot}",
+      "fine": "Classifica finale",
+      "soloIndizi": "Niente immagine: gli indizi arrivano col tempo.",
+      "sbagliata": "Non è questo: riprova tra poco.",
+      "blocco": "Sbagliato! Riprova tra {n} secondi.",
+      "indovinato": "Giusto! +{n} punti",
+      "eraQuesto": "Era questo",
+      "classifica": "Classifica",
+      "rigioca": "Torna alla lobby",
+      "attendiHost": "L'host può riportare tutti in lobby per rigiocare."
+    },
     "cerca": "Scrivi il titolo di un anime…",
     "cercaPersonaggio": "Scrivi il nome di un personaggio…",
     "sbagliato": "{nome}: non è questo. L'immagine si scopre un po' di più.",

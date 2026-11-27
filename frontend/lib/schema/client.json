@@ -196,6 +196,38 @@
       "title": "Plan",
       "type": "object"
     },
+    "QuizLobby": {
+      "description": "A fine quiz l'host riporta tutti in lobby per rigiocare.",
+      "properties": {
+        "type": {
+          "const": "quiz_lobby",
+          "default": "quiz_lobby",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": ["type"],
+      "title": "QuizLobby",
+      "type": "object"
+    },
+    "QuizRisposta": {
+      "description": "Risposta a una domanda del quiz: id dell'anime o del personaggio scelto dall'elenco.",
+      "properties": {
+        "type": {
+          "const": "quiz_risposta",
+          "default": "quiz_risposta",
+          "title": "Type",
+          "type": "string"
+        },
+        "risposta_id": {
+          "title": "Risposta Id",
+          "type": "integer"
+        }
+      },
+      "required": ["type", "risposta_id"],
+      "title": "QuizRisposta",
+      "type": "object"
+    },
     "RoomSettings": {
       "properties": {
         "budget": {
@@ -256,7 +288,7 @@
         },
         "modalita": {
           "default": "asta",
-          "enum": ["asta", "specchio", "raid"],
+          "enum": ["asta", "specchio", "raid", "quiz"],
           "title": "Modalita",
           "type": "string"
         },
@@ -290,6 +322,26 @@
           "minimum": 10,
           "title": "Turno Duello",
           "type": "integer"
+        },
+        "quiz_tipo": {
+          "default": "misto",
+          "enum": ["misto", "scorcio", "personaggio", "indizi"],
+          "title": "Quiz Tipo",
+          "type": "string"
+        },
+        "quiz_round": {
+          "default": 8,
+          "maximum": 20,
+          "minimum": 3,
+          "title": "Quiz Round",
+          "type": "integer"
+        },
+        "quiz_tempo": {
+          "default": 25,
+          "maximum": 60,
+          "minimum": 10,
+          "title": "Quiz Tempo",
+          "type": "integer"
         }
       },
       "required": [
@@ -306,7 +358,10 @@
         "boss",
         "difficolta",
         "regole",
-        "turno_duello"
+        "turno_duello",
+        "quiz_tipo",
+        "quiz_round",
+        "quiz_tempo"
       ],
       "title": "RoomSettings",
       "type": "object"
@@ -364,6 +419,8 @@
       "pass": "#/$defs/Pass",
       "pick": "#/$defs/Pick",
       "plan": "#/$defs/Plan",
+      "quiz_lobby": "#/$defs/QuizLobby",
+      "quiz_risposta": "#/$defs/QuizRisposta",
       "spectate": "#/$defs/Spectate",
       "start": "#/$defs/Start",
       "update_settings": "#/$defs/UpdateSettings"
@@ -400,6 +457,12 @@
     },
     {
       "$ref": "#/$defs/DuelloMosse"
+    },
+    {
+      "$ref": "#/$defs/QuizRisposta"
+    },
+    {
+      "$ref": "#/$defs/QuizLobby"
     },
     {
       "$ref": "#/$defs/UpdateSettings"

@@ -66,6 +66,27 @@ class DuelloMosse(Model):
     mosse: list[MossaIn] = Field(default_factory=list, max_length=12)
 
 
+class QuizRisposta(Model):
+    """Risposta a una domanda del quiz: id dell'anime o del personaggio scelto dall'elenco."""
+
+    type: Literal["quiz_risposta"] = "quiz_risposta"
+    risposta_id: int
+
+
+class QuizLobby(Model):
+    """A fine quiz l'host riporta tutti in lobby per rigiocare."""
+
+    type: Literal["quiz_lobby"] = "quiz_lobby"
+
+
+class QuizEsito(Model):
+    """Esito della risposta di un giocatore (messaggio privato)."""
+
+    type: Literal["quiz_esito"] = "quiz_esito"
+    giusto: bool
+    blocco: float  # secondi di attesa prima di poter riprovare (0 se giusto)
+
+
 class UpdateSettings(Model):
     type: Literal["update_settings"] = "update_settings"
     settings: RoomSettings
@@ -82,6 +103,8 @@ ClientMessage = Annotated[
     | Pick
     | Plan
     | DuelloMosse
+    | QuizRisposta
+    | QuizLobby
     | UpdateSettings,
     Field(discriminator="type"),
 ]
@@ -184,6 +207,6 @@ class ErrorMsg(Model):
 
 ServerMessage = Annotated[
     Joined | RoomState | Mission | LotStarted | BidPlaced | PlayerPassed | LotWon | LotAssigned
-    | LotSkipped | AuctionFinished | TournamentResult | DuelloAggiornamento | ErrorMsg,
+    | LotSkipped | AuctionFinished | TournamentResult | DuelloAggiornamento | QuizEsito | ErrorMsg,
     Field(discriminator="type"),
 ]  # fmt: skip

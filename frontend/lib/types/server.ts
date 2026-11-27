@@ -18,6 +18,7 @@ export type Server =
   | AuctionFinished
   | TournamentResult
   | DuelloAggiornamento
+  | QuizEsito
   | ErrorMsg;
 export type Type = "joined";
 export type PlayerId = string;
@@ -25,7 +26,7 @@ export type Token = string;
 export type Type1 = "room_state";
 export type Code = string;
 export type Phase =
-  "lobby" | "ban" | "auction" | "draft" | "plan" | "duelli" | "tournament" | "raid_result";
+  "lobby" | "ban" | "auction" | "draft" | "plan" | "duelli" | "tournament" | "raid_result" | "quiz";
 export type HostId = string;
 export type Budget = number;
 export type Timer = number;
@@ -35,12 +36,15 @@ export type ChatThreshold = number;
 export type BansPerPlayer = number;
 export type PlanTimeout = number;
 export type Formato = "girone" | "eliminazione";
-export type Modalita = "asta" | "specchio" | "raid";
+export type Modalita = "asta" | "specchio" | "raid" | "quiz";
 export type PickTimeout = number;
 export type Boss = string;
 export type Difficolta = "normale" | "difficile" | "epico";
 export type Regole = "classico" | "duello";
 export type TurnoDuello = number;
+export type QuizTipo = "misto" | "scorcio" | "personaggio" | "indizi";
+export type QuizRound = number;
+export type QuizTempo = number;
 export type Id = string;
 export type Name = string;
 export type Color = string;
@@ -142,11 +146,31 @@ export type Testo = string;
 export type Voti = number;
 export type Opzioni = OpzioneChat[];
 export type Scadenza = number;
+export type Round1 = number;
+export type Totali = number;
+export type Kind = "scorcio" | "personaggio" | "indizi";
+export type Fase = "domanda" | "rivelazione" | "fine";
+export type Immagine = string | null;
+export type Fx = number;
+export type Fy = number;
+export type Livello = number;
+export type K = string;
+export type V = string;
+export type Indizi = QuizIndizio[];
+export type Scadenza1 = number;
+export type Id5 = string;
+export type Punti1 = number;
+export type Giusto = boolean;
+export type Guadagno = number;
+export type Punteggi = QuizPunteggio[];
+export type Nome5 = string;
+export type Dettaglio = string;
+export type Immagine1 = string;
 export type StreamerChannel = string | null;
 export type ServerTime = number;
 export type Type2 = "mission";
-export type Id5 = string;
-export type Nome5 = string;
+export type Id6 = string;
+export type Nome6 = string;
 export type Descrizione2 = string;
 export type Type3 = "lot_started";
 export type Number1 = number;
@@ -176,8 +200,8 @@ export type Turno2 = number;
 export type Turni = number;
 export type Energia = number;
 export type EnergiaCpu = number;
-export type Id6 = string;
-export type Nome6 = string;
+export type Id7 = string;
+export type Nome7 = string;
 export type Anime2 = string;
 export type Arch1 = string;
 export type Potenza = number;
@@ -193,8 +217,8 @@ export type Mano = CartaView[];
 export type ManoCpu = number;
 export type Mazzo = number;
 export type MazzoCpu = number;
-export type Id7 = string;
-export type Nome7 = string;
+export type Id8 = string;
+export type Nome8 = string;
 export type Regola = string;
 export type Favorisce = string[];
 export type Luoghi = LuogoView[];
@@ -204,20 +228,23 @@ export type Corsia = number;
 export type Potenza1 = number;
 export type Mod = number;
 export type Corsie = IstanzaView[][][];
-export type Totali = number[][];
+export type Totali1 = number[][];
 export type CorsieVinte1 = number[];
 export type Finita = boolean;
 export type Vincitore1 = number | null;
 export type Eventi = {
   [k: string]: unknown;
 }[];
-export type Scadenza1 = number;
+export type Scadenza2 = number;
 export type Now2 = number;
 export type Inviate = boolean;
 export type AvversarioPronto = boolean;
 export type Nuovo = boolean;
 export type Giornata1 = number;
-export type Type12 = "error";
+export type Type12 = "quiz_esito";
+export type Giusto1 = boolean;
+export type Blocco = number;
+export type Type13 = "error";
 export type Code1 = string;
 export type Message = string;
 
@@ -248,6 +275,7 @@ export interface RoomView {
   tournament: TournamentView | null;
   duelli: DuelliView | null;
   chat_duello: ChatDuelloView | null;
+  quiz: QuizView | null;
   streamer_channel: StreamerChannel;
   server_time: ServerTime;
 }
@@ -266,6 +294,9 @@ export interface RoomSettings {
   difficolta: Difficolta;
   regole: Regole;
   turno_duello: TurnoDuello;
+  quiz_tipo: QuizTipo;
+  quiz_round: QuizRound;
+  quiz_tempo: QuizTempo;
 }
 export interface PlayerView {
   id: Id;
@@ -428,12 +459,44 @@ export interface OpzioneChat {
   voti: Voti;
 }
 /**
+ * Il quiz in corso: domanda, quanto è svelata, punteggi. Soluzione solo a domanda chiusa.
+ */
+export interface QuizView {
+  round: Round1;
+  totali: Totali;
+  kind: Kind;
+  fase: Fase;
+  immagine: Immagine;
+  fx: Fx;
+  fy: Fy;
+  livello: Livello;
+  indizi: Indizi;
+  scadenza: Scadenza1;
+  punteggi: Punteggi;
+  soluzione: QuizSoluzione | null;
+}
+export interface QuizIndizio {
+  k: K;
+  v: V;
+}
+export interface QuizPunteggio {
+  id: Id5;
+  punti: Punti1;
+  giusto: Giusto;
+  guadagno: Guadagno;
+}
+export interface QuizSoluzione {
+  nome: Nome5;
+  dettaglio: Dettaglio;
+  immagine: Immagine1;
+}
+/**
  * Missione segreta del giocatore (messaggio privato).
  */
 export interface Mission {
   type: Type2;
-  id: Id5;
-  nome: Nome5;
+  id: Id6;
+  nome: Nome6;
   descrizione: Descrizione2;
 }
 export interface LotStarted {
@@ -496,7 +559,7 @@ export interface DuelloAggiornamento {
   avversario: Avversario1;
   vista: StatoView;
   eventi: Eventi;
-  scadenza: Scadenza1;
+  scadenza: Scadenza2;
   now: Now2;
   inviate: Inviate;
   avversario_pronto: AvversarioPronto;
@@ -514,14 +577,14 @@ export interface StatoView {
   mazzo_cpu: MazzoCpu;
   luoghi: Luoghi;
   corsie: Corsie;
-  totali: Totali;
+  totali: Totali1;
   corsie_vinte: CorsieVinte1;
   finita: Finita;
   vincitore: Vincitore1;
 }
 export interface CartaView {
-  id: Id6;
-  nome: Nome6;
+  id: Id7;
+  nome: Nome7;
   anime: Anime2;
   arch: Arch1;
   potenza: Potenza;
@@ -535,8 +598,8 @@ export interface CartaView {
   immagine_url: ImmagineUrl1;
 }
 export interface LuogoView {
-  id: Id7;
-  nome: Nome7;
+  id: Id8;
+  nome: Nome8;
   regola: Regola;
   favorisce: Favorisce;
 }
@@ -548,8 +611,16 @@ export interface IstanzaView {
   potenza: Potenza1;
   mod: Mod;
 }
-export interface ErrorMsg {
+/**
+ * Esito della risposta di un giocatore (messaggio privato).
+ */
+export interface QuizEsito {
   type: Type12;
+  giusto: Giusto1;
+  blocco: Blocco;
+}
+export interface ErrorMsg {
+  type: Type13;
   code: Code1;
   message: Message;
 }

@@ -16,6 +16,8 @@ export type Client =
   | Pick
   | Plan
   | DuelloMosse
+  | QuizRisposta
+  | QuizLobby
   | UpdateSettings;
 export type Type = "join";
 export type Name = string;
@@ -81,7 +83,10 @@ export type Mosse =
     ];
 export type Carta = string;
 export type Corsia = number;
-export type Type10 = "update_settings";
+export type Type10 = "quiz_risposta";
+export type RispostaId = number;
+export type Type11 = "quiz_lobby";
+export type Type12 = "update_settings";
 export type Budget = number;
 export type Timer = number;
 export type RoleTimeout = number;
@@ -90,12 +95,15 @@ export type ChatThreshold = number;
 export type BansPerPlayer = number;
 export type PlanTimeout = number;
 export type Formato = "girone" | "eliminazione";
-export type Modalita = "asta" | "specchio" | "raid";
+export type Modalita = "asta" | "specchio" | "raid" | "quiz";
 export type PickTimeout = number;
 export type Boss = string;
 export type Difficolta = "normale" | "difficile" | "epico";
 export type Regole = "classico" | "duello";
 export type TurnoDuello = number;
+export type QuizTipo = "misto" | "scorcio" | "personaggio" | "indizi";
+export type QuizRound = number;
+export type QuizTempo = number;
 
 export interface Join {
   type: Type;
@@ -151,8 +159,21 @@ export interface MossaIn {
   carta: Carta;
   corsia: Corsia;
 }
-export interface UpdateSettings {
+/**
+ * Risposta a una domanda del quiz: id dell'anime o del personaggio scelto dall'elenco.
+ */
+export interface QuizRisposta {
   type: Type10;
+  risposta_id: RispostaId;
+}
+/**
+ * A fine quiz l'host riporta tutti in lobby per rigiocare.
+ */
+export interface QuizLobby {
+  type: Type11;
+}
+export interface UpdateSettings {
+  type: Type12;
   settings: RoomSettings;
 }
 export interface RoomSettings {
@@ -170,4 +191,7 @@ export interface RoomSettings {
   difficolta: Difficolta;
   regole: Regole;
   turno_duello: TurnoDuello;
+  quiz_tipo: QuizTipo;
+  quiz_round: QuizRound;
+  quiz_tempo: QuizTempo;
 }
