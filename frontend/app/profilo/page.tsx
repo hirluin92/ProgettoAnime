@@ -103,7 +103,7 @@ export default function ProfiloPage() {
             {it.profilo.crea}
           </button>
           <button
-            className="min-h-11 w-full text-center text-sm font-bold underline muted"
+            className="btn w-full text-base"
             onClick={() => setAccesso(true)}
             data-testid="ho-account"
           >

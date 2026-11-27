@@ -21,13 +21,19 @@ const COLONNE = [
     ],
   },
   {
-    titolo: it.footerImpara,
+    titolo: it.footerSfide,
     voci: [
-      { href: "/come-si-gioca", label: it.linkUtili.comeSiGioca },
       { href: "/sfide/animedle", label: it.linkUtili.animedle },
       { href: "/sfide/sigla", label: it.linkUtili.sigla },
       { href: "/sfide/scorcio", label: it.linkUtili.scorcio },
       { href: "/sfide/personaggio", label: it.linkUtili.personaggio },
+      { href: "/duello/giorno", label: it.linkUtili.giorno },
+    ],
+  },
+  {
+    titolo: it.footerRegole,
+    voci: [
+      { href: "/come-si-gioca", label: it.linkUtili.comeSiGioca },
       { href: "/info#faq", label: it.linkUtili.faq },
     ],
   },
@@ -45,7 +51,7 @@ export default function Footer() {
           backgroundSize: "9px 9px",
         }}
       />
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-7 px-5 py-10 text-sm lg:grid-cols-[1.2fr_0.8fr_0.8fr_1.6fr_1.2fr] [&>*:first-child]:col-span-2 [&>*:last-child]:col-span-2 [&>*:nth-child(4)]:col-span-2 lg:[&>*]:!col-span-1">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-7 px-5 py-10 text-sm lg:grid-cols-[1.1fr_0.7fr_0.7fr_1.4fr_1.2fr_1.1fr] [&>*:first-child]:col-span-2 [&>*:last-child]:col-span-2 [&>*:nth-child(4)]:col-span-2 [&>*:nth-child(5)]:col-span-2 lg:[&>*]:!col-span-1">
         <div className="space-y-3">
           <Marchio size={38} />
           <p className="max-w-xs text-[0.95rem] font-bold text-carta">{it.footerMotto}</p>

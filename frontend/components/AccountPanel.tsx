@@ -145,15 +145,12 @@ export default function AccountPanel({
       </button>
       <div className="flex flex-wrap justify-between gap-2 text-sm">
         {modo === "accedi" && (
-          <button
-            className="min-h-11 font-bold underline muted"
-            onClick={() => setModo("recupera")}
-          >
+          <button className="btn min-h-11 px-3 text-sm" onClick={() => setModo("recupera")}>
             {it.account.dimenticata}
           </button>
         )}
         {modo !== "registra" && onAltro && (
-          <button className="min-h-11 font-bold underline muted" onClick={onAltro}>
+          <button className="btn min-h-11 px-3 text-sm" onClick={onAltro}>
             {it.account.nuovoProfilo}
           </button>
         )}

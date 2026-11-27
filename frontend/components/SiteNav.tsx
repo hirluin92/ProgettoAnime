@@ -241,7 +241,7 @@ export default function SiteNav() {
             <span className="transition-transform duration-150 group-hover:-rotate-6 group-hover:scale-110">
               <Stemma size={36} />
             </span>
-            <span className="display text-[1.5rem] italic leading-none tracking-wider text-carta max-[359px]:hidden">
+            <span className="display corsivo text-[1.5rem] italic leading-none tracking-wider text-carta max-[339px]:hidden">
               {APP_NAME}
             </span>
           </Link>
