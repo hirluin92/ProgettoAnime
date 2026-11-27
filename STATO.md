@@ -152,6 +152,9 @@ Il nome sta in un solo posto: `APP_NAME` in `frontend/lib/constants.ts` (marchio
 ### Idee lasciate come proposte
 Mascotte originale; onomatopee anche per ogni carta rivelata in corsia; bollino «premi da ritirare» sul Ranked (serve una chiamata in più); mosaico di ritratti AniList nella home; suoni nuovi; QR nel biglietto della lobby; nomi tematici per le bustine (li decide il backend).
 
+## Dominio (2026-11-27)
+Il dominio **inkiri.it** è stato registrato dal committente. Su Vercel (progetto `progetto-anime`) sono aggiunti `inkiri.it` (reindirizza con 308 a `www.inkiri.it`) e `www.inkiri.it`; variabile `NEXT_PUBLIC_SITE_URL=https://www.inkiri.it` (tipo Config, produzione). Su Render `CORS_ORIGINS` contiene `https://progetto-anime.vercel.app`, `https://inkiri.it` e `https://www.inkiri.it`. **DNS da impostare nel pannello del registrar:** record `A` per `@` verso `216.198.79.1` e record `CNAME` per `www` verso il valore mostrato da Vercel (Domini del progetto, «Invalid Configuration» finché non propaga). Dopo che i DNS rispondono: controllare `https://www.inkiri.it`, collegare Google Search Console e inviare `/sitemap.xml`. Trappola: Vercel chiede il codice dell'app di autenticazione per un nuovo deploy dal pannello; un push su `main` fa partire il deploy senza codice.
+
 ## Da fare (in ordine di valore)
 Fatto dal 2026-11-26 (V4, vedi M18-M29 sopra): Duello a corsie, rompicapo del giorno, ELO, Veloce migliorato, torneo a duelli nelle stanze, account, album/mazzi, crediti/pacchetti, ranked a leghe, Scala roguelike, voto della chat, home aggiornata. Online: Vercel (frontend) e Render (backend, deploy manuale) alla data di M29.
 0. **Quiz:** chat Twitch che risponde alle domande; più sigle (74 oggi) e più anime nel pool (300 bersagli); Animedle dei personaggi; sigle con altre fonti se Apple non basta; classifica delle serie.
