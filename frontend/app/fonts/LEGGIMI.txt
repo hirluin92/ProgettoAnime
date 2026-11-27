@@ -1,0 +1,9 @@
+Caratteri usati dal sito (solo il sottoinsieme latino, formato woff2).
+Sono gli stessi file che next/font/google scarica da Google Fonts durante la build:
+tenerli qui evita di caricare le centinaia di fette giapponesi che non servono.
+
+- Anton — Vernon Adams, SIL Open Font License 1.1
+- Dela Gothic One — artakana, SIL Open Font License 1.1
+- Zen Kaku Gothic New — Yoshimichi Ohira, SIL Open Font License 1.1
+
+Licenza: https://openfontlicense.org

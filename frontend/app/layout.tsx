@@ -1,42 +1,47 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Dela_Gothic_One, Zen_Kaku_Gothic_New } from "next/font/google";
+import localFont from "next/font/local";
 import CookieBanner from "@/components/CookieBanner";
 import Footer from "@/components/Footer";
 import PwaRegister from "@/components/PwaRegister";
 import ModoSfondo from "@/components/ModoSfondo";
 import SiteNav from "@/components/SiteNav";
-import it from "@/i18n/it.json";
 import { APP_NAME } from "@/lib/constants";
+import { meta, SITO } from "@/lib/seo";
 import "./globals.css";
 
-// Tre voci: testo (gotico giapponese, chiaro anche piccolo), titoli (stretto e alto, da testata di rivista),
-// numeri e onomatopee (grasso e rotondo). I font li serve Next dal nostro dominio.
-const body = Zen_Kaku_Gothic_New({
+// Tre voci: testo (Zen Kaku Gothic New, chiaro anche piccolo), titoli (Anton, stretto e alto, da testata
+// di rivista), numeri e onomatopee (Dela Gothic One, grasso e rotondo).
+// I file sono in app/fonts: solo il sottoinsieme latino (5 file, ~55 kB in tutto). Caricati da
+// next/font/google gli stessi caratteri portavano 607 regole @font-face (sono font giapponesi, divisi in
+// centinaia di fette) e il precaricamento di ~380 file: 4,5 MB a pagina. Licenza OFL, vedi app/fonts/LEGGIMI.txt.
+const body = localFont({
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
   display: "swap",
+  src: [
+    { path: "./fonts/zen-kaku-gothic-new-400-latin.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/zen-kaku-gothic-new-700-latin.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/zen-kaku-gothic-new-900-latin.woff2", weight: "900", style: "normal" },
+  ],
 });
-const display = Anton({
+const display = localFont({
   variable: "--font-display",
-  subsets: ["latin"],
-  weight: "400",
   display: "swap",
+  src: "./fonts/anton-400-latin.woff2",
+  weight: "400",
 });
-const numeri = Dela_Gothic_One({
+const numeri = localFont({
   variable: "--font-num",
-  subsets: ["latin"],
-  weight: "400",
   display: "swap",
+  src: "./fonts/dela-gothic-one-400-latin.woff2",
+  weight: "400",
+  preload: false, // serve solo a numeri e onomatopee: non blocca il primo testo
 });
-
-const SITO = process.env.NEXT_PUBLIC_SITE_URL ?? "https://progetto-anime.vercel.app";
 
 export const metadata: Metadata = {
+  ...meta("home", "/"),
   metadataBase: new URL(SITO),
-  title: { default: `${APP_NAME} · ${it.meta.motto}`, template: `%s · ${APP_NAME}` },
+  title: { default: meta("home", "/").openGraph?.title as string, template: `%s · ${APP_NAME}` },
   applicationName: APP_NAME,
-  description: it.meta.descrizione,
   appleWebApp: { capable: true, title: APP_NAME, statusBarStyle: "black-translucent" },
   icons: {
     icon: [
@@ -45,18 +50,7 @@ export const metadata: Metadata = {
     ],
     apple: "/icons/apple-touch-icon.png",
   },
-  openGraph: {
-    type: "website",
-    locale: "it_IT",
-    siteName: APP_NAME,
-    title: `${APP_NAME} · ${it.meta.motto}`,
-    description: it.meta.descrizione,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${APP_NAME} · ${it.meta.motto}`,
-    description: it.meta.descrizione,
-  },
+  alternates: undefined,
 };
 
 export const viewport: Viewport = { themeColor: "#0e0d10" };
