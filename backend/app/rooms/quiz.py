@@ -15,6 +15,9 @@ from app.rooms.models import QuizIndizio, QuizPunteggio, QuizSoluzione, QuizView
 
 LIVELLI = 6
 RIVELAZIONE = 6.0  # secondi di pausa a fine domanda
+PREPARAZIONE = (
+    3.0  # conto alla rovescia prima di ogni domanda: il tempo per caricare audio e immagini
+)
 BLOCCO = 4.0  # secondi di attesa dopo una risposta sbagliata
 BLOCCO_SERIE = 2.0  # se almeno era un'altra stagione della stessa serie
 BONUS_POSIZIONE = (50, 25, 10)
@@ -173,8 +176,8 @@ class QuizPartita:
     # -- fasi
     def _apri(self, adesso: float) -> None:
         self.fase = "domanda"
-        self.inizio = adesso
-        self.scadenza = adesso + self.tempo
+        self.inizio = adesso + PREPARAZIONE
+        self.scadenza = self.inizio + self.tempo
         self.giusti = {}
         self.blocchi = {}
         self.parziali = {}
@@ -215,6 +218,8 @@ class QuizPartita:
         """
         if self.fase != "domanda" or adesso >= self.scadenza:
             raise QuizErrore("closed", "La domanda è chiusa")
+        if adesso < self.inizio:
+            raise QuizErrore("not_started", "La domanda sta per iniziare")
         if pid not in self.punti:
             raise QuizErrore("not_player", "Non stai giocando")
         if tipo not in self.tipi(self.corrente):
@@ -284,6 +289,7 @@ class QuizPartita:
             fx=fx,
             fy=fy,
             livello=liv,
+            inizio=self.inizio,
             audio=d.audio(),
             audio_secondi=self.secondi_audio(liv) if d.kind == "sigla" else 0,
             audio_progressivo=self.progressivo,

@@ -1,6 +1,12 @@
 import pytest
 
+from app.rooms import quiz as modulo_quiz
 from app.rooms.quiz import BLOCCO, LIVELLI, RIVELAZIONE, QuizErrore, QuizPartita
+
+
+@pytest.fixture(autouse=True)
+def senza_preparazione(monkeypatch):  # type: ignore[no-untyped-def]
+    monkeypatch.setattr(modulo_quiz, "PREPARAZIONE", 0.0)
 
 
 def partita(tipo: str = "misto", n: int = 4, tempo: int = 20) -> QuizPartita:
@@ -253,3 +259,21 @@ def test_canzone_intera_per_tutto_il_tempo_a_disposizione() -> None:
     # un tetto più basso accorcia l'ascolto
     tetto = QuizPartita.nuova(11, "sigla", 3, 25, ["a"], 1000.0, clip=10)
     assert tetto.view(1000.0).audio_secondi == 10
+
+
+def test_conto_alla_rovescia_prima_di_ogni_domanda(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    monkeypatch.setattr(modulo_quiz, "PREPARAZIONE", 3.0)
+    p = partita(n=3, tempo=20)
+    assert p.inizio == 1003.0 and p.scadenza == 1023.0
+    assert p.view(1000.0).inizio == 1003.0 and p.livello(1002.0) == 0
+    giusto = p.corrente.target["id"]
+    with pytest.raises(QuizErrore) as e:
+        p.rispondi("a", giusto, 1002.5)  # prima del via non si risponde
+    assert e.value.code == "not_started"
+    assert p.rispondi("a", giusto, 1003.0) == "giusto"
+    # la domanda successiva ha il suo conto alla rovescia
+    p.rispondi("b", giusto, 1004.0)
+    p.rispondi("c", giusto, 1004.0)
+    p.tick(1004.0, ["a", "b", "c"])
+    p.tick(1004.0 + RIVELAZIONE, ["a", "b", "c"])
+    assert p.idx == 1 and p.inizio == 1004.0 + RIVELAZIONE + 3.0

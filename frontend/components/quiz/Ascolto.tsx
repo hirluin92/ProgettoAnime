@@ -125,8 +125,13 @@ export default function Ascolto({
   useEffect(() => {
     if (!suona) return;
     let id = 0;
-    const giro = () => {
-      setTempo(ref.current?.currentTime ?? 0);
+    let ultimo = 0;
+    const giro = (t: number) => {
+      // la barra si aggiorna ~12 volte al secondo: ridisegnare a ogni frame appesantisce i telefoni
+      if (t - ultimo > 80) {
+        ultimo = t;
+        setTempo(ref.current?.currentTime ?? 0);
+      }
       id = requestAnimationFrame(giro);
     };
     id = requestAnimationFrame(giro);

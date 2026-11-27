@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createRoom, impostaCursore, joinRoom } from "./helpers";
+import { attendiViaQuiz, createRoom, impostaCursore, joinRoom } from "./helpers";
 
 async function soluzione(page: Page, code: string) {
   const r = await page.request.get(`http://localhost:8000/api/dev/quiz-soluzione/${code}`);
@@ -33,6 +33,7 @@ test("quiz tra amici: due giocatori rispondono, blocco dopo l'errore, classifica
     await expect(host.page.getByTestId("quiz-stanza")).toContainText(`Domanda ${giro} di 3`, {
       timeout: 20_000,
     });
+    await attendiViaQuiz(host.page, ospite.page);
     const sol = await soluzione(host.page, code);
     if (giro === 1) {
       // una risposta sbagliata: blocco di qualche secondo, poi si può riprovare
@@ -79,6 +80,7 @@ test("quiz tra amici: funziona con più di 2 giocatori (4 in classifica)", async
     await expect(p.page.getByTestId("quiz-classifica").locator("li")).toHaveCount(4);
   }
   // risponde giusto solo Carla: i punti compaiono per lei in tutte le classifiche
+  await attendiViaQuiz(host.page, altri[1].page);
   const sol = await soluzione(host.page, code);
   await rispondi(altri[1].page, sol.nome);
   await expect(host.page.getByTestId("quiz-classifica").locator("li").first()).toContainText(

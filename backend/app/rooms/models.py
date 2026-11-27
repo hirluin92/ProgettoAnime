@@ -211,6 +211,9 @@ class QuizView(Model):
     fx: float
     fy: float
     livello: int  # quanto è svelata la domanda (0-5)
+    inizio: float = (
+        0.0  # istante (del server) in cui parte la domanda: prima c'è il conto alla rovescia
+    )
     audio: str | None = None  # anteprima della sigla (solo domande «sigla»)
     audio_secondi: int = 0  # quanti secondi se ne possono ascoltare a questo livello
     loop: bool = False  # di partenza l'anteprima si ripete in loop
