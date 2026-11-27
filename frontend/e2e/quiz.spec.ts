@@ -162,3 +162,19 @@ test("sfide: Animedle sblocca gli indizi dopo qualche errore", async ({ page }) 
   await expect(page.getByTestId("animedle-indizi")).toContainText("Il titolo inizia con");
   await expect(page.getByTestId("animedle-indizi")).toContainText("Prossimo indizio dopo 2");
 });
+
+test("sfide: se il primo caricamento dell'elenco dei titoli fallisce, la ricerca si riprende da sola", async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  let richieste = 0;
+  await page.route("**/api/quiz/anime/elenco", (route) =>
+    ++richieste === 1 ? route.abort("failed") : route.continue(),
+  );
+  await page.goto("/sfide/animedle");
+  await expect(page.getByTestId("animedle")).toBeVisible();
+  await page.getByTestId("animedle-cerca").fill("naruto");
+  // la prima richiesta è caduta: dopo una nuova prova i suggerimenti compaiono
+  await expect(page.getByTestId("anime-voce").first()).toBeVisible({ timeout: 20_000 });
+  expect(richieste).toBeGreaterThanOrEqual(2);
+});

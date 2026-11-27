@@ -814,6 +814,8 @@
       "Supernatural": "Sovrannaturale",
       "Thriller": "Thriller"
     },
+    "elencoNonCarica": "Non riesco a caricare l'elenco dei titoli.",
+    "riprovaElenco": "Riprova",
     "persa": "Persa",
     "prossima": "Nuove sfide tra {t}",
     "rivedi": "Rivedi",
