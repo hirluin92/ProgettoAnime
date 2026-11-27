@@ -2,6 +2,8 @@
 
 import Icon from "@/components/Icon";
 import { useState } from "react";
+import { fmt } from "@/components/duello/DuelloBoard";
+import ImpostazioniQuiz from "@/components/quiz/ImpostazioniQuiz";
 import it from "@/i18n/it.json";
 import { BOSSES } from "@/lib/raid";
 import type { RoomSettings, RoomView } from "@/lib/messages";
@@ -19,11 +21,13 @@ export default function Lobby({
   const isHost = room.host_id === me;
   const [s, setS] = useState<RoomSettings>(room.settings);
   const [copied, setCopied] = useState(false);
+  const [imp, setImp] = useState(false);
   const upd = (patch: Partial<RoomSettings>) => {
     const next = { ...s, ...patch };
     setS(next);
     socket.send({ type: "update_settings", settings: next });
   };
+  const mmss = (n: number) => `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`;
   const num = (v: string, d: number) => (Number.isFinite(parseInt(v, 10)) ? parseInt(v, 10) : d);
   return (
     <section className="space-y-5 pt-6">
@@ -103,7 +107,11 @@ export default function Lobby({
               aria-label={it.stanza.modalita}
               className="field"
               value={s.modalita}
-              onChange={(e) => upd({ modalita: e.target.value as RoomSettings["modalita"] })}
+              onChange={(e) => {
+                upd({ modalita: e.target.value as RoomSettings["modalita"] });
+                // scegliendo il quiz si apre subito la finestra delle impostazioni
+                if (e.target.value === "quiz") setImp(true);
+              }}
             >
               <option value="asta">{it.stanza.modAsta}</option>
               <option value="specchio">{it.stanza.modSpecchio}</option>
@@ -112,50 +120,30 @@ export default function Lobby({
             </select>
           </label>
           {s.modalita === "quiz" ? (
-            <>
-              <label className="grid gap-1 text-sm font-bold">
-                {it.quiz.stanza.tipo}
-                <select
-                  aria-label={it.quiz.stanza.tipo}
-                  className="field"
-                  value={s.quiz_tipo}
-                  onChange={(e) => upd({ quiz_tipo: e.target.value as RoomSettings["quiz_tipo"] })}
-                  data-testid="quiz-tipo"
+            <div className="space-y-3 sm:col-span-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-white/[0.04] p-4">
+                <ul className="flex flex-wrap gap-2" data-testid="quiz-riepilogo">
+                  <li className="chip">{it.quiz.stanza.tipi[s.quiz_tipo]}</li>
+                  <li className="chip">
+                    {fmt(it.quiz.imp.riepilogo, { r: s.quiz_round, t: mmss(s.quiz_tempo) })}
+                  </li>
+                  {(s.quiz_tipo === "sigla" || s.quiz_tipo === "misto") && (
+                    <li className="chip">
+                      {it.quiz.imp.chiede[s.quiz_chiede]} · {s.quiz_clip}s ·{" "}
+                      {s.quiz_loop ? it.quiz.imp.loop : it.quiz.imp.unaVolta}
+                    </li>
+                  )}
+                </ul>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setImp(true)}
+                  data-testid="quiz-impostazioni"
                 >
-                  {(["misto", "scorcio", "personaggio", "indizi", "sigla"] as const).map((t) => (
-                    <option key={t} value={t}>
-                      {it.quiz.stanza.tipi[t]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="grid gap-1 text-sm font-bold">
-                {it.quiz.stanza.round}
-                <input
-                  aria-label={it.quiz.stanza.round}
-                  className="field"
-                  type="number"
-                  min={3}
-                  max={20}
-                  value={s.quiz_round}
-                  onChange={(e) => upd({ quiz_round: num(e.target.value, 8) })}
-                  data-testid="quiz-round"
-                />
-              </label>
-              <label className="grid gap-1 text-sm font-bold">
-                {it.quiz.stanza.tempo}
-                <input
-                  aria-label={it.quiz.stanza.tempo}
-                  className="field"
-                  type="number"
-                  min={10}
-                  max={60}
-                  value={s.quiz_tempo}
-                  onChange={(e) => upd({ quiz_tempo: num(e.target.value, 25) })}
-                />
-              </label>
-              <p className="text-sm muted sm:col-span-3">{it.quiz.stanza.spiega}</p>
-            </>
+                  {it.quiz.imp.apri}
+                </button>
+              </div>
+              <p className="text-sm muted">{it.quiz.stanza.spiega}</p>
+            </div>
           ) : (
             <>
               <label className="grid gap-1 text-sm font-bold">
@@ -317,6 +305,7 @@ export default function Lobby({
       ) : (
         <p>{it.stanza.attendiHost}</p>
       )}
+      {isHost && <ImpostazioniQuiz s={s} upd={upd} aperto={imp} onChiudi={() => setImp(false)} />}
     </section>
   );
 }

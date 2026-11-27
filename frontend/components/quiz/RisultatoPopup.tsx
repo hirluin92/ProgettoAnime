@@ -64,7 +64,7 @@ export default function RisultatoPopup(p: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/75 p-4"
+            className="fixed inset-0 z-[60] grid place-items-center overflow-y-auto bg-black/75 p-4"
             onClick={p.onChiudi}
           >
             <motion.div

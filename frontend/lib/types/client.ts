@@ -105,6 +105,9 @@ export type TurnoDuello = number;
 export type QuizTipo = "misto" | "scorcio" | "personaggio" | "indizi" | "sigla";
 export type QuizRound = number;
 export type QuizTempo = number;
+export type QuizClip = number;
+export type QuizLoop = boolean;
+export type QuizChiede = "tutto" | "anime" | "brano" | "artista";
 
 export interface Join {
   type: Type;
@@ -196,4 +199,7 @@ export interface RoomSettings {
   quiz_tipo: QuizTipo;
   quiz_round: QuizRound;
   quiz_tempo: QuizTempo;
+  quiz_clip: QuizClip;
+  quiz_loop: QuizLoop;
+  quiz_chiede: QuizChiede;
 }

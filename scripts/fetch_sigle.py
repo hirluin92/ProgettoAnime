@@ -114,7 +114,12 @@ BRANI = [
 ]  # fmt: skip
 
 # abbinamenti rifiutati dopo il controllo a mano: cover, strumentali, versioni di altri artisti
-SCARTA = ("原曲", "ユア", "α波", "夕星", "Instrumental", "帰りたくなったよ", "フランク", "たぶんオーライ", "エリック")
+SCARTA = (
+    "原曲", "ユア", "α波", "夕星", "Instrumental", "帰りたくなったよ", "フランク", "たぶんオーライ",
+    "エリック", "オルゴール", "Music Box", "Karaoke", "カラオケ", "Cover", "歌ってみた", "Lullaby",
+    "Piano Ver", "Piano ver", "8bit", "Tribute", "第13", "ライブイベント", "すずめの涙", "東京混声合唱団",
+    "おかあさん", "韓国語", "エジソン", "僕達は天使だった", "俺はとことん", "青木カレン", "若狭さち", "浦島坂田船", "さかいゆう", "奇術師のバイレ", "柾花音",
+)  # fmt: skip
 
 UA = {"User-Agent": "arena-anime-quiz-fetch/1.0"}
 
@@ -164,12 +169,27 @@ def anime_per_titolo(anime: list[dict], nome: str) -> dict | None:
 
 
 if __name__ == "__main__":
+    from sigle_extra import EXTRA
+
     anime = json.loads((DATA / "anime.json").read_text(encoding="utf-8"))
-    out = []
-    for nome, brano, artista, tipo in BRANI:
+    # i brani già trovati non si cercano di nuovo (la ricerca è lenta e Apple limita le richieste)
+    gia: dict[tuple[str, str], dict] = {}
+    if (DATA / "sigle.json").exists():
+        for e in json.loads((DATA / "sigle.json").read_text(encoding="utf-8")):
+            gia[(norm(e.get("brano_lat", "")), norm(e.get("artista_lat", "")))] = e
+    out: list[dict] = []
+    visti: set[tuple[int, str]] = set()
+    for nome, brano, artista, tipo in [*BRANI, *EXTRA]:
         a = anime_per_titolo(anime, nome)
         if a is None:
             print(f"anime non trovato: {nome}")
+            continue
+        if (a["id"], norm(brano)) in visti:
+            continue
+        chiave = (norm(brano), norm(artista))
+        if chiave in gia and gia[chiave]["anime_id"] == a["id"]:
+            out.append(gia[chiave])
+            visti.add((a["id"], norm(brano)))
             continue
         t = cerca(brano, artista)
         if t is None:
@@ -190,6 +210,7 @@ if __name__ == "__main__":
                 "apple": t["trackViewUrl"],
             }
         )
+        visti.add((a["id"], norm(brano)))
         print(f"ok  {a['titolo']}: {t['trackName']}")
         time.sleep(1.2)
     (DATA / "sigle.json").write_text(

@@ -102,3 +102,13 @@ export async function playDraft(page: Page, opts: { reroll?: boolean; swap?: boo
   }
   await page.getByTestId("fight").click();
 }
+
+/** Imposta un cursore (input range) e avvisa React, come farebbe un trascinamento. */
+export async function impostaCursore(page: Page, testId: string, valore: number) {
+  await page.getByTestId(testId).evaluate((el, v) => {
+    const input = el as HTMLInputElement;
+    const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!;
+    set.call(input, String(v));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }, valore);
+}

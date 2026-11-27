@@ -15,18 +15,27 @@ export default function Ascolto({
   livello,
   intero,
   autoplay,
+  tetto,
+  loopIniziale,
 }: {
   src: string;
   livello: number; // 0..5: errori fatti (o livello del quiz)
   intero?: boolean; // a risposta data si ascolta tutta
   autoplay?: boolean;
+  tetto?: number; // durata massima dell'anteprima (impostazione della partita)
+  loopIniziale?: boolean; // se definito, compare il pulsante per ripetere in loop
 }) {
   const ref = useRef<HTMLAudioElement>(null);
   const timer = useRef<number | undefined>(undefined);
   const [suona, setSuona] = useState(false);
   const [tempo, setTempo] = useState(0); // secondi ascoltati, per la barra che scorre
   const [errore, setErrore] = useState(false);
-  const secondi = intero ? 30 : SECONDI_SIGLA[Math.min(livello, SECONDI_SIGLA.length - 1)];
+  const [loop, setLoop] = useState(!!loopIniziale);
+  const loopRef = useRef(loop);
+  loopRef.current = loop;
+  const secondi = intero
+    ? 30
+    : Math.min(tetto ?? 30, SECONDI_SIGLA[Math.min(livello, SECONDI_SIGLA.length - 1)]);
 
   const ferma = () => {
     window.clearTimeout(timer.current);
@@ -44,7 +53,11 @@ export default function Ascolto({
       .then(() => {
         setSuona(true);
         setErrore(false);
-        timer.current = window.setTimeout(ferma, secondi * 1000);
+        // a fine anteprima: si ripete se il loop è attivo, altrimenti si ferma
+        timer.current = window.setTimeout(() => {
+          if (loopRef.current && !intero) avvia();
+          else ferma();
+        }, secondi * 1000);
       })
       .catch(() => setErrore(true));
   };
@@ -70,7 +83,12 @@ export default function Ascolto({
 
   return (
     <div className="panel space-y-3 p-5 text-center" data-testid="ascolto">
-      <audio ref={ref} src={src} preload="auto" onEnded={ferma} />
+      <audio
+        ref={ref}
+        src={src}
+        preload="auto"
+        onEnded={() => (loopRef.current && !intero ? avvia() : ferma())}
+      />
       <button
         type="button"
         onClick={suona ? ferma : avvia}
@@ -121,6 +139,17 @@ export default function Ascolto({
           <span>{mmss(secondi)}</span>
         </div>
       </div>
+      {loopIniziale !== undefined && !intero && (
+        <button
+          type="button"
+          aria-pressed={loop}
+          onClick={() => setLoop((l) => !l)}
+          className={`chip mx-auto cursor-pointer px-3 py-1 ${loop ? "text-cyan-200" : "muted"}`}
+          data-testid="ascolto-loop"
+        >
+          {loop ? it.quiz.sigla.loopOn : it.quiz.sigla.loopOff}
+        </button>
+      )}
       {errore && <p className="text-sm text-amber-200">{it.quiz.sigla.noAudio}</p>}
       <p className="text-[0.7rem] muted">{it.quiz.sigla.credito}</p>
     </div>

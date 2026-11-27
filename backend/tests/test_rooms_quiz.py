@@ -202,3 +202,39 @@ def test_serie_di_risposte_giuste_da_bonus_e_si_perde_sbagliando() -> None:
     # saltare una domanda azzera la serie
     p.tick(t + 21, ["a", "b"])
     assert p.serie["a"] == 0
+
+
+def test_impostazioni_cosa_si_indovina_nelle_sigle() -> None:
+    def nuova(chiede: str) -> QuizPartita:
+        return QuizPartita.nuova(11, "sigla", 3, 20, ["a", "b"], 1000.0, chiede=chiede)
+
+    # solo il titolo del brano: vale il punteggio pieno e chiude la domanda
+    p = nuova("brano")
+    t = p.corrente.target
+    assert p.view(1000.0).tipi == ["brano"] and p.view(1000.0).principale == "brano"
+    with pytest.raises(QuizErrore) as e:
+        p.rispondi("a", t["id"], 1000.0, "anime")
+    assert e.value.code == "bad_type"
+    assert p.rispondi("a", t["brano_idx"], 1000.0, "brano") == "giusto"
+    assert p.giusti["a"] == 200 + 50 and "a" in p.giusti
+    p.rispondi("b", t["brano_idx"], 1000.0, "brano")
+    assert p.tick(1000.0, ["a", "b"]) and p.fase == "rivelazione"
+
+    # solo l'artista
+    q = nuova("artista")
+    assert q.rispondi("a", q.corrente.target["artista_idx"], 1000.0, "artista") == "giusto"
+    assert q.punti["a"] == 250
+
+    # tutto: l'anime chiude, titolo e artista sono parziali
+    r = nuova("tutto")
+    assert (
+        r.view(1000.0).tipi == ["anime", "brano", "artista"]
+        and r.view(1000.0).principale == "anime"
+    )
+
+    # durata massima dell'anteprima
+    corta = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0, clip=5)
+    assert corta.view(1019.0).audio_secondi == 5 and corta.view(1000.0).audio_secondi == 1
+    assert corta.view(1000.0).loop is True
+    senza = QuizPartita.nuova(11, "sigla", 3, 20, ["a"], 1000.0, loop=False)
+    assert senza.view(1000.0).loop is False

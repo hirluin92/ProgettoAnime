@@ -591,7 +591,15 @@ class RoomManager:
         umani = [p.id for p in room.players.values() if not p.is_chat]
         room.phase = "quiz"
         room.extras["quiz"] = QuizPartita.nuova(
-            room.seed, st.quiz_tipo, st.quiz_round, st.quiz_tempo, umani, now()
+            room.seed,
+            st.quiz_tipo,
+            st.quiz_round,
+            st.quiz_tempo,
+            umani,
+            now(),
+            st.quiz_clip,
+            st.quiz_loop,
+            st.quiz_chiede,
         )
         return [RoomState(room=room.view())]
 

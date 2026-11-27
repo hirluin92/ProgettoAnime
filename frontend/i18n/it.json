@@ -576,6 +576,37 @@
     "allenamento": "Allenamento",
     "nuova": "Nuova partita",
     "modQuiz": "Quiz sugli anime",
+    "imp": {
+      "stanza": "Stanza",
+      "titolo": "Impostazioni della partita",
+      "giochi": "Giochi",
+      "round": "Round",
+      "numeroRound": "Numero di round",
+      "durataClip": "Durata massima dell'anteprima",
+      "dipartenza": "Di partenza, le canzoni",
+      "loop": "In loop",
+      "unaVolta": "Una volta sola",
+      "loopAiuto": "I giocatori possono comunque attivare o disattivare il loop durante la partita.",
+      "tempoRisposta": "Tempo per rispondere",
+      "tempoAiuto": "Minuti e secondi, da 0:10 fino a 10:00.",
+      "punteggio": "Punteggio",
+      "indovinano": "I giocatori indovinano",
+      "chiede": {
+        "tutto": "Tutto",
+        "anime": "Anime",
+        "brano": "Titolo",
+        "artista": "Artista"
+      },
+      "chiedeAiuto": {
+        "tutto": "L'anime vale il punteggio pieno; il solo titolo o il solo artista danno meno punti.",
+        "anime": "Conta solo l'anime di cui è la sigla.",
+        "brano": "Conta solo il titolo del brano, a punteggio pieno.",
+        "artista": "Conta solo l'artista, a punteggio pieno."
+      },
+      "fatto": "Fatto",
+      "riepilogo": "{r} round · {t} a domanda",
+      "apri": "Impostazioni della partita"
+    },
     "indiziAnime": {
       "episodi": "Episodi",
       "voto": "Voto"
@@ -674,6 +705,8 @@
       "secondi": "Ascolti i primi {n} secondi",
       "tutta": "Ora puoi ascoltarla tutta",
       "noAudio": "Il browser ha bloccato l'audio: premi il pulsante per ascoltare.",
+      "loopOn": "In loop: attivo",
+      "loopOff": "In loop: spento",
       "credito": "Anteprime audio di Apple Music (iTunes)."
     },
     "siglaTesto": "Indovina l'anime da pochi secondi della sua sigla. 6 tentativi.",

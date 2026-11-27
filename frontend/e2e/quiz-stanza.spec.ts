@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createRoom, joinRoom } from "./helpers";
+import { createRoom, impostaCursore, joinRoom } from "./helpers";
 
 async function soluzione(page: Page, code: string) {
   const r = await page.request.get(`http://localhost:8000/api/dev/quiz-soluzione/${code}`);
@@ -20,7 +20,11 @@ test("quiz tra amici: due giocatori rispondono, blocco dopo l'errore, classifica
   const ospite = await joinRoom(browser, code, "Bruno");
 
   await host.page.getByLabel("Modalità").selectOption("quiz");
-  await host.page.getByTestId("quiz-round").fill("3");
+  // scegliendo il quiz si apre la finestra delle impostazioni
+  await expect(host.page.getByTestId("quiz-impostazioni-finestra")).toBeVisible();
+  await impostaCursore(host.page, "quiz-round", 3);
+  await host.page.getByTestId("quiz-impostazioni-fatto").click();
+  await expect(host.page.getByTestId("quiz-riepilogo")).toContainText("3 round");
   await host.page.getByRole("button", { name: "Avvia" }).click();
   await expect(host.page.getByTestId("quiz-stanza")).toBeVisible();
   await expect(ospite.page.getByTestId("quiz-stanza")).toBeVisible();
@@ -58,4 +62,26 @@ test("quiz tra amici: due giocatori rispondono, blocco dopo l'errore, classifica
   await expect(host.page.getByTestId("quiz-classifica")).toContainText("Anna");
   await host.page.getByTestId("quiz-lobby").click();
   await expect(host.page.getByRole("button", { name: "Avvia" })).toBeVisible();
+});
+
+test("quiz tra amici: funziona con più di 2 giocatori (4 in classifica)", async ({ browser }) => {
+  test.setTimeout(90_000);
+  const { host, code } = await createRoom(browser, "Anna");
+  const altri = [
+    await joinRoom(browser, code, "Bruno"),
+    await joinRoom(browser, code, "Carla"),
+    await joinRoom(browser, code, "Dario"),
+  ];
+  await host.page.getByLabel("Modalità").selectOption("quiz");
+  await host.page.getByTestId("quiz-impostazioni-fatto").click();
+  await host.page.getByRole("button", { name: "Avvia" }).click();
+  for (const p of [host, ...altri]) {
+    await expect(p.page.getByTestId("quiz-classifica").locator("li")).toHaveCount(4);
+  }
+  // risponde giusto solo Carla: i punti compaiono per lei in tutte le classifiche
+  const sol = await soluzione(host.page, code);
+  await rispondi(altri[1].page, sol.nome);
+  await expect(host.page.getByTestId("quiz-classifica").locator("li").first()).toContainText(
+    "Carla",
+  );
 });
