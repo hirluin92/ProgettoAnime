@@ -75,7 +75,7 @@ export default function RisultatoPopup(p: Props) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12 }}
               transition={{ type: "spring", stiffness: 240, damping: 22 }}
-              className="panel relative flex w-full max-w-xl flex-wrap items-center gap-5 p-6"
+              className="panel panel-solido relative flex w-full max-w-xl flex-wrap items-center gap-5 p-6"
               onClick={(e) => e.stopPropagation()}
               data-testid={`${p.testId}-fine`}
             >

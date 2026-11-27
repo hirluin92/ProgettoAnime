@@ -22,7 +22,7 @@ function Carta({
   titolo: string;
   testo: string;
   accento: string;
-  stato?: { testo: string; fatto: boolean } | null;
+  stato?: { testo: string; fatto: boolean; vinto?: boolean } | null;
   testId?: string;
 }) {
   return (
@@ -59,7 +59,13 @@ function Carta({
       <div className="relative mt-auto flex items-center justify-between pt-2">
         {stato ? (
           <span
-            className={`chip ${stato.fatto ? "text-emerald-300" : "text-amber-200"}`}
+            className={`chip ${
+              stato.fatto
+                ? stato.vinto === false
+                  ? "text-rose-300"
+                  : "text-emerald-300"
+                : "text-amber-200"
+            }`}
             data-testid={testId ? `${testId}-stato` : undefined}
           >
             {stato.testo}
@@ -67,7 +73,9 @@ function Carta({
         ) : (
           <span />
         )}
-        <span className="btn btn-primary min-h-10 px-4 text-sm">{it.quiz.gioca} →</span>
+        <span className="btn btn-primary min-h-10 px-4 text-sm">
+          {stato?.fatto ? it.quiz.rivedi : it.quiz.gioca} →
+        </span>
       </div>
     </Link>
   );
@@ -103,6 +111,7 @@ export default function SfidePage() {
     s
       ? {
           fatto: s.finito,
+          vinto: s.vinto,
           testo: s.finito
             ? s.vinto
               ? it.quiz.vinta

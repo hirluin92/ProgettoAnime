@@ -197,6 +197,19 @@ body::before {
       inset 0 1px 0 rgb(255 255 255 / 0.1),
       inset 0 -30px 50px -30px rgb(139 92 255 / 0.12);
   }
+  /* Pannello opaco per finestre e tendine: niente testo che traspare da sotto */
+  .panel-solido {
+    background:
+      linear-gradient(165deg, rgb(30 25 64), rgb(15 12 34)) padding-box,
+      linear-gradient(
+          140deg,
+          rgb(255 255 255 / 0.32),
+          rgb(255 255 255 / 0.05) 38%,
+          rgb(139 92 255 / 0.35) 72%,
+          rgb(255 61 129 / 0.3)
+        )
+        border-box;
+  }
   .panel-hover {
     transition:
       transform 0.35s var(--ease),
@@ -261,6 +274,15 @@ body::before {
   .btn:disabled {
     opacity: 0.42;
     cursor: not-allowed;
+  }
+  /* il pulsante principale spento è grigio, non un rosa sbiadito che sembra rotto */
+  .btn-primary:disabled {
+    opacity: 1;
+    color: rgb(255 255 255 / 0.5);
+    background: rgb(255 255 255 / 0.1);
+    border-color: rgb(255 255 255 / 0.12);
+    box-shadow: none;
+    text-shadow: none;
   }
   .btn:focus-visible,
   .field:focus-visible {

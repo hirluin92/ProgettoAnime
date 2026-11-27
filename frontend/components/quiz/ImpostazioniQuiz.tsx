@@ -149,7 +149,7 @@ export default function ImpostazioniQuiz({
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12 }}
-            className="panel relative my-4 w-full max-w-xl space-y-6 p-6 sm:p-8"
+            className="panel panel-solido relative my-4 w-full max-w-xl space-y-6 p-6 sm:p-8"
             onClick={(e) => e.stopPropagation()}
             data-testid="quiz-impostazioni-finestra"
           >
