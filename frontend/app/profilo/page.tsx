@@ -73,11 +73,11 @@ export default function ProfiloPage() {
   if (!profile)
     return (
       <main className="mx-auto max-w-md px-5 pt-14" data-testid="profilo-nuovo">
-        <div className="panel reveal space-y-4 p-6 sm:p-8">
-          <div className="space-y-1">
+        <div className="panel-vivo reveal space-y-4 p-6 sm:p-8">
+          <div className="testata space-y-1">
             <span className="eyebrow">{it.profilo.gioca}</span>
-            <h1 className="text-5xl font-black leading-none">{it.profilo.titolo}</h1>
-            <p className="text-sm muted">{it.profilo.senzaProfilo}</p>
+            <h1 className="text-5xl leading-none">{it.profilo.titolo}</h1>
+            <p className="text-sm font-medium muted">{it.profilo.senzaProfilo}</p>
           </div>
           <input
             aria-label={it.profilo.nome}
@@ -88,19 +88,19 @@ export default function ProfiloPage() {
             onChange={(e) => setName(e.target.value)}
           />
           {error && (
-            <p role="alert" className="text-rose-400">
+            <p role="alert" className="border-2 border-rose-400 bg-rose-400/10 p-2 text-sm font-bold text-rose-300">
               {error}
             </p>
           )}
           <button
-            className="btn btn-primary w-full text-lg"
+            className="btn btn-primary min-h-14 w-full text-xl"
             disabled={!name.trim()}
             onClick={() => void save()}
           >
             {it.profilo.crea}
           </button>
           <button
-            className="w-full text-center text-sm underline muted"
+            className="min-h-11 w-full text-center text-sm font-bold underline muted"
             onClick={() => setAccesso(true)}
             data-testid="ho-account"
           >
@@ -113,54 +113,78 @@ export default function ProfiloPage() {
   const pct = profile.partite ? Math.round((100 * profile.vittorie) / profile.partite) : 0;
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 pt-8" data-testid="profilo">
-      <header className="panel reveal flex flex-wrap items-center gap-5 p-5 sm:p-6">
-        <div className="grid size-24 shrink-0 place-items-center rounded-full border-2 border-amber-300/70 bg-gradient-to-br from-amber-300/25 to-pink-500/25 shadow-[0_0_30px_rgb(255_212_90/0.3)]">
-          <div className="text-center">
-            <div className="text-[0.6rem] font-extrabold uppercase tracking-widest muted">
-              {it.profilo.livello}
-            </div>
-            <div className="display text-5xl font-black leading-none" data-testid="livello">
-              {profile.livello}
+      {/* la tessera del giocatore: carta stampata, timbro del livello, numeri in fila */}
+      <header className="su-carta reveal relative overflow-hidden border-2 border-black bg-carta text-nero shadow-[7px_7px_0_var(--rosso)]">
+        <i
+          aria-hidden="true"
+          className="absolute inset-y-0 right-0 w-1/2"
+          style={{
+            backgroundImage: "radial-gradient(rgb(14 13 16 / 0.22) 1.3px, transparent 1.7px)",
+            backgroundSize: "10px 10px",
+            WebkitMaskImage: "linear-gradient(260deg, #000, transparent 80%)",
+            maskImage: "linear-gradient(260deg, #000, transparent 80%)",
+          }}
+        />
+        <div className="relative flex flex-wrap items-center gap-5 p-5 sm:p-6">
+          <div className="grid size-24 shrink-0 -rotate-6 place-items-center rounded-[10px] border-[3px] border-black bg-[#e0301f] text-white shadow-[4px_4px_0_#000]">
+            <div className="text-center">
+              <div className="text-[0.6rem] font-black uppercase tracking-widest">
+                {it.profilo.livello}
+              </div>
+              <div className="num text-5xl leading-none" data-testid="livello">
+                {profile.livello}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="min-w-[14rem] flex-1 space-y-2">
-          <div>
-            <span className="eyebrow">{profile.titolo}</span>
-            <h1 className="truncate text-5xl font-black leading-none">{profile.name}</h1>
-            {profile.username && (
-              <p className="text-sm muted" data-testid="profilo-utente">
-                {it.account.protetto.replace("{nome}", profile.username)}
-              </p>
-            )}
-          </div>
-          <div
-            className="h-3 overflow-hidden rounded-full bg-black/40"
-            role="progressbar"
-            aria-label={it.profilo.xp}
-            aria-valuenow={Math.round(avanzamento(profile))}
-          >
+          <div className="min-w-[14rem] flex-1 space-y-2">
+            <div>
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-[#b3200f]">
+                {profile.titolo}
+              </span>
+              <h1 className="truncate text-5xl leading-none sm:text-6xl">{profile.name}</h1>
+              {profile.username && (
+                <p className="text-sm font-bold muted" data-testid="profilo-utente">
+                  {it.account.protetto.replace("{nome}", profile.username)}
+                </p>
+              )}
+            </div>
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-300 via-orange-400 to-pink-500 transition-[width] duration-700"
-              style={{ width: `${avanzamento(profile)}%` }}
-            />
+              className="h-4 overflow-hidden border-2 border-black bg-white/60"
+              role="progressbar"
+              aria-label={it.profilo.xp}
+              aria-valuenow={Math.round(avanzamento(profile))}
+            >
+              <div
+                className="h-full bg-[#e0301f] transition-[width] duration-700"
+                style={{
+                  width: `${avanzamento(profile)}%`,
+                  backgroundImage:
+                    "repeating-linear-gradient(115deg, rgb(0 0 0 / 0.25) 0 4px, transparent 4px 9px)",
+                }}
+              />
+            </div>
+            <p className="num text-xs" data-testid="xp">
+              {profile.xp} / {profile.xp_prossimo} {it.profilo.xp}
+            </p>
           </div>
-          <p className="text-xs muted" data-testid="xp">
-            {profile.xp} / {profile.xp_prossimo} {it.profilo.xp}
-          </p>
         </div>
-        <dl className="grid w-full grid-cols-3 gap-3 text-center sm:grid-cols-6">
+        <dl className="relative grid grid-cols-3 border-t-2 border-black bg-nero text-center text-carta sm:grid-cols-6">
           {[
             [it.profilo.partite, profile.partite, ""],
             [it.profilo.vittorie, profile.vittorie, "text-emerald-300"],
             [it.profilo.percentuale, `${pct}%`, ""],
-            [it.profilo.scala, profile.best_scala, "text-cyan-200"],
-            [it.profilo.elo, profile.elo, "text-violet-300"],
+            [it.profilo.scala, profile.best_scala, "text-cyan-300"],
+            [it.profilo.elo, profile.elo, "text-[#b7a8ff]"],
             [it.profilo.crediti, profile.crediti, "text-amber-300"],
           ].map(([k, v, colore]) => (
-            <div key={String(k)} className="rounded-2xl border bg-white/[0.04] px-4 py-2">
-              <dt className="text-[0.6rem] font-extrabold uppercase tracking-widest muted">{k}</dt>
-              <dd className={`display text-3xl font-black ${colore}`}>{v}</dd>
+            <div
+              key={String(k)}
+              className="border-b border-r border-[rgb(243_236_221/0.18)] px-2 py-3 sm:border-b-0"
+            >
+              <dt className="text-[0.6rem] font-black uppercase tracking-widest text-[#b5aea0]">
+                {k}
+              </dt>
+              <dd className={`num text-2xl ${colore}`}>{v}</dd>
             </div>
           ))}
         </dl>
@@ -170,20 +194,22 @@ export default function ProfiloPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="panel space-y-3 p-5" data-testid="obiettivi">
           <div className="flex items-baseline justify-between">
-            <h2 className="text-2xl font-extrabold">{it.profilo.obiettivi}</h2>
-            <span className="text-xs muted">{it.profilo.obiettivoXp}</span>
+            <h2 className="text-3xl">{it.profilo.obiettivi}</h2>
+            <span className="chip border-black bg-[#ffd21f] text-black">{it.profilo.obiettivoXp}</span>
           </div>
           <ul className="grid gap-2">
             {profile.obiettivi.map((o) => (
               <li
                 key={o.id}
-                className={`flex items-center gap-3 rounded-xl border p-3 ${
-                  o.fatto ? "border-emerald-300/50 bg-emerald-400/10" : "bg-white/[0.03]"
+                className={`flex items-center gap-3 border-2 p-3 ${
+                  o.fatto
+                    ? "border-[#35d68a] bg-[#35d68a]/10"
+                    : "border-[var(--line)] bg-black/20"
                 }`}
               >
                 <span
-                  className={`grid size-6 shrink-0 place-items-center rounded-full border-2 ${
-                    o.fatto ? "border-emerald-300 bg-emerald-400 text-black" : "border-white/30"
+                  className={`grid size-7 shrink-0 place-items-center border-2 ${
+                    o.fatto ? "-rotate-6 border-black bg-[#35d68a] text-black" : "border-white/40"
                   }`}
                 >
                   {o.fatto && <Icon name="check" className="size-4" />}
@@ -199,7 +225,7 @@ export default function ProfiloPage() {
 
         <section className="panel space-y-3 p-5" data-testid="stagione">
           <div className="flex items-baseline justify-between">
-            <h2 className="text-2xl font-extrabold">{it.profilo.classifica}</h2>
+            <h2 className="text-3xl">{it.profilo.classifica}</h2>
             <span className="chip">{profile.stagione.id}</span>
           </div>
           <p className="text-sm">
@@ -211,30 +237,29 @@ export default function ProfiloPage() {
               </>
             )}
           </p>
-          <ol className="grid gap-1.5 text-sm">
+          <ol className="text-sm">
             {(season?.top ?? []).map((r, i) => (
               <li
                 key={`${r.name}-${i}`}
-                className={`flex items-center gap-3 rounded-xl border px-3 py-2 ${
-                  r.name === profile.name ? "border-cyan-300/50 bg-cyan-300/10" : "bg-white/[0.03]"
-                }`}
+                className="riga"
+                data-io={r.name === profile.name ? "" : undefined}
               >
-                <span className="display w-7 text-xl font-black text-gold">
-                  <Medaglia pos={i} />
-                </span>
-                <span className="min-w-0 flex-1 truncate font-bold">{r.name}</span>
-                <span className="display text-xl font-black tabular-nums">{r.points}</span>
+                <Medaglia pos={i} />
+                <span className="min-w-0 flex-1 truncate">{r.name}</span>
+                <span className="num text-base">{r.points}</span>
               </li>
             ))}
-            {season && season.top.length === 0 && <li className="muted">{it.profilo.nessuno}</li>}
+            {season && season.top.length === 0 && (
+              <li className="vuoto font-bold">{it.profilo.nessuno}</li>
+            )}
           </ol>
         </section>
       </div>
 
       <section className="panel space-y-4 p-5" data-testid="collezione">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-2xl font-extrabold">{it.profilo.collezione}</h2>
-          <span className="text-sm">
+          <h2 className="text-3xl">{it.profilo.collezione}</h2>
+          <span className="num text-sm">
             <b data-testid="coll-count">{profile.collezione.length}</b> /{" "}
             {profile.collezione_totale}
           </span>
@@ -251,11 +276,8 @@ export default function ProfiloPage() {
                     {mie}/{list.length}
                   </span>
                 </div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-black/40">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: `${(mie / list.length) * 100}%`, background: pal.from }}
-                  />
+                <div className="barra" style={{ ["--accent" as string]: pal.from }}>
+                  <i style={{ width: `${(mie / list.length) * 100}%` }} />
                 </div>
               </li>
             );
@@ -266,7 +288,7 @@ export default function ProfiloPage() {
         </Link>
       </section>
 
-      <div className="flex flex-wrap items-center gap-3 pb-4">
+      <div className="flex flex-wrap items-center gap-3 border-t-2 border-dashed border-[var(--line-forte)] pb-4 pt-5">
         <input
           aria-label={it.profilo.nome}
           className="field"

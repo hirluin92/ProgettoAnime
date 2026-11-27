@@ -27,6 +27,7 @@ function Carta({
   accento,
   stato,
   testId,
+  numero,
 }: {
   href: string;
   icona: string;
@@ -35,59 +36,64 @@ function Carta({
   accento: string;
   stato?: { testo: string; fatto: boolean; vinto?: boolean } | null;
   testId?: string;
+  numero: string;
 }) {
   return (
     <Link
       href={href}
       data-testid={testId}
-      className="panel panel-hover group relative flex flex-col gap-3 overflow-hidden p-5"
+      className="panel-hover group relative isolate flex min-h-[12.5rem] flex-col gap-2 overflow-hidden p-5"
+      style={{ ["--accent" as string]: accento }}
     >
-      <span
+      <i
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-[3px]"
-        style={{ background: `linear-gradient(90deg, transparent, ${accento}, transparent)` }}
+        className="retino absolute inset-y-0 right-0 -z-10 w-3/5 opacity-40 transition-opacity group-hover:opacity-80"
+        style={{
+          WebkitMaskImage: "linear-gradient(250deg, #000, transparent 75%)",
+          maskImage: "linear-gradient(250deg, #000, transparent 75%)",
+        }}
       />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-4 right-4 opacity-[0.08]"
+        className="pointer-events-none absolute -bottom-4 -right-2 -z-10 -rotate-12 opacity-30 transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110"
         style={{ color: accento }}
       >
-        <Icon name={icona} className="size-32" />
+        <Icon name={icona} className="size-36" />
       </span>
-      <span
-        className="relative grid size-14 place-items-center rounded-2xl text-white ring-1 ring-white/30"
-        style={{
-          background: `linear-gradient(135deg, ${accento}, rgb(0 0 0 / 0.45))`,
-          boxShadow: `0 8px 24px ${accento}66, inset 0 1px 0 rgb(255 255 255 / 0.4)`,
-        }}
-      >
-        <Icon name={icona} className="size-7" />
-      </span>
-      <div className="relative space-y-1">
-        <h2 className="display text-3xl font-black leading-none">{titolo}</h2>
-        <p className="text-[0.95rem] leading-snug muted">{testo}</p>
-      </div>
-      <div className="relative mt-auto flex items-center justify-between pt-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className="num text-sm" style={{ color: accento }}>
+          {numero}
+        </span>
         {stato ? (
           <span
             className={`chip ${
               stato.fatto
                 ? stato.vinto === false
-                  ? "text-rose-300"
-                  : "text-emerald-300"
-                : "text-amber-200"
+                  ? "border-black bg-[#e0301f] text-white"
+                  : "border-black bg-[#35d68a] text-black"
+                : "border-black bg-carta text-nero"
             }`}
             data-testid={testId ? `${testId}-stato` : undefined}
           >
+            {stato.fatto && <Icon name={stato.vinto === false ? "x" : "check"} />}
             {stato.testo}
           </span>
         ) : (
           <span />
         )}
-        <span className="btn btn-primary min-h-10 px-4 text-sm">
-          {stato?.fatto ? it.quiz.rivedi : it.quiz.gioca} <Icon name="arrowright" />
-        </span>
       </div>
+      <h2 className="text-4xl leading-none sm:text-5xl">{titolo}</h2>
+      <p className="max-w-sm text-[0.95rem] font-medium leading-snug muted">{testo}</p>
+      <span
+        className="display mt-auto flex items-center gap-2 pt-3 text-lg tracking-wider"
+        style={{ color: accento }}
+      >
+        {stato?.fatto ? it.quiz.rivedi : it.quiz.gioca}
+        <span
+          aria-hidden="true"
+          className="inline-block h-[3px] w-8 bg-current transition-all duration-200 group-hover:w-14"
+        />
+      </span>
     </Link>
   );
 }
@@ -146,10 +152,11 @@ export default function SfidePage() {
         <span className="eyebrow">
           {profile ? fmt(it.nav.ciao, { nome: profile.name }) : it.quiz.delGiorno}
         </span>
-        <h1 className="display text-5xl font-black">{it.quiz.titolo}</h1>
-        <p className="max-w-2xl text-[0.95rem] muted">{it.quiz.intro}</p>
+        <h1 className="text-4xl sm:text-5xl">{it.quiz.titolo}</h1>
+        <p className="max-w-2xl text-[0.95rem] font-medium muted">{it.quiz.intro}</p>
         {prossima && (
-          <p className="chip mt-2 mr-2" data-testid="sfide-prossima">
+          <p className="chip mt-2 mr-2 border-black bg-carta text-nero" data-testid="sfide-prossima">
+            <Icon name="clock" />
             {fmt(it.quiz.prossima, { t: prossima })}
           </p>
         )}
@@ -169,15 +176,17 @@ export default function SfidePage() {
           accento="#3fd0f0"
           stato={statoAnimedle}
           testId="sfida-animedle"
+          numero="01"
         />
         <Carta
           href="/sfide/scorcio"
           icona="moon"
           titolo={it.quiz.scorcio.titolo}
           testo={it.quiz.scorcioTesto}
-          accento="#ff6fb0"
+          accento="#ff5fa8"
           stato={stato(scorcio)}
           testId="sfida-scorcio"
+          numero="02"
         />
         <Carta
           href="/sfide/personaggio"
@@ -187,6 +196,7 @@ export default function SfidePage() {
           accento="#35d68a"
           stato={stato(personaggio)}
           testId="sfida-personaggio"
+          numero="03"
         />
         <Carta
           href="/sfide/sigla"
@@ -196,6 +206,7 @@ export default function SfidePage() {
           accento="#ff9238"
           stato={stato(sigla)}
           testId="sfida-sigla"
+          numero="04"
         />
         <Carta
           href="/duello/giorno"
@@ -204,6 +215,7 @@ export default function SfidePage() {
           testo={it.quiz.rompicapoTesto}
           accento="#ffd21f"
           testId="sfida-rompicapo"
+          numero="05"
         />
       </div>
     </main>

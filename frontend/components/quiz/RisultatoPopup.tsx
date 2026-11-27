@@ -1,5 +1,6 @@
 "use client";
 
+import Moneta from "@/components/Moneta";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -108,7 +109,7 @@ export default function RisultatoPopup(p: Props) {
                     className="inline-flex items-center gap-2 font-bold text-amber-300"
                     data-testid={`${p.testId}-crediti`}
                   >
-                    <Icon name="coin" /> {fmt(it.quiz.guadagnati, { n: p.crediti })}
+                    <Moneta gira className="size-[1.4em]" /> {fmt(it.quiz.guadagnati, { n: p.crediti })}
                   </p>
                 )}
                 <div className="flex flex-wrap gap-2 pt-1">

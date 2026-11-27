@@ -2,6 +2,7 @@
 
 import Caricamento from "@/components/Caricamento";
 import Icon from "@/components/Icon";
+import Moneta from "@/components/Moneta";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ export default function NegozioView() {
     return (
       <main className="mx-auto max-w-md p-6 pt-14 text-center">
         <div className="vuoto">
-          <Icon name="coin" className="size-10" />
+          <Moneta grande className="size-14" />
           <p className="font-bold text-carta">{it.negozio.senzaProfilo}</p>
           <Link href="/profilo" className="btn btn-primary">
             {it.nav.profilo}
@@ -86,7 +87,7 @@ export default function NegozioView() {
           <p className="max-w-xl text-[0.95rem] font-medium muted">{it.negozio.intro}</p>
         </div>
         <div className="saldo">
-          <Icon name="coin" className="size-10 shrink-0" />
+          <Moneta grande gira className="size-16 shrink-0" key={profile.crediti} />
           <div>
             <div className="num text-3xl leading-none" data-testid="saldo">
               {fmt(it.negozio.crediti, { n: profile.crediti })}
@@ -179,7 +180,7 @@ export default function NegozioView() {
                   {manca > 0 ? (
                     <Icon name="lock" className="size-[1.1em]" />
                   ) : (
-                    <Icon name="coin" className="size-[1.2em]" />
+                    <Moneta className="size-[1.3em]" />
                   )}
                   {manca > 0
                     ? fmt(it.negozio.mancano, { n: manca })

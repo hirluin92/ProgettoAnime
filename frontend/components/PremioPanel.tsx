@@ -1,5 +1,6 @@
 "use client";
 
+import Moneta from "@/components/Moneta";
 import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import it from "@/i18n/it.json";
@@ -44,8 +45,8 @@ export default function PremioPanel({ premio }: { premio: Premio }) {
           {it.profilo.stagione}: +{premio.punti_stagione}
         </li>
         {!!premio.crediti && (
-          <li className="chip text-amber-200" data-testid="premio-crediti">
-            +{premio.crediti} {it.profilo.crediti}
+          <li className="chip border-black bg-[#ffd21f] text-black" data-testid="premio-crediti">
+            <Moneta gira className="size-[1.3em]" />+{premio.crediti} {it.profilo.crediti}
           </li>
         )}
         {premio.elo_prima != null && premio.elo_dopo != null && (

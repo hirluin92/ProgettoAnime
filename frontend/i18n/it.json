@@ -82,7 +82,7 @@
     "sfideTitolo": "Sfide del giorno",
     "sfideTesto": "Cinque giochi nuovi a mezzanotte: Animedle, sigle, scorci, chi è e il rompicapo.",
     "negozioTitolo": "Bustine",
-    "negozioTesto": "Si aprono con i crediti vinti giocando. Mai con soldi veri.",
+    "negozioTesto": "Si aprono con i sigilli vinti giocando. Mai con soldi veri.",
     "apri": "Apri",
     "principale": "La modalità principale",
     "oppure": "oppure",
@@ -247,7 +247,7 @@
       "Scegli in segreto dove giocare le carte tra le 3 corsie, poi si girano tutte insieme.",
       "Chi è in vantaggio gira per primo: gli effetti «Al rivelarsi» scattano in ordine.",
       "Dopo il turno 6 vince ogni corsia chi ha più potenza. Vince la partita chi conquista 2 corsie su 3.",
-      "Con i crediti guadagnati giocando apri pacchetti: i crediti non si comprano con denaro."
+      "Con i sigilli guadagnati giocando apri pacchetti: i sigilli non si comprano con denaro."
     ],
     "regoleElenco": [
       "Da 2 a 20 giocatori comprano all'asta i personaggi per 7 ruoli.",
@@ -287,7 +287,15 @@
     "altro": "Altro",
     "ciao": "Ciao, {nome}",
     "rapida": "Navigazione rapida",
-    "crediti": "crediti"
+    "crediti": "sigilli",
+    "menu": "Menu",
+    "altriModi": "Altri modi",
+    "amici": "Con gli amici",
+    "scala": "La Scala",
+    "home": "Home",
+    "sfideNuove": "Sfide nuove",
+    "guadagnati": "+{n}",
+    "spesi": "−{n}"
   },
   "draft": {
     "tono": {
@@ -323,7 +331,11 @@
     "descrizione": "Scegli una tattica per ognuna delle 3 fasi. La CPU sceglie in segreto e legge i tuoi schemi: non essere prevedibile.",
     "batte": "batte",
     "effetto": "Chi vince il confronto infligge il +{bonus}% di danno nella fase, chi perde il -{malus}%. Se sono uguali, nessun effetto.",
-    "turni": ["turni 1-3", "turni 4-6", "turni 7-10"],
+    "turni": [
+      "turni 1-3",
+      "turni 4-6",
+      "turni 7-10"
+    ],
     "carica": {
       "titolo": "Mossa finale",
       "subito": "Subito",
@@ -343,7 +355,11 @@
   "formazione": {
     "titolo": "Formazione",
     "descrizione": "Chi sta davanti incassa i colpi; chi sta dietro viene colpito per ultimo.",
-    "file": ["Davanti", "Centro", "Dietro"]
+    "file": [
+      "Davanti",
+      "Centro",
+      "Dietro"
+    ]
   },
   "missione": {
     "titolo": "Missione segreta",
@@ -399,7 +415,7 @@
     "senzaProfilo": "Crea un profilo per guadagnare XP, completare obiettivi e salire in classifica.",
     "scala": "Record Scala",
     "elo": "ELO Duello",
-    "crediti": "crediti"
+    "crediti": "sigilli"
   },
   "specchio": {
     "titolo": "Draft a specchio",
@@ -541,7 +557,7 @@
   "account": {
     "passwordCorta": "La password deve avere almeno 8 caratteri.",
     "proteggi": "Proteggi il tuo profilo",
-    "proteggiTesto": "Scegli un nome utente e una password: potrai ritrovare XP, collezione ed ELO da qualsiasi dispositivo. In regalo 100 crediti, un Pacchetto Base!",
+    "proteggiTesto": "Scegli un nome utente e una password: potrai ritrovare XP, collezione ed ELO da qualsiasi dispositivo. In regalo 100 sigilli, un Pacchetto Base!",
     "utente": "Nome utente (lettere, numeri, _)",
     "password": "Password (almeno 8 caratteri)",
     "crea": "Crea l'account",
@@ -606,7 +622,7 @@
   },
   "quiz": {
     "titolo": "Sfide del giorno",
-    "intro": "Ogni giorno un nuovo bersaglio, uguale per tutti. Vinci crediti e tieni viva la serie.",
+    "intro": "Ogni giorno un nuovo bersaglio, uguale per tutti. Vinci sigilli e tieni viva la serie.",
     "delGiorno": "Del giorno",
     "allenamento": "Allenamento",
     "nuova": "Nuova partita",
@@ -765,12 +781,12 @@
     "arrenditi": "Mi arrendo, mostrami la risposta",
     "indovinato": "Indovinato!",
     "eraQuesto": "Era questo",
-    "guadagnati": "Hai guadagnato {n} crediti",
+    "guadagnati": "Hai guadagnato {n} sigilli",
     "condividi": "Copia il risultato",
     "copiato": "Copiato!",
     "copiaNonRiuscita": "Non sono riuscito a copiare: selezionalo a mano.",
     "altreSfide": "Altre sfide",
-    "senzaProfilo": "Senza un profilo si gioca lo stesso, ma non si guadagnano crediti né serie: creane uno dal Profilo.",
+    "senzaProfilo": "Senza un profilo si gioca lo stesso, ma non si guadagnano sigilli né serie: creane uno dal Profilo.",
     "fatto": "Fatta",
     "daFare": "Da fare",
     "vinta": "Vinta",
@@ -826,24 +842,24 @@
   },
   "negozio": {
     "titolo": "Negozio di pacchetti",
-    "crediti": "{n} crediti",
-    "intro": "I crediti si guadagnano solo giocando. Le probabilità sono qui sotto, per ogni carta del pacchetto.",
-    "senzaProfilo": "Crea un profilo per guadagnare crediti e aprire pacchetti.",
+    "crediti": "{n} sigilli",
+    "intro": "I sigilli si guadagnano solo giocando. Le probabilità sono qui sotto, per ogni carta del pacchetto.",
+    "senzaProfilo": "Crea un profilo per guadagnare sigilli e aprire pacchetti.",
     "apri": "Apri",
-    "prezzo": "{n} crediti",
+    "prezzo": "{n} sigilli",
     "carte": "{n} carte",
     "garantita": "Almeno 1 carta {r}",
     "nessunaGaranzia": "Nessuna rarità garantita",
     "probabilita": "Probabilità per carta",
     "pity": "Leggendaria garantita entro {n} pacchetti (ne mancano {m}).",
-    "pocoCrediti": "Servono più crediti",
+    "pocoCrediti": "Servono più sigilli",
     "mancano": "Ti mancano {n}",
     "tocca": "Tocca le carte per scoprirle",
     "scopriTutte": "Scopri tutte",
     "nuova": "Nuova!",
-    "doppione": "Doppione: +{n} crediti",
+    "doppione": "Doppione: +{n} sigilli",
     "chiudi": "Continua",
-    "riepilogo": "Carte nuove: {n} · Crediti restituiti: {m}",
+    "riepilogo": "Carte nuove: {n} · Sigilli restituiti: {m}",
     "vaiAlbum": "Vedi nell'album",
     "garanziaPity": "Leggendaria garantita!",
     "taglia": "Strappa la busta: trascina lungo la linea tratteggiata, da sinistra a destra.",
@@ -871,7 +887,7 @@
     "gioca": "Gioca una classificata",
     "settimana": "Obiettivi della settimana",
     "partiteSett": "Partite classificate: {n}",
-    "ritira": "Ritira {n} crediti",
+    "ritira": "Ritira {n} sigilli",
     "ritirato": "Ritirato",
     "ancora": "Ancora {n} partite",
     "classifica": "Classifica",
@@ -913,5 +929,10 @@
   "footerGioca": "Gioca",
   "footerColleziona": "Colleziona",
   "footerSito": "Il sito",
-  "caricamento": "Sto inchiostrando la tavola…"
+  "caricamento": "Sto inchiostrando la tavola…",
+  "moneta": {
+    "nome": "sigilli",
+    "singolare": "sigillo",
+    "nota": "Il nome della moneta: per cambiarlo, sostituisci «sigilli» in questo file (trova e sostituisci)."
+  }
 }

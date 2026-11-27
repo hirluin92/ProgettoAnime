@@ -76,8 +76,7 @@ const LINEA: Record<string, ReactNode> = {
   coin: (
     <>
       <circle cx="12" cy="12" r="9" />
-      <circle cx="12" cy="12" r="5.5" />
-      <path d="M12 9.5v5M10 12h4" />
+      <path d="M12 6.5 17.5 12 12 17.5 6.5 12z" />
     </>
   ),
   music: (
@@ -178,18 +177,15 @@ export default function Icon({
   );
 }
 
-/** Medaglia per i primi tre posti, numero semplice per gli altri. */
+/** Posizione in classifica: un timbro colorato per i primi tre, un numero per gli altri. */
 export function Medaglia({ pos }: { pos: number }) {
-  const col = [
-    ["#ffe27a", "#c98a10"],
-    ["#eef2f9", "#8793ab"],
-    ["#e8a672", "#a15b2a"],
-  ][pos];
-  if (!col) return <span className="inline-block w-7 text-center">{pos + 1}.</span>;
+  const col = ["#ffd21f", "#cfd8e6", "#c9824a"][pos];
+  if (!col)
+    return <span className="num inline-block w-7 shrink-0 text-center text-xs">{pos + 1}</span>;
   return (
     <span
-      className="inline-grid size-7 place-items-center rounded-full text-sm font-black text-black/80 shadow ring-1 ring-white/50"
-      style={{ background: `linear-gradient(145deg, ${col[0]}, ${col[1]})` }}
+      className="num inline-grid size-7 shrink-0 -rotate-6 place-items-center border-2 border-black text-xs text-black shadow-[2px_2px_0_#000]"
+      style={{ background: col }}
     >
       {pos + 1}
     </span>

@@ -2,17 +2,21 @@ import { expect, test } from "@playwright/test";
 
 test.use({ viewport: { width: 390, height: 780 } });
 
-test("telefono: barra in basso con le voci principali e «Altro»", async ({ page }) => {
+test("telefono: barra in basso con le voci di ogni giorno e il «Menu»", async ({ page }) => {
   await page.goto("/");
   const barra = page.getByTestId("barra-rapida");
   await expect(barra).toBeVisible();
-  for (const voce of ["Duello", "Sfide", "Album", "Negozio", "Profilo"])
+  for (const voce of ["Duello", "Sfide", "Album", "Negozio"])
     await expect(barra.getByRole("link", { name: voce })).toBeVisible();
+  // il profilo sta in alto, sempre a portata di pollice
+  await expect(
+    page.getByRole("navigation", { name: "Principale" }).getByRole("link", { name: "Profilo" }),
+  ).toBeVisible();
   // tocchi grandi
   const alt = await barra.getByRole("link", { name: "Negozio" }).boundingBox();
   expect(alt?.height ?? 0).toBeGreaterThanOrEqual(48);
-  // le voci meno usate stanno in «Altro»
-  await barra.getByRole("button", { name: "Altro" }).click();
+  // gli altri modi di giocare stanno nel «Menu»
+  await barra.getByRole("button", { name: "Menu" }).click();
   await expect(page.getByTestId("barra-altro").getByRole("link", { name: "Ranked" })).toBeVisible();
   await page.getByTestId("barra-altro").getByRole("link", { name: "Veloce" }).click();
   await expect(page).toHaveURL(/\/veloce/);
