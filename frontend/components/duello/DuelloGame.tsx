@@ -1,5 +1,6 @@
 "use client";
 
+import { FENDENTE } from "@/lib/pennello";
 import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -691,6 +692,17 @@ export default function DuelloGame({
                   </span>
                 </motion.span>
               ))}
+            </div>
+            {/* la pennellata che passa dietro il verdetto */}
+            <div className="relative" aria-hidden="true">
+              <svg
+                viewBox="0 0 200 24"
+                preserveAspectRatio="none"
+                className="pennellata absolute left-[4%] top-0 h-[clamp(4.5rem,16vw,9rem)] w-[92%] -rotate-3"
+                style={{ animationDelay: "1.55s" }}
+              >
+                <path d={FENDENTE} fill={esito.vinto ? "#e0301f" : "#2b2a33"} />
+              </svg>
             </div>
             <motion.h2
               initial={{ scale: 2.4, rotate: -14, opacity: 0 }}

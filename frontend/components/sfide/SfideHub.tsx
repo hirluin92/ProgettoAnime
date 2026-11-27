@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Emblema from "@/components/Emblema";
 import Icon from "@/components/Icon";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
@@ -47,10 +48,9 @@ function Carta({
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-4 -right-2 -z-10 -rotate-12 opacity-[0.16] transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110"
-        style={{ color: accento }}
+        className="pointer-events-none absolute -bottom-5 -right-3 -z-10 transition-transform duration-300 group-hover:scale-105"
       >
-        <Icon name={icona} className="size-36" />
+        <Emblema nome={icona} tinta={accento} className="size-36" />
       </span>
       <div className="flex items-center justify-between gap-2">
         <span className="num text-sm" style={{ color: accento }}>
@@ -75,7 +75,7 @@ function Carta({
         )}
       </div>
       <h2 className="text-4xl leading-none sm:text-5xl">{titolo}</h2>
-      <p className="max-w-sm text-[0.95rem] font-medium leading-snug muted">{testo}</p>
+      <p className="max-w-[62%] text-[0.95rem] font-medium leading-snug muted">{testo}</p>
       <span
         className="display mt-auto flex items-center gap-2 pt-3 text-lg tracking-wider"
         style={{ color: accento }}

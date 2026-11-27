@@ -1,6 +1,8 @@
 "use client";
 
+import Emblema from "@/components/Emblema";
 import Icon from "@/components/Icon";
+import { ENSO, FENDENTE, GOCCE } from "@/lib/pennello";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -54,42 +56,149 @@ function pickHeroes(o: DraftOptions): Hero[] {
   return out.length === 3 ? [out[1], out[0], out[2]] : HERO;
 }
 
-/** La vignetta d'apertura: tre carte in posa su un fondo di linee cinetiche, un'onomatopea e un balloon. */
+/**
+ * La scena d'apertura, disegnata a inchiostro: un grande cerchio a pennello vermiglio, una lama che
+ * entra di taglio con la sua pennellata, schizzi e retino; davanti, tre carte che arrivano una dopo
+ * l'altra. I piani si muovono con il puntatore a velocità diverse (parallasse): solo variabili CSS.
+ */
 function Tavola({ heroes }: { heroes: Hero[] }) {
   const roles = ["Danno", "Capitano", "Supporto"];
   const pos = [
-    "left-[3%] top-[20%] w-[36%] -rotate-[9deg]",
-    "left-1/2 top-[5%] z-10 w-[42%] -translate-x-1/2",
-    "right-[3%] top-[18%] w-[36%] rotate-[8deg]",
+    "left-[2%] top-[22%] w-[35%] -rotate-[10deg]",
+    "left-1/2 top-[6%] z-10 w-[41%] -translate-x-1/2",
+    "right-[2%] top-[20%] w-[35%] rotate-[9deg]",
   ];
+  const profondita = [14, 24, 17];
+  const muovi = (e: React.PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty(
+      "--px",
+      (((e.clientX - r.left) / r.width - 0.5) * 2).toFixed(2),
+    );
+    e.currentTarget.style.setProperty(
+      "--py",
+      (((e.clientY - r.top) / r.height - 0.5) * 2).toFixed(2),
+    );
+  };
+  const fermo = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.style.setProperty("--px", "0");
+    e.currentTarget.style.setProperty("--py", "0");
+  };
   return (
-    <div className="relative mx-auto aspect-[10/9] w-full max-w-[34rem]" aria-hidden="true">
-      <div className="absolute inset-[4%_2%_6%_2%] rotate-[1.5deg] overflow-hidden border-[3px] border-carta bg-black shadow-[10px_10px_0_var(--rosso)]">
-        <i
-          className="cinetiche absolute inset-0"
-          style={{ ["--tinta" as string]: "#ff5a45", ["--cy" as string]: "42%" }}
-        />
-        <i
-          className="retino absolute inset-x-0 bottom-0 h-2/5 opacity-70"
-          style={{
-            WebkitMaskImage: "linear-gradient(to top, #000, transparent)",
-            maskImage: "linear-gradient(to top, #000, transparent)",
-          }}
-        />
-      </div>
+    <div
+      className="scena mx-auto aspect-[10/9] w-full max-w-[36rem]"
+      aria-hidden="true"
+      onPointerMove={muovi}
+      onPointerLeave={fermo}
+    >
+      <svg
+        viewBox="0 0 400 360"
+        className="absolute inset-0 size-full overflow-visible"
+        data-piano=""
+        style={{ ["--z" as string]: -10 }}
+      >
+        <defs>
+          <pattern id="scena-retino" width="9" height="9" patternUnits="userSpaceOnUse">
+            <circle cx="4.5" cy="4.5" r="1.7" fill="#f3ecdd" opacity="0.35" />
+          </pattern>
+        </defs>
+        <circle cx="318" cy="250" r="112" fill="url(#scena-retino)" />
+        <g className="scena-enso" style={{ transformOrigin: "200px 176px" }}>
+          <g transform="translate(22 -2) scale(5.55)">
+            <path d={ENSO} fill="#000" transform="translate(1 1.4)" />
+            <path d={ENSO} fill="#e0301f" />
+            <path d={GOCCE} fill="#e0301f" />
+          </g>
+        </g>
+      </svg>
+      <svg
+        viewBox="0 0 400 360"
+        className="absolute inset-0 size-full overflow-visible"
+        data-piano=""
+        style={{ ["--z" as string]: -4 }}
+      >
+        <g className="scena-lama">
+          {/* la pennellata del fendente e la lama */}
+          <g transform="translate(34 338) rotate(-41) scale(2.2 2.6)">
+            <path d={FENDENTE} fill="#0e0d10" transform="translate(0 -9)" />
+          </g>
+          <g transform="translate(70 316) rotate(-41)">
+            <path
+              d="M0 -8 250 -6Q292 -5 322 0 290 7 250 7L0 8Z"
+              fill="#f3ecdd"
+              stroke="#000"
+              strokeWidth="3"
+              strokeLinejoin="round"
+            />
+            <path d="M6 2Q60 6 120 2T240 2Q280 2 300 0L250 6 6 7Z" fill="#0e0d10" opacity="0.22" />
+            <rect
+              x="-10"
+              y="-19"
+              width="11"
+              height="38"
+              rx="3"
+              fill="#ffd21f"
+              stroke="#000"
+              strokeWidth="3"
+            />
+            <rect
+              x="-86"
+              y="-8"
+              width="77"
+              height="16"
+              rx="3"
+              fill="#0e0d10"
+              stroke="#000"
+              strokeWidth="3"
+            />
+            <path
+              d="M-80 0l8-7 8 7-8 7zM-62 0l8-7 8 7-8 7zM-44 0l8-7 8 7-8 7zM-26 0l8-7 8 7-8 7z"
+              fill="#e0301f"
+            />
+            <rect
+              x="-94"
+              y="-10"
+              width="9"
+              height="20"
+              rx="3"
+              fill="#ffd21f"
+              stroke="#000"
+              strokeWidth="3"
+            />
+          </g>
+        </g>
+        <g className="scena-schizzo" fill="#0e0d10" stroke="#f3ecdd" strokeWidth="1.2">
+          <circle cx="352" cy="46" r="9" />
+          <circle cx="374" cy="66" r="4.5" />
+          <circle cx="338" cy="24" r="3" />
+          <circle cx="40" cy="300" r="6" />
+        </g>
+      </svg>
       {heroes.map((h, i) => (
-        <div key={h.nome} className={`absolute ${pos[i]}`}>
-          <div className="float" style={{ ["--i" as string]: i }}>
-            <CharacterCard character={h} role={roles[i]} fluid />
+        <div
+          key={h.nome}
+          className={`absolute ${pos[i]}`}
+          data-piano=""
+          style={{ ["--z" as string]: profondita[i] }}
+        >
+          <div className="scena-carta" style={{ ["--i" as string]: i }}>
+            <div className="float" style={{ ["--i" as string]: i }}>
+              <CharacterCard character={h} role={roles[i]} fluid />
+            </div>
           </div>
         </div>
       ))}
-      <span className="onoma colpo absolute -left-1 top-0 z-20 text-[clamp(2.6rem,9vw,4.6rem)]">
-        {it.home.grido}
+      <span className="absolute -left-1 top-0 z-20" data-piano="" style={{ ["--z" as string]: 30 }}>
+        <span
+          className="onoma colpo text-[clamp(2.6rem,9vw,4.8rem)]"
+          style={{ ["--i" as string]: 13 }}
+        >
+          {it.home.grido}
+        </span>
       </span>
       <span
         className="balloon reveal absolute bottom-[1%] right-0 z-20 text-sm sm:text-base"
-        style={{ ["--i" as string]: 5 }}
+        style={{ ["--i" as string]: 16 }}
       >
         {it.home.balloon}
       </span>
@@ -125,16 +234,10 @@ function Vignetta({
     return (
       <Link
         href={href}
-        className={`panel-hover group flex min-h-[4.75rem] items-center gap-3 p-3 sm:p-4 ${className}`}
+        className={`panel-hover group flex min-h-[4.75rem] items-center gap-2.5 p-2.5 sm:p-3 ${className}`}
         style={{ ["--accent" as string]: accent }}
       >
-        <span
-          aria-hidden="true"
-          className="grid size-11 shrink-0 place-items-center border-2 border-black text-black shadow-[0_3px_0_#000]"
-          style={{ background: accent }}
-        >
-          <Icon name={icon} className="size-6" />
-        </span>
+        <Emblema nome={icon} tinta={accent} className="size-14 sm:size-16" />
         <span className="min-w-0">
           <span className="display block text-xl leading-none sm:text-2xl">{title}</span>
           <span className="mt-1 hidden text-sm font-medium leading-snug muted sm:block">
@@ -161,10 +264,15 @@ function Vignetta({
       )}
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute -bottom-3 -right-2 -z-10 -rotate-12 transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110 ${grande ? "opacity-30 md:opacity-45" : "opacity-[0.14]"}`}
-        style={{ color: accent }}
+        className={`pointer-events-none absolute -z-10 transition-transform duration-300 group-hover:scale-105 ${
+          grande ? "-bottom-6 -right-4 md:-bottom-10 md:-right-6" : "-bottom-5 -right-3"
+        }`}
       >
-        <Icon name={icon} className={grande ? "size-40 md:size-64" : "size-24"} />
+        <Emblema
+          nome={icon}
+          tinta={accent}
+          className={grande ? "size-52 md:size-[22rem]" : "size-32"}
+        />
       </span>
       <span className="flex items-center gap-2">
         <span className="num text-sm" style={{ color: accent }}>
@@ -180,7 +288,7 @@ function Vignetta({
         {title}
       </span>
       <span
-        className={`mt-2 block max-w-md font-medium leading-snug muted ${grande ? "text-base md:text-lg" : "text-[0.95rem]"}`}
+        className={`mt-2 block font-medium leading-snug muted ${grande ? "max-w-[19rem] text-base md:max-w-sm md:text-lg" : "max-w-[62%] text-[0.95rem]"}`}
       >
         {text}
       </span>
@@ -262,10 +370,11 @@ export default function Home() {
               {it.home.eyebrow}
             </span>
             <h1
-              className="reveal text-grad text-[clamp(4.6rem,21vw,10.5rem)] leading-[0.84] tracking-normal lg:text-[clamp(6rem,11.5vw,11rem)]"
-              style={{ ["--i" as string]: 1 }}
+              className="taglio text-grad text-[clamp(4.6rem,21vw,10.5rem)] leading-[0.84] tracking-normal lg:text-[clamp(6rem,11.5vw,11rem)]"
+              data-testo={APP_NAME}
             >
-              {APP_NAME}
+              <span>{APP_NAME}</span>
+              <i aria-hidden="true" />
             </h1>
             <p
               className="reveal max-w-lg text-lg font-medium leading-relaxed text-[#dcd5c5]"

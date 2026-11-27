@@ -157,7 +157,7 @@ function BarraRapida({ active, nuove }: { active: (href: string) => boolean; nuo
       <nav
         aria-label={it.nav.rapida}
         data-testid="barra-rapida"
-        className="vetro fixed inset-x-0 bottom-0 z-50 flex !overflow-visible !border-x-0 !border-b-0 border-t-2 pb-[env(safe-area-inset-bottom)] [--vetro:#131217]"
+        className="vetro barra-vetro fixed inset-x-0 bottom-0 z-50 flex !overflow-visible !border-x-0 !border-b-0 border-t-2 pb-[env(safe-area-inset-bottom)] [--vetro:#131217]"
       >
         {RAPIDA.map((l) => (
           <Link
@@ -227,7 +227,7 @@ export default function SiteNav() {
   return (
     <>
       <CambioTavola path={path} />
-      <header className="site-chrome sticky top-0 z-40 border-b-2 border-black bg-[#0e0d10] shadow-[0_1px_0_rgb(243_236_221/0.16)]">
+      <header className="site-chrome barra-vetro sticky top-0 z-40 border-b-2 border-black">
         <nav
           aria-label="Principale"
           className="mx-auto flex h-14 max-w-7xl items-stretch justify-between gap-2 px-3 sm:px-4"
