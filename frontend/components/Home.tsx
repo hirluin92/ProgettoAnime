@@ -403,12 +403,18 @@ export default function Home() {
             {(
               [
                 { href: "/ranked", icona: "crown", tinta: "#9a86ff", testo: it.home.ctaRanked },
-                { href: "/negozio", icona: "coin", tinta: "#ffd21f", testo: it.home.ctaNegozio },
+                {
+                  href: "/duello/giorno",
+                  icona: "trophy",
+                  tinta: "#ffd21f",
+                  testo: it.home.ctaSfidaGiorno,
+                  testId: "cta-sfida-giorno",
+                },
                 {
                   href: "#amici",
                   icona: "music",
                   tinta: "#ff5fa8",
-                  testo: it.home.ctaQuizAmici,
+                  testo: it.home.ctaAmici,
                   testId: "cta-quiz-amici",
                 },
               ] as { href: string; icona: string; tinta: string; testo: string; testId?: string }[]
@@ -467,55 +473,61 @@ export default function Home() {
             />
           </div>
         </div>
-        {/* il resto: tessere compatte, una riga ciascuna */}
-        <div className="grid grid-cols-2 gap-4 pt-2 lg:grid-cols-5">
-          <Vignetta
-            piccola
-            href="/scala"
-            icon="ladder"
-            n="04"
-            title={it.home.scalaTitolo}
-            text={it.home.scalaBreve}
-            accent="#ff5fa8"
-          />
-          <Vignetta
-            piccola
-            href="/veloce"
-            icon="bolt"
-            n="05"
-            title={it.home.veloceTitolo}
-            text={it.home.veloceBreve}
-            accent="#ff9238"
-          />
-          <Vignetta
-            piccola
-            href="/duello/giorno"
-            icon="trophy"
-            n="06"
-            title={it.home.sfidaBreveTitolo}
-            text={it.home.sfidaBreve}
-            accent="#ffd21f"
-          />
-          <Vignetta
-            piccola
-            href="/album"
-            icon="cards"
-            n="07"
-            title={it.nav.album}
-            text={it.home.albumBreve}
-            accent="#35d68a"
-          />
-          <Vignetta
-            piccola
-            href="/negozio"
-            icon="coin"
-            n="08"
-            title={it.home.negozioTitolo}
-            text={it.home.negozioBreve}
-            accent="#ffd21f"
-            className="max-lg:col-span-2"
-          />
-        </div>
+        {/* il resto sta sotto «Altro»: tre porte in vista, le altre un tocco più in là */}
+        <details className="group" data-testid="home-altro">
+          <summary className="btn w-fit cursor-pointer list-none">
+            {it.home.altro}
+            <span className="text-sm font-medium muted">{it.home.altroSotto}</span>
+          </summary>
+          <div className="grid grid-cols-2 gap-4 pt-4 lg:grid-cols-5">
+            <Vignetta
+              piccola
+              href="/scala"
+              icon="ladder"
+              n="04"
+              title={it.home.scalaTitolo}
+              text={it.home.scalaBreve}
+              accent="#ff5fa8"
+            />
+            <Vignetta
+              piccola
+              href="/veloce"
+              icon="bolt"
+              n="05"
+              title={it.home.veloceTitolo}
+              text={it.home.veloceBreve}
+              accent="#ff9238"
+            />
+            <Vignetta
+              piccola
+              href="/duello/giorno"
+              icon="trophy"
+              n="06"
+              title={it.home.sfidaBreveTitolo}
+              text={it.home.sfidaBreve}
+              accent="#ffd21f"
+            />
+            <Vignetta
+              piccola
+              href="/album"
+              icon="cards"
+              n="07"
+              title={it.nav.album}
+              text={it.home.albumBreve}
+              accent="#35d68a"
+            />
+            <Vignetta
+              piccola
+              href="/negozio"
+              icon="coin"
+              n="08"
+              title={it.home.negozioTitolo}
+              text={it.home.negozioBreve}
+              accent="#ffd21f"
+              className="max-lg:col-span-2"
+            />
+          </div>
+        </details>
       </section>
 
       <section

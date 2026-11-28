@@ -7,6 +7,10 @@
     "ctaRanked": "Classificata",
     "ctaNegozio": "Apri pacchetti",
     "ctaQuizAmici": "Quiz con gli amici",
+    "ctaSfidaGiorno": "Sfida del giorno",
+    "ctaAmici": "Con gli amici",
+    "altro": "Altro",
+    "altroSotto": "Scala, partita veloce, album e negozio",
     "creaQuiz": "Crea una stanza per il quiz musicale",
     "amiciEyebrow": "In compagnia",
     "amiciTitolo": "Asta, torneo e quiz con gli amici",
@@ -94,6 +98,12 @@
     "sfidaBreve": "Un duello uguale per tutti, ogni giorno",
     "albumBreve": "La tua collezione e i mazzi",
     "negozioBreve": "Si aprono con i sigilli vinti"
+  },
+  "community": {
+    "titolo": "Il gioco nuovo nasce qui",
+    "testo": "Stiamo preparando un gioco di carte in tempo reale con personaggi tutti originali. Entra nella community per provarlo per primo.",
+    "discord": "Entra su Discord",
+    "email": "Scrivici per email"
   },
   "footer": "Progetto non ufficiale creato da fan. I personaggi appartengono ai rispettivi titolari dei diritti.",
   "battle": {
@@ -507,6 +517,7 @@
     "inVantaggio": "IN VANTAGGIO",
     "inSvantaggio": "IN SVANTAGGIO",
     "vediPlancia": "Guarda la plancia",
+    "rivincita": "Rivincita",
     "gioca": "Gioca qui",
     "conferma": "Conferma il turno",
     "passa": "Passa il turno",

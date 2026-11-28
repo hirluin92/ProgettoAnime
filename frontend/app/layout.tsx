@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import CookieBanner from "@/components/CookieBanner";
+import Eventi from "@/components/Eventi";
 import Footer from "@/components/Footer";
 import PwaRegister from "@/components/PwaRegister";
 import ModoSfondo from "@/components/ModoSfondo";
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {children}
         <Footer />
         <CookieBanner />
+        <Eventi />
         <PwaRegister />
       </body>
     </html>

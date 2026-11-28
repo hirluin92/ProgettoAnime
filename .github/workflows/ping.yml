@@ -1,0 +1,23 @@
+name: ping
+
+# Tiene sveglio il backend gratuito di Render (si addormenta dopo ~15 minuti e il risveglio dura circa
+# un minuto: un link condiviso troverebbe «non raggiungibile»). Chiama /health ogni 10 minuti.
+# Gratis nei repository pubblici; nessuna carta. GitHub può ritardare i lavori programmati di qualche
+# minuto e li sospende se il repository resta fermo per 60 giorni. Un solo servizio gratuito acceso
+# 24 ore su 24 sta nelle 750 ore al mese di Render.
+# Se il repository diventa privato o il backend si sposta, togliere questo file.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Chiama /health
+        run: curl --fail --silent --show-error --max-time 90 --retry 2 https://arena-anime-backend.onrender.com/health
