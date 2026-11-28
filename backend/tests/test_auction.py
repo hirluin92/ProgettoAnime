@@ -6,7 +6,6 @@ from app.rooms import tournament
 from app.rooms.auction import Auction, BidError
 from app.rooms.models import MatchRef, Player, RoomSettings
 from app.rooms.protocol import (
-    AuctionFinished,
     LotAssigned,
     LotSkipped,
     LotStarted,
@@ -174,17 +173,6 @@ def test_full_team_cannot_bid_and_leaves_auction() -> None:
     assert ps[0] not in auc.active()
 
 
-def test_last_player_with_free_slots_gets_lots_at_one() -> None:
-    auc, ps = make(2)
-    for r in ROLES:
-        ps[0].slots[r] = POOL[0]
-    msgs = auc.start(0)
-    assigned = [m for m in msgs if isinstance(m, LotAssigned)]
-    assert len(assigned) == 7 and all(a.amount == 1 and a.player_id == "p1" for a in assigned)
-    assert isinstance(msgs[-1], AuctionFinished) and auc.finished
-    assert ps[1].budget == 50 - 7 and ps[1].complete
-
-
 def test_auction_ends_when_all_complete() -> None:
     auc, ps = make(2, budget=50)
     msgs = auc.start(0)
@@ -239,3 +227,15 @@ def test_standings_points_and_tiebreak() -> None:
     ]
     rows = tournament.standings(["x", "y", "z"], ms)
     assert [(r.player_id, r.punti) for r in rows] == [("x", 4), ("y", 3), ("z", 1)]
+
+
+def test_last_player_still_bids_for_remaining_lots() -> None:
+    """Se un solo giocatore ha slot liberi, l'asta non gli assegna i lotti da sola."""
+    auc, players = make(n=2)
+    players[0].slots = {r: POOL[i] for i, r in enumerate(ROLES)}  # p0 ha la squadra completa
+    msgs = auc.start(0)
+    assert not auc.finished and auc.lot is not None
+    assert not any(isinstance(m, LotAssigned) for m in msgs)
+    out = auc.place_bid("p1", 1, 1)  # da solo: l'offerta chiude subito il lotto
+    assert any(isinstance(m, LotWon) for m in out)
+    assert len(players[1].free_roles()) == len(ROLES)
