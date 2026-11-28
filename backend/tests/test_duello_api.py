@@ -250,3 +250,23 @@ def test_elo_updates_with_results(tmp_path) -> None:  # type: ignore[no-untyped-
     pr = out["premio"]
     assert pr["elo_prima"] == 1200 and pr["elo_dopo"] != 1200 or out["vinto"] is None
     assert client.get(f"/api/profile/{pid}").json()["elo"] == pr["elo_dopo"]
+
+
+def test_rematch_replays_the_same_game_without_touching_elo(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    configure(f"sqlite:///{tmp_path / 'du7.db'}")
+    pid = client.post("/api/profile", json={"name": "Elena"}).json()["id"]
+    p = picks(21)
+    prima = client.post(
+        "/api/duello/start",
+        json={"seed": 21, "picks": p, "livello": "facile", "profile_id": pid},
+    ).json()
+    riv = client.post(
+        "/api/duello/start",
+        json={"seed": 21, "picks": p, "livello": "facile", "profile_id": pid, "rivincita": True},
+    ).json()
+    assert riv["id"] != prima["id"] and riv["stato"]["luoghi"] == prima["stato"]["luoghi"]
+    assert [c["id"] for c in riv["stato"]["mano"]] == [c["id"] for c in prima["stato"]["mano"]]
+    assert PARTITE[prima["id"]].personale is False and PARTITE[riv["id"]].personale is True
+    out = _gioca_tutto(riv["id"], random.Random(5), riv["stato"])
+    assert out["premio"] is None or out["premio"]["elo_prima"] == out["premio"]["elo_dopo"]
+    assert client.get(f"/api/profile/{pid}").json()["elo"] == 1200

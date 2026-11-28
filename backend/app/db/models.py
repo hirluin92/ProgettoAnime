@@ -96,6 +96,23 @@ class DuelloGiorno(Base):
     punteggio: Mapped[int] = mapped_column(Integer)
 
 
+class EventoRow(Base):
+    """Evento anonimo di utilizzo (solo con il consenso): misura ritenzione e rivincite.
+
+    `pid` è un identificatore casuale del browser, scollegato dal profilo: niente nome, IP o email.
+    """
+
+    __tablename__ = "eventi"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    ts: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    giorno: Mapped[str] = mapped_column(String(10), index=True)  # giorno italiano
+    pid: Mapped[str] = mapped_column(String(36), index=True)
+    sessione: Mapped[str] = mapped_column(String(36))
+    nome: Mapped[str] = mapped_column(String(16), index=True)
+    props: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+
 class ProfileDay(Base):
     """Cosa ha già fatto un profilo in un giorno (obiettivi completati, bonus del primo gioco)."""
 
