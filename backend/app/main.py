@@ -20,6 +20,7 @@ from app.db.session import init_db
 from app.duello_api import router as duello_router
 from app.engine.models import Character, MatchResult, Team
 from app.engine.simulate import simulate
+from app.eventi import router as eventi_router
 from app.limite import LimiteRichieste
 from app.pacchetti import router as pacchetti_router
 from app.profilo import router as profilo_router
@@ -77,6 +78,7 @@ app.include_router(album_router)
 app.include_router(pacchetti_router)
 app.include_router(ranked_router)
 app.include_router(scala_duelli_router)
+app.include_router(eventi_router)
 
 
 @app.get("/health")

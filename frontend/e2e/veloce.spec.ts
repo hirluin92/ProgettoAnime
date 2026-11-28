@@ -15,6 +15,7 @@ test("il piano di battaglia si può spegnere e la partita si gioca senza tattich
 test("una partita veloce si completa in meno di 3 minuti", async ({ page }) => {
   const t0 = Date.now();
   await page.goto("/");
+  await page.getByTestId("home-altro").locator("summary").click();
   await page.getByRole("link", { name: /Partita veloce/ }).click();
   await expect(page.getByTestId("step")).toBeVisible();
   await expect(page.getByTestId("arena-banner")).toBeVisible();

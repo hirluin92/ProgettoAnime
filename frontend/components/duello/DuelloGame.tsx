@@ -5,6 +5,7 @@ import Icon from "@/components/Icon";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Caricamento from "@/components/Caricamento";
+import InvitoCommunity from "@/components/InvitoCommunity";
 import PremioPanel from "@/components/PremioPanel";
 import it from "@/i18n/it.json";
 import { api } from "@/lib/api";
@@ -24,6 +25,7 @@ import {
   type StatoView,
   type TurnoOut,
 } from "@/lib/duello";
+import { invia, traccia } from "@/lib/eventi";
 import { getProfileId, useProfile } from "@/lib/profile";
 import { nomeLega, type RankedStart } from "@/lib/ranked";
 import type { RunView } from "@/lib/scalaDuelli";
@@ -32,6 +34,8 @@ import DuelloBoard, { fmt } from "./DuelloBoard";
 import DuelloCard, { DuelloTile } from "./DuelloCard";
 
 type Fase = "regole" | "draft" | "gioco";
+const nomeEsito = (vinto: boolean | null) =>
+  vinto === null ? "pareggio" : vinto ? "vittoria" : "sconfitta";
 function Regole({ onOk }: { onOk: () => void }) {
   return (
     <section
@@ -166,6 +170,36 @@ export default function DuelloGame({
   useEffect(() => {
     carica().catch((e: Error) => setError(e.message));
   }, [carica]);
+
+  // statistiche anonime (solo con il consenso ai cookie): inizio, fine e abbandono delle partite
+  const modo = ranked ? "ranked" : scala ? "scala" : giorno ? "giorno" : "duello";
+  const partitaId = partita?.id;
+  const livelloPartita = partita?.livello;
+  useEffect(() => {
+    if (partitaId) traccia("partita_inizio", { modo, livello: livelloPartita ?? "" });
+  }, [partitaId, modo, livelloPartita]);
+  const esitoId = esito?.finita ? esito.id : null;
+  const esitoVinto = esito?.vinto ?? null;
+  useEffect(() => {
+    if (esitoId) traccia("partita_fine", { modo, esito: nomeEsito(esitoVinto) });
+  }, [esitoId, esitoVinto, modo]);
+  const inCorso = useRef(false);
+  useEffect(() => {
+    inCorso.current = !!partita && !stato?.finita;
+  }, [partita, stato?.finita]);
+  useEffect(() => {
+    const lascia = () => {
+      if (!inCorso.current) return;
+      inCorso.current = false;
+      traccia("abbandono", { modo });
+      invia();
+    };
+    window.addEventListener("pagehide", lascia);
+    return () => {
+      lascia();
+      window.removeEventListener("pagehide", lascia);
+    };
+  }, [modo]);
 
   useEffect(() => {
     if (!profile || giorno) return;
@@ -635,6 +669,35 @@ export default function DuelloGame({
     }
   };
 
+  // rivincita: stesso mazzo, stessa arena e stesso avversario (non cambia l'ELO)
+  const puoRivincita = !giorno && !ranked && !scala && !!draft && picks.length === draft.mazzo;
+  const rivincita = async () => {
+    if (!draft || busy) return;
+    traccia("rivincita", { modo, dopo: nomeEsito(esito?.vinto ?? null) });
+    setBusy(true);
+    try {
+      const g = await api<DuelloState>("/api/duello/start", {
+        method: "POST",
+        body: JSON.stringify({
+          seed: draft.seed,
+          picks,
+          livello,
+          profile_id: getProfileId(),
+          rivincita: true,
+        }),
+      });
+      setPartita(g);
+      setStato(g.stato);
+      setEsito(null);
+      setCaption(null);
+      setFase("gioco");
+    } catch (e) {
+      err(e);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const vinteTu = stato.corsie_vinte[0];
   const vinteCpu = stato.corsie_vinte[1];
 
@@ -820,8 +883,19 @@ export default function DuelloGame({
               </div>
             )}
             {esito.premio && <PremioPanel premio={esito.premio} />}
+            <InvitoCommunity />
+            {puoRivincita && (
+              <button
+                className={`btn mx-3 min-h-14 px-8 text-xl ${esito.vinto === false ? "btn-primary" : ""}`}
+                disabled={busy}
+                onClick={() => void rivincita()}
+                data-testid="duello-rivincita"
+              >
+                {it.duello.rivincita}
+              </button>
+            )}
             <button
-              className={`btn btn-primary min-h-14 px-8 text-xl ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
+              className={`btn ${puoRivincita && esito.vinto === false ? "" : "btn-primary"} min-h-14 px-8 text-xl ${esito.scala && !esito.scala.finita ? "hidden" : ""}`}
               onClick={() =>
                 giorno || ranked
                   ? (window.location.href = ranked ? "/ranked" : "/duello")

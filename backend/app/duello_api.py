@@ -323,6 +323,7 @@ class StartIn(Model):
     picks: list[PickIn] = Field(min_length=MAZZO, max_length=MAZZO)
     livello: str = "normale"
     profile_id: str | None = None
+    rivincita: bool = False  # stessa partita di prima: non cambia l'ELO (niente ripetizioni)
 
 
 class StartPersonaleIn(Model):
@@ -373,6 +374,7 @@ def start(body: StartIn) -> DuelloState:
         rng=random.Random(f"cpu:{body.seed}"),
         mazzo=mazzo,
         profile_id=body.profile_id,
+        personale=body.rivincita,
     )
     PARTITE[p.id] = p
     return DuelloState(id=p.id, livello=p.livello, stato=vista_stato(stato))
