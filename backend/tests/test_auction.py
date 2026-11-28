@@ -194,15 +194,27 @@ def test_auction_ends_when_all_complete() -> None:
     assert msgs
 
 
-def test_forced_assignment_after_many_skips() -> None:
+def test_skipped_lots_are_never_forced_on_connected_players() -> None:
     auc, ps = make(3)
+    auc.start(0)
+    now = 0.0
+    for _ in range(40):  # molti lotti di fila senza offerte
+        now += 11
+        msgs = auc.tick(now)
+        assert not any(isinstance(m, LotAssigned) for m in msgs)
+    assert all(not p.slots[r] for p in ps for r in ROLES)
+
+
+def test_forced_assignment_only_when_nobody_is_connected() -> None:
+    auc, ps = make(3)
+    for p in ps:
+        p.connected = False
     auc.start(0)
     now = 0.0
     got = False
     for _ in range(12):
         now += 11
-        msgs = auc.tick(now)
-        if any(isinstance(m, LotAssigned) and m.amount == 1 for m in msgs):
+        if any(isinstance(m, LotAssigned) for m in auc.tick(now)):
             got = True
             break
     assert got

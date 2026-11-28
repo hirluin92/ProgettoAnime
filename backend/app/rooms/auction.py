@@ -99,9 +99,12 @@ class Auction:
                 msgs.append(AuctionFinished(teams=self.teams()))
                 return msgs
             lot = self.queue.popleft()
-            forced = self.skips >= FORCE_AFTER_SKIPS
+            # assegnazione forzata solo se nessun umano è collegato (stanza abbandonata)
+            forced = self.skips >= FORCE_AFTER_SKIPS and not any(
+                p.connected for p in active if not p.is_chat
+            )
             if forced:
-                # troppi lotti di fila senza offerte: assegnato a 1 a chi ha più slot liberi
+                # lotti senza offerte e nessuno collegato: assegnato a 1 per non girare a vuoto
                 most = max(len(p.free_roles()) for p in active)
                 target = self.rng.choice([p for p in active if len(p.free_roles()) == most])
                 self.number += 1
