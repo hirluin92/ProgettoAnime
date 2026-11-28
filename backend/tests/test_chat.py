@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.rooms.manager import RoomManager
-from app.rooms.protocol import Pass, Start
+from app.rooms.protocol import Bid, Pass, Start
 from app.twitch.chat import parse_line
 from app.twitch.votes import ChatVotes, feed_message, parse_offer
 
@@ -73,7 +73,10 @@ async def chat_game() -> tuple[bool, int]:
             await asyncio.sleep(0.1)
             a = room.auction
             if a and a.lot and not a.await_role and host.id not in a.passed:
-                await mgr.handle(room, host.id, Pass())
+                if host.complete or a.bid or a.bidder == host.id:
+                    await mgr.handle(room, host.id, Pass())
+                else:  # il streamer compra a 1 solo se nessuno ha offerto
+                    await mgr.handle(room, host.id, Bid(amount=1))
 
     await asyncio.wait_for(asyncio.gather(viewers(), streamer()), timeout=120)
     return chat.complete, sum(1 for c in chat.slots.values() if c)
